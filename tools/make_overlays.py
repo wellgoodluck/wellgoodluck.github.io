@@ -74,6 +74,29 @@ qe = [
     {"start": "2022-06-01", "end": "2025-12-01", "label": "Runoff", "kind": "shrink"},
 ]
 
+# ---- Fed rate cycles ------------------------------------------------------------
+# Rule: a cycle runs from the first change in the Fed funds target in one direction
+# to the last change before a move the other way, and must contain at least two
+# moves. A cycle still under way is shown from its first move. Before 1988 the
+# Fed did not announce a target and adjusted it in frequent small steps, so those
+# years are left blank rather than guessed.
+fed_cycles = [
+    {"start": "1988-03-30", "end": "1989-05-17", "label": "Hikes", "kind": "tighten", "note": "6.50% to 9.81%"},
+    {"start": "1989-06-06", "end": "1992-09-04", "label": "Cuts", "kind": "ease", "note": "9.81% to 3.00%"},
+    {"start": "1994-02-04", "end": "1995-02-01", "label": "Hikes", "kind": "tighten", "note": "3.00% to 6.00%"},
+    {"start": "1995-07-06", "end": "1996-01-31", "label": "Cuts", "kind": "ease", "note": "6.00% to 5.25%"},
+    {"start": "1998-09-29", "end": "1998-11-17", "label": "Cuts", "kind": "ease", "note": "5.50% to 4.75%, after the LTCM collapse"},
+    {"start": "1999-06-30", "end": "2000-05-16", "label": "Hikes", "kind": "tighten", "note": "4.75% to 6.50%"},
+    {"start": "2001-01-03", "end": "2003-06-25", "label": "Cuts", "kind": "ease", "note": "6.50% to 1.00%"},
+    {"start": "2004-06-30", "end": "2006-06-29", "label": "Hikes", "kind": "tighten", "note": "1.00% to 5.25%, a quarter point at 17 straight meetings"},
+    {"start": "2007-09-18", "end": "2008-12-16", "label": "Cuts", "kind": "ease", "note": "5.25% to 0–0.25%"},
+    {"start": "2015-12-16", "end": "2018-12-19", "label": "Hikes", "kind": "tighten", "note": "0–0.25% to 2.25–2.50%"},
+    {"start": "2019-07-31", "end": "2020-03-15", "label": "Cuts", "kind": "ease", "note": "2.25–2.50% to 0–0.25%"},
+    {"start": "2022-03-16", "end": "2023-07-26", "label": "Hikes", "kind": "tighten", "note": "0–0.25% to 5.25–5.50%, the fastest since the early 1980s"},
+    {"start": "2024-09-18", "end": "2025-12-10", "label": "Cuts", "kind": "ease", "note": "5.25–5.50% to 3.50–3.75%"},
+    {"start": "2026-09-16", "end": None, "label": "Hikes", "kind": "tighten", "note": "3.50–3.75% to 3.75–4.00%; one move so far"},
+]
+
 # ---- Events -------------------------------------------------------------------
 RULE = ("An event is listed if it visibly moved at least one indicator on this site within three months, "
         "or changed federal policy that bears directly on one. Nothing is listed because it fits a story. "
@@ -186,6 +209,11 @@ overlays = [
      "note": "Periods when the Fed was expanding its holdings of Treasuries and mortgage bonds (QE) or letting them shrink. Dates are the announced start and end of net purchases or runoff.",
      "segments": qe,
      "source": {"label": "Federal Reserve Board, Policy Tools", "url": "https://www.federalreserve.gov/monetarypolicy/bst.htm"}},
+    {"id": "fed_cycles", "type": "era", "group": "Eras", "lane": "Fed cycle", "label": "Fed rate hikes and cuts",
+     "applies_to": ["fed_funds", "ten_year", "mortgage", "cpi", "core_cpi", "housing_starts", "unemployment", "payrolls", "gdp"],
+     "note": "From the first change in the Fed funds target in one direction to the last, two or more moves. Before 1988 the Fed did not announce a target and moved it in frequent small steps; those years are left blank.",
+     "segments": fed_cycles,
+     "source": {"label": "Federal Reserve Board, Open Market Operations", "url": "https://www.federalreserve.gov/monetarypolicy/openmarket.htm"}},
     {"id": "wars", "type": "era", "group": "Eras", "lane": "At war", "label": "U.S. at war",
      "applies_to": "all",
      "note": "Rule: declared wars and conflicts Congress authorized, from the authorization to the end of U.S. combat, plus Korea, fought under a UN resolution. Smaller deployments are not shown.",
@@ -205,7 +233,7 @@ overlays = [
 ]
 
 out = {
-    "version": "2026-10-28",
+    "version": "2026-10-28b",
     "maintenance": "Party lanes need a two-line edit every other January after a new Congress is seated (next: January 2027). Fed chair, FOMC estimates and events are edited as they happen.",
     "political_note": POLITICAL_NOTE,
     "overlays": overlays,

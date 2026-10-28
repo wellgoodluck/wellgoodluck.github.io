@@ -20,7 +20,11 @@ history. Live at [economyincontext.org](https://economyincontext.org).
   reading, and context statistics (percentile in own history, 2015–19 average,
   typical range, record highs and lows), plus `data/companions.json` with the
   overlay series (PCE inflation, U-6, prime-age employment ratio, the CBO
-  natural rate, continuing claims, single-family starts, and derived spreads).
+  natural rate, continuing claims, single-family starts, wages, and derived
+  spreads). It also maintains `data/firstprints.json`: each month's figure as
+  first reported, from ALFRED (FRED's vintage archive). First prints never
+  change, so the file is filled in a few hundred months per run and then only
+  the newest month is fetched.
 - `.github/workflows/refresh.yml` runs the fetch twice each weekday and
   publishes the result to GitHub Pages. It needs one repository secret,
   `FRED_API_KEY` (a free key from fredaccount.stlouisfed.org/apikeys).

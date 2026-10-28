@@ -437,6 +437,7 @@
       if (lastP[0] === obs[obs.length - 1][0]) svg.appendChild(svgEl('circle', { class: 'end', cx: xs(parseDate(lastP[0]).getTime()), cy: ys(clampV(lastP[1])), r: 4 }));
 
       // clipped extremes
+      const clipRows = { '-1': 0, '1': 0 };          // labels already stacked at each edge
       function clipMarks(series, freq, color, who) {
         if (!clip) return;
         let clipLow = null, clipHigh = null;
@@ -446,7 +447,8 @@
           const cx = xs(parseDate(p[0]).getTime()), cy = ys(clampV(p[1]));
           svg.appendChild(svgEl('path', { class: 'clipmark', fill: color, d: 'M' + cx + ',' + (cy + dir * 6) + ' l-5,' + (-dir * 7) + ' l10,0 z' }));
           const label = (who ? who + ', ' : '') + fmtPeriod(p[0], freq) + ': ' + fmtValue(p[1], d) + ', off the chart';
-          const tx = svgEl('text', { class: 'cliplabel', y: cy + (dir > 0 ? 14 : -10) });
+          const row = clipRows[String(dir)]++;
+          const tx = svgEl('text', { class: 'cliplabel', y: cy + (dir > 0 ? 14 + row * 13 : -10 - row * 13) });
           if (width - mR - cx > label.length * 6.2) { tx.setAttribute('x', cx + 8); tx.setAttribute('text-anchor', 'start'); } else { tx.setAttribute('x', cx - 8); tx.setAttribute('text-anchor', 'end'); }
           tx.textContent = label; svg.appendChild(tx);
         });
@@ -506,7 +508,7 @@
           let fill = 'var(--era-a)', light = false;
           if (s.party === 'D') { fill = 'var(--dem)'; light = true; } else if (s.party === 'R') { fill = 'var(--rep)'; light = true; } else if (s.party === 'X') fill = 'var(--divided)';
           else if (o.id === 'wars') { fill = 'var(--war)'; light = true; }
-          else if (s.kind === 'expand') fill = 'var(--qe-up)'; else if (s.kind === 'shrink') fill = 'var(--qe-down)';
+          else if (s.kind === 'expand' || s.kind === 'ease') fill = 'var(--qe-up)'; else if (s.kind === 'shrink' || s.kind === 'tighten') fill = 'var(--qe-down)';
           else fill = (segs.indexOf(s) % 2) ? 'var(--era-b)' : 'var(--era-a)';
           const r = svgEl('rect', { class: 'seg', x: xs(a), y, width: Math.max(1, w), height: laneH, fill });
           r.appendChild(svgEl('title', {})); r.querySelector('title').textContent = (s.label || (s.party === 'D' ? 'Democratic' : s.party === 'R' ? 'Republican' : '')) + ': ' + fmtDate(s.start) + ' – ' + (s.end ? fmtDate(s.end) : 'present') + (s.note ? '. ' + s.note : '');

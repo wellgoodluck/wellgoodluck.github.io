@@ -275,6 +275,15 @@ COMPANIONS = [
         "why": "Starts of one-unit homes only. The rest of the total is apartments, which move on a different cycle.",
     },
     {
+        "id": "wages",
+        "label": "Average hourly earnings, change from a year ago",
+        "for": ["cpi", "core_cpi"],
+        "series": "AHETPI",
+        "params": {"units": "pc1", "observation_start": "1965-01-01"},
+        "freq": "m",
+        "why": "Pay for production and nonsupervisory workers, about four-fifths of private employment. When this line is above inflation, typical paychecks are gaining ground.",
+    },
+    {
         "id": "mortgage_monthly",
         "label": "30-year mortgage rate, monthly average",
         "for": [],
@@ -311,6 +320,13 @@ DERIVED = [
         "why": "The slope of the curve. Below zero (an inverted curve) has preceded every recession since the 1970s, usually by a year or more.",
     },
     {
+        "id": "real_wages",
+        "label": "Real wage growth (hourly earnings minus CPI inflation)",
+        "for": ["cpi", "core_cpi"],
+        "op": "diff", "a": "wages", "b": "cpi", "freq": "m",
+        "why": "Wage growth after inflation, as a simple difference. Above zero, pay is outrunning prices; below, prices are winning. Compares against headline CPI on both charts.",
+    },
+    {
         "id": "mortgage_minus_ten",
         "label": "Mortgage rate minus 10-year yield",
         "for": ["mortgage"],
@@ -318,6 +334,32 @@ DERIVED = [
         "why": "The spread lenders charge over Treasuries. Normally 1.5–2 points; wider in stress, as in 2022–24.",
     },
 ]
+
+# ---------------------------------------------------------------------------
+# First prints: what each month's figure was when it was first reported, from
+# ALFRED (FRED's vintage archive). History never changes, so it is kept in
+# data/firstprints.json and only missing months are fetched: one request per
+# month, capped per run, so the backfill completes over a few scheduled runs.
+#
+#   tile       tile id whose current-vintage history this sits beside
+#   series     the FRED series; the tile's own transform (units) is applied
+#              at the original release date, which reproduces the headline
+#              exactly (e.g. the jobs figure as first announced)
+# ---------------------------------------------------------------------------
+FIRST_PRINTS = [
+    {"id": "payrolls_first", "tile": "payrolls", "label": "Jobs added, as first reported",
+     "why": "The number announced on jobs day, before the two later revisions. The gap to the current line is the revision."},
+    {"id": "gdp_first", "tile": "gdp", "label": "GDP growth, advance estimate",
+     "why": "The first of three estimates for each quarter. Revisions of a full point are not unusual."},
+    {"id": "unemployment_first", "tile": "unemployment", "label": "Unemployment rate, as first reported",
+     "why": "Rarely revised by more than 0.1 point; here mainly to show that."},
+    {"id": "cpi_first", "tile": "cpi", "label": "Inflation, as first reported",
+     "why": "Seasonal factors are recalculated each February, so past months shift slightly."},
+]
+FIRST_PRINTS_STORE = os.environ.get("FIRST_PRINTS_STORE", "data/firstprints.json")   # in the repo, committed each run
+FIRST_PRINTS_PER_RUN = int(os.environ.get("FIRST_PRINTS_PER_RUN", "400"))
+ALFRED_EARLIEST = "1776-07-04"              # FRED's sentinel for "from the first vintage"
+ALFRED_LATEST = "9999-12-31"
 
 RECESSIONS_SERIES = "USREC"       # NBER recession months, 1 = recession
 RECESSIONS_START = "1939-01-01"
@@ -444,6 +486,102 @@ def context_for(obs, freq):
         "highest_since": highest_since,   # None means this is the highest on record
         "lowest_since": lowest_since,     # None means this is the lowest on record
     }
+
+
+def first_release_dates(series_id, params):
+    """{observation_date: date it was first published}, from ALFRED's initial-release view.
+    Observations older than the archive itself all carry the archive's first vintage
+    date; those are unknowable and dropped."""
+    q = {k: v for k, v in params.items() if k not in ("units", "frequency", "aggregation_method")}
+    q.update({"output_type": "4", "realtime_start": ALFRED_EARLIEST, "realtime_end": ALFRED_LATEST})
+    data = fred_get("series/observations", {"series_id": series_id, **q})
+    rel = {}
+    for o in data.get("observations", []):
+        if o.get("value", ".") in (".", "", None):
+            continue
+        rel[o["date"]] = o["realtime_start"]
+    if not rel:
+        return {}
+    earliest = min(rel.values())
+    return {d: r for d, r in rel.items() if r != earliest}
+
+
+def value_at_vintage(series_id, params, obs_date, vintage):
+    """The transformed value for obs_date as it stood on the vintage date (None if absent)."""
+    q = dict(params)
+    q.update({"observation_start": obs_date, "observation_end": obs_date,
+              "realtime_start": vintage, "realtime_end": vintage})
+    data = fred_get("series/observations", {"series_id": series_id, **q})
+    for o in data.get("observations", []):
+        if o.get("value", ".") not in (".", "", None):
+            return float(o["value"])
+    return None
+
+
+def update_first_prints(path, tiles_by_id):
+    """Load data/firstprints.json, fetch up to FIRST_PRINTS_PER_RUN missing months, save.
+    Returns the list of companion entries to publish. Never raises."""
+    store = {}
+    try:
+        with open(path, encoding="utf-8") as f:
+            store = json.load(f).get("series", {})
+    except (OSError, ValueError):
+        store = {}
+    per_series = max(1, FIRST_PRINTS_PER_RUN // max(1, len(FIRST_PRINTS)))
+    for fp in FIRST_PRINTS:
+        budget = per_series
+        t = tiles_by_id.get(fp["tile"])
+        if not t:
+            continue
+        entry = store.setdefault(fp["id"], {"observations": {}, "complete": False})
+        have = entry["observations"]
+        try:
+            rel = first_release_dates(t["series"], t["params"])
+            time.sleep(0.4)
+        except Exception as e:
+            print(f"{fp['id']:16s} release dates failed: {e}", file=sys.stderr, flush=True)
+            continue
+        missing = sorted((d for d in rel if d not in have), reverse=True)   # newest first: recent revisions matter most
+        fetched = 0
+        for d in missing:
+            if budget <= 0:
+                break
+            try:
+                v = value_at_vintage(t["series"], t["params"], d, rel[d])
+                time.sleep(0.5)                 # FRED allows 120 requests a minute
+            except Exception as e:
+                print(f"{fp['id']:16s} {d}: {e}", file=sys.stderr, flush=True)
+                break
+            budget -= 1
+            fetched += 1
+            have[d] = None if v is None else round(v, 3)
+        entry["complete"] = all(d in have for d in rel)
+        entry["as_of"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        print(f"{fp['id']:16s} first prints: {len(have)} held, {fetched} fetched, "
+              f"{len(missing) - fetched} to go", flush=True)
+    try:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump({"note": "First-release values from ALFRED, fetched incrementally. Do not edit.",
+                       "series": store}, f, separators=(",", ":"), sort_keys=True)
+    except OSError as e:
+        print(f"could not write {path}: {e}", file=sys.stderr, flush=True)
+    out = []
+    for fp in FIRST_PRINTS:
+        entry = store.get(fp["id"])
+        t = tiles_by_id.get(fp["tile"])
+        if not entry or not t:
+            continue
+        obs = sorted((d, v) for d, v in entry["observations"].items() if v is not None)
+        if len(obs) < 3:
+            continue
+        out.append({
+            "id": fp["id"], "label": fp["label"], "for": [fp["tile"]], "freq": t["freq"],
+            "why": fp["why"] + ("" if entry.get("complete") else " History is still being backfilled; earlier months arrive over the next few days."),
+            "source": {"series": t["series"], "url": f"https://alfred.stlouisfed.org/series?seid={t['series']}",
+                       "fred_title": "ALFRED vintages of " + t["series"], "transform": t["params"].get("units", "lin")},
+            "observations": [[d, v] for d, v in obs],
+        })
+    return out
 
 
 def month_key(d):
@@ -577,6 +715,12 @@ def main():
             "derived": {k: dv[k] for k in ("op", "a", "b") if k in dv},
             "observations": [[d, round(v, 3)] for d, v in obs],
         })
+
+    # First prints from ALFRED, incremental.
+    try:
+        companions_out.extend(update_first_prints(FIRST_PRINTS_STORE, {t["id"]: t for t in TILES}))
+    except Exception as e:                     # belt and braces: never let this stage fail the run
+        print(f"first prints skipped: {e}", file=sys.stderr, flush=True)
 
     print("recessions      USREC", flush=True)
     rec = get_observations(RECESSIONS_SERIES, {"observation_start": RECESSIONS_START})
