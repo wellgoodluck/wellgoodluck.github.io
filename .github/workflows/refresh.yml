@@ -57,8 +57,8 @@ jobs:
         run: |
           cp index.html chart.html public/
           cp data/overlays.json public/data/
-          if [ -d articles ]; then cp -r articles public/; fi
           if [ -d assets ]; then cp -r assets public/; fi
+          python3 tools/build_articles.py public
           ls -R public
 
       - name: Configure GitHub Pages
