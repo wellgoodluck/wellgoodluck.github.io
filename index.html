@@ -4,9 +4,590 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Economy in Context</title>
+<meta name="description" content="The main numbers on the U.S. economy — jobs, prices, growth, rates and housing — each shown against its own history, so you can see what is high, what is low and what is normal.">
+<link rel="canonical" href="https://economyincontext.org/">
+<style>
+  /* Public Sans (SIL Open Font License), served from this site: no third-party requests. */
+  @font-face { font-family: "Public Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("assets/fonts/PublicSans-Regular.woff2") format("woff2"); }
+  @font-face { font-family: "Public Sans"; font-weight: 600; font-style: normal; font-display: swap; src: url("assets/fonts/PublicSans-SemiBold.woff2") format("woff2"); }
+  @font-face { font-family: "Public Sans"; font-weight: 700; font-style: normal; font-display: swap; src: url("assets/fonts/PublicSans-Bold.woff2") format("woff2"); }
+
+  :root {
+    color-scheme: light;
+    --page: #f6f6f3;
+    --surface: #ffffff;
+    --ink: #1b1b1a;
+    --ink-2: #5a5955;
+    --muted: #8a8984;
+    --hairline: #e3e2dc;
+    --grid: #ebeae4;
+    --series: #2a78d6;
+    --series-wash: rgba(42, 120, 214, 0.10);
+    --recession: rgba(27, 27, 26, 0.07);
+    --focus: #2a78d6;
+    --banner: #fff4d6;
+    --banner-ink: #5a4300;
+    --max: 1120px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --page: #121211;
+      --surface: #1a1a19;
+      --ink: #f0efec;
+      --ink-2: #c3c2b7;
+      --muted: #898781;
+      --hairline: #2c2c2a;
+      --grid: #262624;
+      --series: #3987e5;
+      --series-wash: rgba(57, 135, 229, 0.14);
+      --recession: rgba(240, 239, 236, 0.08);
+      --banner: #3a2f10;
+      --banner-ink: #f3dfa0;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  a { color: inherit; text-decoration-color: var(--muted); text-underline-offset: 3px; }
+  a:hover { text-decoration-color: var(--ink); }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+  button { font: inherit; color: inherit; }
+
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 16px; }
+
+  /* Masthead ------------------------------------------------------------- */
+  .masthead { padding: 40px 0 24px; border-bottom: 1px solid var(--hairline); }
+  .masthead h1 {
+    margin: 0 0 10px;
+    font-size: clamp(30px, 4.6vw, 44px);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+  }
+  .masthead p.tagline {
+    margin: 0;
+    max-width: 44em;
+    font-size: clamp(17px, 2vw, 19px);
+    color: var(--ink-2);
+  }
+  .masthead .updated { margin: 14px 0 0; color: var(--muted); font-size: 14px; }
+  .sections-nav { margin: 18px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 15px; }
+  .sections-nav a { text-decoration: none; border-bottom: 1px solid var(--hairline); padding-bottom: 1px; }
+  .sections-nav a:hover { border-color: var(--ink); }
+
+  .banner {
+    background: var(--banner); color: var(--banner-ink);
+    padding: 10px 16px; font-size: 14px; text-align: center;
+  }
+
+  /* Sections ------------------------------------------------------------- */
+  section.group { padding: 28px 0 8px; }
+  section.group h2 {
+    margin: 0 0 14px;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+
+  /* Tile ------------------------------------------------------------------ */
+  .tile {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 6px;
+    padding: 18px 18px 14px;
+    min-width: 0;
+  }
+  .tile h3 { margin: 0; font-size: 19px; font-weight: 700; line-height: 1.25; }
+  .tile .sub { margin: 2px 0 0; color: var(--ink-2); font-size: 14px; }
+  .headline { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; margin: 14px 0 2px; }
+  .headline .value { font-size: 40px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
+  .headline .when { color: var(--muted); font-size: 14px; }
+  .compare { margin: 6px 0 0; color: var(--ink-2); font-size: 14px; }
+  .compare span + span::before { content: "\00a0\00a0|\00a0\00a0"; color: var(--hairline); }
+
+  /* Range strip: where the current reading sits in its typical range ------ */
+  .strip { margin: 18px 0 4px; }
+  .strip svg { display: block; width: 100%; height: 44px; overflow: visible; }
+  .strip .track { stroke: var(--hairline); stroke-width: 6; stroke-linecap: round; }
+  .strip .now { fill: var(--series); stroke: var(--surface); stroke-width: 2; }
+  .strip .avg { stroke: var(--ink-2); stroke-width: 2; }
+  .strip text { font-size: 12px; fill: var(--muted); }
+  .strip text.avg-label { fill: var(--ink-2); }
+  .strip .beyond { fill: var(--series); }
+  .context { margin: 6px 0 0; font-size: 15px; }
+
+  /* Chart ----------------------------------------------------------------- */
+  .chart-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 18px 0 4px; }
+  .chart-head .range-title { font-size: 13px; color: var(--muted); }
+  .ranges { display: inline-flex; border: 1px solid var(--hairline); border-radius: 4px; overflow: hidden; }
+  .ranges button {
+    background: transparent; border: 0; padding: 3px 9px; font-size: 13px; cursor: pointer; color: var(--ink-2);
+  }
+  .ranges button + button { border-left: 1px solid var(--hairline); }
+  .ranges button:focus-visible { outline-offset: -2px; }
+  .ranges button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+  .chart { position: relative; }
+  .chart svg { display: block; width: 100%; height: 190px; overflow: visible; }
+  .chart .grid-line { stroke: var(--grid); stroke-width: 1; }
+  .chart .zero { stroke: var(--muted); stroke-width: 1; }
+  .chart .axis text { font-size: 11px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+  .chart .rec { fill: var(--recession); }
+  .chart .line { fill: none; stroke: var(--series); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .chart .end { fill: var(--series); stroke: var(--surface); stroke-width: 2; }
+  .chart .xhair { stroke: var(--muted); stroke-width: 1; }
+  .chart .hover-dot { fill: var(--series); stroke: var(--surface); stroke-width: 2; }
+  .chart .hit { fill: transparent; cursor: crosshair; }
+  .chart .clipmark { fill: var(--series); }
+  .chart .cliplabel { font-size: 11px; fill: var(--ink-2); }
+  .tip {
+    position: absolute; pointer-events: none; display: none;
+    background: var(--ink); color: var(--surface); font-size: 12px; line-height: 1.3;
+    padding: 5px 8px; border-radius: 4px; white-space: nowrap; transform: translate(-50%, -100%);
+  }
+  .tip b { font-weight: 600; }
+  .chart-foot { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; margin: 6px 0 0; }
+  .legend { font-size: 12px; color: var(--muted); }
+  .legend i { display: inline-block; width: 10px; height: 10px; background: var(--recession); border: 1px solid var(--hairline); vertical-align: -1px; margin-right: 5px; }
+
+  .note { margin: 12px 0 0; font-size: 13px; color: var(--ink-2); }
+  .source { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+
+  details.table { margin: 10px 0 0; font-size: 13px; }
+  details.table summary { cursor: pointer; color: var(--ink-2); }
+  details.table table { border-collapse: collapse; margin-top: 8px; width: 100%; max-width: 320px; }
+  details.table td { padding: 3px 0; border-top: 1px solid var(--hairline); font-variant-numeric: tabular-nums; }
+  details.table td:last-child { text-align: right; }
+
+  /* About ----------------------------------------------------------------- */
+  .about { margin: 40px 0 0; padding: 32px 0 48px; border-top: 1px solid var(--hairline); }
+  .about h2 { margin: 0 0 10px; font-size: 22px; }
+  .about p { max-width: 42em; margin: 0 0 12px; color: var(--ink-2); }
+  .about p strong { color: var(--ink); font-weight: 600; }
+  .status { padding: 24px 0; color: var(--ink-2); }
+</style>
 </head>
-<body style="font-family: Georgia, serif; max-width: 40em; margin: 4em auto; padding: 0 1em;">
-<h1>Economy in Context</h1>
-<p>An almanac of the American economy. Coming soon.</p>
+<body>
+
+<div id="banner" class="banner" hidden></div>
+
+<header class="masthead">
+  <div class="wrap">
+    <h1>Economy in Context</h1>
+    <p class="tagline">The main numbers on the U.S. economy, each shown against its own history, so you can see what is high, what is low and what is normal.</p>
+    <p class="updated" id="updated"></p>
+    <ul class="sections-nav" id="nav"></ul>
+  </div>
+</header>
+
+<main class="wrap" id="main">
+  <p class="status" id="status">Loading the latest figures…</p>
+</main>
+
+<footer class="about">
+  <div class="wrap">
+    <h2>How to read this page</h2>
+    <p><strong>The big number</strong> is the latest official reading. The date beside it is the period it describes, which is usually a few weeks behind today, because that is how long the agencies take to count.</p>
+    <p><strong>The bar underneath</strong> shows where that reading sits in the indicator's typical range: the middle 90 percent of everything it has done since records began. A dot at the far end means today is unusual. A dot in the middle means it is not, whatever the headlines say.</p>
+    <p><strong>The 2015–19 average</strong> is the last five full years before the pandemic. It is not a target, just a reasonable stand-in for what "normal" felt like recently.</p>
+    <p><strong>The chart</strong> shows the full history, with recessions shaded as dated by the National Bureau of Economic Research. Use the buttons to zoom in.</p>
+    <p><strong>Revisions.</strong> Agencies revise their numbers as more data comes in, sometimes substantially. This page always shows the current figures, so a month's reading here can differ from the headline that was reported at the time.</p>
+    <p id="attribution"></p>
+    <p>This site has no ads, no tracking and no agenda beyond putting the numbers in context. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  const RANGES = [
+    { key: '1y', label: '1 yr', years: 1 },
+    { key: '5y', label: '5 yrs', years: 5 },
+    { key: '10y', label: '10 yrs', years: 10 },
+    { key: '25y', label: '25 yrs', years: 25 },
+    { key: 'all', label: 'All', years: null },
+  ];
+  const DEFAULT_RANGE = '25y';
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+  // ---- formatting ---------------------------------------------------------
+  function fmtValue(v, d, opts) {
+    opts = opts || {};
+    const decimals = opts.decimals != null ? opts.decimals : d.decimals;
+    const x = v / (d.scale || 1);
+    const sign = d.signed && x > 0 && !opts.nosign ? '+' : '';
+    const num = Math.abs(x).toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    return (x < 0 ? '−' : sign) + (d.prefix || '') + num + (d.suffix || '');
+  }
+  function parseDate(s) { const p = s.split('-'); return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])); }
+  function fmtPeriod(s, freq, long) {
+    const dt = parseDate(s), y = dt.getUTCFullYear(), m = dt.getUTCMonth(), day = dt.getUTCDate();
+    if (freq === 'q') return 'Q' + (Math.floor(m / 3) + 1) + ' ' + y;
+    if (freq === 'm') return (long ? MONTHS_LONG[m] : MONTHS[m]) + ' ' + y;
+    return (long ? MONTHS_LONG[m] : MONTHS[m]) + ' ' + day + ', ' + y;
+  }
+  function periodNoun(freq) { return freq === 'q' ? 'quarters' : freq === 'w' ? 'weeks' : freq === 'd' ? 'days' : 'months'; }
+  function prevLabel(freq) { return freq === 'q' ? 'Previous quarter' : freq === 'w' ? 'Previous week' : 'Previous month'; }
+  function yearsBetween(a, b) { return (parseDate(b) - parseDate(a)) / (365.25 * 86400000); }
+
+  function el(tag, attrs, children) {
+    const n = document.createElement(tag);
+    if (attrs) for (const k in attrs) {
+      if (k === 'class') n.className = attrs[k];
+      else if (k === 'text') n.textContent = attrs[k];
+      else if (k === 'html') n.innerHTML = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    }
+    (children || []).forEach(c => n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c));
+    return n;
+  }
+  const SVG = 'http://www.w3.org/2000/svg';
+  function svgEl(tag, attrs) {
+    const n = document.createElementNS(SVG, tag);
+    for (const k in attrs) n.setAttribute(k, attrs[k]);
+    return n;
+  }
+
+  // ---- context sentence ---------------------------------------------------
+  function contextSentence(t) {
+    const c = t.context, d = t.display, noun = periodNoun(t.freq);
+    const since = parseDate(c.since).getUTCFullYear();
+    const parts = [];
+    const pct = c.percentile_below;
+    if (pct >= 50) parts.push('Higher than ' + Math.round(pct) + '% of ' + noun + ' since ' + since + '.');
+    else parts.push('Lower than ' + Math.round(100 - pct) + '% of ' + noun + ' since ' + since + '.');
+
+    const cur = c.current.value, prev = c.previous.value;
+    if (cur > prev) {
+      if (c.highest_since == null) parts.push('The highest on record.');
+      else if (yearsBetween(c.highest_since, c.current.date) >= 1) parts.push('Highest since ' + fmtPeriod(c.highest_since, t.freq) + '.');
+    } else if (cur < prev) {
+      if (c.lowest_since == null) parts.push('The lowest on record.');
+      else if (yearsBetween(c.lowest_since, c.current.date) >= 1) parts.push('Lowest since ' + fmtPeriod(c.lowest_since, t.freq) + '.');
+    }
+    return parts.join(' ');
+  }
+
+  // ---- range strip --------------------------------------------------------
+  function buildStrip(t) {
+    const c = t.context, d = t.display;
+    const lo = c.typical_low, hi = c.typical_high, cur = c.current.value, avg = c.baseline_2015_19;
+    const box = el('div', { class: 'strip' });
+    function draw() {
+      const old = box.querySelector('svg'); if (old) old.remove();
+      const W = Math.max(200, box.clientWidth || 480), H = 44, padL = 8, padR = 8, y = 16;
+      const span = Math.max(hi - lo, 1e-9);
+      const pos = v => padL + Math.min(1, Math.max(0, (v - lo) / span)) * (W - padL - padR);
+      const svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H, width: W, height: H, role: 'img',
+        'aria-label': 'Current reading ' + fmtValue(cur, d) + ' within a typical range of ' + fmtValue(lo, d) + ' to ' + fmtValue(hi, d) });
+      svg.appendChild(svgEl('line', { class: 'track', x1: padL, x2: W - padR, y1: y, y2: y }));
+
+      // 2015–19 average tick, label kept inside the strip's width
+      if (avg != null) {
+        const ax = pos(avg);
+        svg.appendChild(svgEl('line', { class: 'avg', x1: ax, x2: ax, y1: y - 9, y2: y + 9 }));
+        const label = '2015–19 avg ' + fmtValue(avg, d);
+        const approxW = label.length * 6.4;
+        let anchor = 'middle', lx = ax;
+        if (ax - approxW / 2 < 0) { anchor = 'start'; lx = Math.max(ax - 4, 0); }
+        else if (ax + approxW / 2 > W) { anchor = 'end'; lx = Math.min(ax + 4, W); }
+        const lab = svgEl('text', { class: 'avg-label', x: lx, y: y + 24, 'text-anchor': anchor });
+        lab.textContent = label;
+        svg.appendChild(lab);
+      }
+      // current reading
+      if (cur < lo) svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (padL - 4) + ',' + y + ' l10,-7 l0,14 z' }));
+      else if (cur > hi) svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (W - padR + 4) + ',' + y + ' l-10,-7 l0,14 z' }));
+      else svg.appendChild(svgEl('circle', { class: 'now', cx: pos(cur), cy: y, r: 7 }));
+
+      // end labels (typical range)
+      const l1 = svgEl('text', { x: padL, y: y - 12, 'text-anchor': 'start' }); l1.textContent = fmtValue(lo, d);
+      const l2 = svgEl('text', { x: W - padR, y: y - 12, 'text-anchor': 'end' }); l2.textContent = fmtValue(hi, d);
+      const l3 = svgEl('text', { x: W / 2, y: y - 12, 'text-anchor': 'middle' }); l3.textContent = 'typical range';
+      svg.appendChild(l1); svg.appendChild(l2); svg.appendChild(l3);
+      box.appendChild(svg);
+    }
+    if ('ResizeObserver' in window) {
+      let w = 0;
+      new ResizeObserver(() => { const nw = box.clientWidth; if (nw && nw !== w) { w = nw; draw(); } }).observe(box);
+    } else { requestAnimationFrame(draw); }
+    return box;
+  }
+
+  // ---- chart --------------------------------------------------------------
+  function niceTicks(lo, hi, count) {
+    const span = hi - lo || 1;
+    const rough = span / count;
+    const mag = Math.pow(10, Math.floor(Math.log10(rough)));
+    const norm = rough / mag;
+    const step = (norm < 1.5 ? 1 : norm < 3.5 ? 2 : norm < 7.5 ? 5 : 10) * mag;
+    const ticks = [];
+    for (let v = Math.ceil(lo / step) * step; v <= hi + step * 1e-9; v += step) ticks.push(+v.toFixed(10));
+    return { ticks, step };
+  }
+  function decimalsFor(step, scale) {
+    const s = step / (scale || 1);
+    if (s >= 1) return 0;
+    return Math.min(3, Math.ceil(-Math.log10(s)));
+  }
+
+  function buildChart(t, recessions) {
+    const box = el('div', { class: 'chart' });
+    const tip = el('div', { class: 'tip' });
+    box.appendChild(tip);
+    let range = DEFAULT_RANGE;
+    const obs = t.observations;
+    const d = t.display;
+
+    function draw() {
+      const old = box.querySelector('svg'); if (old) old.remove();
+      const width = Math.max(240, box.clientWidth || 480);
+      const height = 190, mL = 46, mR = 14, mT = 12, mB = 24;
+      const iw = width - mL - mR, ih = height - mT - mB;
+      const r = RANGES.find(x => x.key === range);
+      const last = parseDate(obs[obs.length - 1][0]);
+      const start = r.years ? new Date(Date.UTC(last.getUTCFullYear() - r.years, last.getUTCMonth(), last.getUTCDate())) : parseDate(obs[0][0]);
+      const pts = obs.filter(o => parseDate(o[0]) >= start);
+      const x0 = start.getTime(), x1 = last.getTime();
+      const xs = v => mL + (v - x0) / Math.max(1, x1 - x0) * iw;
+      // Optional clip: one freak reading (April 2020) must not flatten decades of history.
+      // Clipped points are drawn at the edge with a marker and labeled with their real value.
+      const clip = d.clip || null;
+      const clampV = v => clip ? Math.min(clip[1], Math.max(clip[0], v)) : v;
+      const plotted = pts.map(p => clampV(p[1]));
+      let lo = Math.min(...plotted), hi = Math.max(...plotted);
+      if (lo === hi) { lo -= 1; hi += 1; }
+      const pad = (hi - lo) * 0.08; lo -= pad; hi += pad;
+      const ys = v => mT + (hi - v) / (hi - lo) * ih;
+      let clipLow = null, clipHigh = null;      // most extreme clipped point each way
+      if (clip) pts.forEach(p => {
+        if (p[1] < clip[0] && (!clipLow || p[1] < clipLow[1])) clipLow = p;
+        if (p[1] > clip[1] && (!clipHigh || p[1] > clipHigh[1])) clipHigh = p;
+      });
+
+      const svg = svgEl('svg', { viewBox: '0 0 ' + width + ' ' + height, width, height, role: 'img',
+        'aria-label': t.title + ', ' + r.label + ' history' });
+
+      // recession bands
+      (recessions || []).forEach(s => {
+        const a = Math.max(parseDate(s[0]).getTime(), x0);
+        const bEnd = parseDate(s[1]); bEnd.setUTCMonth(bEnd.getUTCMonth() + 1);  // through end of that month
+        const b = Math.min(bEnd.getTime(), x1);
+        if (b <= a) return;
+        svg.appendChild(svgEl('rect', { class: 'rec', x: xs(a), y: mT, width: Math.max(1, xs(b) - xs(a)), height: ih }));
+      });
+
+      // y grid + labels
+      const { ticks, step } = niceTicks(lo, hi, 4);
+      const dec = decimalsFor(step, d.scale);
+      const axis = svgEl('g', { class: 'axis' });
+      ticks.forEach(v => {
+        svg.appendChild(svgEl('line', { class: v === 0 ? 'zero' : 'grid-line', x1: mL, x2: width - mR, y1: ys(v), y2: ys(v) }));
+        const tx = svgEl('text', { x: mL - 6, y: ys(v) + 4, 'text-anchor': 'end' });
+        tx.textContent = fmtValue(v, d, { decimals: dec, nosign: true });
+        axis.appendChild(tx);
+      });
+      // x labels
+      const yrs = r.years || (x1 - x0) / (365.25 * 86400000);
+      const everyY = yrs <= 1 ? 0 : yrs <= 5 ? 1 : yrs <= 10 ? 2 : yrs <= 25 ? 5 : 10;
+      if (everyY === 0) {
+        for (let dt = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, 1)); dt <= last; dt.setUTCMonth(dt.getUTCMonth() + 2)) {
+          const tx = svgEl('text', { x: xs(dt.getTime()), y: height - 6, 'text-anchor': 'middle' });
+          tx.textContent = MONTHS[dt.getUTCMonth()] + (dt.getUTCMonth() === 0 ? ' ' + dt.getUTCFullYear() : '');
+          axis.appendChild(tx);
+        }
+      } else {
+        const y0 = Math.ceil(start.getUTCFullYear() / everyY) * everyY;
+        for (let yv = y0; yv <= last.getUTCFullYear(); yv += everyY) {
+          const dt = Date.UTC(yv, 0, 1);
+          if (dt < x0 || dt > x1) continue;
+          const tx = svgEl('text', { x: xs(dt), y: height - 6, 'text-anchor': 'middle' });
+          tx.textContent = yv;
+          axis.appendChild(tx);
+        }
+      }
+      svg.appendChild(axis);
+
+      // line
+      let path = '';
+      pts.forEach((p, i) => { path += (i ? 'L' : 'M') + xs(parseDate(p[0]).getTime()).toFixed(1) + ',' + ys(plotted[i]).toFixed(1); });
+      svg.appendChild(svgEl('path', { class: 'line', d: path }));
+      const lastP = pts[pts.length - 1];
+      svg.appendChild(svgEl('circle', { class: 'end', cx: xs(parseDate(lastP[0]).getTime()), cy: ys(clampV(lastP[1])), r: 4 }));
+
+      // off-the-chart markers
+      [[clipLow, -1], [clipHigh, 1]].forEach(([p, dir]) => {
+        if (!p) return;
+        const cx = xs(parseDate(p[0]).getTime()), cy = ys(clampV(p[1]));
+        svg.appendChild(svgEl('path', { class: 'clipmark', d: 'M' + cx + ',' + (cy + dir * 6) + ' l-5,' + (-dir * 7) + ' l10,0 z' }));
+        const label = fmtPeriod(p[0], t.freq) + ': ' + fmtValue(p[1], d) + ', off the chart';
+        const tx = svgEl('text', { class: 'cliplabel', y: cy + (dir > 0 ? 14 : -10) });
+        const roomRight = width - mR - cx;
+        if (roomRight > label.length * 6.2) { tx.setAttribute('x', cx + 8); tx.setAttribute('text-anchor', 'start'); }
+        else { tx.setAttribute('x', cx - 8); tx.setAttribute('text-anchor', 'end'); }
+        tx.textContent = label;
+        svg.appendChild(tx);
+      });
+
+      // hover layer
+      const xhair = svgEl('line', { class: 'xhair', x1: 0, x2: 0, y1: mT, y2: mT + ih, visibility: 'hidden' });
+      const hdot = svgEl('circle', { class: 'hover-dot', r: 4, visibility: 'hidden' });
+      const hit = svgEl('rect', { class: 'hit', x: mL, y: mT, width: iw, height: ih });
+      svg.appendChild(xhair); svg.appendChild(hdot); svg.appendChild(hit);
+      const times = pts.map(p => parseDate(p[0]).getTime());
+      function show(clientX) {
+        const rect = svg.getBoundingClientRect();
+        const px = (clientX - rect.left) * (width / rect.width);
+        const tv = x0 + (px - mL) / iw * (x1 - x0);
+        let lo_i = 0, hi_i = times.length - 1;
+        while (hi_i - lo_i > 1) { const m = (lo_i + hi_i) >> 1; if (times[m] < tv) lo_i = m; else hi_i = m; }
+        const i = Math.abs(times[lo_i] - tv) < Math.abs(times[hi_i] - tv) ? lo_i : hi_i;
+        const p = pts[i], cx = xs(times[i]), cy = ys(clampV(p[1]));
+        xhair.setAttribute('x1', cx); xhair.setAttribute('x2', cx); xhair.setAttribute('visibility', 'visible');
+        hdot.setAttribute('cx', cx); hdot.setAttribute('cy', cy); hdot.setAttribute('visibility', 'visible');
+        tip.innerHTML = '<b>' + fmtValue(p[1], d) + '</b><br>' + fmtPeriod(p[0], t.freq);
+        tip.style.display = 'block';
+        const sx = cx * (rect.width / width), sy = cy * (rect.height / height);
+        tip.style.left = Math.min(Math.max(sx, 60), rect.width - 60) + 'px';
+        tip.style.top = Math.max(sy - 10, 30) + 'px';
+      }
+      function hide() { xhair.setAttribute('visibility', 'hidden'); hdot.setAttribute('visibility', 'hidden'); tip.style.display = 'none'; }
+      hit.addEventListener('mousemove', e => show(e.clientX));
+      hit.addEventListener('touchstart', e => { show(e.touches[0].clientX); }, { passive: true });
+      hit.addEventListener('touchmove', e => { show(e.touches[0].clientX); }, { passive: true });
+      hit.addEventListener('mouseleave', hide);
+      hit.addEventListener('touchend', hide);
+      box.insertBefore(svg, tip);
+    }
+
+    const head = el('div', { class: 'chart-head' });
+    head.appendChild(el('span', { class: 'range-title', text: 'History' }));
+    const ctl = el('div', { class: 'ranges', role: 'group', 'aria-label': 'Chart range' });
+    RANGES.forEach(r => {
+      const available = !r.years || yearsBetween(obs[0][0], obs[obs.length - 1][0]) >= r.years - 0.5;
+      if (!available) return;
+      const b = el('button', { type: 'button', text: r.label, 'aria-pressed': String(r.key === range) });
+      b.addEventListener('click', () => {
+        range = r.key;
+        ctl.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+        draw();
+      });
+      ctl.appendChild(b);
+    });
+    head.appendChild(ctl);
+
+    const foot = el('div', { class: 'chart-foot' });
+    foot.appendChild(el('span', { class: 'legend', html: '<i></i>Recessions' }));
+    foot.appendChild(el('span', { class: 'legend', text: t.display.unit }));
+
+    const wrapper = document.createDocumentFragment();
+    wrapper.appendChild(head); wrapper.appendChild(box); wrapper.appendChild(foot);
+    if ('ResizeObserver' in window) {
+      let w = 0;
+      new ResizeObserver(() => { const nw = box.clientWidth; if (nw && nw !== w) { w = nw; draw(); } }).observe(box);
+    } else { requestAnimationFrame(draw); }
+    return wrapper;
+  }
+
+  // ---- tile ---------------------------------------------------------------
+  function buildTile(t, data) {
+    const c = t.context, d = t.display;
+    const tile = el('article', { class: 'tile', id: 'i-' + t.id });
+    tile.appendChild(el('h3', { text: t.title }));
+    tile.appendChild(el('p', { class: 'sub', text: t.subtitle }));
+
+    const hv = t.headline ? t.headline.value : c.current.value;
+    const hdate = t.headline ? fmtPeriod(t.headline.date, 'd', true) : fmtPeriod(c.current.date, t.freq, true);
+    const head = el('div', { class: 'headline' });
+    head.appendChild(el('span', { class: 'value', text: fmtValue(hv, d) }));
+    head.appendChild(el('span', { class: 'when', text: hdate }));
+    tile.appendChild(head);
+
+    const cmp = el('p', { class: 'compare' });
+    if (t.headline) cmp.appendChild(el('span', { text: 'Monthly average ' + fmtPeriod(c.current.date, 'm') + ': ' + fmtValue(c.current.value, d) }));
+    else cmp.appendChild(el('span', { text: prevLabel(t.freq) + ': ' + fmtValue(c.previous.value, d) }));
+    if (c.year_ago) cmp.appendChild(el('span', { text: 'A year ago: ' + fmtValue(c.year_ago.value, d) }));
+    tile.appendChild(cmp);
+
+    tile.appendChild(buildStrip(t));
+    tile.appendChild(el('p', { class: 'context', text: contextSentence(t) }));
+
+    tile.appendChild(buildChart(t, data.recessions));
+
+    tile.appendChild(el('p', { class: 'note', text: t.note }));
+    const src = el('p', { class: 'source' });
+    src.appendChild(document.createTextNode('Source: '));
+    src.appendChild(el('a', { href: t.source.url, rel: 'noopener', text: 'FRED ' + t.source.series }));
+    if (t.headline) { src.appendChild(document.createTextNode(' and ')); src.appendChild(el('a', { href: t.headline.url, rel: 'noopener', text: t.headline.series })); }
+    src.appendChild(document.createTextNode(', updated ' + (t.source.last_updated || '').slice(0, 10)));
+    tile.appendChild(src);
+
+    // table view: the last two years of readings
+    const det = el('details', { class: 'table' });
+    det.appendChild(el('summary', { text: 'Show recent readings' }));
+    const tbl = el('table');
+    const n = { m: 24, q: 12, w: 26, d: 24 }[t.freq] || 24;
+    t.observations.slice(-n).reverse().forEach(o => {
+      const tr = el('tr'); tr.appendChild(el('td', { text: fmtPeriod(o[0], t.freq) })); tr.appendChild(el('td', { text: fmtValue(o[1], d) })); tbl.appendChild(tr);
+    });
+    det.appendChild(tbl);
+    tile.appendChild(det);
+    return tile;
+  }
+
+  // ---- page ---------------------------------------------------------------
+  function render(data) {
+    const main = document.getElementById('main');
+    main.innerHTML = '';
+    const gen = new Date(data.generated);
+    document.getElementById('updated').textContent = 'Updated ' + MONTHS_LONG[gen.getMonth()] + ' ' + gen.getDate() + ', ' + gen.getFullYear() +
+      ' from FRED, the Federal Reserve Bank of St. Louis’s data service. Figures refresh automatically as agencies publish.';
+    document.getElementById('attribution').textContent = data.attribution;
+    if (data.sample) {
+      const b = document.getElementById('banner');
+      b.textContent = 'Sample data. These are placeholder figures for layout only; the first scheduled refresh replaces them with real ones.';
+      b.hidden = false;
+    }
+    const sections = [];
+    data.tiles.forEach(t => { if (!sections.includes(t.section)) sections.push(t.section); });
+    const nav = document.getElementById('nav');
+    sections.forEach(s => {
+      const id = 's-' + s.toLowerCase().replace(/[^a-z]+/g, '-');
+      nav.appendChild(el('li', {}, [el('a', { href: '#' + id, text: s })]));
+      const sec = el('section', { class: 'group', id });
+      sec.appendChild(el('h2', { text: s }));
+      const grid = el('div', { class: 'grid' });
+      data.tiles.filter(t => t.section === s).forEach(t => grid.appendChild(buildTile(t, data)));
+      sec.appendChild(grid);
+      main.appendChild(sec);
+    });
+  }
+
+  fetch('data/series.json', { cache: 'no-cache' })
+    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(render)
+    .catch(err => {
+      const main = document.getElementById('main');
+      main.innerHTML = '';
+      main.appendChild(el('p', { class: 'status', text: 'The figures could not be loaded (' + err.message + '). Try again in a few minutes.' }));
+    });
+})();
+</script>
 </body>
 </html>
