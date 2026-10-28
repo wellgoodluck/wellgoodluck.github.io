@@ -1,0 +1,71 @@
+name: Refresh data and publish
+
+# Runs twice each weekday (10:15 and 17:15 Eastern during daylight time, an hour
+# earlier in winter), after the morning data releases and after the afternoon ones.
+# Also runs on any push to main (so edits to the page publish) and on demand.
+on:
+  schedule:
+    - cron: "15 14,21 * * 1-5"
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out the site
+        uses: actions/checkout@v4
+
+      - name: Fetch the latest figures from FRED
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: python3 fetch_fred.py public/data/series.json
+
+      - name: Keep a copy of the figures in the repo
+        # Also keeps the repository "active": GitHub switches off scheduled
+        # workflows in public repos after 60 days without a commit.
+        run: |
+          mkdir -p data
+          cp public/data/series.json data/series.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/series.json
+          if git diff --cached --quiet; then
+            echo "Figures unchanged; nothing to commit."
+          else
+            git commit -m "Refresh figures, $(date -u +%Y-%m-%d)"
+            git pull --rebase
+            git push
+          fi
+
+      - name: Assemble the site
+        run: |
+          cp index.html public/
+          if [ -d articles ]; then cp -r articles public/; fi
+          if [ -d assets ]; then cp -r assets public/; fi
+          ls -R public
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload the site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: public
+
+      - name: Publish
+        id: deployment
+        uses: actions/deploy-pages@v4
