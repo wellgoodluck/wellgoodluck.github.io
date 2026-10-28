@@ -8,11 +8,11 @@ updated: 2026-10-28
 
 ## The number
 
-Consumer prices rose about 28% from 2019 to early 2026, and this year's energy surge has pushed that closer to 30%. Most of it happened in 2021 and 2022, when inflation ran 5–8% a year. The rest of the time, prices crept up at the 2–3% pace people barely notice.
+Consumer prices rose about 28% from 2019 to early 2026, and this year's energy surge has pushed that to about 31%. Most of it happened in 2021 and 2022, when inflation ran 5–8% a year. The rest of the time, prices crept up at the 2–3% pace people barely notice.
 
 That average hides a lot. Eggs are up 84%, ground beef 79%, restaurant meals 51%, electricity 48%, gasoline 47%, rent 41%, auto insurance 32%, and used cars 30%. Chicken wings are cheaper than they were in 2019. If you rent, drive, and eat beef, your personal inflation ran well above the headline figure.
 
-{{chart id=cpi range=10y ov=price_level,fed_target caption="Inflation is the top line: the yearly rate of change. The price level underneath is the thing itself, with 2019 set to 100. The rate came down; the level did not."}}
+{{chart id=cpi range=10y ov=price_level,fed_target height=720 caption="Inflation is the top line: the yearly rate of change. The price level underneath is the thing itself, with 2019 set to 100. The rate came down; the level did not."}}
 
 How we got here is really four overlapping stories, plus a fifth that started this year.
 
@@ -50,7 +50,7 @@ The first three waves explain why prices spiked. This one explains why they stay
 
 **Housing.** Mortgage rates fell below 3% in 2020–21, and remote work let people move. Home prices rose roughly 45% in three years. Rents follow home prices with a lag of a year to eighteen months, and shelter is about a third of the Consumer Price Index. Rent kept inflation above the Fed's target through 2023 and 2024, long after goods prices had settled down.
 
-{{chart id=cpi range=5y ov=core_cpi_on_cpi,wages,real_wages caption="Headline and core inflation against wage growth. Real wages (the green line) fell below zero for two years and have only recently turned positive."}}
+{{chart id=cpi range=5y ov=core_cpi_on_cpi,wages,real_wages caption="Headline and core inflation against wage growth. Real wages (the green line) fell below zero for two years from mid-2021, gained ground from spring 2023 to early 2026, and went negative again this year as energy prices rose."}}
 
 **Wages.** The labor market got very tight in 2021–22, with two job openings for every unemployed person. Average wages rose about 25% cumulatively. That's good for workers, but it flows straight into anything made of labor: restaurants, haircuts, repairs, childcare, medical care. Services inflation was the last piece to cool.
 
@@ -58,7 +58,7 @@ The first three waves explain why prices spiked. This one explains why they stay
 
 ## Why prices never came back down
 
-Inflation is a rate, not a level. When the Fed "beat inflation" in 2023–24, that meant prices stopped rising fast, not that they fell. A 3% inflation rate on top of a 28% increase is still a 28% increase, now growing more slowly.
+Inflation is a rate, not a level. When the Fed "beat inflation" in 2023–24, that meant prices stopped rising fast, not that they fell. A 3% inflation rate on top of a 30% increase is still a 30% increase, now growing more slowly.
 
 Getting prices back to 2019 would require deflation, a sustained fall in the general price level. Outside the Great Depression and a few months in 2008–09, that hasn't happened in modern America, and nobody in charge wants it to. Deflation means wages fall, debts get heavier in real terms, and people delay purchases waiting for lower prices, which deepens the slump. The Fed's job is to hold inflation near 2%, not zero and not negative.
 
@@ -72,7 +72,7 @@ The gap between those two numbers is oil. The war with Iran has disrupted tanker
 
 This is a supply shock, closer to 1973 than to 2021. Money growth is running near its long-run average of about 6% a year, not the 25%-plus of 2020–21. A supply shock raises prices once; it only becomes lasting inflation if it spreads into wages and expectations. There are early signs of that: core prices rose 0.3% in each of the last two months, airfares are up 23% year over year as jet fuel feeds through, and producer prices excluding food and energy are up 5%.
 
-The Fed raised rates in September and meets again October 27–28. Raising rates can't make oil, so the point isn't to lower gas prices. It's to keep the oil shock from turning into the kind of broad inflation that took three years to unwind last time.
+The Fed raised rates in September and held them at 3.75–4% on October 28, with two of twelve members voting for another increase. Raising rates can't make oil, so the point isn't to lower gas prices. It's to keep the oil shock from turning into the kind of broad inflation that took three years to unwind last time.
 
 ## Who's to blame
 

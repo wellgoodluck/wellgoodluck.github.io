@@ -27,7 +27,7 @@ Once you see the pair, the habit is to ask which gauge a claim is reading, and w
 
 Some numbers are levels that happen to be called rates. The unemployment rate is a share of the labor force, a level; its monthly change is the rate of change. Interest rates are prices, so "rates rose" is a change in a level. And for some things the rate is the point: the Fed targets 2% inflation, a speed, because it has decided the odometer is not going back and the best it can do is set the cruise control. Whether that was the right decision is argued below.
 
-{{chart id=cpi range=25y ov=price_level caption="Twenty-five years of both gauges. The top line is the rate; the panel underneath is the level, with 2019 set to 100. Every time the top line came down, the bottom one kept rising, only more slowly."}}
+{{chart id=cpi range=25y ov=price_level height=720 caption="Twenty-five years of both gauges. The top line is the rate; the panel underneath is the level, with 2019 set to 100. Every time the top line came down, the bottom one kept rising, only more slowly."}}
 
 ## What people argue about
 

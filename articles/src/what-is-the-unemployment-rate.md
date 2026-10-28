@@ -41,7 +41,7 @@ Hiring minus separations, mostly. Layoffs raise it quickly; hiring lowers it slo
 
 **Check the other gauges.** U-6 adds people working part time who want full time and people who looked in the past year but not the past month; it runs three to four points above the headline. Prime-age employment-to-population, the share of 25-to-54-year-olds with a job, skips the question of who is "looking" entirely. If the rate falls and the prime-age share doesn't rise, people left the line. If both improve, the party got better. In September 2026: rate 4.2%, U-6 7.6%, prime-age employment 80.7%, a little over a point below its 2000 record.
 
-{{chart id=unemployment range=25y ov=prime_age_epop,fomc_longrun_unrate height=660 caption="The unemployment rate against the Fed's estimate of its normal level, with the prime-age employment-to-population ratio underneath. When the top line falls and the bottom one doesn't rise, people stopped looking rather than found work."}}
+{{chart id=unemployment range=25y ov=prime_age_epop,fomc_longrun_unrate height=720 caption="The unemployment rate against the Fed's estimate of its normal level, with the prime-age employment-to-population ratio underneath. When the top line falls and the bottom one doesn't rise, people stopped looking rather than found work."}}
 
 ## Where the analogy breaks
 

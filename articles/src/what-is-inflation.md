@@ -45,7 +45,7 @@ Three questions before reacting to a headline.
 
 **Which index?** The Fed's 2% target is on a different index, PCE, which weights health care more and shelter less and usually runs a few tenths below the CPI. The almanac shows the CPI because your COLA and most contracts use it; the PCE companion on the chart is what the Fed is aiming at.
 
-{{chart id=cpi range=10y ov=price_level,pce,fed_target caption="The speedometer and the odometer. Inflation (top) is the yearly rate; the price level underneath, with 2019 set to 100, is where prices stand. PCE inflation is the index the 2% target actually applies to."}}
+{{chart id=cpi range=10y ov=price_level,pce,fed_target height=720 caption="The speedometer and the odometer. Inflation (top) is the yearly rate; the price level underneath, with 2019 set to 100, is where prices stand. PCE inflation is the index the 2% target actually applies to."}}
 
 ## Where the analogy breaks
 
