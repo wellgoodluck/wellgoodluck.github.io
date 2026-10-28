@@ -2,12 +2,16 @@ name: Refresh data and publish
 
 # Runs twice each weekday (10:15 and 17:15 Eastern during daylight time, an hour
 # earlier in winter), after the morning data releases and after the afternoon ones.
-# Also runs on any push to main (so edits to the page publish) and on demand.
+# Also runs on demand, and when the fetch script itself changes. Edits to the
+# pages, articles and styles are published by publish.yml without a fetch.
 on:
   schedule:
     - cron: "15 14,21 * * 1-5"
   push:
     branches: [main]
+    paths:
+      - fetch_fred.py
+      - .github/workflows/refresh.yml
   workflow_dispatch:
 
 permissions:
