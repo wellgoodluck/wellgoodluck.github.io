@@ -42,7 +42,7 @@ def inline(s):
     s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
     s = re.sub(r"(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])", r"<em>\1</em>", s)
     s = re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+|[^)\s]+)\)",
-               lambda m: f'<a href="{html.escape(m.group(2), quote=True)}"'
+               lambda m: f'<a href="{m.group(2).replace(chr(34), "&quot;")}"'    # text is already HTML-escaped above
                          + (' rel="noopener"' if m.group(2).startswith("http") else "") + f">{m.group(1)}</a>", s)
     s = s.replace("&#91;", "[")   # the doc export writes a literal bracket this way
     return s
@@ -208,12 +208,22 @@ def render_index(articles):
     page = HEAD.format(title="Articles", desc="Longer reads on the U.S. economy: what the figures show, what is settled and what is argued about.",
                        canonical=f"{SITE}/articles/")
     page = page.replace('<a href="./">Articles</a>', "Articles")
-    page += '<main class="wrap article">\n<h1>Articles</h1>\n<p class="dek">Longer reads on what the figures show, what is settled, and what is argued about.</p>\n<ul class="article-list">\n'
-    for a in articles:
-        page += (f'<li><a href="{a["slug"]}.html"><span class="t">{inline(a["title"])}</span></a>'
-                 + (f'<span class="d">{inline(a["dek"])}</span>' if a.get("dek") else "")
-                 + f'<span class="when">{fmt_date(a["date"])}</span></li>\n')
-    page += "</ul>\n</main>\n" + FOOT
+    page += '<main class="wrap article">\n<h1>Articles</h1>\n<p class="dek">Longer reads on what the figures show, what is settled, and what is argued about.</p>\n'
+    def listing(items):
+        out = '<ul class="article-list">\n'
+        for a in items:
+            out += (f'<li><a href="{a["slug"]}.html"><span class="t">{inline(a["title"])}</span></a>'
+                    + (f'<span class="d">{inline(a["dek"])}</span>' if a.get("dek") else "")
+                    + f'<span class="when">{fmt_date(a["date"])}</span></li>\n')
+        return out + "</ul>\n"
+    timely = [a for a in articles if a.get("kind") != "concept"]
+    concepts = [a for a in articles if a.get("kind") == "concept"]
+    if timely:
+        page += listing(timely)
+    if concepts:
+        page += '<h2 id="plain-words">Plain words</h2>\n<p class="dek">What each number is, how it reaches your household, and where the usual analogies break. Evergreen; updated when the facts change.</p>\n'
+        page += listing(sorted(concepts, key=lambda a: a["title"]))
+    page += "</main>\n" + FOOT
     return page
 
 
