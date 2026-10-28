@@ -1,0 +1,61 @@
+name: Publish site changes
+
+# Publishes edits to the pages, articles, styles and overlays without
+# fetching any data. It assembles the site from the figures the last refresh
+# committed to data/, so an article push publishes in about a minute and a half.
+# The refresh workflow still publishes on its own schedule.
+on:
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - chart.html
+      - assets/**
+      - articles/**
+      - tools/**
+      - data/overlays.json
+      - .github/workflows/publish.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Same group as the refresh workflow, so the two never deploy at once.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out the site
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Assemble the site from the committed figures
+        run: |
+          mkdir -p public/data
+          cp index.html chart.html public/
+          cp data/series.json data/companions.json data/overlays.json public/data/
+          if [ -d assets ]; then cp -r assets public/; fi
+          python3 tools/build_articles.py public
+          ls -R public
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload the site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: public
+
+      - name: Publish
+        id: deployment
+        uses: actions/deploy-pages@v4
