@@ -12,6 +12,8 @@ Each source file starts with a front-matter block:
     dek: One sentence under the title.
     date: 2026-10-24
     updated: 2026-10-28          (optional)
+    kind: concept                (optional: concept = Plain words; path = household path)
+    order: 1                     (optional: sort key within the household paths)
     ---
 
 then Markdown. Supported: # ## ### headings, paragraphs, **bold**, *italic*,
@@ -277,10 +279,14 @@ def render_index(articles):
                     + (f'<span class="d">{inline(a["dek"])}</span>' if a.get("dek") else "")
                     + f'<span class="when">{fmt_date(a["date"])}</span></li>\n')
         return out + "</ul>\n"
-    timely = [a for a in articles if a.get("kind") != "concept"]
+    timely = [a for a in articles if a.get("kind") not in ("concept", "path")]
     concepts = [a for a in articles if a.get("kind") == "concept"]
+    paths = [a for a in articles if a.get("kind") == "path"]
     if timely:
         page += listing(timely)
+    if paths:
+        page += '<h2 id="household-paths">Start from your situation</h2>\n<p class="dek">Which of the numbers reach you, in what order, and how long they take. One page per kind of household.</p>\n'
+        page += listing(sorted(paths, key=lambda a: (a.get("order", "9"), a["title"])))
     if concepts:
         page += '<h2 id="plain-words">Plain words</h2>\n<p class="dek">What each number is, how it reaches your household, and where the usual analogies break. Evergreen; updated when the facts change.</p>\n'
         page += render_map() + "\n"
