@@ -150,6 +150,21 @@
   .panel .clear button { background: none; border: 0; padding: 0; color: var(--ink-2); text-decoration: underline; cursor: pointer; }
 
   .status { padding: 24px 0; color: var(--ink-2); }
+  /* Embed mode (chart.html?...&embed=1): just the chart, for iframes in articles */
+  body.embed { background: var(--surface); }
+  body.embed .masthead, body.embed footer, body.embed .panel, body.embed .actions, body.embed details.table,
+  body.embed .strip, body.embed .compare, body.embed .events-list, body.embed .custom { display: none; }
+  body.embed .layout { display: block; padding: 10px 0 8px; }
+  body.embed .wrap { padding: 0 10px; max-width: none; }
+  body.embed .embed-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 0 0 2px; }
+  body.embed .embed-head h2 { margin: 0; font-size: 17px; font-weight: 700; }
+  body.embed .embed-head a { font-size: 13px; color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--hairline); }
+  body.embed .headline { margin: 0; }
+  body.embed .headline .value { font-size: 24px; }
+  body.embed .context { font-size: 13.5px; color: var(--ink-2); margin: 0; }
+  body.embed .chart-head { margin: 8px 0 4px; }
+  body.embed .chart { border: 0; padding: 0; }
+  body.embed .framing { font-size: 12.5px; padding: 6px 10px; }
   .index { padding: 20px 0 40px; }
   .index h2 { font-size: 20px; margin: 0 0 10px; }
   .index ul { columns: 2; column-gap: 24px; padding-left: 20px; }
@@ -191,7 +206,7 @@
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const COLORS = ['var(--c1)', 'var(--c2)', 'var(--c3)', 'var(--c4)', 'var(--c5)'];
-  const OWN_SCALE = { prime_age_epop: true, continuing_claims: true };   // drawn in a sub-panel, not on the main axis
+  const OWN_SCALE = { prime_age_epop: true, continuing_claims: true, price_level: true };   // drawn in a sub-panel, not on the main axis
 
   // ---- utils --------------------------------------------------------------
   function fmtValue(v, d, opts) {
@@ -276,10 +291,11 @@
   }
 
   // ---- state (mirrored in the URL) ----------------------------------------
-  const state = { id: null, range: DEFAULT_RANGE, from: null, to: null, on: new Set() };
+  const state = { id: null, range: DEFAULT_RANGE, from: null, to: null, on: new Set(), embed: false };
   function readUrl() {
     const q = new URLSearchParams(location.search);
     state.id = q.get('id');
+    state.embed = q.get('embed') === '1';
     if (q.get('range') && RANGES.some(r => r.key === q.get('range'))) state.range = q.get('range');
     const ym = /^\d{4}-(0[1-9]|1[0-2])$/;
     if (ym.test(q.get('from') || '')) { state.from = q.get('from'); state.range = null; }
@@ -292,6 +308,7 @@
     if (state.range && state.range !== DEFAULT_RANGE) q.set('range', state.range);
     if (!state.range) { if (state.from) q.set('from', state.from); if (state.to) q.set('to', state.to); }
     if (state.on.size) q.set('ov', Array.from(state.on).join(','));
+    if (state.embed) q.set('embed', '1');
     history.replaceState(null, '', location.pathname + '?' + q.toString());
   }
 
@@ -354,7 +371,7 @@
       const narrow = width < 560;
       const laneLabelW = eras.length ? Math.max(...eras.map(o => textW(o.lane, 11))) + 10 : 0;
       const mL = Math.max(narrow ? 44 : 52, laneLabelW), mR = 14, mT = evs.length ? (narrow ? 22 : 40) : 12;
-      const plotH = narrow ? 240 : 380, subH = narrow ? 90 : 120, laneH = 18, laneGap = 4;
+      const plotH = state.embed ? (narrow ? 200 : 280) : (narrow ? 240 : 380), subH = narrow ? 90 : 120, laneH = 18, laneGap = 4;
       const xAxisH = 22;
       const subsH = subs.length * (subH + 10);
       const lanesH = eras.length ? eras.length * (laneH + laneGap) + 6 : 0;
@@ -735,7 +752,7 @@
     const comps = (compData.companions || []).filter(c => appliesTo(c, t.id)).map(c => ({
       id: c.id, type: 'series', group: 'Companion series', label: c.label, applies_to: c.for, why: c.why, observations: c.observations, freq: c.freq,
       source: c.source ? { label: 'FRED ' + c.source.series, url: c.source.url } : null,
-      display: OWN_SCALE[c.id] && c.id === 'continuing_claims' ? { scale: 1000, decimals: 0, suffix: 'K' } : OWN_SCALE[c.id] ? { scale: 1, decimals: 1, suffix: '%' } : null,
+      display: c.id === 'continuing_claims' ? { scale: 1000, decimals: 0, suffix: 'K' } : c.id === 'price_level' ? { scale: 1, decimals: 0, suffix: '' } : OWN_SCALE[c.id] ? { scale: 1, decimals: 1, suffix: '%' } : null,
     }));
     const overlays = ovData.overlays.concat(comps);
     const ovById = {}; overlays.forEach(o => ovById[o.id] = o);
@@ -745,6 +762,12 @@
 
     const layout = el('div', { class: 'layout' }), left = el('div', {});
     const c = t.context, d = t.display;
+    if (state.embed) {
+      document.body.classList.add('embed');
+      const q = new URLSearchParams(location.search); q.delete('embed');
+      left.appendChild(el('div', { class: 'embed-head' }, [el('h2', { text: t.title + ': ' + t.subtitle.charAt(0).toLowerCase() + t.subtitle.slice(1) }),
+        el('a', { href: 'chart.html?' + q.toString(), target: '_top', rel: 'noopener', text: 'Open the full chart →' })]));
+    }
     const hv = t.headline ? t.headline.value : c.current.value;
     const hdate = t.headline ? fmtPeriod(t.headline.date, 'd', true) : fmtPeriod(c.current.date, t.freq, true);
     left.appendChild(el('div', { class: 'headline' }, [el('span', { class: 'value', text: fmtValue(hv, d) }), el('span', { class: 'when', text: hdate })]));
@@ -779,7 +802,7 @@
     left.appendChild(table.node);
 
     layout.appendChild(left);
-    layout.appendChild(buildPanel(ctx, chart.redraw));
+    if (!state.embed) layout.appendChild(buildPanel(ctx, chart.redraw));
     main.appendChild(layout);
     writeUrl();
   }

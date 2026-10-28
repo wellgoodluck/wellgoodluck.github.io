@@ -275,6 +275,15 @@ COMPANIONS = [
         "why": "Starts of one-unit homes only. The rest of the total is apartments, which move on a different cycle.",
     },
     {
+        "id": "cpi_index",
+        "label": "Consumer price index",
+        "for": [],
+        "series": "CPIAUCSL",
+        "params": {"observation_start": "1947-01-01"},
+        "freq": "m",
+        "why": "Used to compute the price level.",
+    },
+    {
         "id": "wages",
         "label": "Average hourly earnings, change from a year ago",
         "for": ["cpi", "core_cpi"],
@@ -318,6 +327,13 @@ DERIVED = [
         "for": ["ten_year", "fed_funds"],
         "op": "diff", "a": "ten_year", "b": "fed_funds", "freq": "m",
         "why": "The slope of the curve. Below zero (an inverted curve) has preceded every recession since the 1970s, usually by a year or more.",
+    },
+    {
+        "id": "price_level",
+        "label": "Price level, 2019 average = 100",
+        "for": ["cpi", "core_cpi"],
+        "op": "rebase", "a": "cpi_index", "base_start": "2019-01-01", "base_end": "2019-12-31", "freq": "m",
+        "why": "The index itself rather than its growth rate: what a 2019 dollar's worth of goods costs now. Inflation is the slope of this line; the line itself does not come back down.",
     },
     {
         "id": "real_wages",
@@ -596,6 +612,12 @@ def derive(spec, by_id):
     if spec["op"] == "avg3":
         vals = [v for _, v in a]
         return [(a[i][0], mean(vals[i - 2:i + 1])) for i in range(2, len(a))]
+    if spec["op"] == "rebase":
+        base = [v for d, v in a if spec["base_start"] <= d <= spec["base_end"]]
+        if not base:
+            raise RuntimeError("base window empty")
+        m = mean(base)
+        return [(d, 100.0 * v / m) for d, v in a]
     if spec["op"] == "diff":
         b = by_id.get(spec["b"])
         if not b:

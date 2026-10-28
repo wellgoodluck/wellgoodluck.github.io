@@ -1,0 +1,80 @@
+/* Economy in Context — shared styles for the articles section.
+   The almanac (index.html) and detail page (chart.html) carry their own copies
+   of the same tokens so each stays a single file. Keep the tokens in sync. */
+
+@font-face { font-family: "Public Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("fonts/PublicSans-Regular.woff2") format("woff2"); }
+@font-face { font-family: "Public Sans"; font-weight: 600; font-style: normal; font-display: swap; src: url("fonts/PublicSans-SemiBold.woff2") format("woff2"); }
+@font-face { font-family: "Public Sans"; font-weight: 700; font-style: normal; font-display: swap; src: url("fonts/PublicSans-Bold.woff2") format("woff2"); }
+
+:root {
+  color-scheme: light;
+  --page: #f6f6f3; --surface: #ffffff; --ink: #1b1b1a; --ink-2: #5a5955; --muted: #8a8984;
+  --hairline: #e3e2dc; --grid: #ebeae4; --series: #2a78d6; --focus: #2a78d6;
+  --banner: #fff4d6; --banner-ink: #5a4300; --max: 1120px; --measure: 42em;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --page: #121211; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+    --hairline: #2c2c2a; --grid: #262624; --series: #3987e5; --banner: #3a2f10; --banner-ink: #f3dfa0;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--page); color: var(--ink); font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 17px; line-height: 1.55; }
+a { color: inherit; text-decoration-color: var(--muted); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--ink); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 16px; }
+
+.masthead { padding: 18px 0 14px; border-bottom: 1px solid var(--hairline); }
+.crumb { margin: 0; font-size: 14px; color: var(--ink-2); }
+.crumb a { text-decoration: none; border-bottom: 1px solid var(--hairline); }
+.crumb .sep { color: var(--muted); margin: 0 6px; }
+
+/* Article ------------------------------------------------------------------ */
+.article { padding: 28px 0 40px; }
+.article article, .article > h1, .article > .dek, .article > .article-list { max-width: var(--measure); }
+.article h1 { margin: 0 0 8px; font-size: clamp(28px, 4.4vw, 40px); font-weight: 700; letter-spacing: -0.015em; line-height: 1.12; }
+.article .dek { margin: 0 0 10px; font-size: clamp(18px, 2.2vw, 21px); color: var(--ink-2); line-height: 1.4; }
+.article .dateline { margin: 0 0 28px; font-size: 14px; color: var(--muted); }
+.article .dateline .sep { margin: 0 4px; }
+.article h2 { margin: 36px 0 10px; font-size: 24px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
+.article h3 { margin: 26px 0 6px; font-size: 19px; font-weight: 600; }
+.article h4 { margin: 20px 0 4px; font-size: 17px; font-weight: 600; }
+.article p { margin: 0 0 16px; }
+.article ul, .article ol { margin: 0 0 16px; padding-left: 22px; }
+.article li { margin: 0 0 6px; }
+.article blockquote { margin: 0 0 16px; padding: 2px 0 2px 16px; border-left: 3px solid var(--hairline); color: var(--ink-2); }
+.article hr { border: 0; border-top: 1px solid var(--hairline); margin: 28px 0; }
+.article strong { font-weight: 600; }
+.article table { border-collapse: collapse; width: 100%; margin: 0 0 18px; font-size: 15px; }
+.article th, .article td { padding: 6px 8px; border-top: 1px solid var(--hairline); text-align: left; vertical-align: top; }
+.article th { font-weight: 600; border-top: 0; border-bottom: 1px solid var(--ink-2); }
+.article td.num, .article th.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Live chart embeds: wider than the text column */
+.article figure.chart-embed { margin: 22px 0 26px; width: min(100%, 860px); }
+.article figure.chart-embed iframe { display: block; width: 100%; border: 1px solid var(--hairline); border-radius: 6px; background: var(--surface); }
+.article figure.chart-embed figcaption { margin: 8px 0 0; font-size: 14px; color: var(--ink-2); }
+.article figure.chart-embed figcaption a { white-space: nowrap; }
+
+.article ul.sources { font-size: 15px; color: var(--ink-2); padding-left: 20px; }
+.article ul.sources li { margin: 0 0 4px; }
+.article #sources { font-size: 20px; }
+
+.article .note-box { margin: 0 0 18px; padding: 10px 14px; background: var(--banner); color: var(--banner-ink); border-radius: 4px; font-size: 15px; }
+
+/* Index ---------------------------------------------------------------------- */
+.article-list { list-style: none; margin: 22px 0 0; padding: 0; }
+.article-list li { padding: 16px 0; border-top: 1px solid var(--hairline); display: grid; gap: 2px; }
+.article-list li:last-child { border-bottom: 1px solid var(--hairline); }
+.article-list a { text-decoration: none; }
+.article-list .t { font-size: 21px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.25; }
+.article-list a:hover .t { text-decoration: underline; text-decoration-color: var(--muted); text-underline-offset: 3px; }
+.article-list .d { color: var(--ink-2); font-size: 16px; }
+.article-list .when { color: var(--muted); font-size: 14px; margin-top: 2px; }
+
+footer.about { border-top: 1px solid var(--hairline); padding: 22px 0 44px; font-size: 14px; color: var(--ink-2); }
+footer.about p { max-width: 48em; margin: 0 0 8px; }

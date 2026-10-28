@@ -83,6 +83,7 @@
   .sections-nav { margin: 18px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 15px; }
   .sections-nav a { text-decoration: none; border-bottom: 1px solid var(--hairline); padding-bottom: 1px; }
   .sections-nav a:hover { border-color: var(--ink); }
+  .sections-nav .nav-articles { margin-left: auto; font-weight: 600; }
 
   .banner {
     background: var(--banner); color: var(--banner-ink);
@@ -580,6 +581,7 @@
       sec.appendChild(grid);
       main.appendChild(sec);
     });
+    nav.appendChild(el('li', { class: 'nav-articles' }, [el('a', { href: 'articles/', text: 'Articles' })]));
   }
 
   fetch('data/series.json', { cache: 'no-cache' })
