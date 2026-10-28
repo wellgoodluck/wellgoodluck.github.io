@@ -28,6 +28,10 @@ jobs:
     steps:
       - name: Check out the site
         uses: actions/checkout@v4
+        with:
+          # The tip of main, not the commit that triggered the run: an earlier
+          # run may have committed fresh figures while this one waited its turn.
+          ref: main
 
       - name: Fetch the latest figures from FRED
         env:
@@ -37,6 +41,8 @@ jobs:
       - name: Keep a copy of the figures in the repo
         # Also keeps the repository "active": GitHub switches off scheduled
         # workflows in public repos after 60 days without a commit.
+        # If the commit cannot land (someone pushed meanwhile), the site still
+        # publishes from the files just fetched; the next run catches up.
         run: |
           mkdir -p data
           cp public/data/series.json data/series.json
@@ -49,8 +55,12 @@ jobs:
             echo "Figures unchanged; nothing to commit."
           else
             git commit -m "Refresh figures, $(date -u +%Y-%m-%d)"
-            git pull --rebase
-            git push
+            if ! git pull --rebase; then
+              git rebase --abort
+              echo "Could not rebase onto newer commits; skipping the data commit this run."
+            elif ! git push; then
+              echo "Push rejected; skipping the data commit this run."
+            fi
           fi
 
       - name: Assemble the site
