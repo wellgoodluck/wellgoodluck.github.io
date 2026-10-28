@@ -134,6 +134,8 @@
   /* Chart ----------------------------------------------------------------- */
   .chart-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 18px 0 4px; }
   .chart-head .range-title { font-size: 13px; color: var(--muted); }
+  .chart-head .full { color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--hairline); }
+  .chart-head .full:hover { border-color: var(--ink); }
   .ranges { display: inline-flex; border: 1px solid var(--hairline); border-radius: 4px; overflow: hidden; }
   .ranges button {
     background: transparent; border: 0; padding: 3px 9px; font-size: 13px; cursor: pointer; color: var(--ink-2);
@@ -205,6 +207,7 @@
     <p><strong>The bar underneath</strong> shows where that reading sits in the indicator's typical range: the middle 90 percent of everything it has done since records began. A dot at the far end means today is unusual. A dot in the middle means it is not, whatever the headlines say.</p>
     <p><strong>The 2015–19 average</strong> is the last five full years before the pandemic. It is not a target, just a reasonable stand-in for what "normal" felt like recently.</p>
     <p><strong>The chart</strong> shows the full history, with recessions shaded as dated by the National Bureau of Economic Research. Use the buttons to zoom in.</p>
+    <p><strong>Full view</strong> opens one indicator at full size, with optional overlays: reference lines such as the Fed's target, companion series such as PCE inflation or the U-6 rate, and bands showing who held the presidency and Congress, who chaired the Fed, and when major events happened. The main page stays plain on purpose; the overlays are there for readers who want them, each with its source and selection rule.</p>
     <p><strong>Revisions.</strong> Agencies revise their numbers as more data comes in, sometimes substantially. This page always shows the current figures, so a month's reading here can differ from the headline that was reported at the time.</p>
     <p id="attribution"></p>
     <p>This site has no ads, no tracking and no agenda beyond putting the numbers in context. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
@@ -477,7 +480,7 @@
     }
 
     const head = el('div', { class: 'chart-head' });
-    head.appendChild(el('span', { class: 'range-title', text: 'History' }));
+    head.appendChild(el('span', { class: 'range-title' }, [el('a', { class: 'full', href: 'chart.html?id=' + t.id, text: 'Full view with overlays →' })]));
     const ctl = el('div', { class: 'ranges', role: 'group', 'aria-label': 'Chart range' });
     RANGES.forEach(r => {
       const available = !r.years || yearsBetween(obs[0][0], obs[obs.length - 1][0]) >= r.years - 0.5;

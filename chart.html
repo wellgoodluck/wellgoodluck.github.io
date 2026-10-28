@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Economy in Context</title>
+<meta name="description" content="One U.S. economic indicator at full size, with its full history and optional overlays: reference lines, companion series, who held power, and major events.">
+<meta name="robots" content="index,follow">
+<style>
+  @font-face { font-family: "Public Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("assets/fonts/PublicSans-Regular.woff2") format("woff2"); }
+  @font-face { font-family: "Public Sans"; font-weight: 600; font-style: normal; font-display: swap; src: url("assets/fonts/PublicSans-SemiBold.woff2") format("woff2"); }
+  @font-face { font-family: "Public Sans"; font-weight: 700; font-style: normal; font-display: swap; src: url("assets/fonts/PublicSans-Bold.woff2") format("woff2"); }
+
+  :root {
+    color-scheme: light;
+    --page: #f6f6f3; --surface: #ffffff; --ink: #1b1b1a; --ink-2: #5a5955; --muted: #8a8984;
+    --hairline: #e3e2dc; --grid: #ebeae4; --series: #2a78d6; --recession: rgba(27, 27, 26, 0.07);
+    --focus: #2a78d6; --banner: #fff4d6; --banner-ink: #5a4300; --max: 1120px;
+    --c1: #d9822b; --c2: #2f9e6c; --c3: #8a5bd6; --c4: #2a9db6; --c5: #c23b7a;
+    --ref: #6b6a66;
+    --dem: #4a7fd6; --rep: #d65b5b; --divided: #c9c8c0; --ind: #9c9a93;
+    --era-a: #d8d6cd; --era-b: #c3c1b7; --war: #6e6c66; --qe-up: #8fcf9f; --qe-down: #e5b47e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --page: #121211; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+      --hairline: #2c2c2a; --grid: #262624; --series: #3987e5; --recession: rgba(240, 239, 236, 0.08);
+      --banner: #3a2f10; --banner-ink: #f3dfa0;
+      --c1: #e8954a; --c2: #44b983; --c3: #a07ce6; --c4: #3fb5cf; --c5: #d85a93;
+      --ref: #a09e97; --dem: #5b8fe0; --rep: #e06a6a; --divided: #4a4945; --ind: #6b6a66;
+      --era-a: #3a3935; --era-b: #4a4944; --war: #a5a39b; --qe-up: #3f7f55; --qe-down: #8c6a3b;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--page); color: var(--ink); font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 16px; line-height: 1.5; }
+  a { color: inherit; text-decoration-color: var(--muted); text-underline-offset: 3px; }
+  a:hover { text-decoration-color: var(--ink); }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+  button, input, select { font: inherit; color: inherit; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 16px; }
+
+  .masthead { padding: 22px 0 14px; border-bottom: 1px solid var(--hairline); }
+  .crumb { font-size: 14px; color: var(--ink-2); margin: 0 0 10px; }
+  .crumb a { text-decoration: none; border-bottom: 1px solid var(--hairline); }
+  .masthead h1 { margin: 0; font-size: clamp(26px, 4vw, 36px); font-weight: 700; letter-spacing: -0.015em; line-height: 1.15; }
+  .masthead .sub { margin: 4px 0 0; color: var(--ink-2); font-size: 17px; }
+
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 28px; padding: 22px 0 40px; }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+
+  .headline { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 14px; margin: 0 0 2px; }
+  .headline .value { font-size: 44px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
+  .headline .when { color: var(--muted); font-size: 14px; }
+  .compare { margin: 6px 0 0; color: var(--ink-2); font-size: 14px; }
+  .compare span + span::before { content: "\00a0\00a0|\00a0\00a0"; color: var(--hairline); }
+
+  .strip { margin: 16px 0 2px; max-width: 560px; }
+  .strip svg { display: block; width: 100%; height: 44px; overflow: visible; }
+  .strip .track { stroke: var(--hairline); stroke-width: 6; stroke-linecap: round; }
+  .strip .now { fill: var(--series); stroke: var(--surface); stroke-width: 2; }
+  .strip .avg { stroke: var(--ink-2); stroke-width: 2; }
+  .strip text { font-size: 12px; fill: var(--muted); }
+  .strip text.avg-label { fill: var(--ink-2); }
+  .strip .beyond { fill: var(--series); }
+  .context { margin: 4px 0 0; font-size: 15px; }
+
+  .chart-head { display: flex; align-items: center; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; margin: 22px 0 6px; }
+  .ranges { display: inline-flex; border: 1px solid var(--hairline); border-radius: 4px; overflow: hidden; }
+  .ranges button { background: transparent; border: 0; padding: 4px 10px; font-size: 13px; cursor: pointer; color: var(--ink-2); }
+  .ranges button + button { border-left: 1px solid var(--hairline); }
+  .ranges button:focus-visible { outline-offset: -2px; }
+  .ranges button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+  .custom { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-2); }
+  .custom input { padding: 3px 6px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); font-size: 13px; width: 9.5em; }
+  .custom button { padding: 3px 9px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); font-size: 13px; cursor: pointer; }
+
+  .chart { position: relative; background: var(--surface); border: 1px solid var(--hairline); border-radius: 6px; padding: 8px 8px 4px; }
+  .chart svg { display: block; width: 100%; overflow: visible; }
+  .chart .grid-line { stroke: var(--grid); stroke-width: 1; }
+  .chart .zero { stroke: var(--muted); stroke-width: 1; }
+  .chart .axis text { font-size: 11px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+  .chart .rec { fill: var(--recession); }
+  .chart .line { fill: none; stroke: var(--series); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .chart .cline { fill: none; stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
+  .chart .end { fill: var(--series); stroke: var(--surface); stroke-width: 2; }
+  .chart .ref { stroke: var(--ref); stroke-width: 1; stroke-dasharray: 4 3; }
+  .chart .ref-label { font-size: 11px; fill: var(--ref); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
+  .chart .xhair { stroke: var(--muted); stroke-width: 1; }
+  .chart .hover-dot { stroke: var(--surface); stroke-width: 2; }
+  .chart .hit { fill: transparent; cursor: crosshair; }
+  .chart .clipmark { fill: var(--series); }
+  .chart .cliplabel { font-size: 11px; fill: var(--ink-2); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
+  .chart .ev { stroke: var(--ink-2); stroke-width: 1; }
+  .chart .ev-mark { fill: var(--ink-2); }
+  .chart .ev-label { font-size: 10.5px; fill: var(--ink-2); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
+  .chart .lane-label { font-size: 11px; fill: var(--muted); }
+  .chart .seg-label { font-size: 10.5px; fill: var(--ink); pointer-events: none; }
+  .chart .seg-label.light { fill: #fff; }
+  .chart .seg { stroke: var(--surface); stroke-width: 1; }
+  .chart .sub-title { font-size: 11px; fill: var(--ink-2); }
+  .tip { position: absolute; pointer-events: none; display: none; background: var(--ink); color: var(--surface); font-size: 12px; line-height: 1.35; padding: 6px 9px; border-radius: 4px; white-space: nowrap; transform: translate(-50%, -100%); z-index: 2; max-width: 320px; }
+  .tip b { font-weight: 600; }
+  .tip .k { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; vertical-align: 0; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 8px 0 0; font-size: 12.5px; color: var(--ink-2); }
+  .legend i { display: inline-block; width: 12px; height: 3px; vertical-align: 3px; margin-right: 6px; border-radius: 1px; }
+  .legend i.rec { width: 10px; height: 10px; background: var(--recession); border: 1px solid var(--hairline); vertical-align: -1px; }
+  .legend i.dash { height: 0; border-top: 2px dashed var(--ref); }
+  .framing { margin: 10px 0 0; padding: 8px 12px; background: var(--banner); color: var(--banner-ink); border-radius: 4px; font-size: 13.5px; }
+  .framing[hidden] { display: none; }
+  .events-list { margin: 12px 0 0; font-size: 13.5px; }
+  .events-list h3 { margin: 0 0 4px; font-size: 13px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.04em; }
+  .events-list ul { margin: 0; padding: 0; list-style: none; columns: 2; column-gap: 24px; }
+  @media (max-width: 600px) { .events-list ul { columns: 1; } }
+  .events-list li { break-inside: avoid; padding: 2px 0; }
+  .events-list .d { color: var(--muted); font-variant-numeric: tabular-nums; margin-right: 6px; }
+  .events-list .n { color: var(--ink-2); }
+
+  .note { margin: 14px 0 0; font-size: 13.5px; color: var(--ink-2); }
+  .source { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+  .actions { margin: 14px 0 0; display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 13.5px; }
+  .actions button, .actions a { padding: 4px 10px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); cursor: pointer; text-decoration: none; font-size: 13.5px; }
+
+  details.table { margin: 14px 0 0; font-size: 13px; }
+  details.table summary { cursor: pointer; color: var(--ink-2); }
+  details.table .scroll { max-height: 360px; overflow: auto; margin-top: 8px; border: 1px solid var(--hairline); border-radius: 4px; }
+  details.table table { border-collapse: collapse; width: 100%; }
+  details.table th { text-align: left; font-weight: 600; padding: 5px 10px; position: sticky; top: 0; background: var(--surface); border-bottom: 1px solid var(--hairline); }
+  details.table th.num, details.table td.num { text-align: right; }
+  details.table td { padding: 3px 10px; border-top: 1px solid var(--hairline); font-variant-numeric: tabular-nums; }
+
+  /* Overlays panel */
+  .panel h2 { margin: 0 0 6px; font-size: 16px; font-weight: 700; }
+  .panel p.lead { margin: 0 0 12px; font-size: 13.5px; color: var(--ink-2); }
+  .panel details { border-top: 1px solid var(--hairline); padding: 8px 0; }
+  .panel details:last-child { border-bottom: 1px solid var(--hairline); }
+  .panel summary { cursor: pointer; font-weight: 600; font-size: 14.5px; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  .panel summary::-webkit-details-marker { display: none; }
+  .panel summary::after { content: "+"; color: var(--muted); font-weight: 400; }
+  .panel details[open] summary::after { content: "–"; }
+  .panel summary .count { font-weight: 400; color: var(--muted); font-size: 12.5px; margin-left: 8px; }
+  .opt { display: grid; grid-template-columns: 18px 1fr; gap: 0 8px; margin: 8px 0 0; font-size: 14px; align-items: start; }
+  .opt input { margin: 4px 0 0; }
+  .opt .why { grid-column: 2; font-size: 12.5px; color: var(--muted); margin: 1px 0 0; line-height: 1.35; }
+  .opt .why a { color: var(--muted); }
+  .panel .gnote { margin: 6px 0 0; font-size: 12.5px; color: var(--muted); line-height: 1.35; }
+  .opt .sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+  .panel .clear { margin: 12px 0 0; font-size: 13px; }
+  .panel .clear button { background: none; border: 0; padding: 0; color: var(--ink-2); text-decoration: underline; cursor: pointer; }
+
+  .status { padding: 24px 0; color: var(--ink-2); }
+  .index { padding: 20px 0 40px; }
+  .index h2 { font-size: 20px; margin: 0 0 10px; }
+  .index ul { columns: 2; column-gap: 24px; padding-left: 20px; }
+  footer { border-top: 1px solid var(--hairline); padding: 20px 0 40px; font-size: 13.5px; color: var(--ink-2); }
+  footer p { max-width: 48em; margin: 0 0 8px; }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="crumb"><a href="./">← Economy in Context</a></p>
+    <h1 id="title">Loading…</h1>
+    <p class="sub" id="subtitle"></p>
+  </div>
+</header>
+
+<main class="wrap" id="main">
+  <p class="status" id="status">Loading the figures…</p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>About overlays.</strong> Reference lines and companion series come from the same sources as the main figures. Eras and events are compiled by hand from the primary records linked beside each one, and each overlay states its selection rule. Nothing here is a claim about cause: the overlays show when things happened, and the reader decides what to make of it.</p>
+    <p id="attribution"></p>
+    <p>Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  const RANGES = [
+    { key: '1y', label: '1 yr', years: 1 }, { key: '5y', label: '5 yrs', years: 5 }, { key: '10y', label: '10 yrs', years: 10 },
+    { key: '25y', label: '25 yrs', years: 25 }, { key: '50y', label: '50 yrs', years: 50 }, { key: 'all', label: 'All', years: null },
+  ];
+  const DEFAULT_RANGE = '25y';
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const COLORS = ['var(--c1)', 'var(--c2)', 'var(--c3)', 'var(--c4)', 'var(--c5)'];
+  const OWN_SCALE = { prime_age_epop: true, continuing_claims: true };   // drawn in a sub-panel, not on the main axis
+
+  // ---- utils --------------------------------------------------------------
+  function fmtValue(v, d, opts) {
+    opts = opts || {};
+    const decimals = opts.decimals != null ? opts.decimals : d.decimals;
+    const x = v / (d.scale || 1);
+    const sign = d.signed && x > 0 && !opts.nosign ? '+' : '';
+    const num = Math.abs(x).toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    return (x < 0 ? '−' : sign) + (d.prefix || '') + num + (d.suffix || '');
+  }
+  function parseDate(s) { const p = s.split('-'); return new Date(Date.UTC(+p[0], +p[1] - 1, +(p[2] || 1))); }
+  function iso(dt) { return dt.toISOString().slice(0, 10); }
+  function fmtPeriod(s, freq, long) {
+    const dt = parseDate(s), y = dt.getUTCFullYear(), m = dt.getUTCMonth(), day = dt.getUTCDate();
+    if (freq === 'q') return 'Q' + (Math.floor(m / 3) + 1) + ' ' + y;
+    if (freq === 'm') return (long ? MONTHS_LONG[m] : MONTHS[m]) + ' ' + y;
+    return (long ? MONTHS_LONG[m] : MONTHS[m]) + ' ' + day + ', ' + y;
+  }
+  function fmtDate(s) { return fmtPeriod(s, 'd'); }
+  function periodNoun(freq) { return freq === 'q' ? 'quarters' : freq === 'w' ? 'weeks' : 'months'; }
+  function prevLabel(freq) { return freq === 'q' ? 'Previous quarter' : freq === 'w' ? 'Previous week' : 'Previous month'; }
+  function yearsBetween(a, b) { return (parseDate(b) - parseDate(a)) / (365.25 * 86400000); }
+  function el(tag, attrs, children) {
+    const n = document.createElement(tag);
+    if (attrs) for (const k in attrs) {
+      if (k === 'class') n.className = attrs[k];
+      else if (k === 'text') n.textContent = attrs[k];
+      else if (k === 'html') n.innerHTML = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    }
+    (children || []).forEach(c => n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c));
+    return n;
+  }
+  const SVG = 'http://www.w3.org/2000/svg';
+  function svgEl(tag, attrs) { const n = document.createElementNS(SVG, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); return n; }
+  function textW(s, px) { return s.length * (px || 11) * 0.56; }
+  function median(vals) { const s = vals.slice().sort((a, b) => a - b); const m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; }
+  function niceTicks(lo, hi, count) {
+    const span = hi - lo || 1, rough = span / count, mag = Math.pow(10, Math.floor(Math.log10(rough))), norm = rough / mag;
+    const step = (norm < 1.5 ? 1 : norm < 3.5 ? 2 : norm < 7.5 ? 5 : 10) * mag;
+    const ticks = []; for (let v = Math.ceil(lo / step) * step; v <= hi + step * 1e-9; v += step) ticks.push(+v.toFixed(10));
+    return { ticks, step };
+  }
+  function decimalsFor(step, scale) { const s = step / (scale || 1); return s >= 1 ? 0 : Math.min(3, Math.ceil(-Math.log10(s))); }
+  function appliesTo(o, id) { return o.applies_to === 'all' || (Array.isArray(o.applies_to) && o.applies_to.includes(id)) || (Array.isArray(o.for) && o.for.includes(id)); }
+
+  // ---- context sentence & strip (same logic as the almanac page) ----------
+  function contextSentence(t) {
+    const c = t.context, noun = periodNoun(t.freq), since = parseDate(c.since).getUTCFullYear(), parts = [];
+    const pct = c.percentile_below;
+    parts.push(pct >= 50 ? 'Higher than ' + Math.round(pct) + '% of ' + noun + ' since ' + since + '.' : 'Lower than ' + Math.round(100 - pct) + '% of ' + noun + ' since ' + since + '.');
+    const cur = c.current.value, prev = c.previous.value;
+    if (cur > prev) { if (c.highest_since == null) parts.push('The highest on record.'); else if (yearsBetween(c.highest_since, c.current.date) >= 1) parts.push('Highest since ' + fmtPeriod(c.highest_since, t.freq) + '.'); }
+    else if (cur < prev) { if (c.lowest_since == null) parts.push('The lowest on record.'); else if (yearsBetween(c.lowest_since, c.current.date) >= 1) parts.push('Lowest since ' + fmtPeriod(c.lowest_since, t.freq) + '.'); }
+    return parts.join(' ');
+  }
+  function buildStrip(t) {
+    const c = t.context, d = t.display, lo = c.typical_low, hi = c.typical_high, cur = c.current.value, avg = c.baseline_2015_19;
+    const box = el('div', { class: 'strip' });
+    function draw() {
+      const old = box.querySelector('svg'); if (old) old.remove();
+      const W = Math.max(200, box.clientWidth || 480), H = 44, padL = 8, padR = 8, y = 16, span = Math.max(hi - lo, 1e-9);
+      const pos = v => padL + Math.min(1, Math.max(0, (v - lo) / span)) * (W - padL - padR);
+      const svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H, width: W, height: H, role: 'img', 'aria-label': 'Current reading ' + fmtValue(cur, d) + ' within a typical range of ' + fmtValue(lo, d) + ' to ' + fmtValue(hi, d) });
+      svg.appendChild(svgEl('line', { class: 'track', x1: padL, x2: W - padR, y1: y, y2: y }));
+      if (avg != null) {
+        const ax = pos(avg); svg.appendChild(svgEl('line', { class: 'avg', x1: ax, x2: ax, y1: y - 9, y2: y + 9 }));
+        const label = '2015–19 avg ' + fmtValue(avg, d), approxW = label.length * 6.4; let anchor = 'middle', lx = ax;
+        if (ax - approxW / 2 < 0) { anchor = 'start'; lx = Math.max(ax - 4, 0); } else if (ax + approxW / 2 > W) { anchor = 'end'; lx = Math.min(ax + 4, W); }
+        const lab = svgEl('text', { class: 'avg-label', x: lx, y: y + 24, 'text-anchor': anchor }); lab.textContent = label; svg.appendChild(lab);
+      }
+      if (cur < lo) svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (padL - 4) + ',' + y + ' l10,-7 l0,14 z' }));
+      else if (cur > hi) svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (W - padR + 4) + ',' + y + ' l-10,-7 l0,14 z' }));
+      else svg.appendChild(svgEl('circle', { class: 'now', cx: pos(cur), cy: y, r: 7 }));
+      const l1 = svgEl('text', { x: padL, y: y - 12, 'text-anchor': 'start' }); l1.textContent = fmtValue(lo, d);
+      const l2 = svgEl('text', { x: W - padR, y: y - 12, 'text-anchor': 'end' }); l2.textContent = fmtValue(hi, d);
+      const l3 = svgEl('text', { x: W / 2, y: y - 12, 'text-anchor': 'middle' }); l3.textContent = 'typical range';
+      svg.appendChild(l1); svg.appendChild(l2); svg.appendChild(l3); box.appendChild(svg);
+    }
+    if ('ResizeObserver' in window) { let w = 0; new ResizeObserver(() => { const nw = box.clientWidth; if (nw && nw !== w) { w = nw; draw(); } }).observe(box); } else requestAnimationFrame(draw);
+    return box;
+  }
+
+  // ---- state (mirrored in the URL) ----------------------------------------
+  const state = { id: null, range: DEFAULT_RANGE, from: null, to: null, on: new Set() };
+  function readUrl() {
+    const q = new URLSearchParams(location.search);
+    state.id = q.get('id');
+    if (q.get('range') && RANGES.some(r => r.key === q.get('range'))) state.range = q.get('range');
+    const ym = /^\d{4}-(0[1-9]|1[0-2])$/;
+    if (ym.test(q.get('from') || '')) { state.from = q.get('from'); state.range = null; }
+    if (ym.test(q.get('to') || '')) { state.to = q.get('to'); state.range = null; }
+    (q.get('ov') || '').split(',').filter(Boolean).forEach(x => state.on.add(x));
+  }
+  function writeUrl() {
+    const q = new URLSearchParams();
+    q.set('id', state.id);
+    if (state.range && state.range !== DEFAULT_RANGE) q.set('range', state.range);
+    if (!state.range) { if (state.from) q.set('from', state.from); if (state.to) q.set('to', state.to); }
+    if (state.on.size) q.set('ov', Array.from(state.on).join(','));
+    history.replaceState(null, '', location.pathname + '?' + q.toString());
+  }
+
+  // ---- derived overlays ---------------------------------------------------
+  function unifiedSegments(ovById) {
+    const lanes = ['president', 'senate', 'house'].map(k => ovById[k]).filter(Boolean);
+    if (lanes.length < 3) return [];
+    const cuts = new Set();
+    lanes.forEach(l => l.segments.forEach(s => { cuts.add(s.start); if (s.end) cuts.add(s.end); }));
+    const dates = Array.from(cuts).sort();
+    const partyAt = (lane, d) => { const s = lane.segments.find(s => s.start <= d && (!s.end || d < s.end)); return s ? s.party : null; };
+    const out = [];
+    const start0 = lanes.map(l => l.segments[0].start).sort().pop();   // all three lanes must have data
+    for (let i = 0; i < dates.length; i++) {
+      const d = dates[i]; if (d < start0) continue;
+      const parties = lanes.map(l => partyAt(l, d)); if (parties.some(p => !p)) continue;
+      const unified = parties.every(p => p === parties[0]);
+      const seg = { start: d, end: dates[i + 1] || null, party: unified ? parties[0] : 'X', label: unified ? 'Unified ' + parties[0] : 'Divided' };
+      const prev = out[out.length - 1];
+      if (prev && prev.party === seg.party) prev.end = seg.end; else out.push(seg);
+    }
+    return out;
+  }
+
+  // ---- the chart ------------------------------------------------------------
+  function buildChart(ctx) {
+    const { tile: t, data, companions, overlays } = ctx;
+    const box = el('div', { class: 'chart' }), tip = el('div', { class: 'tip' }); box.appendChild(tip);
+    const obs = t.observations, d = t.display;
+    const legend = el('div', { class: 'legend' }), framing = el('div', { class: 'framing', hidden: '' }), evList = el('div', { class: 'events-list' });
+    let colorIdx = {};
+
+    function activeOverlays() { return overlays.filter(o => state.on.has(o.id) && appliesTo(o, t.id) && (!o.requires || state.on.has(o.requires))); }
+    function colorFor(id) { if (!(id in colorIdx)) colorIdx[id] = Object.keys(colorIdx).length; return COLORS[colorIdx[id] % COLORS.length]; }
+
+    function window_() {
+      const last = parseDate(obs[obs.length - 1][0]);
+      let start, end = last;
+      if (state.range) { const r = RANGES.find(x => x.key === state.range); start = r.years ? new Date(Date.UTC(last.getUTCFullYear() - r.years, last.getUTCMonth(), last.getUTCDate())) : parseDate(obs[0][0]); }
+      else {
+        start = state.from ? parseDate(state.from + '-01') : parseDate(obs[0][0]);
+        if (state.to) { end = parseDate(state.to + '-01'); end.setUTCMonth(end.getUTCMonth() + 1); end.setUTCDate(0); if (end > last) end = last; }
+        if (end <= start) { start = parseDate(obs[0][0]); end = last; }
+      }
+      return { start, end };
+    }
+
+    function draw() {
+      const old = box.querySelector('svg'); if (old) old.remove();
+      colorIdx = {};
+      const act = activeOverlays();
+      const lines = act.filter(o => o.type === 'line' || o.type === 'stat');
+      const comps = act.filter(o => o.type === 'series' && !OWN_SCALE[o.id]);
+      const subs = act.filter(o => o.type === 'series' && OWN_SCALE[o.id]);
+      const eras = act.filter(o => o.type === 'era');
+      const evs = act.filter(o => o.type === 'events');
+      comps.concat(subs).forEach(o => colorFor(o.id));   // fixed order, whether or not a series has points in view
+
+      const width = Math.max(300, box.clientWidth - 16 || 700);
+      const narrow = width < 560;
+      const laneLabelW = eras.length ? Math.max(...eras.map(o => textW(o.lane, 11))) + 10 : 0;
+      const mL = Math.max(narrow ? 44 : 52, laneLabelW), mR = 14, mT = evs.length ? (narrow ? 22 : 40) : 12;
+      const plotH = narrow ? 240 : 380, subH = narrow ? 90 : 120, laneH = 18, laneGap = 4;
+      const xAxisH = 22;
+      const subsH = subs.length * (subH + 10);
+      const lanesH = eras.length ? eras.length * (laneH + laneGap) + 6 : 0;
+      const height = mT + plotH + xAxisH + subsH + lanesH + 4;
+      const iw = width - mL - mR, ih = plotH;
+      const { start, end } = window_();
+      const x0 = start.getTime(), x1 = end.getTime();
+      const xs = v => mL + (v - x0) / Math.max(1, x1 - x0) * iw;
+      const inWin = o => { const tm = parseDate(o[0]).getTime(); return tm >= x0 && tm <= x1; };
+      const pts = obs.filter(inWin);
+      if (!pts.length) { box.insertBefore(svgEl('svg', { viewBox: '0 0 ' + width + ' 40', width, height: 40 }), tip); return; }
+
+      const clip = d.clip || null, clampV = v => clip ? Math.min(clip[1], Math.max(clip[0], v)) : v;
+      const plotted = pts.map(p => clampV(p[1]));
+      let lo = Math.min(...plotted), hi = Math.max(...plotted);
+      const compPts = comps.map(o => ({ o, pts: o.observations.filter(inWin) }));
+      compPts.forEach(c => c.pts.forEach(p => { const v = clampV(p[1]); if (v < lo) lo = v; if (v > hi) hi = v; }));
+      const lineVals = lines.map(o => ({ o, v: o.type === 'line' ? o.value : o.stat === 'median' ? ctx.median : t.context.baseline_2015_19 })).filter(x => x.v != null);
+      lineVals.forEach(x => { if (x.v < lo) lo = x.v; if (x.v > hi) hi = x.v; });
+      if (lo === hi) { lo -= 1; hi += 1; }
+      const pad = (hi - lo) * 0.08; lo -= pad; hi += pad;
+      const ys = v => mT + (hi - v) / (hi - lo) * ih;
+
+      const svg = svgEl('svg', { viewBox: '0 0 ' + width + ' ' + height, width, height, role: 'img', 'aria-label': t.title + ' history' });
+
+      // recessions (main plot and sub-panels)
+      const recRects = [];
+      (data.recessions || []).forEach(s => {
+        const a = Math.max(parseDate(s[0]).getTime(), x0);
+        const bEnd = parseDate(s[1]); bEnd.setUTCMonth(bEnd.getUTCMonth() + 1);
+        const b = Math.min(bEnd.getTime(), x1); if (b <= a) return;
+        recRects.push([xs(a), Math.max(1, xs(b) - xs(a))]);
+        svg.appendChild(svgEl('rect', { class: 'rec', x: xs(a), y: mT, width: Math.max(1, xs(b) - xs(a)), height: ih }));
+      });
+
+      // y grid
+      const { ticks, step } = niceTicks(lo, hi, narrow ? 4 : 6), dec = decimalsFor(step, d.scale), axis = svgEl('g', { class: 'axis' });
+      ticks.forEach(v => {
+        svg.appendChild(svgEl('line', { class: v === 0 ? 'zero' : 'grid-line', x1: mL, x2: width - mR, y1: ys(v), y2: ys(v) }));
+        const tx = svgEl('text', { x: mL - 6, y: ys(v) + 4, 'text-anchor': 'end' }); tx.textContent = fmtValue(v, d, { decimals: dec, nosign: true }); axis.appendChild(tx);
+      });
+      // x labels
+      const yrs = (x1 - x0) / (365.25 * 86400000);
+      const everyY = yrs <= 1.5 ? 0 : yrs <= 6 ? 1 : yrs <= 12 ? 2 : yrs <= 30 ? 5 : narrow ? 20 : 10;
+      const xLabelY = mT + ih + 16;
+      if (everyY === 0) {
+        for (let dt = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, 1)); dt <= end; dt.setUTCMonth(dt.getUTCMonth() + (narrow ? 3 : 2))) {
+          const tx = svgEl('text', { x: xs(dt.getTime()), y: xLabelY, 'text-anchor': 'middle' }); tx.textContent = MONTHS[dt.getUTCMonth()] + (dt.getUTCMonth() === 0 ? ' ' + dt.getUTCFullYear() : ''); axis.appendChild(tx);
+        }
+      } else {
+        const y0 = Math.ceil(start.getUTCFullYear() / everyY) * everyY;
+        for (let yv = y0; yv <= end.getUTCFullYear(); yv += everyY) { const dt = Date.UTC(yv, 0, 1); if (dt < x0 || dt > x1) continue; const tx = svgEl('text', { x: xs(dt), y: xLabelY, 'text-anchor': 'middle' }); tx.textContent = yv; axis.appendChild(tx); }
+      }
+      svg.appendChild(axis);
+
+      // reference lines
+      const placed = [];
+      lineVals.slice().sort((a, b) => b.v - a.v).forEach(x => {
+        const y = ys(x.v);
+        svg.appendChild(svgEl('line', { class: 'ref', x1: mL, x2: width - mR, y1: y, y2: y }));
+        let ly = y - 4;                            // above the line; below it if that collides with a label already placed
+        if (placed.some(p => Math.abs(p - ly) < 12)) ly = y + 12;
+        if (placed.some(p => Math.abs(p - ly) < 12)) ly = y + 24;
+        placed.push(ly);
+        const lab = svgEl('text', { class: 'ref-label', x: width - mR - 2, y: ly, 'text-anchor': 'end' });
+        lab.textContent = x.o.label.replace(/\s*\(.*\)$/, '') + ' ' + fmtValue(x.v, d); svg.appendChild(lab);
+      });
+
+      // companion lines
+      compPts.forEach(c => {
+        if (!c.pts.length) return;
+        let p = ''; c.pts.forEach((o, i) => { p += (i ? 'L' : 'M') + xs(parseDate(o[0]).getTime()).toFixed(1) + ',' + ys(clampV(o[1])).toFixed(1); });
+        svg.appendChild(svgEl('path', { class: 'cline', d: p, stroke: colorFor(c.o.id) }));
+      });
+
+      // the indicator
+      let path = ''; pts.forEach((p, i) => { path += (i ? 'L' : 'M') + xs(parseDate(p[0]).getTime()).toFixed(1) + ',' + ys(plotted[i]).toFixed(1); });
+      svg.appendChild(svgEl('path', { class: 'line', d: path }));
+      const lastP = pts[pts.length - 1];
+      if (lastP[0] === obs[obs.length - 1][0]) svg.appendChild(svgEl('circle', { class: 'end', cx: xs(parseDate(lastP[0]).getTime()), cy: ys(clampV(lastP[1])), r: 4 }));
+
+      // clipped extremes
+      function clipMarks(series, freq, color, who) {
+        if (!clip) return;
+        let clipLow = null, clipHigh = null;
+        series.forEach(p => { if (p[1] < clip[0] && (!clipLow || p[1] < clipLow[1])) clipLow = p; if (p[1] > clip[1] && (!clipHigh || p[1] > clipHigh[1])) clipHigh = p; });
+        [[clipLow, -1], [clipHigh, 1]].forEach(([p, dir]) => {
+          if (!p) return;
+          const cx = xs(parseDate(p[0]).getTime()), cy = ys(clampV(p[1]));
+          svg.appendChild(svgEl('path', { class: 'clipmark', fill: color, d: 'M' + cx + ',' + (cy + dir * 6) + ' l-5,' + (-dir * 7) + ' l10,0 z' }));
+          const label = (who ? who + ', ' : '') + fmtPeriod(p[0], freq) + ': ' + fmtValue(p[1], d) + ', off the chart';
+          const tx = svgEl('text', { class: 'cliplabel', y: cy + (dir > 0 ? 14 : -10) });
+          if (width - mR - cx > label.length * 6.2) { tx.setAttribute('x', cx + 8); tx.setAttribute('text-anchor', 'start'); } else { tx.setAttribute('x', cx - 8); tx.setAttribute('text-anchor', 'end'); }
+          tx.textContent = label; svg.appendChild(tx);
+        });
+      }
+      clipMarks(pts, t.freq, 'var(--series)', '');
+      compPts.forEach(c => clipMarks(c.pts, c.o.freq, colorFor(c.o.id), c.o.label.length > 26 ? c.o.label.slice(0, 24) + '…' : c.o.label));
+
+      // events: a tick at the top, a hairline through the plot, labels when there is room
+      const evItems = [];
+      evs.forEach(o => o.items.forEach(it => { const tm = parseDate(it.date).getTime(); if (tm >= x0 && tm <= x1) evItems.push({ ...it, tm, group: o.label }); }));
+      evItems.sort((a, b) => a.tm - b.tm);
+      const rowEnd = [-Infinity, -Infinity];   // right edge of the last label placed on each row
+      evItems.forEach(it => {
+        const x = xs(it.tm);
+        svg.appendChild(svgEl('line', { class: 'ev', x1: x, x2: x, y1: mT - 2, y2: mT + ih, 'stroke-dasharray': '2 3' }));
+        svg.appendChild(svgEl('path', { class: 'ev-mark', d: 'M' + x + ',' + (mT - 2) + ' l-4,-6 l8,0 z' }));
+        if (narrow) return;
+        const text = it.label.length > 30 ? it.label.slice(0, 28) + '…' : it.label, w = textW(text, 10.5);
+        let anchor = 'middle', left = x - w / 2;
+        if (left < mL) { anchor = 'start'; left = x; } else if (x + w / 2 > width - mR) { anchor = 'end'; left = x - w; }
+        const row = rowEnd[0] < left - 6 ? 0 : rowEnd[1] < left - 6 ? 1 : -1;
+        if (row < 0) return;                       // no room: the tooltip and the list below still name it
+        rowEnd[row] = left + w;
+        const lab = svgEl('text', { class: 'ev-label', x, y: mT - 11 - (row ? 13 : 0), 'text-anchor': anchor });
+        lab.textContent = text; svg.appendChild(lab);
+      });
+
+      // sub-panels (own scale)
+      let cursorY = mT + ih + xAxisH + 4;
+      let lastSubBottom = 0;
+      subs.forEach(o => {
+        const sp = o.observations.filter(inWin); if (!sp.length) { cursorY += subH + 10; return; }
+        const vals = sp.map(p => p[1]); let slo = Math.min(...vals), shi = Math.max(...vals); if (slo === shi) { slo -= 1; shi += 1; }
+        const spad = (shi - slo) * 0.1; slo -= spad; shi += spad;
+        const top = cursorY + 12, sys_ = v => top + (shi - v) / (shi - slo) * (subH - 12);
+        const sdisp = o.display || d;
+        recRects.forEach(r => svg.appendChild(svgEl('rect', { class: 'rec', x: r[0], y: top, width: r[1], height: subH - 12 })));
+        const st = niceTicks(slo, shi, 3), sdec = decimalsFor(st.step, sdisp.scale), sax = svgEl('g', { class: 'axis' });
+        st.ticks.forEach(v => { svg.appendChild(svgEl('line', { class: 'grid-line', x1: mL, x2: width - mR, y1: sys_(v), y2: sys_(v) })); const tx = svgEl('text', { x: mL - 6, y: sys_(v) + 4, 'text-anchor': 'end' }); tx.textContent = fmtValue(v, sdisp, { decimals: sdec, nosign: true }); sax.appendChild(tx); });
+        svg.appendChild(sax);
+        const title = svgEl('text', { class: 'sub-title', x: mL, y: cursorY + 6 }); title.textContent = o.label; svg.appendChild(title);
+        let p = ''; sp.forEach((q, i) => { p += (i ? 'L' : 'M') + xs(parseDate(q[0]).getTime()).toFixed(1) + ',' + sys_(q[1]).toFixed(1); });
+        svg.appendChild(svgEl('path', { class: 'cline', d: p, stroke: colorFor(o.id) }));
+        lastSubBottom = top + subH - 12;
+        cursorY += subH + 10;
+      });
+
+      // era lanes
+      const laneTop = cursorY + (eras.length ? 2 : 0);
+      eras.forEach((o, li) => {
+        const y = laneTop + li * (laneH + laneGap);
+        const segs = o.id === 'unified' ? unifiedSegments(ctx.ovById) : o.segments;
+        const lab = svgEl('text', { class: 'lane-label', x: mL - 6, y: y + laneH - 5, 'text-anchor': 'end' }); lab.textContent = o.lane; svg.appendChild(lab);
+        segs.forEach(s => {
+          const a = Math.max(parseDate(s.start).getTime(), x0), b = Math.min(s.end ? parseDate(s.end).getTime() : x1, x1); if (b <= a) return;
+          const w = xs(b) - xs(a);
+          let fill = 'var(--era-a)', light = false;
+          if (s.party === 'D') { fill = 'var(--dem)'; light = true; } else if (s.party === 'R') { fill = 'var(--rep)'; light = true; } else if (s.party === 'X') fill = 'var(--divided)';
+          else if (o.id === 'wars') { fill = 'var(--war)'; light = true; }
+          else if (s.kind === 'expand') fill = 'var(--qe-up)'; else if (s.kind === 'shrink') fill = 'var(--qe-down)';
+          else fill = (segs.indexOf(s) % 2) ? 'var(--era-b)' : 'var(--era-a)';
+          const r = svgEl('rect', { class: 'seg', x: xs(a), y, width: Math.max(1, w), height: laneH, fill });
+          r.appendChild(svgEl('title', {})); r.querySelector('title').textContent = (s.label || (s.party === 'D' ? 'Democratic' : s.party === 'R' ? 'Republican' : '')) + ': ' + fmtDate(s.start) + ' – ' + (s.end ? fmtDate(s.end) : 'present') + (s.note ? '. ' + s.note : '');
+          svg.appendChild(r);
+          const text = s.label || (s.party === 'D' ? 'D' : s.party === 'R' ? 'R' : '');
+          if (text && w > textW(text, 10.5) + 8) { const tl = svgEl('text', { class: 'seg-label' + (light ? ' light' : ''), x: xs(a) + w / 2, y: y + laneH - 5, 'text-anchor': 'middle' }); tl.textContent = text; svg.appendChild(tl); }
+          else if (text && w > 14 && text.length > 1 && (s.party === 'D' || s.party === 'R') && w > 12) { const tl = svgEl('text', { class: 'seg-label' + (light ? ' light' : ''), x: xs(a) + w / 2, y: y + laneH - 5, 'text-anchor': 'middle' }); tl.textContent = s.party; svg.appendChild(tl); }
+        });
+      });
+
+      // hover
+      const xhair = svgEl('line', { class: 'xhair', x1: 0, x2: 0, y1: mT, y2: lastSubBottom || (mT + ih), visibility: 'hidden' });
+      const dots = [svgEl('circle', { class: 'hover-dot', r: 4, visibility: 'hidden', fill: 'var(--series)' })];
+      compPts.forEach(c => dots.push(svgEl('circle', { class: 'hover-dot', r: 3.5, visibility: 'hidden', fill: colorFor(c.o.id) })));
+      const hit = svgEl('rect', { class: 'hit', x: mL, y: mT, width: iw, height: ih + xAxisH + subsH });
+      svg.appendChild(xhair); dots.forEach(x => svg.appendChild(x)); svg.appendChild(hit);
+      const times = pts.map(p => parseDate(p[0]).getTime());
+      function nearest(arr, tv, atOrBefore) {
+        let lo_i = 0, hi_i = arr.length - 1; while (hi_i - lo_i > 1) { const m = (lo_i + hi_i) >> 1; if (arr[m] < tv) lo_i = m; else hi_i = m; }
+        if (atOrBefore) return arr[hi_i] <= tv ? hi_i : lo_i;
+        return Math.abs(arr[lo_i] - tv) < Math.abs(arr[hi_i] - tv) ? lo_i : hi_i;
+      }
+      const compTimes = compPts.map(c => c.pts.map(p => parseDate(p[0]).getTime()));
+      const subTimes = subs.map(o => { const sp = o.observations.filter(inWin); return { o, sp, times: sp.map(p => parseDate(p[0]).getTime()) }; });
+      function show(clientX) {
+        const rect = svg.getBoundingClientRect(), px = (clientX - rect.left) * (width / rect.width), tv = x0 + (px - mL) / iw * (x1 - x0);
+        const i = nearest(times, tv), p = pts[i], cx = xs(times[i]), cy = ys(clampV(p[1]));
+        xhair.setAttribute('x1', cx); xhair.setAttribute('x2', cx); xhair.setAttribute('visibility', 'visible');
+        dots[0].setAttribute('cx', cx); dots[0].setAttribute('cy', cy); dots[0].setAttribute('visibility', 'visible');
+        let html = '<b>' + fmtValue(p[1], d) + '</b> ' + fmtPeriod(p[0], t.freq);
+        compPts.forEach((c, k) => {
+          if (!c.pts.length) { dots[k + 1].setAttribute('visibility', 'hidden'); return; }
+          const q_ = c.o.freq === 'q', j = nearest(compTimes[k], times[i], q_); if (Math.abs(compTimes[k][j] - times[i]) > (q_ ? 100 : 45) * 86400000) { dots[k + 1].setAttribute('visibility', 'hidden'); return; }
+          const q = c.pts[j]; dots[k + 1].setAttribute('cx', xs(compTimes[k][j])); dots[k + 1].setAttribute('cy', ys(clampV(q[1]))); dots[k + 1].setAttribute('visibility', 'visible');
+          html += '<br><span class="k" style="background:' + colorFor(c.o.id) + '"></span>' + fmtValue(q[1], c.o.display || d) + ' ' + shortLabel(c.o.label);
+        });
+        subTimes.forEach(s => { if (!s.sp.length) return; const j = nearest(s.times, times[i]); if (Math.abs(s.times[j] - times[i]) > 45 * 86400000) return; html += '<br><span class="k" style="background:' + colorFor(s.o.id) + '"></span>' + fmtValue(s.sp[j][1], s.o.display || d) + ' ' + shortLabel(s.o.label); });
+        const near = evItems.filter(e => Math.abs(e.tm - times[i]) <= 20 * 86400000);
+        near.forEach(e => { html += '<br>▲ ' + e.label + ' (' + fmtDate(e.date) + ')'; });
+        tip.innerHTML = html; tip.style.display = 'block';
+        const sx = cx * (rect.width / width), sy = cy * (rect.height / height);
+        tip.style.left = Math.min(Math.max(sx, 90), rect.width - 90) + 'px'; tip.style.top = Math.max(sy - 10 + 8, 36) + 'px';
+      }
+      function hide() { xhair.setAttribute('visibility', 'hidden'); dots.forEach(x => x.setAttribute('visibility', 'hidden')); tip.style.display = 'none'; }
+      hit.addEventListener('mousemove', e => show(e.clientX));
+      hit.addEventListener('touchstart', e => show(e.touches[0].clientX), { passive: true });
+      hit.addEventListener('touchmove', e => show(e.touches[0].clientX), { passive: true });
+      hit.addEventListener('mouseleave', hide); hit.addEventListener('touchend', hide);
+      box.insertBefore(svg, tip);
+
+      // legend
+      legend.innerHTML = '';
+      legend.appendChild(el('span', {}, [el('i', { style: 'background: var(--series)' }), t.title + ' (' + d.unit + ')']));
+      compPts.concat(subs.map(o => ({ o }))).forEach(c => legend.appendChild(el('span', {}, [el('i', { style: 'background:' + colorFor(c.o.id) }), shortLabel(c.o.label)])));
+      lineVals.forEach(x => legend.appendChild(el('span', {}, [el('i', { class: 'dash' }), x.o.label])));
+      legend.appendChild(el('span', {}, [el('i', { class: 'rec' }), 'Recessions (NBER)']));
+      if (evs.length) legend.appendChild(el('span', { text: '▲ ' + evs.map(o => o.label).join(', ') }));
+      // framing
+      const pol = act.filter(o => o.political);
+      if (pol.length) { framing.textContent = ctx.politicalNote; framing.hidden = false; } else framing.hidden = true;
+      // event list for the window
+      evList.innerHTML = '';
+      if (evItems.length) {
+        evList.appendChild(el('h3', { text: 'Events in view' }));
+        const ul = el('ul');
+        evItems.forEach(e => ul.appendChild(el('li', {}, [el('span', { class: 'd', text: fmtDate(e.date) }), e.label, e.note ? el('span', { class: 'n', text: ' — ' + e.note }) : ''])));
+        evList.appendChild(ul);
+      }
+      ctx.onWindow && ctx.onWindow(start, end);
+    }
+    function shortLabel(s) { return s.length > 60 ? s.slice(0, 58) + '…' : s; }
+
+    // controls
+    const head = el('div', { class: 'chart-head' });
+    const ctl = el('div', { class: 'ranges', role: 'group', 'aria-label': 'Chart range' });
+    const buttons = [];
+    RANGES.forEach(r => {
+      if (r.years && yearsBetween(obs[0][0], obs[obs.length - 1][0]) < r.years - 0.5) return;
+      const b = el('button', { type: 'button', text: r.label, 'aria-pressed': String(r.key === state.range) });
+      b.addEventListener('click', () => { state.range = r.key; state.from = state.to = null; fromI.value = toI.value = ''; syncButtons(); writeUrl(); draw(); });
+      buttons.push([r.key, b]); ctl.appendChild(b);
+    });
+    function syncButtons() { buttons.forEach(([k, b]) => b.setAttribute('aria-pressed', String(k === state.range))); }
+    head.appendChild(ctl);
+    const custom = el('div', { class: 'custom' });
+    const fromI = el('input', { type: 'month', 'aria-label': 'Start month', min: obs[0][0].slice(0, 7), max: obs[obs.length - 1][0].slice(0, 7) });
+    const toI = el('input', { type: 'month', 'aria-label': 'End month', min: obs[0][0].slice(0, 7), max: obs[obs.length - 1][0].slice(0, 7) });
+    if (!state.range) { fromI.value = state.from || ''; toI.value = state.to || ''; }
+    const go = el('button', { type: 'button', text: 'Apply' });
+    go.addEventListener('click', () => { if (!fromI.value && !toI.value) return; state.range = null; state.from = fromI.value || null; state.to = toI.value || null; syncButtons(); writeUrl(); draw(); });
+    custom.appendChild(fromI); custom.appendChild(document.createTextNode('to')); custom.appendChild(toI); custom.appendChild(go);
+    head.appendChild(custom);
+
+    const frag = document.createDocumentFragment();
+    frag.appendChild(head); frag.appendChild(box); frag.appendChild(legend); frag.appendChild(framing); frag.appendChild(evList);
+    if ('ResizeObserver' in window) { let w = 0; new ResizeObserver(() => { const nw = box.clientWidth; if (nw && nw !== w) { w = nw; draw(); } }).observe(box); } else requestAnimationFrame(draw);
+    return { node: frag, redraw: draw };
+  }
+
+  // ---- overlays panel -----------------------------------------------------
+  function buildPanel(ctx, redraw) {
+    const { tile: t, overlays } = ctx;
+    const panel = el('aside', { class: 'panel', 'aria-label': 'Overlays' });
+    panel.appendChild(el('h2', { text: 'Overlays' }));
+    panel.appendChild(el('p', { class: 'lead', text: 'Add context to the chart. Each overlay says where it comes from and what it can and cannot tell you. The link in your address bar keeps whatever you turn on.' }));
+    const groups = ['Reference lines', 'Companion series', 'Eras', 'Events'];
+    groups.forEach(g => {
+      const items = overlays.filter(o => o.group === g && appliesTo(o, t.id) && !o.hiddenInPanel);
+      if (!items.length) return;
+      const det = el('details', { open: '' });
+      const gnote = ctx.groupNotes && ctx.groupNotes[g];
+      const onCount = items.filter(o => state.on.has(o.id)).length;
+      const sum = el('summary', {}, [el('span', { text: g }, [])]);
+      const cnt = el('span', { class: 'count' }); sum.firstChild.appendChild(cnt);
+      function updateCount() { const n = items.filter(o => state.on.has(o.id) && (!o.requires || state.on.has(o.requires))).length; cnt.textContent = n ? n + ' on' : ''; }
+      updateCount();
+      det.appendChild(sum);
+      if (gnote) det.appendChild(el('p', { class: 'why gnote', text: gnote }));
+      items.forEach(o => {
+        const id = 'ov-' + o.id;
+        const lab = el('label', { class: 'opt', for: id });
+        const cb = el('input', { type: 'checkbox', id });
+        if (state.on.has(o.id)) cb.checked = true;
+        if (o.requires) { cb.disabled = !state.on.has(o.requires); cb.setAttribute('data-requires', o.requires); }
+        const name = el('span', {});
+        if (o.type === 'series') name.appendChild(el('span', { class: 'sw', 'data-sw': o.id }));
+        name.appendChild(document.createTextNode(o.label));
+        const why = el('span', { class: 'why' });
+        if (o.note || o.why) why.appendChild(document.createTextNode(o.note || o.why));
+        if (o.source && o.source.url) { why.appendChild(document.createTextNode(' ')); why.appendChild(el('a', { href: o.source.url, rel: 'noopener', text: 'Source' })); }
+        if (o.as_of) why.appendChild(document.createTextNode(' As of ' + o.as_of + '.'));
+        if (o.requires) { const req = overlays.find(x => x.id === o.requires); if (req) why.appendChild(document.createTextNode(' Requires "' + req.label + '".')); }
+        cb.addEventListener('change', () => {
+          if (cb.checked) state.on.add(o.id); else state.on.delete(o.id);
+          panel.querySelectorAll('input[data-requires="' + o.id + '"]').forEach(x => { x.disabled = !cb.checked; if (!cb.checked && x.checked) { x.checked = false; state.on.delete(x.id.slice(3)); } });
+          updateCount(); writeUrl(); redraw(); paintSwatches();
+        });
+        lab.appendChild(cb); lab.appendChild(name); lab.appendChild(why);
+        det.appendChild(lab);
+      });
+      panel.appendChild(det);
+    });
+    const clear = el('p', { class: 'clear' });
+    const cb = el('button', { type: 'button', text: 'Turn everything off' });
+    cb.addEventListener('click', () => { state.on.clear(); panel.querySelectorAll('input[type=checkbox]').forEach(x => { x.checked = false; if (x.hasAttribute('data-requires')) x.disabled = true; }); panel.querySelectorAll('.count').forEach(x => x.textContent = ''); writeUrl(); redraw(); paintSwatches(); });
+    clear.appendChild(cb); panel.appendChild(clear);
+    function paintSwatches() {
+      // colors are assigned in draw order (companions first, then sub-panels); mirror that here
+      const act = overlays.filter(o => state.on.has(o.id) && appliesTo(o, t.id) && o.type === 'series');
+      const order = act.filter(o => !OWN_SCALE[o.id]).concat(act.filter(o => OWN_SCALE[o.id]));
+      panel.querySelectorAll('.sw').forEach(s => { const i = order.findIndex(o => o.id === s.getAttribute('data-sw')); s.style.background = i >= 0 ? COLORS[i % COLORS.length] : 'var(--hairline)'; });
+    }
+    paintSwatches();
+    return panel;
+  }
+
+  // ---- readings table + CSV -------------------------------------------------
+  function buildTable(ctx) {
+    const { tile: t, overlays } = ctx, d = t.display;
+    const det = el('details', { class: 'table' });
+    det.appendChild(el('summary', { text: 'Show the readings in view' }));
+    const scroll = el('div', { class: 'scroll' }), tbl = el('table'); scroll.appendChild(tbl); det.appendChild(scroll);
+    function activeSeries() { return overlays.filter(o => o.type === 'series' && state.on.has(o.id) && appliesTo(o, t.id)); }
+    // Join a companion to the indicator's dates: weekly on the exact date, monthly on the
+    // year-month, quarterly carried forward across the quarter's three months.
+    function joinMap(o) {
+      const m = new Map();
+      o.observations.forEach(p => {
+        if (o.freq === 'w') m.set(p[0], p[1]);
+        else if (o.freq === 'q') { const y = +p[0].slice(0, 4), mo = +p[0].slice(5, 7); for (let k = 0; k < 3; k++) { const mm = mo + k; m.set(y + '-' + String(mm).padStart(2, '0'), p[1]); } }
+        else m.set(p[0].slice(0, 7), p[1]);
+      });
+      return m;
+    }
+    function lookup(m, o, date) { const k = o.freq === 'w' ? date : date.slice(0, 7); return m.has(k) ? m.get(k) : null; }
+    function rows(start, end) {
+      const comps = activeSeries();
+      const maps = comps.map(joinMap);
+      const out = [];
+      t.observations.forEach(p => { const tm = parseDate(p[0]).getTime(); if (tm < start.getTime() || tm > end.getTime()) return; out.push([p[0], p[1]].concat(maps.map((m, k) => lookup(m, comps[k], p[0])))); });
+      return { comps, out };
+    }
+    let cur = null;
+    function refresh(start, end) {
+      cur = [start, end];
+      if (!det.open) return;
+      const { comps, out } = rows(start, end);
+      tbl.innerHTML = '';
+      const thead = el('tr'); thead.appendChild(el('th', { text: 'Period' })); thead.appendChild(el('th', { class: 'num', text: t.title }));
+      comps.forEach(o => thead.appendChild(el('th', { class: 'num', text: o.label + (o.freq === 'q' ? ' (quarterly)' : '') })));
+      tbl.appendChild(thead);
+      out.slice().reverse().forEach(r => { const tr = el('tr'); tr.appendChild(el('td', { text: fmtPeriod(r[0], t.freq) })); for (let i = 1; i < r.length; i++) tr.appendChild(el('td', { class: 'num', text: r[i] == null ? '' : fmtValue(r[i], i === 1 ? d : (comps[i - 2].display || d)) })); tbl.appendChild(tr); });
+    }
+    det.addEventListener('toggle', () => { if (det.open && cur) refresh(cur[0], cur[1]); });
+    function csv() {
+      const comps = activeSeries();
+      const lines = ['date,' + csvQ(t.title + ' (' + d.unit + ')') + comps.map(o => ',' + csvQ(o.label)).join('')];
+      const maps = comps.map(joinMap);
+      t.observations.forEach(p => lines.push(p[0] + ',' + p[1] + maps.map((m, k) => { const v = lookup(m, comps[k], p[0]); return ',' + (v == null ? '' : v); }).join('')));
+      lines.push(''); lines.push('# ' + ctx.data.attribution); lines.push('# ' + t.source.url);
+      return lines.join('\n');
+    }
+    function csvQ(s) { return '"' + String(s).replace(/"/g, '""') + '"'; }
+    return { node: det, refresh, csv };
+  }
+
+  // ---- page -----------------------------------------------------------------
+  function render(data, compData, ovData) {
+    const main = document.getElementById('main'); main.innerHTML = '';
+    document.getElementById('attribution').textContent = data.attribution;
+    const t = data.tiles.find(x => x.id === state.id);
+    if (!t) {
+      document.getElementById('title').textContent = 'Pick an indicator';
+      document.getElementById('subtitle').textContent = 'Each one gets a full-size chart with optional overlays.';
+      const idx = el('div', { class: 'index' }), ul = el('ul');
+      data.tiles.forEach(x => ul.appendChild(el('li', {}, [el('a', { href: 'chart.html?id=' + x.id, text: x.title }), ' — ' + x.subtitle])));
+      idx.appendChild(ul); main.appendChild(idx); document.title = 'Charts — Economy in Context'; return;
+    }
+    document.title = t.title + ' — Economy in Context';
+    document.getElementById('title').textContent = t.title;
+    document.getElementById('subtitle').textContent = t.subtitle;
+
+    // overlays: hand-compiled ones plus every companion series that applies here
+    const comps = (compData.companions || []).filter(c => appliesTo(c, t.id)).map(c => ({
+      id: c.id, type: 'series', group: 'Companion series', label: c.label, applies_to: c.for, why: c.why, observations: c.observations, freq: c.freq,
+      source: c.source ? { label: 'FRED ' + c.source.series, url: c.source.url } : null,
+      display: OWN_SCALE[c.id] && c.id === 'continuing_claims' ? { scale: 1000, decimals: 0, suffix: 'K' } : OWN_SCALE[c.id] ? { scale: 1, decimals: 1, suffix: '%' } : null,
+    }));
+    const overlays = ovData.overlays.concat(comps);
+    const ovById = {}; overlays.forEach(o => ovById[o.id] = o);
+    const ctx = { tile: t, data, companions: comps, overlays, ovById, politicalNote: ovData.political_note, groupNotes: ovData.group_notes || {}, median: median(t.observations.map(p => p[1])) };
+    // drop unknown overlay ids from the URL silently
+    Array.from(state.on).forEach(id => { if (!ovById[id]) state.on.delete(id); });
+
+    const layout = el('div', { class: 'layout' }), left = el('div', {});
+    const c = t.context, d = t.display;
+    const hv = t.headline ? t.headline.value : c.current.value;
+    const hdate = t.headline ? fmtPeriod(t.headline.date, 'd', true) : fmtPeriod(c.current.date, t.freq, true);
+    left.appendChild(el('div', { class: 'headline' }, [el('span', { class: 'value', text: fmtValue(hv, d) }), el('span', { class: 'when', text: hdate })]));
+    const cmp = el('p', { class: 'compare' });
+    if (t.headline) cmp.appendChild(el('span', { text: 'Monthly average ' + fmtPeriod(c.current.date, 'm') + ': ' + fmtValue(c.current.value, d) }));
+    else cmp.appendChild(el('span', { text: prevLabel(t.freq) + ': ' + fmtValue(c.previous.value, d) }));
+    if (c.year_ago) cmp.appendChild(el('span', { text: 'A year ago: ' + fmtValue(c.year_ago.value, d) }));
+    left.appendChild(cmp);
+    left.appendChild(buildStrip(t));
+    left.appendChild(el('p', { class: 'context', text: contextSentence(t) }));
+
+    const table = buildTable(ctx);
+    ctx.onWindow = table.refresh;
+    const chart = buildChart(ctx);
+    left.appendChild(chart.node);
+
+    left.appendChild(el('p', { class: 'note', text: t.note }));
+    const src = el('p', { class: 'source' });
+    src.appendChild(document.createTextNode('Source: ')); src.appendChild(el('a', { href: t.source.url, rel: 'noopener', text: 'FRED ' + t.source.series }));
+    if (t.headline) { src.appendChild(document.createTextNode(' and ')); src.appendChild(el('a', { href: t.headline.url, rel: 'noopener', text: t.headline.series })); }
+    src.appendChild(document.createTextNode(', updated ' + (t.source.last_updated || '').slice(0, 10) + '. Figures are the current vintage and are revised by the agencies.'));
+    left.appendChild(src);
+
+    const actions = el('div', { class: 'actions' });
+    const dl = el('button', { type: 'button', text: 'Download CSV' });
+    dl.addEventListener('click', () => { const blob = new Blob([table.csv()], { type: 'text/csv' }); const a = el('a', { href: URL.createObjectURL(blob), download: 'economyincontext-' + t.id + '.csv' }); document.body.appendChild(a); a.click(); a.remove(); });
+    const copy = el('button', { type: 'button', text: 'Copy link to this view' });
+    copy.addEventListener('click', () => { navigator.clipboard && navigator.clipboard.writeText(location.href).then(() => { copy.textContent = 'Copied'; setTimeout(() => copy.textContent = 'Copy link to this view', 1500); }); });
+    actions.appendChild(dl); actions.appendChild(copy);
+    actions.appendChild(el('a', { href: './#i-' + t.id, text: 'Back to the almanac' }));
+    left.appendChild(actions);
+    left.appendChild(table.node);
+
+    layout.appendChild(left);
+    layout.appendChild(buildPanel(ctx, chart.redraw));
+    main.appendChild(layout);
+    writeUrl();
+  }
+
+  readUrl();
+  Promise.all([
+    fetch('data/series.json', { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }),
+    fetch('data/companions.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : { companions: [] }).catch(() => ({ companions: [] })),
+    fetch('data/overlays.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : { overlays: [] }).catch(() => ({ overlays: [] })),
+  ]).then(([data, comp, ov]) => render(data, comp, ov))
+    .catch(err => { const main = document.getElementById('main'); main.innerHTML = ''; main.appendChild(el('p', { class: 'status', text: 'The figures could not be loaded (' + err.message + '). Try again in a few minutes.' })); });
+})();
+</script>
+</body>
+</html>

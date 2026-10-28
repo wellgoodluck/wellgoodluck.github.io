@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Fetch the Economy in Context indicator set from FRED and write data/series.json.
+Fetch the Economy in Context indicator set from FRED and write data/series.json
+(the tiles) and data/companions.json (overlay series for the detail page).
 
 Standard library only. Needs FRED_API_KEY in the environment.
 Usage:  python3 fetch_fred.py [output-path]      (default: data/series.json)
@@ -164,6 +165,160 @@ TILES = [
     },
 ]
 
+# ---------------------------------------------------------------------------
+# Companion series: shown only on the detail page (chart.html) as overlays on
+# one or more tiles. Same shape as a tile entry, minus section/title/note, plus
+#   for      tile ids this companion can be drawn on (same units as that tile)
+#   label    legend text on the detail page
+#   why      one line shown beside the overlay toggle
+# They never appear on the main page. A companion that fails to fetch is
+# skipped with a warning; the tiles still publish.
+# ---------------------------------------------------------------------------
+COMPANIONS = [
+    {
+        "id": "pce",
+        "label": "PCE inflation",
+        "for": ["cpi"],
+        "series": "PCEPI",
+        "params": {"units": "pc1", "observation_start": "1960-01-01"},
+        "freq": "m",
+        "why": "The Fed's 2% target is set on this index, not the CPI. It usually runs a few tenths lower.",
+    },
+    {
+        "id": "core_pce",
+        "label": "Core PCE inflation",
+        "for": ["core_cpi"],
+        "series": "PCEPILFE",
+        "params": {"units": "pc1", "observation_start": "1960-01-01"},
+        "freq": "m",
+        "why": "The Fed's preferred measure of underlying inflation; its 2% target applies here.",
+    },
+    {
+        "id": "core_cpi_on_cpi",
+        "label": "Core CPI (ex food and energy)",
+        "for": ["cpi"],
+        "series": "CPILFESL",
+        "params": {"units": "pc1", "observation_start": "1958-01-01"},
+        "freq": "m",
+        "why": "When headline and core diverge, food or energy prices are doing the work.",
+    },
+    {
+        "id": "cpi_on_core",
+        "label": "Headline CPI (all items)",
+        "for": ["core_cpi"],
+        "series": "CPIAUCSL",
+        "params": {"units": "pc1", "observation_start": "1948-01-01"},
+        "freq": "m",
+        "why": "The all-items index, including food and energy.",
+    },
+    {
+        "id": "u6",
+        "label": "U-6 (incl. part-time for economic reasons and marginally attached)",
+        "for": ["unemployment"],
+        "series": "U6RATE",
+        "params": {"observation_start": "1994-01-01"},
+        "freq": "m",
+        "why": "The broadest official measure of slack. Only published since 1994.",
+    },
+    {
+        "id": "prime_age_epop",
+        "label": "Prime-age (25–54) employment-to-population ratio",
+        "for": ["unemployment"],
+        "series": "LNS12300060",
+        "params": {"observation_start": "1948-01-01"},
+        "freq": "m",
+        "why": "Share of 25–54-year-olds with a job. Sidesteps arguments about who counts as 'looking for work'. Different scale: read it against its own level, not the unemployment rate's.",
+    },
+    {
+        "id": "nrou",
+        "label": "CBO estimate of the natural rate of unemployment",
+        "for": ["unemployment"],
+        "series": "NROU",
+        "params": {"observation_start": "1949-01-01"},
+        "freq": "q",
+        "why": "The Congressional Budget Office's estimate of the rate consistent with stable inflation. An estimate, revised over time.",
+    },
+    {
+        "id": "sahm",
+        "label": "Sahm rule indicator",
+        "for": ["unemployment"],
+        "series": "SAHMREALTIME",
+        "params": {"observation_start": "1959-12-01"},
+        "freq": "m",
+        "why": "3-month average unemployment rate minus its low of the prior 12 months. A reading of 0.5 or more has coincided with the start of every recession since 1970.",
+    },
+    {
+        "id": "household_employment",
+        "label": "Household survey employment, change from month before",
+        "for": ["payrolls"],
+        "series": "CE16OV",
+        "params": {"units": "chg", "observation_start": "1948-02-01"},
+        "freq": "m",
+        "why": "The other monthly jobs count, from the survey of households rather than employers. Noisier, and it counts the self-employed.",
+    },
+    {
+        "id": "continuing_claims",
+        "label": "Continuing claims",
+        "for": ["claims"],
+        "series": "CCSA",
+        "params": {"observation_start": "1967-01-07"},
+        "freq": "w",
+        "why": "People still collecting benefits, not just newly filing. Different scale: it runs several times larger than initial claims.",
+    },
+    {
+        "id": "single_family_starts",
+        "label": "Single-family starts",
+        "for": ["housing_starts"],
+        "series": "HOUST1F",
+        "params": {"observation_start": "1959-01-01"},
+        "freq": "m",
+        "why": "Starts of one-unit homes only. The rest of the total is apartments, which move on a different cycle.",
+    },
+    {
+        "id": "mortgage_monthly",
+        "label": "30-year mortgage rate, monthly average",
+        "for": [],
+        "series": "MORTGAGE30US",
+        "params": {"observation_start": "1971-04-01", "frequency": "m", "aggregation_method": "avg"},
+        "freq": "m",
+        "why": "Used to compute the mortgage spread.",
+    },
+]
+
+# Derived series, computed here from the fetched data so the page never has to
+# align two calendars. op: diff = a - b on matching dates; avg3 = trailing
+# 3-period mean of a.
+DERIVED = [
+    {
+        "id": "payrolls_3mo",
+        "label": "3-month average",
+        "for": ["payrolls"],
+        "op": "avg3", "a": "payrolls", "freq": "m",
+        "why": "Smooths the month-to-month noise; the first print of any month is revised twice.",
+    },
+    {
+        "id": "real_fed_funds",
+        "label": "Real Fed funds rate (minus core CPI inflation)",
+        "for": ["fed_funds"],
+        "op": "diff", "a": "fed_funds", "b": "core_cpi", "freq": "m",
+        "why": "The policy rate after inflation. Above zero means money costs something in real terms; below zero, policy is loose whatever the headline rate says.",
+    },
+    {
+        "id": "ten_minus_ff",
+        "label": "10-year yield minus Fed funds rate",
+        "for": ["ten_year", "fed_funds"],
+        "op": "diff", "a": "ten_year", "b": "fed_funds", "freq": "m",
+        "why": "The slope of the curve. Below zero (an inverted curve) has preceded every recession since the 1970s, usually by a year or more.",
+    },
+    {
+        "id": "mortgage_minus_ten",
+        "label": "Mortgage rate minus 10-year yield",
+        "for": ["mortgage"],
+        "op": "diff", "a": "mortgage_monthly", "b": "ten_year", "freq": "m",
+        "why": "The spread lenders charge over Treasuries. Normally 1.5–2 points; wider in stress, as in 2022–24.",
+    },
+]
+
 RECESSIONS_SERIES = "USREC"       # NBER recession months, 1 = recession
 RECESSIONS_START = "1939-01-01"
 
@@ -291,6 +446,31 @@ def context_for(obs, freq):
     }
 
 
+def month_key(d):
+    return d[:7]
+
+
+def derive(spec, by_id):
+    """Compute a derived series from already-fetched ones. Returns [(date, value)]."""
+    a = by_id.get(spec["a"])
+    if not a:
+        raise RuntimeError(f"missing input {spec['a']}")
+    if spec["op"] == "avg3":
+        vals = [v for _, v in a]
+        return [(a[i][0], mean(vals[i - 2:i + 1])) for i in range(2, len(a))]
+    if spec["op"] == "diff":
+        b = by_id.get(spec["b"])
+        if not b:
+            raise RuntimeError(f"missing input {spec['b']}")
+        # Align on year-month: both inputs are monthly (or monthly-aggregated).
+        bm = {month_key(d): v for d, v in b}
+        out = [(d, v - bm[month_key(d)]) for d, v in a if month_key(d) in bm]
+        if len(out) < 3:
+            raise RuntimeError("inputs do not overlap")
+        return out
+    raise RuntimeError(f"unknown op {spec['op']}")
+
+
 def recession_spans(obs):
     """USREC 0/1 monthly -> [[start, end], ...] where end is the last month in recession."""
     spans, start, last = [], None, None
@@ -354,6 +534,50 @@ def main():
             "observations": [[d, round(v, 3)] for d, v in obs],
         })
 
+    # Companion series for the detail page. Tolerant: one bad series is skipped.
+    today = date.today().isoformat()
+    by_id = {t["id"]: t["observations"] for t in tiles_out}
+    companions_out = []
+    for c in COMPANIONS:
+        print(f"{c['id']:16s} {c['series']} (companion)", flush=True)
+        try:
+            params = dict(c["params"])
+            params.setdefault("observation_end", today)   # NROU is projected years ahead
+            obs = get_observations(c["series"], params)
+            time.sleep(0.4)
+            info = get_series_info(c["series"])
+            time.sleep(0.4)
+            if len(obs) < 3:
+                raise RuntimeError("not enough observations")
+        except Exception as e:
+            print(f"  skipped: {e}", file=sys.stderr, flush=True)
+            continue
+        by_id[c["id"]] = obs
+        companions_out.append({
+            "id": c["id"], "label": c["label"], "for": c["for"], "why": c["why"], "freq": c["freq"],
+            "source": {
+                "series": c["series"],
+                "url": f"https://fred.stlouisfed.org/series/{c['series']}",
+                "fred_title": info["title"], "fred_units": info["units"],
+                "frequency": info["frequency"], "last_updated": info["last_updated"],
+                "transform": c["params"].get("units", "lin"),
+            },
+            "observations": [[d, round(v, 3)] for d, v in obs],
+        })
+
+    for dv in DERIVED:
+        try:
+            obs = derive(dv, by_id)
+        except Exception as e:
+            print(f"{dv['id']:16s} skipped: {e}", file=sys.stderr, flush=True)
+            continue
+        print(f"{dv['id']:16s} derived ({len(obs)} obs)", flush=True)
+        companions_out.append({
+            "id": dv["id"], "label": dv["label"], "for": dv["for"], "why": dv["why"], "freq": dv["freq"],
+            "derived": {k: dv[k] for k in ("op", "a", "b") if k in dv},
+            "observations": [[d, round(v, 3)] for d, v in obs],
+        })
+
     print("recessions      USREC", flush=True)
     rec = get_observations(RECESSIONS_SERIES, {"observation_start": RECESSIONS_START})
 
@@ -373,6 +597,13 @@ def main():
         json.dump(payload, f, separators=(",", ":"), ensure_ascii=False)
     size = os.path.getsize(out_path)
     print(f"wrote {out_path} ({size/1024:.0f} KB, {len(tiles_out)} indicators)")
+
+    # Companions go in their own file so the main page never downloads them.
+    comp_path = os.path.join(os.path.dirname(out_path) or ".", "companions.json")
+    with open(comp_path, "w", encoding="utf-8") as f:
+        json.dump({"generated": payload["generated"], "companions": companions_out},
+                  f, separators=(",", ":"), ensure_ascii=False)
+    print(f"wrote {comp_path} ({os.path.getsize(comp_path)/1024:.0f} KB, {len(companions_out)} companion series)")
 
 
 if __name__ == "__main__":
