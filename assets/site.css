@@ -78,3 +78,15 @@ a:hover { text-decoration-color: var(--ink); }
 
 footer.about { border-top: 1px solid var(--hairline); padding: 22px 0 44px; font-size: 14px; color: var(--ink-2); }
 footer.about p { max-width: 48em; margin: 0 0 8px; }
+
+/* The map on the Plain words index (built by tools/build_articles.py) */
+.article > figure.map { max-width: 480px; margin: 22px 0 8px; }
+.map svg { display: block; width: 100%; height: auto; font-family: inherit; }
+.map .node rect { fill: var(--surface); stroke: var(--hairline); stroke-width: 1.5; }
+.map .node text { fill: var(--ink); font-size: 15px; font-weight: 600; }
+.map a.node:hover rect, .map a.node:focus rect { stroke: var(--focus); }
+.map a.node:hover text { text-decoration: underline; text-decoration-color: var(--muted); }
+.map .edge { fill: none; stroke: var(--ink-2); stroke-width: 1.5; }
+.map marker path { fill: var(--ink-2); }
+.map .lag { fill: var(--muted); font-size: 12px; }
+.map figcaption { margin: 10px 0 0; font-size: 14px; color: var(--ink-2); }

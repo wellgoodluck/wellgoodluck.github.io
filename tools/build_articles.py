@@ -204,6 +204,67 @@ def render_article(a):
     return page
 
 
+# ---------------------------------------------------------------------------
+# The map on the Plain words index: the main loop, with lags on the arrows.
+# Styled by .map rules in assets/site.css so it follows the light and dark themes.
+# ---------------------------------------------------------------------------
+MAP_NODES = [   # (label, href) in loop order; the loop closes back on the first
+    ("Fed funds rate", "what-is-the-fed-funds-rate.html"),
+    ("10-year yield", "what-is-the-10-year-yield.html"),
+    ("Mortgage rate", "what-is-the-mortgage-rate.html"),
+    ("Housing starts", "what-are-housing-starts.html"),
+    ("Construction jobs", "what-is-the-jobs-report.html"),
+    ("Jobs added", "what-is-the-jobs-report.html"),
+    ("Wages", "real-vs-nominal.html"),
+    ("Inflation", "what-is-inflation.html"),
+]
+MAP_LAGS = ["moves first, on expectations", "days", "3\u20136 months", "months",
+            "same month", "6\u201312 months", "6\u201318 months", "next meeting, or sooner"]
+
+
+def render_map():
+    W, H = 480, 520
+    bw, bh = 180, 44                       # node box
+    lx, rx = 100, 380                      # column centers (left goes down, right comes up)
+    ys = [60, 200, 340, 480]               # row centers
+    pos = [(lx, ys[0]), (lx, ys[1]), (lx, ys[2]), (lx, ys[3]),
+           (rx, ys[3]), (rx, ys[2]), (rx, ys[1]), (rx, ys[0])]
+    out = [f'<svg viewBox="0 0 {W} {H}" role="img" aria-labelledby="map-title">',
+           '<title id="map-title">How the indicators push on each other: Fed funds to the 10-year yield, '
+           'to mortgage rates, to housing starts, to construction jobs, to jobs added, to wages, to inflation, '
+           'and back to the Fed.</title>',
+           '<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">'
+           '<path d="M0,0 L10,5 L0,10 z"/></marker></defs>']
+    n = len(pos)
+    for i in range(n):
+        (x1, y1), (x2, y2) = pos[i], pos[(i + 1) % n]
+        lag = MAP_LAGS[i]
+        if x1 == x2:                                           # vertical, within a column
+            d = 1 if y2 > y1 else -1
+            ya, yb = y1 + d * bh / 2 + 4, y2 - d * bh / 2 - 4
+            out.append(f'<path class="edge" d="M{x1},{ya} L{x2},{yb}" marker-end="url(#arr)"/>')
+            tx = x1 + (10 if x1 == lx else -10)                 # beside the arrow, inside the column
+            anchor = "start" if x1 == lx else "end"
+            words = lag.split(", ")
+            for k, w in enumerate(words):
+                out.append(f'<text class="lag" x="{tx}" y="{(y1 + y2) / 2 + 4 + (k - (len(words) - 1) / 2) * 14}" text-anchor="{anchor}">{html.escape(w)}</text>')
+        else:                                                  # horizontal, across the gap
+            d = 1 if x2 > x1 else -1
+            xa, xb = x1 + d * bw / 2 + 4, x2 - d * bw / 2 - 4
+            out.append(f'<path class="edge" d="M{xa},{y1} L{xb},{y2}" marker-end="url(#arr)"/>')
+            words = lag.split(", ")
+            for k, w in enumerate(words):                      # one or two short lines above the arrow
+                out.append(f'<text class="lag" x="{(x1 + x2) / 2}" y="{y1 - 10 - (len(words) - 1 - k) * 14}" text-anchor="middle">{html.escape(w)}</text>')
+    for (label, href), (x, y) in zip(MAP_NODES, pos):
+        out.append(f'<a class="node" href="{href}"><rect x="{x - bw / 2}" y="{y - bh / 2}" width="{bw}" height="{bh}" rx="6"/>'
+                   f'<text x="{x}" y="{y + 5}" text-anchor="middle">{html.escape(label)}</text></a>')
+    out.append('</svg>')
+    return ('<figure class="map">' + "".join(out) +
+            '<figcaption>The main loop, in the order the effects travel. The lags are typical ranges, not rules, and every link '
+            'is argued about on its page. Unemployment and jobless claims are other readings of the jobs stop; GDP is the whole '
+            'loop\u2019s output.</figcaption></figure>')
+
+
 def render_index(articles):
     page = HEAD.format(title="Articles", desc="Longer reads on the U.S. economy: what the figures show, what is settled and what is argued about.",
                        canonical=f"{SITE}/articles/")
@@ -222,6 +283,7 @@ def render_index(articles):
         page += listing(timely)
     if concepts:
         page += '<h2 id="plain-words">Plain words</h2>\n<p class="dek">What each number is, how it reaches your household, and where the usual analogies break. Evergreen; updated when the facts change.</p>\n'
+        page += render_map() + "\n"
         page += listing(sorted(concepts, key=lambda a: a["title"]))
     page += "</main>\n" + FOOT
     return page
