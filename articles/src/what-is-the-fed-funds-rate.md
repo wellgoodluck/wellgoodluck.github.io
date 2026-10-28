@@ -57,7 +57,7 @@ A thermostat is precise and the house doesn't talk back. The economy anticipates
 
 ## See also
 
-- [Inflation, with the price level underneath](../chart.html?id=cpi&range=10y&ov=price_level,fed_target): why the rate came down and prices didn't.
+- [Inflation](what-is-inflation.html): what the Fed is aiming at, and [rate vs. level](rate-vs-level.html): why the rate came down and prices didn't.
 - [The 30% question](why-everything-costs-30-percent-more.html): what the Fed did and didn't cause in 2021–24.
 - The almanac's [Fed funds rate](../chart.html?id=fed_funds) with every overlay.
 
