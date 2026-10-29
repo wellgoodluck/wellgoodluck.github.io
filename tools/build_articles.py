@@ -32,7 +32,7 @@ site's own detail page:
 
     {{chart id=cpi range=10y ov=fed_target,pce caption="Inflation and the Fed's target."}}
 
-Anything after `## Sources` is rendered as a sources list.
+Anything under `## Sources`, up to the next heading, is rendered as a sources list.
 """
 
 import html
@@ -82,7 +82,7 @@ def chart_directive(line):
             f'<iframe src="../chart.html?{html.escape(query, quote=True)}" title="Chart: {html.escape(attrs["id"])}" '
             f'loading="lazy" height="{html.escape(height)}"></iframe>'
             f'<figcaption>{inline(cap) + " " if cap else ""}'
-            f'<a href="../chart.html?{html.escape(full, quote=True)}">Open the full chart with overlays →</a></figcaption></figure>')
+            f'<a href="../chart.html?{html.escape(full, quote=True)}">Full chart and context →</a></figcaption></figure>')
 
 
 def md_to_html(text):
@@ -115,10 +115,9 @@ def md_to_html(text):
         m = re.match(r"^(#{1,3})\s+(.*)$", line)
         if m:
             flush_para(); close_list()
-            level = len(m.group(1)) + 1                            # the page's h1 is the title
+            level = len(m.group(1))                                # ## is h2 under the page's h1 (the title); sources use no # or ###
             title = m.group(2).strip()
-            if level == 2 and title.lower() == "sources":
-                in_sources = True
+            in_sources = level == 2 and title.lower() == "sources"     # a later section (Corrections) ends the sources list
             hid = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
             out.append(f'<h{level} id="{hid}">{inline(title)}</h{level}>')
             continue
@@ -185,7 +184,14 @@ HEAD = """<!doctype html>
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{canonical}">
-<meta name="twitter:card" content="summary">
+<link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<meta property="og:image" content="https://economyincontext.org/assets/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Economy in Context: the main numbers on the U.S. economy, each shown against its own history.">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="../assets/site.css">
 </head>
 <body>

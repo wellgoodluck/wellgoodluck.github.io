@@ -12,7 +12,14 @@
 <meta property="og:title" content="Charts — Economy in Context">
 <meta property="og:description" content="One U.S. economic indicator at full size, with its full history and optional overlays: reference lines, companion series, who held power, and major events.">
 <meta property="og:url" content="https://economyincontext.org/chart.html">
-<meta name="twitter:card" content="summary">
+<link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<meta property="og:image" content="https://economyincontext.org/assets/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Economy in Context: the main numbers on the U.S. economy, each shown against its own history.">
+<meta name="twitter:card" content="summary_large_image">
 <style>
   @font-face { font-family: "Public Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("assets/fonts/PublicSans-Regular.woff2") format("woff2"); }
   @font-face { font-family: "Public Sans"; font-weight: 600; font-style: normal; font-display: swap; src: url("assets/fonts/PublicSans-SemiBold.woff2") format("woff2"); }
@@ -20,10 +27,10 @@
 
   :root {
     color-scheme: light;
-    --page: #f6f6f3; --surface: #ffffff; --ink: #1b1b1a; --ink-2: #5a5955; --muted: #8a8984;
+    --page: #f6f6f3; --surface: #ffffff; --ink: #1b1b1a; --ink-2: #5a5955; --muted: #72716b;
     --hairline: #e3e2dc; --grid: #ebeae4; --series: #2a78d6; --recession: rgba(27, 27, 26, 0.07);
     --focus: #2a78d6; --banner: #fff4d6; --banner-ink: #5a4300; --max: 1120px;
-    --c1: #d9822b; --c2: #2f9e6c; --c3: #8a5bd6; --c4: #2a9db6; --c5: #c23b7a;
+    --c1: #c06a14; --c2: #278a5d; --c3: #8a5bd6; --c4: #22879d; --c5: #c23b7a;
     --ref: #6b6a66;
     --dem: #4a7fd6; --rep: #d65b5b; --divided: #c9c8c0; --ind: #9c9a93;
     --era-a: #d8d6cd; --era-b: #c3c1b7; --war: #6e6c66; --qe-up: #8fcf9f; --qe-down: #e5b47e;
@@ -58,8 +65,16 @@
   .masthead .explainer a:hover { border-color: var(--ink); }
   .masthead .explainer[hidden] { display: none; }
 
-  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 28px; padding: 22px 0 40px; }
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 28px; padding: 22px 0 40px; align-items: start; }
   @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+  @media (min-width: 861px) {
+    .panel { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow-y: auto; overscroll-behavior: contain; padding-right: 4px; }
+    .to-panel, .to-chart { display: none; }
+  }
+  .to-panel { margin: 10px 0 0; font-size: 14px; }
+  .to-chart { margin: 0 0 10px; font-size: 13.5px; }
+  .to-panel a, .to-chart a { color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--hairline); }
+  #chart-top, #overlays { scroll-margin-top: 12px; }
 
   .headline { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 14px; margin: 0 0 2px; }
   .headline .value { font-size: 44px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
@@ -75,7 +90,7 @@
   .strip text { font-size: 12px; fill: var(--muted); }
   .strip text.avg-label { fill: var(--ink-2); }
   .strip .beyond { fill: var(--series); }
-  .context { margin: 4px 0 0; font-size: 15px; }
+  .context { margin: 4px 0 0; font-size: 15px; font-weight: 600; }
 
   .chart-head { display: flex; align-items: center; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; margin: 22px 0 6px; }
   .ranges { display: inline-flex; border: 1px solid var(--hairline); border-radius: 4px; overflow: hidden; }
@@ -83,7 +98,11 @@
   .ranges button + button { border-left: 1px solid var(--hairline); }
   .ranges button:focus-visible { outline-offset: -2px; }
   .ranges button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
-  .custom { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-2); }
+  .custom { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-2); flex-wrap: wrap; }
+  .custom .fields { display: inline-flex; align-items: center; gap: 6px; }
+  .custom .fields[hidden] { display: none; }
+  .custom .toggle { background: none; border: 0; padding: 3px 0; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; cursor: pointer; font-size: 13px; }
+  .custom .toggle:hover { text-decoration-color: var(--ink); }
   .custom input { padding: 3px 6px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); font-size: 13px; width: 9.5em; }
   .custom button { padding: 3px 9px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); font-size: 13px; cursor: pointer; }
 
@@ -159,6 +178,7 @@
   .opt .why a { color: var(--muted); }
   .panel .gnote { margin: 6px 0 0; font-size: 12.5px; color: var(--muted); line-height: 1.35; }
   .opt .sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+  .opt .sw.off { visibility: hidden; }   /* an overlay's color is assigned when it is turned on */
   .panel .clear { margin: 12px 0 0; font-size: 13px; }
   .panel .clear button { background: none; border: 0; padding: 0; color: var(--ink-2); text-decoration: underline; cursor: pointer; }
 
@@ -166,7 +186,7 @@
   /* Embed mode (chart.html?...&embed=1): just the chart, for iframes in articles */
   body.embed { background: var(--surface); }
   body.embed .masthead, body.embed footer, body.embed .panel, body.embed .actions, body.embed details.table,
-  body.embed .strip, body.embed .compare, body.embed .events-list, body.embed .custom { display: none; }
+  body.embed .strip, body.embed .compare, body.embed .events-list, body.embed .custom, body.embed .to-panel { display: none; }
   body.embed .layout { display: block; padding: 10px 0 8px; }
   body.embed .wrap { padding: 0 10px; max-width: none; }
   body.embed .embed-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 0 0 2px; }
@@ -174,7 +194,7 @@
   body.embed .embed-head a { font-size: 13px; color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--hairline); }
   body.embed .headline { margin: 0; }
   body.embed .headline .value { font-size: 24px; }
-  body.embed .context { font-size: 13.5px; color: var(--ink-2); margin: 0; }
+  body.embed .context { font-size: 13.5px; color: var(--ink-2); margin: 0; font-weight: 400; }
   body.embed .chart-head { margin: 8px 0 4px; }
   body.embed .chart { border: 0; padding: 0; }
   body.embed .framing { font-size: 12.5px; padding: 6px 10px; }
@@ -183,6 +203,18 @@
   .index ul { columns: 2; column-gap: 24px; padding-left: 20px; }
   footer { border-top: 1px solid var(--hairline); padding: 20px 0 40px; font-size: 13.5px; color: var(--ink-2); }
   footer p { max-width: 48em; margin: 0 0 8px; }
+  p, li, figcaption, .why { text-wrap: pretty; }
+  @media print {
+    :root { --page: #fff; --surface: #fff; }
+    body { background: #fff; }
+    .panel, .actions, details.table, .ranges, .custom, .to-panel, .to-chart, .crumb { display: none !important; }
+    .layout { display: block; padding: 12px 0; }
+    .chart, figure, .events-list li { break-inside: avoid; }
+    footer { padding-bottom: 0; }
+    body::after { content: "economyincontext.org"; display: block; padding: 12px 16px 0; font-size: 12px; color: #555; }
+    body.embed::after { content: none; }
+  }
+  h1, h2, h3, .masthead .sub { text-wrap: balance; }
 </style>
 </head>
 <body>
@@ -685,11 +717,22 @@
     if (!state.range) { fromI.value = state.from || ''; toI.value = state.to || ''; }
     const go = el('button', { type: 'button', text: 'Apply' });
     go.addEventListener('click', () => { if (!fromI.value && !toI.value) return; state.range = null; state.from = fromI.value || null; state.to = toI.value || null; syncButtons(); writeUrl(); draw(); });
-    custom.appendChild(fromI); custom.appendChild(document.createTextNode('to')); custom.appendChild(toI); custom.appendChild(go);
+    // the month inputs fold behind a button; a URL with from/to opens them
+    const fields = el('span', { class: 'fields', id: 'custom-fields' });
+    fields.appendChild(fromI); fields.appendChild(document.createTextNode('to')); fields.appendChild(toI); fields.appendChild(go);
+    const showFields = !!(state.from || state.to);
+    const toggle = el('button', { type: 'button', class: 'toggle', text: 'Custom range…', 'aria-expanded': String(showFields), 'aria-controls': 'custom-fields' });
+    if (!showFields) fields.hidden = true;
+    toggle.addEventListener('click', () => { const open = fields.hidden; fields.hidden = !open; toggle.setAttribute('aria-expanded', String(open)); if (open) fromI.focus(); });
+    custom.appendChild(toggle); custom.appendChild(fields);
     head.appendChild(custom);
 
+    const toPanel = el('p', { class: 'to-panel' }), toPanelA = el('a', { href: '#overlays' }); toPanel.appendChild(toPanelA);
+    function syncToPanel() { const n = Array.from(state.on).filter(id => ctx.ovById[id] && appliesTo(ctx.ovById[id], t.id)).length; toPanelA.textContent = 'Overlays' + (n ? ' · ' + n + ' on' : '') + ' ↓'; }
+    syncToPanel(); ctx.syncToPanel = syncToPanel;
     const frag = document.createDocumentFragment();
-    frag.appendChild(head); frag.appendChild(box); frag.appendChild(legend); frag.appendChild(framing); frag.appendChild(evList);
+    head.id = 'chart-top';
+    frag.appendChild(head); frag.appendChild(box); frag.appendChild(toPanel); frag.appendChild(legend); frag.appendChild(framing); frag.appendChild(evList);
     if ('ResizeObserver' in window) { let w = 0; new ResizeObserver(() => { const nw = box.clientWidth; if (nw && nw !== w) { w = nw; draw(); } }).observe(box); } else requestAnimationFrame(draw);
     return { node: frag, redraw: draw };
   }
@@ -697,14 +740,18 @@
   // ---- overlays panel -----------------------------------------------------
   function buildPanel(ctx, redraw) {
     const { tile: t, overlays } = ctx;
-    const panel = el('aside', { class: 'panel', 'aria-label': 'Overlays' });
+    const panel = el('aside', { class: 'panel', id: 'overlays', 'aria-label': 'Overlays' });
+    panel.appendChild(el('p', { class: 'to-chart' }, [el('a', { href: '#chart-top', text: 'Back to the chart ↑' })]));
     panel.appendChild(el('h2', { text: 'Overlays' }));
     panel.appendChild(el('p', { class: 'lead', text: 'Add context to the chart. Each overlay says where it comes from and what it can and cannot tell you. The link in your address bar keeps whatever you turn on.' }));
     const groups = ['Reference lines', 'Companion series', 'Eras', 'Events'];
+    // open a group only when one of its overlays is on; with nothing on, open Reference lines only
+    const anyOn = overlays.some(o => state.on.has(o.id) && appliesTo(o, t.id) && !o.hiddenInPanel);
     groups.forEach(g => {
       const items = overlays.filter(o => o.group === g && appliesTo(o, t.id) && !o.hiddenInPanel);
       if (!items.length) return;
-      const det = el('details', { open: '' });
+      const open = anyOn ? items.some(o => state.on.has(o.id)) : g === 'Reference lines';
+      const det = el('details', open ? { open: '' } : {});
       const gnote = ctx.groupNotes && ctx.groupNotes[g];
       const onCount = items.filter(o => state.on.has(o.id)).length;
       const sum = el('summary', {}, [el('span', { text: g }, [])]);
@@ -730,7 +777,7 @@
         cb.addEventListener('change', () => {
           if (cb.checked) state.on.add(o.id); else state.on.delete(o.id);
           panel.querySelectorAll('input[data-requires="' + o.id + '"]').forEach(x => { x.disabled = !cb.checked; if (!cb.checked && x.checked) { x.checked = false; state.on.delete(x.id.slice(3)); } });
-          updateCount(); writeUrl(); redraw(); paintSwatches();
+          updateCount(); writeUrl(); redraw(); paintSwatches(); ctx.syncToPanel && ctx.syncToPanel();
         });
         lab.appendChild(cb); lab.appendChild(name); lab.appendChild(why);
         det.appendChild(lab);
@@ -739,13 +786,13 @@
     });
     const clear = el('p', { class: 'clear' });
     const cb = el('button', { type: 'button', text: 'Turn everything off' });
-    cb.addEventListener('click', () => { state.on.clear(); panel.querySelectorAll('input[type=checkbox]').forEach(x => { x.checked = false; if (x.hasAttribute('data-requires')) x.disabled = true; }); panel.querySelectorAll('.count').forEach(x => x.textContent = ''); writeUrl(); redraw(); paintSwatches(); });
+    cb.addEventListener('click', () => { state.on.clear(); panel.querySelectorAll('input[type=checkbox]').forEach(x => { x.checked = false; if (x.hasAttribute('data-requires')) x.disabled = true; }); panel.querySelectorAll('.count').forEach(x => x.textContent = ''); writeUrl(); redraw(); paintSwatches(); ctx.syncToPanel && ctx.syncToPanel(); });
     clear.appendChild(cb); panel.appendChild(clear);
     function paintSwatches() {
       // colors are assigned in draw order (companions first, then sub-panels); mirror that here
       const act = overlays.filter(o => state.on.has(o.id) && appliesTo(o, t.id) && o.type === 'series');
       const order = act.filter(o => !OWN_SCALE[o.id]).concat(act.filter(o => OWN_SCALE[o.id]));
-      panel.querySelectorAll('.sw').forEach(s => { const i = order.findIndex(o => o.id === s.getAttribute('data-sw')); s.style.background = i >= 0 ? COLORS[i % COLORS.length] : 'var(--hairline)'; });
+      panel.querySelectorAll('.sw').forEach(s => { const i = order.findIndex(o => o.id === s.getAttribute('data-sw')); s.style.background = i >= 0 ? COLORS[i % COLORS.length] : ''; s.classList.toggle('off', i < 0); });
     }
     paintSwatches();
     return panel;
@@ -793,7 +840,11 @@
     function csv() {
       const comps = activeSeries();
       // the CSV carries raw values, so its header names the raw unit where the page shows a scaled one (cents vs dollars)
-      const lines = ['date,' + csvQ(t.title + ' (' + (d.csv_unit || d.unit) + ')') + comps.map(o => ',' + csvQ(o.label)).join('')];
+      // two lines saying what this is and where it came from, a blank line, then the table
+      const series = [t.source.series].concat(comps.map(o => o.source && o.source.label ? o.source.label.replace(/^FRED /, '') : null).filter(Boolean));
+      const lines = [csvQ(t.title + ' (' + (d.csv_unit || d.unit) + '), from Economy in Context: https://economyincontext.org/chart.html?id=' + t.id),
+        csvQ('Data: FRED series ' + series.join(', ') + ', retrieved ' + String(ctx.data.generated || '').slice(0, 10)), '',
+        'date,' + csvQ(t.title + ' (' + (d.csv_unit || d.unit) + ')') + comps.map(o => ',' + csvQ(o.label)).join('')];
       const maps = comps.map(joinMap);
       t.observations.forEach(p => lines.push(p[0] + ',' + p[1] + maps.map((m, k) => { const v = lookup(m, comps[k], p[0]); return ',' + (v == null ? '' : v); }).join('')));
       lines.push(''); lines.push('# ' + ctx.data.attribution); lines.push('# ' + t.source.url);
@@ -853,7 +904,7 @@
       document.body.classList.add('embed');
       const q = new URLSearchParams(location.search); q.delete('embed');
       left.appendChild(el('div', { class: 'embed-head' }, [el('h2', { text: t.title + ': ' + t.subtitle.charAt(0).toLowerCase() + t.subtitle.slice(1) }),
-        el('a', { href: 'chart.html?' + q.toString(), target: '_top', rel: 'noopener', text: 'Open the full chart →' })]));
+        el('a', { href: 'chart.html?' + q.toString(), target: '_top', rel: 'noopener', text: 'Full chart and context →' })]));
     }
     const hv = t.headline ? t.headline.value : c.current.value;
     const hdate = t.headline ? fmtPeriod(t.headline.date, 'd', true) : fmtPeriod(c.current.date, t.freq, true);
@@ -883,7 +934,17 @@
     dl.addEventListener('click', () => { const blob = new Blob([table.csv()], { type: 'text/csv' }); const a = el('a', { href: URL.createObjectURL(blob), download: 'economyincontext-' + t.id + '.csv' }); document.body.appendChild(a); a.click(); a.remove(); });
     const copy = el('button', { type: 'button', text: 'Copy link to this view' });
     copy.addEventListener('click', () => { navigator.clipboard && navigator.clipboard.writeText(location.href).then(() => { copy.textContent = 'Copied'; setTimeout(() => copy.textContent = 'Copy link to this view', 1500); }); });
-    actions.appendChild(dl); actions.appendChild(copy);
+    // the iframe for this exact view; a sub-panel needs the taller frame, as in articles
+    const embedBtn = el('button', { type: 'button', text: 'Copy embed code' });
+    function embedCode() {
+      const q = new URLSearchParams(location.search); q.set('embed', '1');
+      const tall = Array.from(state.on).some(id => OWN_SCALE[id] && ctx.ovById[id] && appliesTo(ctx.ovById[id], t.id));
+      const title = (t.title + ' — Economy in Context').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+      return '<iframe src="https://economyincontext.org/chart.html?' + q.toString().replace(/%2C/g, ',').replace(/&/g, '&amp;') + '" width="100%" height="' + (tall ? 720 : 600) + '" style="border:0" loading="lazy" title="' + title + '"></iframe>';
+    }
+    embedBtn.addEventListener('click', () => { navigator.clipboard && navigator.clipboard.writeText(embedCode()).then(() => { embedBtn.textContent = 'Copied'; setTimeout(() => embedBtn.textContent = 'Copy embed code', 1500); }); });
+    ctx.embedCode = embedCode;
+    actions.appendChild(dl); actions.appendChild(copy); actions.appendChild(embedBtn);
     actions.appendChild(el('a', { href: './#i-' + t.id, text: 'Back to the almanac' }));
     left.appendChild(actions);
     left.appendChild(table.node);

@@ -11,7 +11,14 @@
 <meta property="og:title" content="Economy in Context">
 <meta property="og:description" content="The main numbers on the U.S. economy, each shown against its own history, so you can see what is high, what is low and what is normal.">
 <meta property="og:url" content="https://economyincontext.org/">
-<meta name="twitter:card" content="summary">
+<link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<meta property="og:image" content="https://economyincontext.org/assets/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Economy in Context: the main numbers on the U.S. economy, each shown against its own history.">
+<meta name="twitter:card" content="summary_large_image">
 <style>
   /* Public Sans (SIL Open Font License), served from this site: no third-party requests. */
   @font-face { font-family: "Public Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("assets/fonts/PublicSans-Regular.woff2") format("woff2"); }
@@ -24,7 +31,7 @@
     --surface: #ffffff;
     --ink: #1b1b1a;
     --ink-2: #5a5955;
-    --muted: #8a8984;
+    --muted: #72716b;
     --hairline: #e3e2dc;
     --grid: #ebeae4;
     --series: #2a78d6;
@@ -33,6 +40,8 @@
     --focus: #2a78d6;
     --banner: #fff4d6;
     --banner-ink: #5a4300;
+    --full-ink: #1f63b5;
+    --full-line: rgba(42, 120, 214, 0.45);
     --max: 1120px;
   }
   @media (prefers-color-scheme: dark) {
@@ -50,6 +59,8 @@
       --recession: rgba(240, 239, 236, 0.08);
       --banner: #3a2f10;
       --banner-ink: #f3dfa0;
+      --full-ink: #6ea8f2;
+      --full-line: rgba(57, 135, 229, 0.6);
     }
   }
 
@@ -120,6 +131,8 @@
     min-width: 0;
   }
   .tile h3 { margin: 0; font-size: 19px; font-weight: 700; line-height: 1.25; }
+  .tile h3 a { color: inherit; text-decoration: none; }
+  .tile h3 a:hover { text-decoration: underline; text-decoration-color: var(--muted); text-underline-offset: 3px; }
   .tile .sub { margin: 2px 0 0; color: var(--ink-2); font-size: 14px; }
   .headline { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; margin: 14px 0 2px; }
   .headline .value { font-size: 40px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
@@ -137,7 +150,7 @@
   .strip text.avg-label { fill: var(--ink-2); }
   .strip .beyond { fill: var(--series); }
   .strip .beyond-label { font-size: 11px; fill: var(--series); font-weight: 600; }
-  .context { margin: 6px 0 0; font-size: 15px; }
+  .context { margin: 6px 0 0; font-size: 15px; font-weight: 600; }
   .household { margin: 6px 0 0; font-size: 14px; color: var(--ink-2); }
   .explainer { margin: 8px 0 0; font-size: 14px; }
   .explainer a { color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--hairline); }
@@ -145,9 +158,9 @@
 
   /* Chart ----------------------------------------------------------------- */
   .chart-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin: 18px 0 4px; }
-  .chart-head .range-title { font-size: 13px; color: var(--muted); }
-  .chart-head .full { color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--hairline); }
-  .chart-head .full:hover { border-color: var(--ink); }
+  .chart-head .range-title { font-size: 13.5px; }
+  .chart-head .full { display: inline-block; padding: 3px 11px; border: 1px solid var(--full-line); border-radius: 4px; background: var(--series-wash); color: var(--full-ink); font-weight: 600; text-decoration: none; line-height: 1.5; }
+  .chart-head .full:hover { background: var(--full-ink); border-color: var(--full-ink); color: var(--surface); }
   .ranges { display: inline-flex; border: 1px solid var(--hairline); border-radius: 4px; overflow: hidden; }
   .ranges button {
     background: transparent; border: 0; padding: 3px 9px; font-size: 13px; cursor: pointer; color: var(--ink-2); white-space: nowrap;
@@ -193,6 +206,17 @@
   .about p { max-width: 42em; margin: 0 0 12px; color: var(--ink-2); }
   .about p strong { color: var(--ink); font-weight: 600; }
   .status { padding: 24px 0; color: var(--ink-2); }
+  p, li, figcaption, .household, .context { text-wrap: pretty; }
+  h1, h2, h3, .tagline { text-wrap: balance; }
+  @media print {
+    :root { --page: #fff; --surface: #fff; }
+    body { background: #fff; }
+    .sections-nav, .ranges, .chart-head .full, details.table, .tip, .banner { display: none !important; }
+    .masthead .updated a { display: none; }
+    .tile { break-inside: avoid; }
+    .about { padding-bottom: 0; }
+    body::after { content: "economyincontext.org"; display: block; padding: 12px 16px 0; font-size: 12px; color: #555; }
+  }
 </style>
 </head>
 <body>
@@ -214,14 +238,14 @@
 
 <footer class="about">
   <div class="wrap">
-    <h2>How to read this page</h2>
+    <h2 id="how-to-read">How to read this page</h2>
     <p><strong>The big number</strong> is the latest official reading. The date beside it is the period it describes, which is usually a few weeks behind today, because that is how long the agencies take to count.</p>
     <p><strong>The bar underneath</strong> shows where that reading sits in the indicator's typical range: the middle 90 percent of everything it has done since records began. A dot at the far end means today is unusual. A dot in the middle means it is not, whatever the headlines say. A small arrow at either end means the reading is outside the typical range altogether, which is rarer still.</p>
     <p><strong>The line in plain terms</strong> restates the reading as something a household would feel: what last year's $100 buys, the payment on the median home at this rate, how many people the unemployment rate represents. It is computed from the same data each time the figures refresh.</p>
     <p><strong>The 2015–19 average</strong> is the last five full years before the pandemic. It is not a target, just a reasonable stand-in for what "normal" felt like recently.</p>
     <p><strong>What things cost</strong> shows prices as charged at the store and the pump, but compares them with the past after taking out inflation, because a raw price almost always sets a record eventually. Their typical range and 2015–19 average are in today's dollars; the chart and the year-ago figure are the prices people actually paid.</p>
     <p><strong>The chart</strong> shows the full history, with recessions shaded as dated by the National Bureau of Economic Research. Use the buttons to zoom in.</p>
-    <p><strong>Full view</strong> opens one indicator at full size, with optional overlays: reference lines such as the Fed's target, companion series such as PCE inflation or the U-6 rate, and bands showing who held the presidency and Congress, who chaired the Fed, and when major events happened. The main page stays plain on purpose; the overlays are there for readers who want them, each with its source and selection rule.</p>
+    <p><strong>Full chart and context</strong> opens one indicator at full size, with context you can turn on: reference lines such as the Fed's target, companion series such as PCE inflation or the U-6 rate, and bands showing who held the presidency and Congress, who chaired the Fed, and when major events happened. The main page stays plain on purpose; the context is there for readers who want it, each piece with its source and selection rule.</p>
     <p><strong>Revisions.</strong> Agencies revise their numbers as more data comes in, sometimes substantially. This page always shows the current figures, so a month's reading here can differ from the headline that was reported at the time.</p>
     <p><strong>Articles</strong> explain each number in plain words, follow the numbers to five kinds of household, and take up what is argued about. Each number links to its own explainer, and all of them are linked from the top of the page.</p>
     <p id="attribution"></p>
@@ -518,7 +542,7 @@
     }
 
     const head = el('div', { class: 'chart-head' });
-    head.appendChild(el('span', { class: 'range-title' }, [el('a', { class: 'full', href: 'chart.html?id=' + t.id, text: 'Full view with overlays →' })]));
+    head.appendChild(el('span', { class: 'range-title' }, [el('a', { class: 'full', href: 'chart.html?id=' + t.id, text: 'Full chart and context →' })]));
     const ctl = el('div', { class: 'ranges', role: 'group', 'aria-label': 'Chart range' });
     RANGES.forEach(r => {
       const available = !r.years || yearsBetween(obs[0][0], obs[obs.length - 1][0]) >= r.years - 0.5;
@@ -550,7 +574,8 @@
   function buildTile(t, data) {
     const c = t.context, d = t.display;
     const tile = el('article', { class: 'tile', id: 'i-' + t.id });
-    tile.appendChild(el('h3', { text: t.title }));
+    // the title links to the chart page too; the button below is the keyboard path, so the title takes no tab stop
+    tile.appendChild(el('h3', {}, [el('a', { class: 'tile-link', href: 'chart.html?id=' + t.id, tabindex: '-1', text: t.title })]));
     tile.appendChild(el('p', { class: 'sub', text: t.subtitle }));
 
     const hv = t.headline ? t.headline.value : c.current.value;
@@ -601,8 +626,10 @@
     const main = document.getElementById('main');
     main.innerHTML = '';
     const gen = new Date(data.generated);
-    document.getElementById('updated').textContent = 'Updated ' + MONTHS_LONG[gen.getMonth()] + ' ' + gen.getDate() + ', ' + gen.getFullYear() +
-      ' from FRED, the Federal Reserve Bank of St. Louis’s data service. Figures refresh automatically as agencies publish.';
+    const upd = document.getElementById('updated');
+    upd.textContent = 'Updated ' + MONTHS_LONG[gen.getMonth()] + ' ' + gen.getDate() + ', ' + gen.getFullYear() +
+      ' from FRED, the Federal Reserve Bank of St. Louis’s data service. Figures refresh automatically as agencies publish. · ';
+    upd.appendChild(el('a', { href: '#how-to-read', text: 'How to read this page ↓' }));
     document.getElementById('attribution').textContent = data.attribution;
     if (data.sample) {
       const b = document.getElementById('banner');
@@ -623,6 +650,11 @@
       main.appendChild(sec);
     });
     nav.appendChild(el('li', { class: 'nav-articles' }, [el('a', { href: 'articles/', text: 'Articles' })]));
+    // tiles render after the data loads, so a link to a section or tile has nothing to land on at first
+    if (location.hash.length > 1) {
+      const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+      if (target) requestAnimationFrame(() => target.scrollIntoView());
+    }
   }
 
   // The explainer map (indicator id -> its Plain words page) is written by the articles
