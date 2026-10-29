@@ -166,6 +166,16 @@
     gap: 16px;
   }
   @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  /* The odd last tile of a section spans both columns: reading and notes left, a taller chart right */
+  @media (min-width: 761px) {
+    .tile.wide { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-areas: "top chart" "foot chart"; column-gap: 32px; align-items: start; }
+    .tile.wide .tile-top { grid-area: top; }
+    .tile.wide .tile-chart { grid-area: chart; }
+    .tile.wide .tile-foot { grid-area: foot; }
+    .tile.wide .chart-head { margin-top: 0; }
+    .tile.wide .chart { min-height: 300px; }
+    .tile.wide .chart svg { height: 300px; }
+  }
 
   /* Tile ------------------------------------------------------------------ */
   .tile {
@@ -441,6 +451,19 @@
     return box;
   }
 
+  // ---- a section's tiles, in display order --------------------------------
+  // An odd section gives one tile the full row: the one flagged display.wide (set in fetch_fred.py), moved to
+  // the top of the section, or else the last tile. An even section ignores the flag. The overview uses the same order.
+  function sectionTiles(data, s) {
+    let tiles = data.tiles.filter(t => t.section === s), wideId = null;
+    if (tiles.length % 2 === 1) {
+      const flagged = tiles.find(t => t.display.wide);
+      if (flagged) { wideId = flagged.id; tiles = [flagged].concat(tiles.filter(t => t !== flagged)); }
+      else wideId = tiles[tiles.length - 1].id;
+    }
+    return { tiles, wideId };
+  }
+
   // ---- at a glance: one compact strip per indicator --------------------------
   // The same context and rules as each tile's strip (price tiles in today's dollars), without the labels.
   function miniStrip(t) {
@@ -477,7 +500,7 @@
     g.appendChild(key);
     const cols = el('div', { class: 'cols' });
     sections.forEach(s => {
-      const tiles = data.tiles.filter(t => t.section === s);
+      const { tiles } = sectionTiles(data, s);
       const grp = el('div', { class: 'grp' });
       grp.appendChild(el('h3', {}, [s, tiles.every(adjusted) ? el('span', { class: 'adj', text: ' · range in today’s dollars' }) : '']));
       tiles.forEach(t => {
@@ -515,7 +538,7 @@
   // dollar axes show whole dollars or full cents ($2.50, not $2.5)
   function axisDecimals(step, d) { const k = decimalsFor(step, d.scale); return d.prefix === '$' && k === 1 ? 2 : k; }
 
-  function buildChart(t, recessions) {
+  function buildChart(t, recessions, wide) {
     const box = el('div', { class: 'chart' });
     const tip = el('div', { class: 'tip' });
     box.appendChild(tip);
@@ -526,7 +549,8 @@
     function draw() {
       const old = box.querySelector('svg'); if (old) old.remove();
       const width = Math.max(240, box.clientWidth || 480);
-      const height = 190, mL = 46, mR = 14, mT = 12, mB = 24;
+      const tall = wide && window.matchMedia('(min-width: 761px)').matches;   // a wide tile's chart is taller beside its text
+      const height = tall ? 300 : 190, mL = 46, mR = 14, mT = 12, mB = 24;
       const iw = width - mL - mR, ih = height - mT - mB;
       const r = RANGES.find(x => x.key === range);
       const last = parseDate(obs[obs.length - 1][0]);
@@ -674,42 +698,46 @@
   }
 
   // ---- tile ---------------------------------------------------------------
-  function buildTile(t, data) {
+  function buildTile(t, data, wide) {
     const c = t.context, d = t.display;
-    const tile = el('article', { class: 'tile', id: 'i-' + t.id });
+    const tile = el('article', { class: 'tile' + (wide ? ' wide' : ''), id: 'i-' + t.id });
+    // three parts: the reading, the chart, the notes. A normal tile stacks them; a wide tile (the odd last
+    // tile of a section, on desktop) puts the reading and notes on the left and a taller chart on the right.
+    const top = el('div', { class: 'tile-top' }), mid = el('div', { class: 'tile-chart' }), foot = el('div', { class: 'tile-foot' });
+    tile.appendChild(top); tile.appendChild(mid); tile.appendChild(foot);
     // the title links to the chart page too; the button below is the keyboard path, so the title takes no tab stop
-    tile.appendChild(el('h3', {}, [el('a', { class: 'tile-link', href: 'chart.html?id=' + t.id, tabindex: '-1', text: t.title })]));
-    tile.appendChild(el('p', { class: 'sub', text: t.subtitle }));
+    top.appendChild(el('h3', {}, [el('a', { class: 'tile-link', href: 'chart.html?id=' + t.id, tabindex: '-1', text: t.title })]));
+    top.appendChild(el('p', { class: 'sub', text: t.subtitle }));
 
     const hv = t.headline ? t.headline.value : c.current.value;
     const hdate = t.headline ? fmtPeriod(t.headline.date, 'd', true) : fmtPeriod(c.current.date, t.freq, true);
     const head = el('div', { class: 'headline' });
     head.appendChild(el('span', { class: 'value', text: fmtValue(hv, d) }));
     head.appendChild(el('span', { class: 'when', text: hdate }));
-    tile.appendChild(head);
+    top.appendChild(head);
 
     const cmp = el('p', { class: 'compare' });
     if (t.headline) cmp.appendChild(el('span', { text: 'Monthly average ' + fmtPeriod(c.current.date, 'm') + ': ' + fmtValue(c.current.value, d) }));
     else cmp.appendChild(el('span', { text: prevLabel(t.freq) + ': ' + fmtValue(c.previous.value, d) }));
     if (c.year_ago && t.freq !== 'a') cmp.appendChild(el('span', { text: 'A year ago: ' + fmtValue(c.year_ago.value, d) }));
-    tile.appendChild(cmp);
+    top.appendChild(cmp);
 
-    tile.appendChild(buildStrip(t));
-    tile.appendChild(el('p', { class: 'context', text: contextSentence(t) }));
-    if (t.household && t.household.text) tile.appendChild(el('p', { class: 'household', text: t.household.text }));
+    top.appendChild(buildStrip(t));
+    top.appendChild(el('p', { class: 'context', text: contextSentence(t) }));
+    if (t.household && t.household.text) top.appendChild(el('p', { class: 'household', text: t.household.text }));
     const ex = (data.explainers || {})[t.id];
-    if (ex) tile.appendChild(el('p', { class: 'explainer' }, [el('a', { href: ex.url, text: 'In plain words: ' + (ex.hook || ex.title) + ' →' })]));
+    if (ex) top.appendChild(el('p', { class: 'explainer' }, [el('a', { href: ex.url, text: 'In plain words: ' + (ex.hook || ex.title) + ' →' })]));
 
-    tile.appendChild(buildChart(t, data.recessions));
+    mid.appendChild(buildChart(t, data.recessions, wide));
 
-    tile.appendChild(el('p', { class: 'note', text: t.note }));
+    foot.appendChild(el('p', { class: 'note', text: t.note }));
     const src = el('p', { class: 'source' });
     src.appendChild(document.createTextNode('Source: '));
     src.appendChild(el('a', { href: t.source.url, rel: 'noopener', text: 'FRED ' + t.source.series }));
     if (t.headline) { src.appendChild(document.createTextNode(' and ')); src.appendChild(el('a', { href: t.headline.url, rel: 'noopener', text: t.headline.series })); }
     ((t.household && t.household.sources) || []).forEach(x => { src.appendChild(document.createTextNode(', ')); src.appendChild(el('a', { href: x.url, rel: 'noopener', text: x.series })); });
     src.appendChild(document.createTextNode(', updated ' + (t.source.last_updated || '').slice(0, 10)));
-    tile.appendChild(src);
+    foot.appendChild(src);
 
     // table view: the last two years of readings
     const det = el('details', { class: 'table' });
@@ -720,7 +748,7 @@
       const tr = el('tr'); tr.appendChild(el('td', { text: fmtPeriod(o[0], t.freq) })); tr.appendChild(el('td', { text: fmtValue(o[1], d) })); tbl.appendChild(tr);
     });
     det.appendChild(tbl);
-    tile.appendChild(det);
+    foot.appendChild(det);
     return tile;
   }
 
@@ -751,7 +779,8 @@
       const sec = el('section', { class: 'group', id });
       sec.appendChild(el('h2', { text: s }));
       const grid = el('div', { class: 'grid' });
-      data.tiles.filter(t => t.section === s).forEach(t => grid.appendChild(buildTile(t, data)));
+      const { tiles, wideId } = sectionTiles(data, s);
+      tiles.forEach(t => grid.appendChild(buildTile(t, data, t.id === wideId)));
       sec.appendChild(grid);
       main.appendChild(sec);
     });

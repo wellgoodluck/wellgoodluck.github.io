@@ -40,6 +40,10 @@ API_KEY = os.environ.get("FRED_API_KEY", "").strip()
 #            "higher than" sentence on the inflation-adjusted history, in dollars
 #            of the latest reading's month, because a raw price only trends up.
 #            The headline, comparisons and chart stay as charged.
+#            wide True: when the tile's section has an odd number of tiles, this
+#            tile spans both columns at the top of the section on desktop
+#            (index.html). Ignored when the count is even. An odd section with
+#            no flag widens its last tile.
 # ---------------------------------------------------------------------------
 TILES = [
     # ---- Jobs -------------------------------------------------------------
@@ -126,7 +130,7 @@ TILES = [
         "params": {"observation_start": "1947-04-01"},
         "freq": "q",
         "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": True,
-                    "unit": "percent, annualized", "clip": [-15, 15]},
+                    "unit": "percent, annualized", "clip": [-15, 15], "wide": True},
         "note": "Inflation-adjusted. Each quarter is revised twice after its first estimate.",
     },
     {
@@ -201,7 +205,7 @@ TILES = [
         "params": {"observation_start": "1970-01-01"},
         "freq": "q",
         "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": False,
-                    "unit": "percent of GDP"},
+                    "unit": "percent of GDP", "wide": True},
         "note": "Excludes the debt the government owes its own trust funds. The level, not the yearly change; the deficit is the change.",
     },
     {
@@ -228,7 +232,7 @@ TILES = [
         "params": {"observation_start": "1990-08-20"},
         "freq": "w",
         "display": {"scale": 1, "decimals": 2, "prefix": "$", "signed": False,
-                    "unit": "dollars per gallon", "adjust": "cpi"},
+                    "unit": "dollars per gallon", "adjust": "cpi", "wide": True},
         "note": "Not seasonally adjusted. EIA's weekly survey of retail stations, all formulations. The chart shows the price as charged; the range and the comparison above it are adjusted for inflation.",
     },
     {
