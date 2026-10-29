@@ -18,7 +18,7 @@ Mortgage rates, housing starts and the 10-year reach you as a renter or an owner
 
 ## Pay against prices
 
-Typical hourly pay for production and nonsupervisory workers, about four-fifths of private employment, is up about 38% since 2019. Prices are up about 31%. That is a real gain of about 5% over seven years, less than 1% a year, and it did not arrive evenly: real pay fell for two years from mid-2021, rose from 2023 to early 2026, and has been falling again since spring as energy prices rose. The year-over-year version is on the inflation chart as "real wage growth," and it has been below zero since May.
+Average hourly pay for production and nonsupervisory workers, about four-fifths of private employment, is up about 39% since 2019. Prices are up about 31%. That is a real gain of about 5% over seven years, less than 1% a year, and it did not arrive evenly: real pay fell for two years from mid-2021, rose from 2023 to early 2026, and has been falling again since spring as energy prices rose. The year-over-year version is on the inflation chart as "real wage growth," and on the almanac's [hourly pay](../chart.html?id=pay&ov=cpi_on_pay,real_wages) chart; it has been below zero since April.
 
 What that average hides is the spread. Through 2023 the lowest-paid quarter of workers saw the largest real raises in forty years, while the top quarter lost a little, because a tight job market bids hardest for the people easiest to replace. The gains were real and they were concentrated at the bottom, which is why the same years read as a raise to some and a cut to others.
 

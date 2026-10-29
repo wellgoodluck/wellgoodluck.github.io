@@ -128,6 +128,7 @@
   .events-list li { break-inside: avoid; padding: 2px 0; }
   .events-list .d { color: var(--muted); font-variant-numeric: tabular-nums; margin-right: 6px; }
   .events-list .n { color: var(--ink-2); }
+  .events-list .src { margin-left: 6px; color: var(--muted); font-size: 12.5px; }
 
   .note { margin: 14px 0 0; font-size: 13.5px; color: var(--ink-2); }
   .source { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
@@ -240,6 +241,8 @@
     return (long ? MONTHS_LONG[m] : MONTHS[m]) + ' ' + day + ', ' + y;
   }
   function fmtDate(s) { return fmtPeriod(s, 'd'); }
+  // An event whose source gives only a season or a year carries that wording in `when`; its date only places the marker.
+  function evDate(e) { return e.when || fmtDate(e.date); }
   function periodNoun(freq) { return freq === 'a' ? 'years' : freq === 'q' ? 'quarters' : freq === 'w' ? 'weeks' : 'months'; }
   function prevLabel(freq) { return freq === 'a' ? 'Previous year' : freq === 'q' ? 'Previous quarter' : freq === 'w' ? 'Previous week' : 'Previous month'; }
   function yearsBetween(a, b) { return (parseDate(b) - parseDate(a)) / (365.25 * 86400000); }
@@ -281,8 +284,10 @@
     const share = v => Math.min(99, Math.max(1, Math.round(v))), isRecord = pct >= 50 ? c.highest_since == null : c.lowest_since == null;
     if (!isRecord) parts.push(pct >= 50 ? hiWord + share(pct) + '% of ' + noun + ' since ' + since + '.' : loWord + share(100 - pct) + '% of ' + noun + ' since ' + since + '.');
     const cur = c.current.value, prev = c.previous.value;
-    if (cur > prev) { if (c.highest_since == null) parts.push(deficit ? 'The smallest deficit on record.' : 'The highest on record.'); else if (yearsBetween(c.highest_since, c.current.date) >= 1) parts.push((deficit ? 'Smallest deficit since ' : 'Highest since ') + fmtPeriod(c.highest_since, t.freq) + '.'); }
-    else if (cur < prev) { if (c.lowest_since == null) parts.push(deficit ? 'The largest deficit on record.' : 'The lowest on record.'); else if (yearsBetween(c.lowest_since, c.current.date) >= 1) parts.push((deficit ? 'Largest deficit since ' : 'Lowest since ') + fmtPeriod(c.lowest_since, t.freq) + '.'); }
+    // on a price tile a "since" date is in today's dollars and can contradict the price as charged, so only records are stated
+    const sinceOK = !adjusted(t);
+    if (cur > prev) { if (c.highest_since == null) parts.push(deficit ? 'The smallest deficit on record.' : 'The highest on record.'); else if (sinceOK && yearsBetween(c.highest_since, c.current.date) >= 1) parts.push((deficit ? 'Smallest deficit since ' : 'Highest since ') + fmtPeriod(c.highest_since, t.freq) + '.'); }
+    else if (cur < prev) { if (c.lowest_since == null) parts.push(deficit ? 'The largest deficit on record.' : 'The lowest on record.'); else if (sinceOK && yearsBetween(c.lowest_since, c.current.date) >= 1) parts.push((deficit ? 'Largest deficit since ' : 'Lowest since ') + fmtPeriod(c.lowest_since, t.freq) + '.'); }
     if (adjusted(t) && parts.length) parts[0] = 'Adjusted for inflation, ' + parts[0].charAt(0).toLowerCase() + parts[0].slice(1);
     return parts.join(' ');
   }
@@ -526,7 +531,7 @@
         const x = g.x, it = g.items[0], n = g.items.length;
         svg.appendChild(svgEl('line', { class: 'ev', x1: x, x2: x, y1: mT - 2, y2: mT + ih, 'stroke-dasharray': '2 3' }));
         const mark = svgEl('path', { class: 'ev-mark', d: 'M' + x + ',' + (mT - 2) + ' l-4,-6 l8,0 z' });
-        mark.appendChild(svgEl('title', {})); mark.querySelector('title').textContent = g.items.map(e => fmtDate(e.date) + ': ' + e.label).join('\n');
+        mark.appendChild(svgEl('title', {})); mark.querySelector('title').textContent = g.items.map(e => evDate(e) + ': ' + e.label).join('\n');
         svg.appendChild(mark);
         if (narrow) return;
         // one label per group: the first event's name, plus "+N" when others share the spot; placed by the same
@@ -626,7 +631,7 @@
         });
         subTimes.forEach(s => { if (!s.sp.length) return; const j = nearest(s.times, times[i]); if (Math.abs(s.times[j] - times[i]) > 45 * 86400000) return; html += '<br><span class="k" style="background:' + colorFor(s.o.id) + '"></span>' + fmtValue(s.sp[j][1], s.o.display || d) + ' ' + shortLabel(s.o.label); });
         const near = evItems.filter(e => Math.abs(e.tm - times[i]) <= 20 * 86400000);
-        near.forEach(e => { html += '<br>▲ ' + e.label + ' (' + fmtDate(e.date) + ')'; });
+        near.forEach(e => { html += '<br>▲ ' + e.label + ' (' + evDate(e) + ')'; });
         tip.innerHTML = html; tip.style.display = 'block';
         const sx = cx * (rect.width / width), sy = cy * (rect.height / height);
         tip.style.left = Math.min(Math.max(sx, 90), rect.width - 90) + 'px'; tip.style.top = Math.max(sy - 10 + 8, 36) + 'px';
@@ -653,7 +658,9 @@
       if (evItems.length) {
         evList.appendChild(el('h3', { text: 'Events in view' }));
         const ul = el('ul');
-        evItems.forEach(e => ul.appendChild(el('li', {}, [el('span', { class: 'd', text: fmtDate(e.date) }), e.label, e.note ? el('span', { class: 'n', text: ' — ' + e.note }) : ''])));
+        // an event may carry its own source (the per-item supply shocks do); it is linked after the note
+        evItems.forEach(e => ul.appendChild(el('li', {}, [el('span', { class: 'd', text: evDate(e) }), e.label, e.note ? el('span', { class: 'n', text: ' — ' + e.note }) : '',
+          e.source ? el('a', { class: 'src', href: e.source, rel: 'noopener', text: 'source' }) : ''])));
         evList.appendChild(ul);
       }
       ctx.onWindow && ctx.onWindow(start, end);

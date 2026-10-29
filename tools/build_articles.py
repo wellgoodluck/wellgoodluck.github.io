@@ -235,7 +235,7 @@ MAP_NODES = [   # (label, href) in loop order; the loop closes back on the first
     ("Housing starts", "what-are-housing-starts.html"),
     ("Construction jobs", "what-is-the-jobs-report.html"),
     ("Jobs added", "what-is-the-jobs-report.html"),
-    ("Wages", "real-vs-nominal.html"),
+    ("Wages", "what-is-hourly-pay.html"),
     ("Inflation", "what-is-inflation.html"),
 ]
 MAP_LAGS = ["moves first, on expectations", "days", "3\u20136 months", "months",

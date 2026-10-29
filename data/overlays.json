@@ -1,5 +1,5 @@
 {
- "version": "2026-10-28b",
+ "version": "2026-10-29",
  "maintenance": "Party lanes need a two-line edit every other January after a new Congress is seated (next: January 2027). Fed chair, FOMC estimates and events are edited as they happen.",
  "political_note": "Control is shown as of inauguration (January 20) and the seating of each Congress (January 3). Policy acts with a lag, often a year or more, and shocks do not follow the election calendar.",
  "overlays": [
@@ -1001,6 +1001,7 @@
     "payrolls",
     "unemployment",
     "claims",
+    "pay",
     "cpi",
     "core_cpi"
    ],
@@ -1102,6 +1103,105 @@
    "source": {
     "label": "U.S. Department of Labor",
     "url": "https://www.dol.gov/agencies/whd/minimum-wage/history/chart"
+   }
+  },
+  {
+   "id": "ev_eggs",
+   "type": "events",
+   "group": "Events",
+   "label": "Supply shocks: eggs",
+   "applies_to": [
+    "eggs"
+   ],
+   "note": "Supply events that the U.S. Department of Agriculture or another federal agency names as a main cause of a move in this item's price, such as animal disease, drought and frost, or plant shutdowns. Dated by onset, from the agencies' own reports; where a report gives only a season or a year, the list says so. Prices react over the following weeks and months. Left out: the 2007–08 rise in feed costs, which USDA names but which has no single onset, and the spring 2020 jump, which it puts down to demand.",
+   "items": [
+    {
+     "date": "2002-10-01",
+     "label": "Exotic Newcastle disease",
+     "note": "Confirmed in backyard poultry in California; laying flocks were destroyed, and retail egg prices rose sharply in late 2003.",
+     "source": "https://www.ers.usda.gov/amber-waves/2016/january-february/retail-egg-price-volatility-in-2015-reflects-farm-conditions"
+    },
+    {
+     "date": "2014-12-14",
+     "label": "Bird flu outbreak, 2014–15",
+     "note": "About 33 million laying hens, 11% of the flock, were destroyed before it ended in June 2015. In September 2015 eggs cost 36% more than a year earlier.",
+     "source": "https://www.ers.usda.gov/amber-waves/2016/january-february/retail-egg-price-volatility-in-2015-reflects-farm-conditions"
+    },
+    {
+     "date": "2022-02-08",
+     "label": "Bird flu returns",
+     "note": "More than 43 million laying hens were lost in 2022, and wholesale eggs hit a record $5.37 a dozen in late December.",
+     "source": "https://www.ers.usda.gov/data-products/charts-of-note/106845"
+    },
+    {
+     "date": "2024-10-15",
+     "label": "Bird flu wave, 2024–25",
+     "note": "50.7 million laying hens were destroyed from mid-October to early March, and egg prices reached all-time highs by February 2025.",
+     "source": "https://ers.usda.gov/data-products/charts-of-note/112677",
+     "when": "Mid-Oct 2024"
+    }
+   ],
+   "source": {
+    "label": "USDA Economic Research Service, Poultry & Eggs market outlook",
+    "url": "https://www.ers.usda.gov/topics/animal-products/poultry-eggs/market-outlook"
+   }
+  },
+  {
+   "id": "ev_coffee",
+   "type": "events",
+   "group": "Events",
+   "label": "Supply shocks: coffee",
+   "applies_to": [
+    "coffee"
+   ],
+   "note": "Supply events that the U.S. Department of Agriculture or another federal agency names as a main cause of a move in this item's price, such as animal disease, drought and frost, or plant shutdowns. Dated by onset, from the agencies' own reports; where a report gives only a season or a year, the list says so. Prices react over the following weeks and months. Left out: the 2023–25 drought and heat in Brazil and Vietnam, which USDA blames for record prices but does not date, and the 2025 U.S. tariffs on Brazilian coffee, which were trade policy, not a supply shock.",
+   "items": [
+    {
+     "date": "1994-06-25",
+     "label": "Frosts in Brazil",
+     "note": "Two major frosts, in late June and early July, hit the country that grows about a quarter of the world's coffee, and coffee led the CPI for nonalcoholic beverages up 7.5% in 1994.",
+     "source": "https://ageconsearch.umn.edu/record/305732/files/aer729.pdf",
+     "when": "Late Jun 1994"
+    },
+    {
+     "date": "2021-06-30",
+     "label": "Frosts in Brazil",
+     "note": "Frosts on June 30, July 20 and July 30 followed months of drought and heat; the world coffee price index rose 70% in the year to November.",
+     "source": "https://esmis.nal.usda.gov/sites/default/release-files/m900nt40f/9g54zj36v/hx11zg97f/coffee.pdf"
+    }
+   ],
+   "source": {
+    "label": "USDA Foreign Agricultural Service, Coffee: World Markets and Trade",
+    "url": "https://www.fas.usda.gov/data/coffee-world-markets-and-trade"
+   }
+  },
+  {
+   "id": "ev_beef",
+   "type": "events",
+   "group": "Events",
+   "label": "Supply shocks: beef",
+   "applies_to": [
+    "ground_beef"
+   ],
+   "note": "Supply events that the U.S. Department of Agriculture or another federal agency names as a main cause of a move in this item's price, such as animal disease, drought and frost, or plant shutdowns. Dated by onset, from the agencies' own reports; where a report gives only a season or a year, the list says so. Prices react over the following weeks and months. Left out: the 2024–26 halts in cattle imports from Mexico over screwworm, which no agency ties to the retail price, and the 2019 fire at a Tyson beef plant, which moved wholesale beef but barely moved retail.",
+   "items": [
+    {
+     "date": "2010-01-01",
+     "label": "Drought shrinks the cattle herd",
+     "note": "Drought in the Plains and Southwest from 2010, and nationwide in 2012, forced ranchers to sell off herds. By January 2014 the herd was the smallest since 1951, and cattle and beef prices had been at records since mid-2013.",
+     "source": "https://ers.usda.gov/data-products/charts-of-note/77663",
+     "when": "From 2010"
+    },
+    {
+     "date": "2020-04-13",
+     "label": "Meatpacking plants close",
+     "note": "JBS closed its beef plant in Greeley, Colorado, after a COVID outbreak among workers, and other plants closed or slowed. Retail ground beef rose 4.4% from March to April.",
+     "source": "https://www.usda.gov/node/34625"
+    }
+   ],
+   "source": {
+    "label": "USDA Economic Research Service, Cattle and Beef",
+    "url": "https://www.ers.usda.gov/topics/animal-products/cattle-beef"
    }
   }
  ]

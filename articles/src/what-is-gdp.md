@@ -2,6 +2,7 @@
 title: What GDP Is, and Why 2% Growth Can Feel Like Nothing
 dek: Everything the country produced in three months, stated as if it kept up for a year, adjusted for inflation, and revised twice. Each of those is a place to misread it.
 date: 2026-10-28
+updated: 2026-10-29
 kind: concept
 tile: gdp
 label: GDP
@@ -30,7 +31,7 @@ Four pieces. What households buy, about two-thirds of the total and the steadies
 
 ## How to read this quarter's number
 
-**It is annualized.** "2.2%" is not what happened in the quarter. The quarter's actual change was about 0.55%, stated as if it continued for a year, so that quarters can be compared with annual figures. The cost is that every wobble looks four times bigger than it was.
+**It is annualized.** "3.4%" is not what happened in the quarter. The quarter's actual change was about 0.84%, stated as if it continued for a year, so that quarters can be compared with annual figures. The cost is that every wobble looks four times bigger than it was.
 
 **It is a first draft.** Each quarter gets an advance estimate, a second and a third, as the slow data (services, trade, inventories) arrive, and then annual revisions for years after that. Since 2022 the gap between the advance estimate and the current figure has averaged about 0.6 of a point in one direction or the other, and three quarters have moved by more than a point. The first estimate for the second quarter of 2022 was minus 0.9%. It now reads plus 0.6%. The two negative quarters of 2022, which were a political fight at the time, no longer exist in the data.
 

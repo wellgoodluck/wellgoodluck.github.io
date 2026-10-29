@@ -79,6 +79,18 @@ TILES = [
                     "unit": "claims per week", "clip": [0, 700000]},
         "note": "Seasonally adjusted. Weekly, so it moves before the monthly jobs numbers do.",
     },
+    {
+        "id": "pay",
+        "section": "Jobs",
+        "title": "Hourly pay",
+        "subtitle": "Average hourly earnings, change from a year ago",
+        "series": "AHETPI",
+        "params": {"units": "pc1", "observation_start": "1965-01-01"},
+        "freq": "m",
+        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": False,
+                    "unit": "percent, year over year"},
+        "note": "Production and nonsupervisory workers, about four-fifths of private employment; seasonally adjusted. An average, so it jumps when low-paid jobs disappear, as in 2020.",
+    },
     # ---- Prices -----------------------------------------------------------
     {
         "id": "cpi",
@@ -451,6 +463,15 @@ COMPANIONS = [
         "why": "Pay for production and nonsupervisory workers, about four-fifths of private employment. When this line is above inflation, typical paychecks are gaining ground.",
     },
     {
+        "id": "cpi_on_pay",
+        "label": "Inflation (CPI, all items)",
+        "for": ["pay"],
+        "series": "CPIAUCSL",
+        "params": {"units": "pc1", "observation_start": "1965-01-01"},
+        "freq": "m",
+        "why": "Prices, the other half of a paycheck. When this line is above pay growth, an hour of work buys less than it did a year before.",
+    },
+    {
         "id": "receipts",
         "label": "Federal receipts, share of GDP",
         "for": ["deficit"],
@@ -594,6 +615,22 @@ def household_lines(tiles_out, companions_out, extras):
                            f"{abs(pct):.0f}% {'below' if pct < 0 else 'above'} the 2015{EN}19 norm of about {big(b)}.", [])
     except Exception: pass
     try:
+        # Pay against prices for the same month; the jobs report usually lands before that month's CPI.
+        p, pd = cur("pay"), T["pay"]["context"]["current"]["date"]
+        cpi_by_month = {month_key(d): v for d, v in T["cpi"]["observations"]}
+        infl = cpi_by_month.get(month_key(pd))
+        month = lambda d: datetime.strptime(d, "%Y-%m-%d").strftime("%B")
+        if infl is not None:
+            lead = f"In {month(pd)} pay was up {p:.1f}% from a year earlier and prices {infl:.1f}%"
+        else:
+            infl, cd = cur("cpi"), T["cpi"]["context"]["current"]["date"]
+            lead = f"Pay in {month(pd)} was up {p:.1f}% from a year earlier; prices, last measured in {month(cd)}, were up {infl:.1f}%"
+        real = ((1 + p / 100) / (1 + infl / 100) - 1) * 100
+        lines["pay"] = (lead + (f", so an hour of work bought about {abs(real):.1f}% {'more' if real > 0 else 'less'} than a year before."
+                                if abs(real) >= 0.05 else ", so an hour of work bought about what it did a year before."),
+                        [{"series": "CPIAUCSL", "url": "https://fred.stlouisfed.org/series/CPIAUCSL"}])
+    except Exception: pass
+    try:
         pl = latest("price_level")
         lines["cpi"] = (f"What cost $100 a year ago costs {cents(100 * (1 + cur('cpi') / 100))} now."
                         + (f" What cost $100 in 2019 costs {cents(pl)}." if pl else ""), [])
@@ -733,7 +770,7 @@ DERIVED = [
     {
         "id": "real_wages",
         "label": "Real wage growth (hourly earnings minus CPI inflation)",
-        "for": ["cpi", "core_cpi"],
+        "for": ["cpi", "core_cpi", "pay"],
         "op": "diff", "a": "wages", "b": "cpi", "freq": "m",
         "why": "Wage growth after inflation, as a simple difference. Above zero, pay is outrunning prices; below, prices are winning. Compares against headline CPI on both charts.",
     },

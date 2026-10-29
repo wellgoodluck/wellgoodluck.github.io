@@ -70,7 +70,7 @@ Inflation is rising again, but for a different reason than in 2021. The Septembe
 
 The gap between those two numbers is oil. The war with Iran has disrupted tanker traffic through the Strait of Hormuz, and gasoline is up 34% over the past year, fuel oil 74%. Gasoline alone accounted for more than half of September's monthly increase. Before that, the 2025 tariffs had already added to the price of imported goods.
 
-This is a supply shock, closer to 1973 than to 2021. Money growth is running near its long-run average of about 6% a year, not the 25%-plus of 2020–21. A supply shock raises prices once; it only becomes lasting inflation if it spreads into wages and expectations. There are early signs of that: core prices rose 0.3% in each of the last two months, airfares are up 23% year over year as jet fuel feeds through, and producer prices excluding food and energy are up 5%.
+This is a supply shock, closer to 1973 than to 2021. Money growth is running near its long-run average of about 6% a year, not the 25%-plus of 2020–21. A supply shock raises prices once; it only becomes lasting inflation if it spreads into wages and expectations. There are early signs of that: core prices rose 0.3% in each of the last two months, airfares are up 22% year over year as jet fuel feeds through, and producer prices excluding food and energy are up 5%.
 
 The Fed raised rates in September and held them at 3.75–4% on October 28, with two of twelve members voting for another increase. Raising rates can't make oil, so the point isn't to lower gas prices. It's to keep the oil shock from turning into the kind of broad inflation that took three years to unwind last time.
 

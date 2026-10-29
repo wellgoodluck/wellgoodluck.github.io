@@ -306,12 +306,15 @@
     }
 
     const cur = c.current.value, prev = c.previous.value;
+    // On a price tile a "since" date is in today's dollars and can contradict the price as charged
+    // (a price can rise in a month and still fall after inflation), so there only records are stated.
+    const sinceOK = !adjusted(t);
     if (cur > prev) {
       if (c.highest_since == null) parts.push(deficit ? 'The smallest deficit on record.' : 'The highest on record.');
-      else if (yearsBetween(c.highest_since, c.current.date) >= 1) parts.push((deficit ? 'Smallest deficit since ' : 'Highest since ') + fmtPeriod(c.highest_since, t.freq) + '.');
+      else if (sinceOK && yearsBetween(c.highest_since, c.current.date) >= 1) parts.push((deficit ? 'Smallest deficit since ' : 'Highest since ') + fmtPeriod(c.highest_since, t.freq) + '.');
     } else if (cur < prev) {
       if (c.lowest_since == null) parts.push(deficit ? 'The largest deficit on record.' : 'The lowest on record.');
-      else if (yearsBetween(c.lowest_since, c.current.date) >= 1) parts.push((deficit ? 'Largest deficit since ' : 'Lowest since ') + fmtPeriod(c.lowest_since, t.freq) + '.');
+      else if (sinceOK && yearsBetween(c.lowest_since, c.current.date) >= 1) parts.push((deficit ? 'Largest deficit since ' : 'Lowest since ') + fmtPeriod(c.lowest_since, t.freq) + '.');
     }
     if (adjusted(t) && parts.length) parts[0] = 'Adjusted for inflation, ' + parts[0].charAt(0).toLowerCase() + parts[0].slice(1);
     return parts.join(' ');

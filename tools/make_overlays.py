@@ -189,6 +189,63 @@ min_wage = [  # effective date, new federal minimum
 def items(lst):
     return [{"date": d, "label": l, **({"note": n} if n else {})} for d, l, n in sorted(lst)]
 
+# ---- Supply shocks to single items (the What things cost tiles) ---------------
+# One overlay per item, shown on that item's chart only, each event with its own source.
+GOODS_RULE = ("Supply events that the U.S. Department of Agriculture or another federal agency names as a main cause of a move "
+              "in this item's price, such as animal disease, drought and frost, or plant shutdowns. Dated by onset, from the "
+              "agencies' own reports; where a report gives only a season or a year, the list says so. Prices react over the "
+              "following weeks and months.")
+GOODS_LEFT_OUT = {
+    "eggs": "Left out: the 2007–08 rise in feed costs, which USDA names but which has no single onset, and the spring 2020 "
+            "jump, which it puts down to demand.",
+    "coffee": "Left out: the 2023–25 drought and heat in Brazil and Vietnam, which USDA blames for record prices but does not "
+              "date, and the 2025 U.S. tariffs on Brazilian coffee, which were trade policy, not a supply shock.",
+    "ground_beef": "Left out: the 2024–26 halts in cattle imports from Mexico over screwworm, which no agency ties to the retail "
+                   "price, and the 2019 fire at a Tyson beef plant, which moved wholesale beef but barely moved retail.",
+}
+# (date, label, note, source url[, how the date reads when the report gives only a season or year])
+ERS_EGGS_2016 = "https://www.ers.usda.gov/amber-waves/2016/january-february/retail-egg-price-volatility-in-2015-reflects-farm-conditions"
+EGGS_SHOCKS = [
+    ("2002-10-01", "Exotic Newcastle disease",
+     "Confirmed in backyard poultry in California; laying flocks were destroyed, and retail egg prices rose sharply in late 2003.",
+     ERS_EGGS_2016),
+    ("2014-12-14", "Bird flu outbreak, 2014–15",
+     "About 33 million laying hens, 11% of the flock, were destroyed before it ended in June 2015. "
+     "In September 2015 eggs cost 36% more than a year earlier.",
+     ERS_EGGS_2016),
+    ("2022-02-08", "Bird flu returns",
+     "More than 43 million laying hens were lost in 2022, and wholesale eggs hit a record $5.37 a dozen in late December.",
+     "https://www.ers.usda.gov/data-products/charts-of-note/106845"),
+    ("2024-10-15", "Bird flu wave, 2024–25",
+     "50.7 million laying hens were destroyed from mid-October to early March, and egg prices reached all-time highs by February 2025.",
+     "https://ers.usda.gov/data-products/charts-of-note/112677", "Mid-Oct 2024"),
+]
+COFFEE_SHOCKS = [
+    ("1994-06-25", "Frosts in Brazil",
+     "Two major frosts, in late June and early July, hit the country that grows about a quarter of the world's coffee, "
+     "and coffee led the CPI for nonalcoholic beverages up 7.5% in 1994.",
+     "https://ageconsearch.umn.edu/record/305732/files/aer729.pdf", "Late Jun 1994"),
+    ("2021-06-30", "Frosts in Brazil",
+     "Frosts on June 30, July 20 and July 30 followed months of drought and heat; the world coffee price index rose 70% in the year to November.",
+     "https://esmis.nal.usda.gov/sites/default/release-files/m900nt40f/9g54zj36v/hx11zg97f/coffee.pdf"),
+]
+BEEF_SHOCKS = [
+    ("2010-01-01", "Drought shrinks the cattle herd",
+     "Drought in the Plains and Southwest from 2010, and nationwide in 2012, forced ranchers to sell off herds. "
+     "By January 2014 the herd was the smallest since 1951, and cattle and beef prices had been at records since mid-2013.",
+     "https://ers.usda.gov/data-products/charts-of-note/77663", "From 2010"),
+    ("2020-04-13", "Meatpacking plants close",
+     "JBS closed its beef plant in Greeley, Colorado, after a COVID outbreak among workers, and other plants closed or slowed. "
+     "Retail ground beef rose 4.4% from March to April.",
+     "https://www.usda.gov/node/34625"),
+]
+
+def sourced(lst):
+    out = []
+    for d, l, n, u, *when in sorted(lst):
+        out.append({"date": d, "label": l, **({"note": n} if n else {}), "source": u, **({"when": when[0]} if when else {})})
+    return out
+
 POLITICAL_NOTE = ("Control is shown as of inauguration (January 20) and the seating of each Congress (January 3). "
                   "Policy acts with a lag, often a year or more, and shocks do not follow the election calendar.")
 
@@ -261,14 +318,25 @@ overlays = [
     {"id": "ev_trade", "type": "events", "group": "Events", "label": "Trade policy", "applies_to": "all", "note": RULE, "items": items(trade)},
     {"id": "ev_shutdowns", "type": "events", "group": "Events", "label": "Government shutdowns (2 weeks or longer)", "applies_to": "all",
      "note": "Start dates. Shorter funding lapses, of which there have been several, are not shown.", "items": items(shutdowns)},
-    {"id": "ev_min_wage", "type": "events", "group": "Events", "label": "Federal minimum wage increases", "applies_to": ["payrolls", "unemployment", "claims", "cpi", "core_cpi"],
+    {"id": "ev_min_wage", "type": "events", "group": "Events", "label": "Federal minimum wage increases", "applies_to": ["payrolls", "unemployment", "claims", "pay", "cpi", "core_cpi"],
      "note": "Effective dates of each increase in the federal minimum. Many states set higher minimums, so the federal rate has bound less and less of the workforce since the 1980s.",
      "items": [{"date": d, "label": "Minimum wage to $%.2f" % v} for d, v in min_wage],
      "source": {"label": "U.S. Department of Labor", "url": "https://www.dol.gov/agencies/whd/minimum-wage/history/chart"}},
+    {"id": "ev_eggs", "type": "events", "group": "Events", "label": "Supply shocks: eggs", "applies_to": ["eggs"],
+     "note": GOODS_RULE + " " + GOODS_LEFT_OUT["eggs"], "items": sourced(EGGS_SHOCKS),
+     "source": {"label": "USDA Economic Research Service, Poultry & Eggs market outlook", "url": "https://www.ers.usda.gov/topics/animal-products/poultry-eggs/market-outlook"}},
+    {"id": "ev_coffee", "type": "events", "group": "Events", "label": "Supply shocks: coffee", "applies_to": ["coffee"],
+     "note": GOODS_RULE + " " + GOODS_LEFT_OUT["coffee"], "items": sourced(COFFEE_SHOCKS),
+     "source": {"label": "USDA Foreign Agricultural Service, Coffee: World Markets and Trade", "url": "https://www.fas.usda.gov/data/coffee-world-markets-and-trade"}},
+    {"id": "ev_beef", "type": "events", "group": "Events", "label": "Supply shocks: beef", "applies_to": ["ground_beef"],
+     "note": GOODS_RULE + " " + GOODS_LEFT_OUT["ground_beef"], "items": sourced(BEEF_SHOCKS),
+     "source": {"label": "USDA Economic Research Service, Cattle and Beef", "url": "https://www.ers.usda.gov/topics/animal-products/cattle-beef"}},
 ]
+# An events overlay with nothing in it would show an empty toggle: leave it out until it has items.
+overlays = [o for o in overlays if o["type"] != "events" or o.get("items")]
 
 out = {
-    "version": "2026-10-28b",
+    "version": "2026-10-29",
     "maintenance": "Party lanes need a two-line edit every other January after a new Congress is seated (next: January 2027). Fed chair, FOMC estimates and events are edited as they happen.",
     "political_note": POLITICAL_NOTE,
     "overlays": overlays,
