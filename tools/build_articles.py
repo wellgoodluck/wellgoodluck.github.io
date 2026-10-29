@@ -99,7 +99,10 @@ def md_to_html(text):
         if d:
             flush_para(); close_list(); out.append(d); continue
         if line.startswith("<") and not line.startswith("<a "):     # raw HTML block line
-            flush_para(); close_list(); out.append(line); continue
+            flush_para(); close_list()
+            if line.startswith("<table"):                             # tables scroll inside a wrapper on narrow screens
+                line = '<div class="table-scroll">' + line + "</div>"
+            out.append(line); continue
         m = re.match(r"^(#{1,3})\s+(.*)$", line)
         if m:
             flush_para(); close_list()

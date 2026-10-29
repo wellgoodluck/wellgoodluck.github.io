@@ -98,6 +98,7 @@
   .chart .lane-label { font-size: 11px; fill: var(--muted); }
   .chart .seg-label { font-size: 10.5px; fill: var(--ink); pointer-events: none; }
   .chart .seg-label.light { fill: #fff; }
+  .chart .seg-label.outside { fill: var(--ink); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
   .chart .seg { stroke: var(--surface); stroke-width: 1; }
   .chart .sub-title { font-size: 11px; fill: var(--ink-2); }
   .tip { position: absolute; pointer-events: none; display: none; background: var(--ink); color: var(--surface); font-size: 12px; line-height: 1.35; padding: 6px 9px; border-radius: 4px; white-space: nowrap; transform: translate(-50%, -100%); z-index: 2; max-width: 320px; }
@@ -206,7 +207,7 @@
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const COLORS = ['var(--c1)', 'var(--c2)', 'var(--c3)', 'var(--c4)', 'var(--c5)'];
-  const OWN_SCALE = { prime_age_epop: true, continuing_claims: true, price_level: true };   // drawn in a sub-panel, not on the main axis
+  const OWN_SCALE = { prime_age_epop: true, continuing_claims: true, price_level: true, dollar_index: true };   // drawn in a sub-panel, not on the main axis
 
   // ---- utils --------------------------------------------------------------
   function fmtValue(v, d, opts) {
@@ -221,13 +222,14 @@
   function iso(dt) { return dt.toISOString().slice(0, 10); }
   function fmtPeriod(s, freq, long) {
     const dt = parseDate(s), y = dt.getUTCFullYear(), m = dt.getUTCMonth(), day = dt.getUTCDate();
+    if (freq === 'a') return 'FY ' + y;
     if (freq === 'q') return 'Q' + (Math.floor(m / 3) + 1) + ' ' + y;
     if (freq === 'm') return (long ? MONTHS_LONG[m] : MONTHS[m]) + ' ' + y;
     return (long ? MONTHS_LONG[m] : MONTHS[m]) + ' ' + day + ', ' + y;
   }
   function fmtDate(s) { return fmtPeriod(s, 'd'); }
-  function periodNoun(freq) { return freq === 'q' ? 'quarters' : freq === 'w' ? 'weeks' : 'months'; }
-  function prevLabel(freq) { return freq === 'q' ? 'Previous quarter' : freq === 'w' ? 'Previous week' : 'Previous month'; }
+  function periodNoun(freq) { return freq === 'a' ? 'years' : freq === 'q' ? 'quarters' : freq === 'w' ? 'weeks' : 'months'; }
+  function prevLabel(freq) { return freq === 'a' ? 'Previous year' : freq === 'q' ? 'Previous quarter' : freq === 'w' ? 'Previous week' : 'Previous month'; }
   function yearsBetween(a, b) { return (parseDate(b) - parseDate(a)) / (365.25 * 86400000); }
   function el(tag, attrs, children) {
     const n = document.createElement(tag);
@@ -256,11 +258,12 @@
   // ---- context sentence & strip (same logic as the almanac page) ----------
   function contextSentence(t) {
     const c = t.context, noun = periodNoun(t.freq), since = parseDate(c.since).getUTCFullYear(), parts = [];
-    const pct = c.percentile_below;
-    parts.push(pct >= 50 ? 'Higher than ' + Math.round(pct) + '% of ' + noun + ' since ' + since + '.' : 'Lower than ' + Math.round(100 - pct) + '% of ' + noun + ' since ' + since + '.');
+    const pct = c.percentile_below, deficit = t.display.sense === 'deficit';
+    const hiWord = deficit ? 'A smaller deficit than ' : 'Higher than ', loWord = deficit ? 'A larger deficit than ' : 'Lower than ';
+    parts.push(pct >= 50 ? hiWord + Math.round(pct) + '% of ' + noun + ' since ' + since + '.' : loWord + Math.round(100 - pct) + '% of ' + noun + ' since ' + since + '.');
     const cur = c.current.value, prev = c.previous.value;
-    if (cur > prev) { if (c.highest_since == null) parts.push('The highest on record.'); else if (yearsBetween(c.highest_since, c.current.date) >= 1) parts.push('Highest since ' + fmtPeriod(c.highest_since, t.freq) + '.'); }
-    else if (cur < prev) { if (c.lowest_since == null) parts.push('The lowest on record.'); else if (yearsBetween(c.lowest_since, c.current.date) >= 1) parts.push('Lowest since ' + fmtPeriod(c.lowest_since, t.freq) + '.'); }
+    if (cur > prev) { if (c.highest_since == null) parts.push(deficit ? 'The smallest deficit on record.' : 'The highest on record.'); else if (yearsBetween(c.highest_since, c.current.date) >= 1) parts.push((deficit ? 'Smallest deficit since ' : 'Highest since ') + fmtPeriod(c.highest_since, t.freq) + '.'); }
+    else if (cur < prev) { if (c.lowest_since == null) parts.push(deficit ? 'The largest deficit on record.' : 'The lowest on record.'); else if (yearsBetween(c.lowest_since, c.current.date) >= 1) parts.push((deficit ? 'Largest deficit since ' : 'Lowest since ') + fmtPeriod(c.lowest_since, t.freq) + '.'); }
     return parts.join(' ');
   }
   function buildStrip(t) {
@@ -436,8 +439,23 @@
         if (placed.some(p => Math.abs(p - ly) < 12)) ly = y + 12;
         if (placed.some(p => Math.abs(p - ly) < 12)) ly = y + 24;
         placed.push(ly);
-        const lab = svgEl('text', { class: 'ref-label', x: width - mR - 2, y: ly, 'text-anchor': 'end' });
-        lab.textContent = x.o.label.replace(/\s*\(.*\)$/, '') + ' ' + fmtValue(x.v, d); svg.appendChild(lab);
+        // place the label where the data line is farthest from it: scan the plot in label-width windows,
+        // right to left, and take the first window in which no point comes within 12px of the label's row
+        const text = x.o.label.replace(/\s*\(.*\)$/, '') + ' ' + fmtValue(x.v, d); let lw = textW(text, 11) + 8;
+        const ptsXY = pts.map(p => [xs(parseDate(p[0]).getTime()), ys(clampV(p[1]))]);
+        comps.forEach(o => o.observations.filter(inWin).forEach(p => ptsXY.push([xs(parseDate(p[0]).getTime()), ys(clampV(p[1]))])));
+        let lx = null, anchor = 'end';
+        const tryRow = (row) => { for (let xb = width - mR; xb - lw >= mL; xb -= lw / 2) { if (clearAt(xb - lw, xb, row)) return xb - 2; } return null; };
+        const clearAt = (xa, xb, row) => !ptsXY.some(q => q[0] >= xa && q[0] <= xb && Math.abs(q[1] - (row - 4)) < 12);
+        for (const row of [ly, y - 16, y + 24, y - 28]) { const r = tryRow(row); if (r !== null) { lx = r; ly = row; break; } }
+        let shown = text;
+        if (lx === null) {                                       // no room for the full label anywhere: show just the value, name on hover
+          shown = fmtValue(x.v, d); lw = textW(shown, 11) + 8;
+          for (const row of [y - 4, y - 16, y + 24]) { const r = tryRow(row); if (r !== null) { lx = r; ly = row; break; } }
+          if (lx === null) { lx = width - mR - 2; ly = y - 4; }
+        }
+        const lab = svgEl('text', { class: 'ref-label', x: lx, y: ly, 'text-anchor': anchor });
+        lab.textContent = shown; lab.appendChild(svgEl('title', {})); lab.querySelector('title').textContent = text; svg.appendChild(lab);
       });
 
       // companion lines
@@ -478,19 +496,26 @@
       evs.forEach(o => o.items.forEach(it => { const tm = parseDate(it.date).getTime(); if (tm >= x0 && tm <= x1) evItems.push({ ...it, tm, group: o.label }); }));
       evItems.sort((a, b) => a.tm - b.tm);
       const rowEnd = [-Infinity, -Infinity];   // right edge of the last label placed on each row
-      evItems.forEach(it => {
-        const x = xs(it.tm);
+      // markers closer than 9px are drawn as one, with a "+N" badge; every marker names its events on hover
+      const groups = [];
+      evItems.forEach(it => { const x = xs(it.tm); const g = groups[groups.length - 1]; if (g && x - g.x < 12) g.items.push(it); else groups.push({ x, items: [it] }); });
+      groups.forEach(g => {
+        const x = g.x, it = g.items[0], n = g.items.length;
         svg.appendChild(svgEl('line', { class: 'ev', x1: x, x2: x, y1: mT - 2, y2: mT + ih, 'stroke-dasharray': '2 3' }));
-        svg.appendChild(svgEl('path', { class: 'ev-mark', d: 'M' + x + ',' + (mT - 2) + ' l-4,-6 l8,0 z' }));
+        const mark = svgEl('path', { class: 'ev-mark', d: 'M' + x + ',' + (mT - 2) + ' l-4,-6 l8,0 z' });
+        mark.appendChild(svgEl('title', {})); mark.querySelector('title').textContent = g.items.map(e => fmtDate(e.date) + ': ' + e.label).join('\n');
+        svg.appendChild(mark);
         if (narrow) return;
-        const text = it.label.length > 30 ? it.label.slice(0, 28) + '…' : it.label, w = textW(text, 10.5);
+        // one label per group: the first event's name, plus "+N" when others share the spot; placed by the same
+        // two-row collision rule as before, so a crowded stretch shows what fits and the hover title and list name the rest
+        const text = (it.label.length > 30 ? it.label.slice(0, 28) + '…' : it.label) + (n > 1 ? ' +' + (n - 1) : ''), w = textW(text, 10.5);
         let anchor = 'middle', left = x - w / 2;
         if (left < mL) { anchor = 'start'; left = x; } else if (x + w / 2 > width - mR) { anchor = 'end'; left = x - w; }
         const row = rowEnd[0] < left - 6 ? 0 : rowEnd[1] < left - 6 ? 1 : -1;
-        if (row < 0) return;                       // no room: the tooltip and the list below still name it
+        if (row < 0) return;                       // no room: the hover title and the list below still name it
         rowEnd[row] = left + w;
         const lab = svgEl('text', { class: 'ev-label', x, y: mT - 11 - (row ? 13 : 0), 'text-anchor': anchor });
-        lab.textContent = text; svg.appendChild(lab);
+        lab.textContent = text; lab.appendChild(svgEl('title', {})); lab.querySelector('title').textContent = mark.querySelector('title').textContent; svg.appendChild(lab);
       });
 
       // sub-panels (own scale)
@@ -498,7 +523,8 @@
       let lastSubBottom = 0;
       subs.forEach(o => {
         const sp = o.observations.filter(inWin); if (!sp.length) { cursorY += subH + 10; return; }
-        const vals = sp.map(p => p[1]); let slo = Math.min(...vals), shi = Math.max(...vals); if (slo === shi) { slo -= 1; shi += 1; }
+        const sclip = o.display && o.display.clip ? o.display.clip : null, sclamp = v => sclip ? Math.min(sclip[1], Math.max(sclip[0], v)) : v;
+        const vals = sp.map(p => sclamp(p[1])); let slo = Math.min(...vals), shi = Math.max(...vals); if (slo === shi) { slo -= 1; shi += 1; }
         const spad = (shi - slo) * 0.1; slo -= spad; shi += spad;
         const top = cursorY + 12, sys_ = v => top + (shi - v) / (shi - slo) * (subH - 12);
         const sdisp = o.display || d;
@@ -507,7 +533,12 @@
         st.ticks.forEach(v => { svg.appendChild(svgEl('line', { class: 'grid-line', x1: mL, x2: width - mR, y1: sys_(v), y2: sys_(v) })); const tx = svgEl('text', { x: mL - 6, y: sys_(v) + 4, 'text-anchor': 'end' }); tx.textContent = fmtValue(v, sdisp, { decimals: sdec, nosign: true }); sax.appendChild(tx); });
         svg.appendChild(sax);
         const title = svgEl('text', { class: 'sub-title', x: mL, y: cursorY + 6 }); title.textContent = o.label; svg.appendChild(title);
-        let p = ''; sp.forEach((q, i) => { p += (i ? 'L' : 'M') + xs(parseDate(q[0]).getTime()).toFixed(1) + ',' + sys_(q[1]).toFixed(1); });
+        let p = ''; sp.forEach((q, i) => { p += (i ? 'L' : 'M') + xs(parseDate(q[0]).getTime()).toFixed(1) + ',' + sys_(sclamp(q[1])).toFixed(1); });
+        if (sclip) {                                            // mark the clipped peak, as the main chart does
+          let peak = null; sp.forEach(q => { if (q[1] > sclip[1] && (!peak || q[1] > peak[1])) peak = q; });
+          if (peak) { const cx = xs(parseDate(peak[0]).getTime()); svg.appendChild(svgEl('path', { class: 'clipmark', fill: colorFor(o.id), d: 'M' + cx + ',' + (top + 6) + ' l-5,7 l10,0 z' }));
+            const tx = svgEl('text', { class: 'cliplabel', x: cx + (cx > (mL + width - mR) / 2 ? -8 : 8), y: top + 14, 'text-anchor': cx > (mL + width - mR) / 2 ? 'end' : 'start' }); tx.textContent = fmtPeriod(peak[0], o.freq) + ': ' + fmtValue(peak[1], sdisp) + ', off the chart'; svg.appendChild(tx); }
+        }
         svg.appendChild(svgEl('path', { class: 'cline', d: p, stroke: colorFor(o.id) }));
         lastSubBottom = top + subH - 12;
         cursorY += subH + 10;
@@ -531,8 +562,16 @@
           r.appendChild(svgEl('title', {})); r.querySelector('title').textContent = (s.label || (s.party === 'D' ? 'Democratic' : s.party === 'R' ? 'Republican' : '')) + ': ' + fmtDate(s.start) + ' – ' + (s.end ? fmtDate(s.end) : 'present') + (s.note ? '. ' + s.note : '');
           svg.appendChild(r);
           const text = s.label || (s.party === 'D' ? 'D' : s.party === 'R' ? 'R' : '');
-          if (text && w > textW(text, 10.5) + 8) { const tl = svgEl('text', { class: 'seg-label' + (light ? ' light' : ''), x: xs(a) + w / 2, y: y + laneH - 5, 'text-anchor': 'middle' }); tl.textContent = text; svg.appendChild(tl); }
-          else if (text && w > 14 && text.length > 1 && (s.party === 'D' || s.party === 'R') && w > 12) { const tl = svgEl('text', { class: 'seg-label' + (light ? ' light' : ''), x: xs(a) + w / 2, y: y + laneH - 5, 'text-anchor': 'middle' }); tl.textContent = s.party; svg.appendChild(tl); }
+          const tw = textW(text, 10.5), si = segs.indexOf(s), isLast = si === segs.length - 1;
+          const prev = si > 0 ? segs[si - 1] : null, prevText = prev ? (prev.label || '') : '';
+          const prevRoom = prev ? xs(Math.max(parseDate(prev.start).getTime(), x0)) * 0 + (xs(a) - xs(Math.max(parseDate(prev.start).getTime(), x0))) : 0;
+          if (text && w > tw + 8) { const tl = svgEl('text', { class: 'seg-label' + (light ? ' light' : ''), x: xs(a) + w / 2, y: y + laneH - 5, 'text-anchor': 'middle' }); tl.textContent = text; svg.appendChild(tl); }
+          else if (text && isLast && !(s.party === 'D' || s.party === 'R') && prevRoom >= tw + textW(prevText, 10.5) + 20) {
+            // the current segment is too narrow for its name: write it ending at the segment's right edge, spilling
+            // left over the previous segment, when that segment is wide enough to hold both names
+            const tl = svgEl('text', { class: 'seg-label outside', x: xs(a) + w - 3, y: y + laneH - 5, 'text-anchor': 'end' }); tl.textContent = text; svg.appendChild(tl);
+          }
+          else if (text && w > 12 && text.length > 1 && (s.party === 'D' || s.party === 'R')) { const tl = svgEl('text', { class: 'seg-label' + (light ? ' light' : ''), x: xs(a) + w / 2, y: y + laneH - 5, 'text-anchor': 'middle' }); tl.textContent = s.party; svg.appendChild(tl); }
         });
       });
 
@@ -558,7 +597,7 @@
         let html = '<b>' + fmtValue(p[1], d) + '</b> ' + fmtPeriod(p[0], t.freq);
         compPts.forEach((c, k) => {
           if (!c.pts.length) { dots[k + 1].setAttribute('visibility', 'hidden'); return; }
-          const q_ = c.o.freq === 'q', j = nearest(compTimes[k], times[i], q_); if (Math.abs(compTimes[k][j] - times[i]) > (q_ ? 100 : 45) * 86400000) { dots[k + 1].setAttribute('visibility', 'hidden'); return; }
+          const q_ = c.o.freq === 'q' || c.o.freq === 'a', j = nearest(compTimes[k], times[i], q_); if (Math.abs(compTimes[k][j] - times[i]) > (c.o.freq === 'a' ? 370 : q_ ? 100 : 45) * 86400000) { dots[k + 1].setAttribute('visibility', 'hidden'); return; }
           const q = c.pts[j]; dots[k + 1].setAttribute('cx', xs(compTimes[k][j])); dots[k + 1].setAttribute('cy', ys(clampV(q[1]))); dots[k + 1].setAttribute('visibility', 'visible');
           html += '<br><span class="k" style="background:' + colorFor(c.o.id) + '"></span>' + fmtValue(q[1], c.o.display || d) + ' ' + shortLabel(c.o.label);
         });
@@ -696,6 +735,7 @@
       o.observations.forEach(p => {
         if (o.freq === 'w') m.set(p[0], p[1]);
         else if (o.freq === 'q') { const y = +p[0].slice(0, 4), mo = +p[0].slice(5, 7); for (let k = 0; k < 3; k++) { const mm = mo + k; m.set(y + '-' + String(mm).padStart(2, '0'), p[1]); } }
+        else if (o.freq === 'a') { const y = p[0].slice(0, 4); m.set(y, p[1]); for (let k = 1; k <= 12; k++) m.set(y + '-' + String(k).padStart(2, '0'), p[1]); }
         else m.set(p[0].slice(0, 7), p[1]);
       });
       return m;
@@ -715,7 +755,7 @@
       const { comps, out } = rows(start, end);
       tbl.innerHTML = '';
       const thead = el('tr'); thead.appendChild(el('th', { text: 'Period' })); thead.appendChild(el('th', { class: 'num', text: t.title }));
-      comps.forEach(o => thead.appendChild(el('th', { class: 'num', text: o.label + (o.freq === 'q' ? ' (quarterly)' : '') })));
+      comps.forEach(o => thead.appendChild(el('th', { class: 'num', text: o.label + (o.freq === 'q' ? ' (quarterly)' : o.freq === 'a' ? ' (annual)' : '') })));
       tbl.appendChild(thead);
       out.slice().reverse().forEach(r => { const tr = el('tr'); tr.appendChild(el('td', { text: fmtPeriod(r[0], t.freq) })); for (let i = 1; i < r.length; i++) tr.appendChild(el('td', { class: 'num', text: r[i] == null ? '' : fmtValue(r[i], i === 1 ? d : (comps[i - 2].display || d)) })); tbl.appendChild(tr); });
     }
@@ -752,7 +792,7 @@
     const comps = (compData.companions || []).filter(c => appliesTo(c, t.id)).map(c => ({
       id: c.id, type: 'series', group: 'Companion series', label: c.label, applies_to: c.for, why: c.why, observations: c.observations, freq: c.freq,
       source: c.source ? { label: 'FRED ' + c.source.series, url: c.source.url } : null,
-      display: c.id === 'continuing_claims' ? { scale: 1000, decimals: 0, suffix: 'K' } : c.id === 'price_level' ? { scale: 1, decimals: 0, suffix: '' } : OWN_SCALE[c.id] ? { scale: 1, decimals: 1, suffix: '%' } : null,
+      display: c.id === 'continuing_claims' ? { scale: 1000, decimals: 0, suffix: 'K', clip: [0, 4000000] } : c.id === 'price_level' || c.id === 'dollar_index' ? { scale: 1, decimals: 0, suffix: '' } : OWN_SCALE[c.id] ? { scale: 1, decimals: 1, suffix: '%' } : null,
     }));
     const overlays = ovData.overlays.concat(comps);
     const ovById = {}; overlays.forEach(o => ovById[o.id] = o);
@@ -774,7 +814,7 @@
     const cmp = el('p', { class: 'compare' });
     if (t.headline) cmp.appendChild(el('span', { text: 'Monthly average ' + fmtPeriod(c.current.date, 'm') + ': ' + fmtValue(c.current.value, d) }));
     else cmp.appendChild(el('span', { text: prevLabel(t.freq) + ': ' + fmtValue(c.previous.value, d) }));
-    if (c.year_ago) cmp.appendChild(el('span', { text: 'A year ago: ' + fmtValue(c.year_ago.value, d) }));
+    if (c.year_ago && t.freq !== 'a') cmp.appendChild(el('span', { text: 'A year ago: ' + fmtValue(c.year_ago.value, d) }));
     left.appendChild(cmp);
     left.appendChild(buildStrip(t));
     left.appendChild(el('p', { class: 'context', text: contextSentence(t) }));

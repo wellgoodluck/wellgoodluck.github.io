@@ -72,7 +72,7 @@ TILES = [
         "params": {"observation_start": "1967-01-01"},
         "freq": "w",
         "display": {"scale": 1000, "decimals": 0, "suffix": "K", "signed": False,
-                    "unit": "claims per week", "clip": [0, 1200000]},
+                    "unit": "claims per week", "clip": [0, 700000]},
         "note": "Seasonally adjusted. Weekly, so it moves before the monthly jobs numbers do.",
     },
     # ---- Prices -----------------------------------------------------------
@@ -162,6 +162,43 @@ TILES = [
         "display": {"scale": 1, "decimals": 2, "suffix": "%", "signed": False,
                     "unit": "percent"},
         "note": "Freddie Mac's weekly survey of lenders.",
+    },
+    # ---- Government and trade ---------------------------------------------
+    {
+        "id": "deficit",
+        "section": "Government and trade",
+        "title": "Federal deficit",
+        "subtitle": "What Washington borrowed in the fiscal year, as a share of the economy",
+        "series": "FYFSGDA188S",
+        "params": {"observation_start": "1929-01-01"},
+        "freq": "a",
+        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": True,
+                    "unit": "percent of GDP", "sense": "deficit"},
+        "note": "Fiscal years end September 30. Negative is a deficit; the rare positive readings are surpluses.",
+    },
+    {
+        "id": "debt",
+        "section": "Government and trade",
+        "title": "Federal debt",
+        "subtitle": "Debt held by the public, as a share of the economy",
+        "series": "FYGFGDQ188S",
+        "params": {"observation_start": "1970-01-01"},
+        "freq": "q",
+        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": False,
+                    "unit": "percent of GDP"},
+        "note": "Excludes the debt the government owes its own trust funds. The level, not the yearly change; the deficit is the change.",
+    },
+    {
+        "id": "trade",
+        "section": "Government and trade",
+        "title": "Trade deficit",
+        "subtitle": "Goods and services: exports minus imports, monthly",
+        "series": "BOPGSTB",
+        "params": {"observation_start": "1992-01-01"},
+        "freq": "m",
+        "display": {"scale": 1000, "decimals": 1, "suffix": "B", "signed": True,
+                    "unit": "billions of dollars", "clip": [-150000, 20000], "sense": "deficit"},
+        "note": "Seasonally adjusted. Negative means the country bought more from abroad than it sold.",
     },
 ]
 
@@ -347,6 +384,69 @@ COMPANIONS = [
         "why": "Pay for production and nonsupervisory workers, about four-fifths of private employment. When this line is above inflation, typical paychecks are gaining ground.",
     },
     {
+        "id": "receipts",
+        "label": "Federal receipts, share of GDP",
+        "for": ["deficit"],
+        "series": "FYFRGDA188S",
+        "params": {"observation_start": "1929-01-01"},
+        "freq": "a",
+        "why": "Taxes and other revenue. The deficit is this minus outlays; when people argue about the deficit they are arguing about which of these two lines to move.",
+    },
+    {
+        "id": "outlays",
+        "label": "Federal outlays, share of GDP",
+        "for": ["deficit"],
+        "series": "FYONGDA188S",
+        "params": {"observation_start": "1929-01-01"},
+        "freq": "a",
+        "why": "Spending, including interest on the debt. Compare with receipts.",
+    },
+    {
+        "id": "interest_gdp",
+        "label": "Interest on the debt, share of GDP",
+        "for": ["debt", "deficit"],
+        "series": "FYOIGDA188S",
+        "params": {"observation_start": "1940-01-01"},
+        "freq": "a",
+        "why": "What the debt costs each year. Set by the level of the debt and the interest rate, not by this year's deficit.",
+    },
+    {
+        "id": "gross_debt",
+        "label": "Gross federal debt, share of GDP (incl. trust funds)",
+        "for": ["debt"],
+        "series": "GFDEGDQ188S",
+        "params": {"observation_start": "1966-01-01"},
+        "freq": "q",
+        "why": "The larger figure often quoted. Includes what the government owes its own Social Security and Medicare trust funds.",
+    },
+    {
+        "id": "trade_goods",
+        "label": "Goods balance only",
+        "for": ["trade"],
+        "series": "BOPGTB",
+        "params": {"observation_start": "1992-01-01"},
+        "freq": "m",
+        "why": "Merchandise alone. The U.S. runs a deficit in goods and a surplus in services; the headline is the sum.",
+    },
+    {
+        "id": "trade_services",
+        "label": "Services balance only",
+        "for": ["trade"],
+        "series": "BOPSTB",
+        "params": {"observation_start": "1992-01-01"},
+        "freq": "m",
+        "why": "Software, finance, travel, education, royalties. The part of trade that is usually in surplus.",
+    },
+    {
+        "id": "dollar_index",
+        "label": "Dollar index (trade-weighted, broad)",
+        "for": ["trade"],
+        "series": "DTWEXBGS",
+        "params": {"observation_start": "2006-01-01", "frequency": "m", "aggregation_method": "avg"},
+        "freq": "m",
+        "why": "A stronger dollar makes imports cheaper and exports dearer, and tends to widen the deficit with a lag. Different scale: an index, 2006 = 100.",
+    },
+    {
         "id": "mortgage_monthly",
         "label": "30-year mortgage rate, monthly average",
         "for": [],
@@ -372,6 +472,12 @@ EXTRAS = [
     {"id": "tbill_3m", "series": "DTB3", "label": "3-month Treasury bill",
      "params": {"observation_start": "2015-01-01"}},
     {"id": "labor_force", "series": "CLF16OV", "label": "Civilian labor force",
+     "params": {"observation_start": "2015-01-01"}},
+    {"id": "population", "series": "POPTHM", "label": "U.S. population",
+     "params": {"observation_start": "2015-01-01"}},
+    {"id": "gross_debt_dollars", "series": "FYGFDPUN", "label": "Federal debt held by the public, dollars",
+     "params": {"observation_start": "2015-01-01"}},
+    {"id": "nominal_gdp", "series": "GDP", "label": "Nominal GDP, billions, annual rate",
      "params": {"observation_start": "2015-01-01"}},
 ]
 
@@ -458,6 +564,30 @@ def household_lines(tiles_out, companions_out, extras):
                              + (f", {money(mortgage_payment(loan, ya))} at a year ago's rate" if ya else "")
                              + f", and {money(mortgage_payment(loan, b))} at the 2015{EN}19 average. Principal and interest only.",
                              src("median_home_price"))
+    except Exception: pass
+
+    try:
+        rc, ol = latest("receipts"), latest("outlays")
+        d_ = cur("deficit")
+        txt = (f"Of every dollar the government spent, about {round(-d_ / ol * 100)}\u00a2 was borrowed." if ol and d_ < 0
+               else f"The government took in more than it spent, a surplus of {d_:.1f}% of GDP." if d_ >= 0 else "")
+        if txt:
+            lines["deficit"] = (txt + f" The deficit was {abs(d_):.1f}% of GDP; the 2015{EN}19 average was {abs(base('deficit')):.1f}%.", [])
+    except Exception: pass
+    try:
+        ig = latest("interest_gdp"); pop = extra("population"); gd = extra("gross_debt_dollars"); ng = extra("nominal_gdp")
+        parts = []
+        if gd and pop:
+            parts.append(f"The debt held by the public comes to about {money(gd * 1e6 / (pop * 1000))} per person.")
+        if ig is not None:
+            parts.append(f"Interest on it costs about {ig:.1f}% of GDP a year" + (f", roughly {money(ig / 100 * ng * 1e9 / (pop * 1000))} per person." if pop and ng else "."))
+        if parts:
+            lines["debt"] = (" ".join(parts), src("gross_debt_dollars", "population", "nominal_gdp"))
+    except Exception: pass
+    try:
+        tr = cur("trade"); pop = extra("population")
+        if pop:
+            lines["trade"] = (f"At this month's pace the country buys about {money(-tr * 1e6 * 12 / (pop * 1000))} more from abroad per person each year than it sells.", src("population"))
     except Exception: pass
 
     for t in tiles_out:
