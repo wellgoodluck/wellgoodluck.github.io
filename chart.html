@@ -6,6 +6,7 @@
 <title>Economy in Context</title>
 <meta name="description" content="One U.S. economic indicator at full size, with its full history and optional overlays: reference lines, companion series, who held power, and major events.">
 <meta name="robots" content="index,follow">
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
 <link rel="canonical" href="https://economyincontext.org/chart.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Economy in Context">
@@ -132,6 +133,7 @@
   .chart .seg-label.outside { fill: var(--ink); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
   .chart .seg { stroke: var(--surface); stroke-width: 1; }
   .chart .sub-title { font-size: 11px; fill: var(--ink-2); }
+  .chart .credit { font-size: 10.5px; fill: var(--muted); }
   .tip { position: absolute; pointer-events: none; display: none; background: var(--ink); color: var(--surface); font-size: 12px; line-height: 1.35; padding: 6px 9px; border-radius: 4px; white-space: nowrap; transform: translate(-50%, -100%); z-index: 2; max-width: 320px; }
   .tip b { font-weight: 600; }
   .tip .k { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; vertical-align: 0; }
@@ -153,7 +155,9 @@
   .note { margin: 14px 0 0; font-size: 13.5px; color: var(--ink-2); }
   .source { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
   .actions { margin: 14px 0 0; display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 13.5px; }
-  .actions button, .actions a { padding: 4px 10px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); cursor: pointer; text-decoration: none; font-size: 13.5px; }
+  .actions .reuse-short { align-self: center; font-size: 13px; color: var(--muted); }
+  .actions .reuse-short a { padding: 0; border: 0; background: none; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--hairline); }
+  .actions button, .actions > a { padding: 4px 10px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); cursor: pointer; text-decoration: none; font-size: 13.5px; }
 
   details.table { margin: 14px 0 0; font-size: 13px; }
   details.table summary { cursor: pointer; color: var(--ink-2); }
@@ -237,6 +241,7 @@
   <div class="wrap">
     <p><strong>About overlays.</strong> Reference lines and companion series come from the same sources as the main figures. Eras and events are compiled by hand from the primary records linked beside each one, and each overlay states its selection rule. Nothing here is a claim about cause: the overlays show when things happened, and the reader decides what to make of it.</p>
     <p id="attribution"></p>
+    <p class="reuse">Free to reuse with credit: Economy in Context (economyincontext.org). The charts and writing here are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Credit the data to its source, named on each chart.</p>
     <p>This site has no ads, no tracking and no agenda beyond putting the numbers in context. It is paid for by one reader; <a href="articles/how-this-site-is-paid-for.html">here is how</a>, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
   </div>
 </footer>
@@ -303,6 +308,8 @@
   function decimalsFor(step, scale) { const s = step / (scale || 1); return s >= 1 ? 0 : Math.min(3, Math.ceil(-Math.log10(s))); }
   // dollar axes show whole dollars or full cents ($2.50, not $2.5)
   function axisDecimals(step, d) { const k = decimalsFor(step, d.scale); return d.prefix === '$' && k === 1 ? 2 : k; }
+  // "Data: BLS via FRED · economyincontext.org"; tiles without an agency credit the FRED series
+  function creditLine(t) { return 'Data: ' + (t.agency ? t.agency + ' via FRED' : 'FRED (' + t.source.series + ')') + ' · economyincontext.org'; }
   function appliesTo(o, id) { return o.applies_to === 'all' || (Array.isArray(o.applies_to) && o.applies_to.includes(id)) || (Array.isArray(o.for) && o.for.includes(id)); }
 
   // ---- context sentence & strip (same logic as the almanac page) ----------
@@ -437,7 +444,8 @@
       const xAxisH = 22;
       const subsH = subs.length * (subH + 10);
       const lanesH = eras.length ? eras.length * (laneH + laneGap) + 6 : 0;
-      const height = mT + plotH + xAxisH + subsH + lanesH + 4;
+      const creditH = 16;   // the credit line, inside the frame, so a cropped screenshot keeps it
+      const height = mT + plotH + xAxisH + subsH + lanesH + 4 + creditH;
       const iw = width - mL - mR, ih = plotH;
       const { start, end } = window_();
       const x0 = start.getTime(), x1 = end.getTime();
@@ -674,6 +682,9 @@
       hit.addEventListener('touchstart', e => show(e.touches[0].clientX), { passive: true });
       hit.addEventListener('touchmove', e => show(e.touches[0].clientX), { passive: true });
       hit.addEventListener('mouseleave', hide); hit.addEventListener('touchend', hide);
+      const credit = svgEl('text', { class: 'credit', x: width - mR, y: height - 3, 'text-anchor': 'end' });
+      credit.textContent = creditLine(t);
+      svg.appendChild(credit);
       box.insertBefore(svg, tip);
 
       // legend
@@ -844,7 +855,7 @@
       // two lines saying what this is and where it came from, a blank line, then the table
       const series = [t.source.series].concat(comps.map(o => o.source && o.source.label ? o.source.label.replace(/^FRED /, '') : null).filter(Boolean));
       const lines = [csvQ(t.title + ' (' + (d.csv_unit || d.unit) + '), from Economy in Context: https://economyincontext.org/chart.html?id=' + t.id),
-        csvQ('Data: FRED series ' + series.join(', ') + ', retrieved ' + String(ctx.data.generated || '').slice(0, 10)), '',
+        csvQ('Data: ' + (t.agency ? t.agency + ' via ' : '') + 'FRED series ' + series.join(', ') + ', retrieved ' + String(ctx.data.generated || '').slice(0, 10)), '',
         'date,' + csvQ(t.title + ' (' + (d.csv_unit || d.unit) + ')') + comps.map(o => ',' + csvQ(o.label)).join('')];
       const maps = comps.map(joinMap);
       t.observations.forEach(p => lines.push(p[0] + ',' + p[1] + maps.map((m, k) => { const v = lookup(m, comps[k], p[0]); return ',' + (v == null ? '' : v); }).join('')));
@@ -947,6 +958,7 @@
     ctx.embedCode = embedCode;
     actions.appendChild(dl); actions.appendChild(copy); actions.appendChild(embedBtn);
     actions.appendChild(el('a', { href: './#i-' + t.id, text: 'Back to the almanac' }));
+    actions.appendChild(el('span', { class: 'reuse-short' }, ['Free to reuse with credit · ', el('a', { href: 'https://creativecommons.org/licenses/by/4.0/', rel: 'license noopener', text: 'CC BY 4.0' })]));
     left.appendChild(actions);
     left.appendChild(table.node);
 

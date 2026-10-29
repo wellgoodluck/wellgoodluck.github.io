@@ -44,11 +44,14 @@ API_KEY = os.environ.get("FRED_API_KEY", "").strip()
 #            tile spans both columns at the top of the section on desktop
 #            (index.html). Ignored when the count is even. An odd section with
 #            no flag widens its last tile.
+#   agency   who publishes the data, short form, from the series' Source on FRED; the
+#            charts' credit line reads "Data: <agency> via FRED · economyincontext.org"
 # ---------------------------------------------------------------------------
 TILES = [
     # ---- Jobs -------------------------------------------------------------
     {
         "id": "payrolls",
+        "agency": "BLS",
         "section": "Jobs",
         "title": "Jobs added",
         "subtitle": "Nonfarm payrolls, change from the month before",
@@ -61,6 +64,7 @@ TILES = [
     },
     {
         "id": "unemployment",
+        "agency": "BLS",
         "section": "Jobs",
         "title": "Unemployment rate",
         "subtitle": "Share of the labor force looking for work",
@@ -73,6 +77,7 @@ TILES = [
     },
     {
         "id": "claims",
+        "agency": "Labor Department",
         "section": "Jobs",
         "title": "New jobless claims",
         "subtitle": "First-time unemployment filings, 4-week average",
@@ -85,6 +90,7 @@ TILES = [
     },
     {
         "id": "pay",
+        "agency": "BLS",
         "section": "Jobs",
         "title": "Hourly pay",
         "subtitle": "Average hourly earnings, change from a year ago",
@@ -98,6 +104,7 @@ TILES = [
     # ---- Prices -----------------------------------------------------------
     {
         "id": "cpi",
+        "agency": "BLS",
         "section": "Prices",
         "title": "Inflation",
         "subtitle": "Consumer prices, change from a year ago",
@@ -110,6 +117,7 @@ TILES = [
     },
     {
         "id": "core_cpi",
+        "agency": "BLS",
         "section": "Prices",
         "title": "Core inflation",
         "subtitle": "Consumer prices excluding food and energy, change from a year ago",
@@ -123,6 +131,7 @@ TILES = [
     # ---- Growth & rates ---------------------------------------------------
     {
         "id": "gdp",
+        "agency": "BEA",
         "section": "Growth & rates",
         "title": "Economic growth",
         "subtitle": "Real GDP, quarterly change at an annual rate",
@@ -135,6 +144,7 @@ TILES = [
     },
     {
         "id": "fed_funds",
+        "agency": "Federal Reserve Board",
         "section": "Growth & rates",
         "title": "Fed funds rate",
         "subtitle": "The Federal Reserve's policy rate, monthly average",
@@ -147,6 +157,7 @@ TILES = [
     },
     {
         "id": "ten_year",
+        "agency": "Federal Reserve Board",
         "section": "Growth & rates",
         "title": "10-year Treasury yield",
         "subtitle": "What the U.S. government pays to borrow for ten years",
@@ -161,6 +172,7 @@ TILES = [
     # ---- Housing ----------------------------------------------------------
     {
         "id": "housing_starts",
+        "agency": "Census Bureau and HUD",
         "section": "Housing",
         "title": "Housing starts",
         "subtitle": "New homes begun, annual rate",
@@ -173,6 +185,7 @@ TILES = [
     },
     {
         "id": "mortgage",
+        "agency": "Freddie Mac",
         "section": "Housing",
         "title": "30-year mortgage rate",
         "subtitle": "Average fixed rate on new mortgages, weekly",
@@ -186,6 +199,7 @@ TILES = [
     # ---- Government and trade ---------------------------------------------
     {
         "id": "deficit",
+        "agency": "OMB and the St. Louis Fed",
         "section": "Government and trade",
         "title": "Federal deficit",
         "subtitle": "What Washington borrowed in the fiscal year, as a share of the economy",
@@ -198,6 +212,7 @@ TILES = [
     },
     {
         "id": "debt",
+        "agency": "OMB and the St. Louis Fed",
         "section": "Government and trade",
         "title": "Federal debt",
         "subtitle": "Debt held by the public, as a share of the economy",
@@ -210,6 +225,7 @@ TILES = [
     },
     {
         "id": "trade",
+        "agency": "Census Bureau and BEA",
         "section": "Government and trade",
         "title": "Trade deficit",
         "subtitle": "Goods and services: exports minus imports, monthly",
@@ -225,6 +241,7 @@ TILES = [
     # Not seasonally adjusted. adjust "cpi": see the display notes above.
     {
         "id": "gas",
+        "agency": "EIA",
         "section": "What things cost",
         "title": "Gasoline",
         "subtitle": "Regular, U.S. average pump price per gallon, weekly",
@@ -237,6 +254,7 @@ TILES = [
     },
     {
         "id": "electricity",
+        "agency": "BLS",
         "section": "What things cost",
         "title": "Electricity",
         "subtitle": "U.S. average price per kilowatt-hour, the unit on a power bill, monthly",
@@ -249,6 +267,7 @@ TILES = [
     },
     {
         "id": "eggs",
+        "agency": "BLS",
         "section": "What things cost",
         "title": "Eggs",
         "subtitle": "Grade A large, U.S. average price per dozen, monthly",
@@ -261,6 +280,7 @@ TILES = [
     },
     {
         "id": "ground_beef",
+        "agency": "BLS",
         "section": "What things cost",
         "title": "Ground beef",
         "subtitle": "100% beef, U.S. average price per pound, monthly",
@@ -273,6 +293,7 @@ TILES = [
     },
     {
         "id": "coffee",
+        "agency": "BLS",
         "section": "What things cost",
         "title": "Coffee",
         "subtitle": "Ground roast, U.S. average price per pound, monthly",
@@ -1224,6 +1245,7 @@ def main():
         tiles_out.append({
             "id": t["id"],
             "section": t["section"],
+            "agency": t.get("agency", ""),
             "title": t["title"],
             "subtitle": t["subtitle"],
             "note": t["note"],
