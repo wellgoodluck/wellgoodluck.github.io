@@ -6,6 +6,13 @@
 <title>Economy in Context</title>
 <meta name="description" content="One U.S. economic indicator at full size, with its full history and optional overlays: reference lines, companion series, who held power, and major events.">
 <meta name="robots" content="index,follow">
+<link rel="canonical" href="https://economyincontext.org/chart.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Economy in Context">
+<meta property="og:title" content="Charts — Economy in Context">
+<meta property="og:description" content="One U.S. economic indicator at full size, with its full history and optional overlays: reference lines, companion series, who held power, and major events.">
+<meta property="og:url" content="https://economyincontext.org/chart.html">
+<meta name="twitter:card" content="summary">
 <style>
   @font-face { font-family: "Public Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("assets/fonts/PublicSans-Regular.woff2") format("woff2"); }
   @font-face { font-family: "Public Sans"; font-weight: 600; font-style: normal; font-display: swap; src: url("assets/fonts/PublicSans-SemiBold.woff2") format("woff2"); }
@@ -786,6 +793,13 @@
     }
     document.title = t.title + ' — Economy in Context';
     document.getElementById('title').textContent = t.title;
+    // canonical and preview tags for this indicator (the id is the page; range and overlays are a view)
+    const canon = 'https://economyincontext.org/chart.html?id=' + encodeURIComponent(t.id);
+    const setMeta = (sel, val) => { const m = document.querySelector(sel); if (m) m.setAttribute(sel.startsWith('link') ? 'href' : 'content', val); };
+    setMeta('link[rel="canonical"]', canon); setMeta('meta[property="og:url"]', canon);
+    setMeta('meta[property="og:title"]', t.title + ' — Economy in Context');
+    setMeta('meta[property="og:description"]', t.subtitle + '. ' + contextSentence(t));
+    setMeta('meta[name="description"]', t.title + ': ' + t.subtitle + '. ' + contextSentence(t) + ' Full history with optional overlays.');
     document.getElementById('subtitle').textContent = t.subtitle;
 
     // overlays: hand-compiled ones plus every companion series that applies here

@@ -171,6 +171,12 @@ HEAD = """<!doctype html>
 <title>{title} — Economy in Context</title>
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{canonical}">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Economy in Context">
+<meta property="og:title" content="{title}">
+<meta property="og:description" content="{desc}">
+<meta property="og:url" content="{canonical}">
+<meta name="twitter:card" content="summary">
 <link rel="stylesheet" href="../assets/site.css">
 </head>
 <body>
@@ -319,6 +325,35 @@ def main():
     with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
         f.write(render_index(articles))
     print(f"built articles/index.html ({len(articles)} articles)")
+    write_sitemap(out_root, articles)
+
+
+def write_sitemap(out_root, articles):
+    """sitemap.xml and robots.txt at the site root: the almanac, the chart index, one chart page per
+    indicator (read from data/series.json when present), the articles index and every article."""
+    import json
+    from datetime import datetime, timezone
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    urls = [(f"{SITE}/", today, "daily", "1.0"), (f"{SITE}/chart.html", today, "weekly", "0.6")]
+    series_path = os.path.join("data", "series.json")
+    if os.path.exists(series_path):
+        try:
+            for t in json.load(open(series_path, encoding="utf-8")).get("tiles", []):
+                urls.append((f"{SITE}/chart.html?id={t['id']}", today, "daily", "0.8"))
+        except Exception as e:                                  # a bad data file must not break the build
+            print(f"sitemap: skipped chart pages ({e})")
+    urls.append((f"{SITE}/articles/", today, "weekly", "0.8"))
+    for a in articles:
+        urls.append((f"{SITE}/articles/{a['slug']}.html", a.get("updated") or a["date"], "monthly", "0.7"))
+    xml = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for loc, mod, freq, pri in urls:
+        xml.append(f"  <url><loc>{html.escape(loc, quote=True)}</loc><lastmod>{mod}</lastmod><changefreq>{freq}</changefreq><priority>{pri}</priority></url>")
+    xml.append("</urlset>")
+    with open(os.path.join(out_root, "sitemap.xml"), "w", encoding="utf-8") as f:
+        f.write("\n".join(xml) + "\n")
+    with open(os.path.join(out_root, "robots.txt"), "w", encoding="utf-8") as f:
+        f.write(f"User-agent: *\nAllow: /\nSitemap: {SITE}/sitemap.xml\n")
+    print(f"built sitemap.xml ({len(urls)} urls) and robots.txt")
 
 
 if __name__ == "__main__":
