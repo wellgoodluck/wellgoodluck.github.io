@@ -9,14 +9,14 @@
 :root {
   color-scheme: light;
   --page: #f6f6f3; --surface: #ffffff; --ink: #1b1b1a; --ink-2: #5a5955; --muted: #72716b;
-  --hairline: #e3e2dc; --grid: #ebeae4; --series: #2a78d6; --focus: #2a78d6;
+  --hairline: #e3e2dc; --grid: #ebeae4; --series: #0b7a75; --focus: #0b7a75;
   --banner: #fff4d6; --banner-ink: #5a4300; --max: 1120px; --measure: 42em;
 }
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
     --page: #121211; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
-    --hairline: #2c2c2a; --grid: #262624; --series: #3987e5; --banner: #3a2f10; --banner-ink: #f3dfa0;
+    --hairline: #2c2c2a; --grid: #262624; --series: #2bb3a8; --focus: #2bb3a8; --banner: #3a2f10; --banner-ink: #f3dfa0;
   }
 }
 
