@@ -324,6 +324,112 @@ COMPANIONS = [
 # Derived series, computed here from the fetched data so the page never has to
 # align two calendars. op: diff = a - b on matching dates; avg3 = trailing
 # 3-period mean of a.
+# ---------------------------------------------------------------------------
+# Extra series used only for the "in household terms" line on each tile.
+# Latest value only; each fails soft and the line it feeds drops that clause.
+# ---------------------------------------------------------------------------
+EXTRAS = [
+    {"id": "median_home_price", "series": "MSPUS", "label": "Median sales price of houses sold",
+     "params": {"observation_start": "2015-01-01"}},
+    {"id": "card_rate", "series": "TERMCBCCALLNS", "label": "Average credit card interest rate, all accounts",
+     "params": {"observation_start": "2015-01-01"}},
+    {"id": "tbill_3m", "series": "DTB3", "label": "3-month Treasury bill",
+     "params": {"observation_start": "2015-01-01"}},
+    {"id": "labor_force", "series": "CLF16OV", "label": "Civilian labor force",
+     "params": {"observation_start": "2015-01-01"}},
+]
+
+
+def mortgage_payment(principal, rate_pct, years=30):
+    r = rate_pct / 100 / 12
+    n = years * 12
+    return principal * r / (1 - (1 + r) ** -n)
+
+
+def household_lines(tiles_out, companions_out, extras):
+    """Attach {"text", "sources"} to each tile: the reading restated in household terms.
+    Every figure comes from data already fetched; a missing input drops that clause, or the line."""
+    T = {t["id"]: t for t in tiles_out}
+    C = {c["id"]: c["observations"] for c in companions_out}
+    X = extras
+    EN = "\u2013"
+
+    def cur(tid): return T[tid]["context"]["current"]["value"]
+    def base(tid): return T[tid]["context"]["baseline_2015_19"]
+    def year_ago(tid):
+        ya = T[tid]["context"].get("year_ago"); return ya["value"] if ya else None
+    def latest(cid): return C[cid][-1][1] if C.get(cid) else None
+    def extra(eid): return X[eid]["value"] if eid in X else None
+    def src(*eids): return [{"series": X[e]["series"], "url": X[e]["url"]} for e in eids if e in X]
+    def money(v): return f"${v:,.0f}"
+    def cents(v): return f"${v:,.2f}"
+    def big(v):
+        v = round(v / 1000) * 1000
+        return f"{v / 1e6:.1f} million" if v >= 1e6 else f"{v:,.0f}"
+
+    lines = {}
+    try:
+        lines["payrolls"] = (f"At this month's pace the economy adds about {big(12 * cur('payrolls') * 1000)} jobs a year. "
+                             f"The 2015{EN}19 pace was about {big(12 * base('payrolls') * 1000)} a year.", [])
+    except Exception: pass
+    try:
+        lf = extra("labor_force"); k = round(100 / cur("unemployment"))
+        n = cur("unemployment") / 100 * lf * 1000 if lf else None
+        txt = (f"About {n / 1e6:.1f} million people are looking for work, one in {k} of everyone in the labor force." if n
+               else f"One in {k} of everyone in the labor force is looking for work.")
+        lines["unemployment"] = (txt, src("labor_force"))
+    except Exception: pass
+    try:
+        c, b = cur("claims"), base("claims"); pct = (c / b - 1) * 100
+        lines["claims"] = (f"About {big(c)} people filed for unemployment benefits in an average week, "
+                           f"{abs(pct):.0f}% {'below' if pct < 0 else 'above'} the 2015{EN}19 norm of about {big(b)}.", [])
+    except Exception: pass
+    try:
+        pl = latest("price_level")
+        lines["cpi"] = (f"What cost $100 a year ago costs {cents(100 * (1 + cur('cpi') / 100))} now."
+                        + (f" What cost $100 in 2019 costs {cents(pl)}." if pl else ""), [])
+    except Exception: pass
+    try:
+        lines["core_cpi"] = (f"Leaving out food and energy, what cost $100 a year ago costs {cents(100 * (1 + cur('core_cpi') / 100))} now.", [])
+    except Exception: pass
+    try:
+        g = cur("gdp"); q = ((1 + g / 100) ** 0.25 - 1) * 100
+        lines["gdp"] = (f"In the quarter itself the economy grew {q:.1f}%; \u201c{g:.1f}%\u201d is that pace continued for a full year.", [])
+    except Exception: pass
+    try:
+        tb, cc = extra("tbill_3m"), extra("card_rate")
+        lines["fed_funds"] = ("Money market funds and online savings follow it within days"
+                              + (f" (3-month Treasury bills pay {tb:.1f}%)" if tb is not None else "") + "; credit cards within a statement"
+                              + (f" (the average card charges {cc:.1f}%)" if cc is not None else "") + "; mortgages only through the 10-year yield.",
+                              src("tbill_3m", "card_rate"))
+    except Exception: pass
+    try:
+        sp = latest("mortgage_minus_ten")
+        lines["ten_year"] = (f"Borrowing $1,000 for ten years costs the Treasury {money(10 * cur('ten_year'))} a year at this yield, "
+                             f"{money(10 * base('ten_year'))} at the 2015{EN}19 average."
+                             + (f" Mortgage rates run about {sp:.1f} points above it." if sp is not None else ""), [])
+    except Exception: pass
+    try:
+        sf = latest("single_family_starts"); tot = cur("housing_starts")
+        if sf is not None:
+            lines["housing_starts"] = (f"At this pace, about {big(sf * 1000)} houses and {big((tot - sf) * 1000)} apartments get started in a year.", [])
+    except Exception: pass
+    try:
+        mp = extra("median_home_price"); r = cur("mortgage"); ya = year_ago("mortgage"); b = base("mortgage")
+        loan = 0.8 * mp if mp else 400000.0
+        lead = f"On the median home sold ({money(mp)}), a mortgage with 20% down costs" if mp else "A $400,000 mortgage costs"
+        lines["mortgage"] = (f"{lead} {money(mortgage_payment(loan, r))} a month at this rate"
+                             + (f", {money(mortgage_payment(loan, ya))} at a year ago's rate" if ya else "")
+                             + f", and {money(mortgage_payment(loan, b))} at the 2015{EN}19 average. Principal and interest only.",
+                             src("median_home_price"))
+    except Exception: pass
+
+    for t in tiles_out:
+        if t["id"] in lines:
+            text, sources = lines[t["id"]]
+            t["household"] = {"text": text, "sources": sources}
+
+
 DERIVED = [
     {
         "id": "payrolls_3mo",
@@ -762,6 +868,24 @@ def main():
     except Exception as e:                     # belt and braces: never let this stage fail the run
         print(f"first prints skipped: {e}", file=sys.stderr, flush=True)
 
+    # Extra series for the household line on each tile. Latest value only; fail soft.
+    extras = {}
+    for x in EXTRAS:
+        print(f"{x['id']:16s} {x['series']} (extra)", flush=True)
+        try:
+            obs = get_observations(x["series"], x["params"])
+            time.sleep(0.4)
+            if not obs:
+                raise RuntimeError("no observations")
+            extras[x["id"]] = {"series": x["series"], "label": x["label"], "date": obs[-1][0], "value": obs[-1][1],
+                               "url": f"https://fred.stlouisfed.org/series/{x['series']}"}
+        except Exception as e:
+            print(f"  skipped: {e}", file=sys.stderr, flush=True)
+    try:
+        household_lines(tiles_out, companions_out, extras)
+    except Exception as e:
+        print(f"household lines skipped: {e}", file=sys.stderr, flush=True)
+
     print("recessions      USREC", flush=True)
     rec = get_observations(RECESSIONS_SERIES, {"observation_start": RECESSIONS_START})
 
@@ -773,6 +897,7 @@ def main():
         "baseline": {"label": "2015–19 average", "start": BASELINE_START.isoformat(),
                      "end": BASELINE_END.isoformat()},
         "recessions": recession_spans(rec),
+        "extras": extras,
         "tiles": tiles_out,
     }
 

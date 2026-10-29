@@ -131,6 +131,7 @@
   .strip text.avg-label { fill: var(--ink-2); }
   .strip .beyond { fill: var(--series); }
   .context { margin: 6px 0 0; font-size: 15px; }
+  .household { margin: 6px 0 0; font-size: 14px; color: var(--ink-2); }
 
   /* Chart ----------------------------------------------------------------- */
   .chart-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 18px 0 4px; }
@@ -531,6 +532,7 @@
 
     tile.appendChild(buildStrip(t));
     tile.appendChild(el('p', { class: 'context', text: contextSentence(t) }));
+    if (t.household && t.household.text) tile.appendChild(el('p', { class: 'household', text: t.household.text }));
 
     tile.appendChild(buildChart(t, data.recessions));
 
@@ -539,6 +541,7 @@
     src.appendChild(document.createTextNode('Source: '));
     src.appendChild(el('a', { href: t.source.url, rel: 'noopener', text: 'FRED ' + t.source.series }));
     if (t.headline) { src.appendChild(document.createTextNode(' and ')); src.appendChild(el('a', { href: t.headline.url, rel: 'noopener', text: t.headline.series })); }
+    ((t.household && t.household.sources) || []).forEach(x => { src.appendChild(document.createTextNode(', ')); src.appendChild(el('a', { href: x.url, rel: 'noopener', text: x.series })); });
     src.appendChild(document.createTextNode(', updated ' + (t.source.last_updated || '').slice(0, 10)));
     tile.appendChild(src);
 
