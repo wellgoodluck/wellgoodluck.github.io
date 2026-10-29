@@ -689,7 +689,7 @@
    "group": "Events",
    "label": "Shocks and crises",
    "applies_to": "all",
-   "note": "An event is listed if it visibly moved at least one indicator on this site within three months, or changed federal policy that bears directly on one. Nothing is listed because it fits a story. Dates are when the thing happened or was signed, not when its effects showed up.",
+   "note": "An event is listed if it visibly moved at least one indicator on this site within three months, or committed federal money or changed federal policy on a scale that shows up in GDP investment, household income or an indicator here over the following years. Nothing is listed because it fits a story. Dates are when the thing happened or was signed, not when its effects showed up.",
    "items": [
     {
      "date": "1973-10-17",
@@ -757,7 +757,7 @@
    "group": "Events",
    "label": "Major tax and spending laws",
    "applies_to": "all",
-   "note": "Date signed. An event is listed if it visibly moved at least one indicator on this site within three months, or changed federal policy that bears directly on one. Nothing is listed because it fits a story. Dates are when the thing happened or was signed, not when its effects showed up.",
+   "note": "Date signed. An event is listed if it visibly moved at least one indicator on this site within three months, or committed federal money or changed federal policy on a scale that shows up in GDP investment, household income or an indicator here over the following years. Nothing is listed because it fits a story. Dates are when the thing happened or was signed, not when its effects showed up.",
    "items": [
     {
      "date": "1986-10-22",
@@ -797,13 +797,29 @@
      "note": "$2.2 trillion pandemic relief signed."
     },
     {
+     "date": "2020-12-27",
+     "label": "Second pandemic relief bill",
+     "note": "$900 billion, including $600 payments, in the year-end appropriations act."
+    },
+    {
      "date": "2021-03-11",
      "label": "American Rescue Plan",
      "note": "$1.9 trillion pandemic relief signed."
     },
     {
+     "date": "2021-11-15",
+     "label": "Infrastructure Investment and Jobs Act",
+     "note": "$1.2 trillion over several years for roads, transit, broadband, water and the grid."
+    },
+    {
+     "date": "2022-08-09",
+     "label": "CHIPS and Science Act",
+     "note": "$52 billion in grants and a 25% tax credit for semiconductor plants."
+    },
+    {
      "date": "2022-08-16",
-     "label": "Inflation Reduction Act"
+     "label": "Inflation Reduction Act",
+     "note": "Energy and manufacturing tax credits, drug-price negotiation, a corporate minimum tax."
     },
     {
      "date": "2025-07-04",
@@ -825,7 +841,7 @@
     "core_cpi",
     "housing_starts"
    ],
-   "note": "An event is listed if it visibly moved at least one indicator on this site within three months, or changed federal policy that bears directly on one. Nothing is listed because it fits a story. Dates are when the thing happened or was signed, not when its effects showed up.",
+   "note": "An event is listed if it visibly moved at least one indicator on this site within three months, or committed federal money or changed federal policy on a scale that shows up in GDP investment, household income or an indicator here over the following years. Nothing is listed because it fits a story. Dates are when the thing happened or was signed, not when its effects showed up.",
    "items": [
     {
      "date": "1979-10-06",
@@ -867,7 +883,7 @@
    "group": "Events",
    "label": "Trade policy",
    "applies_to": "all",
-   "note": "An event is listed if it visibly moved at least one indicator on this site within three months, or changed federal policy that bears directly on one. Nothing is listed because it fits a story. Dates are when the thing happened or was signed, not when its effects showed up.",
+   "note": "An event is listed if it visibly moved at least one indicator on this site within three months, or committed federal money or changed federal policy on a scale that shows up in GDP investment, household income or an indicator here over the following years. Nothing is listed because it fits a story. Dates are when the thing happened or was signed, not when its effects showed up.",
    "items": [
     {
      "date": "1994-01-01",

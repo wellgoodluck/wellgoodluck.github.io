@@ -99,7 +99,8 @@ fed_cycles = [
 
 # ---- Events -------------------------------------------------------------------
 RULE = ("An event is listed if it visibly moved at least one indicator on this site within three months, "
-        "or changed federal policy that bears directly on one. Nothing is listed because it fits a story. "
+        "or committed federal money or changed federal policy on a scale that shows up in GDP investment, "
+        "household income or an indicator here over the following years. Nothing is listed because it fits a story. "
         "Dates are when the thing happened or was signed, not when its effects showed up.")
 
 shocks = [
@@ -125,8 +126,11 @@ fiscal = [
     ("2013-03-01", "Sequestration", "Across-the-board federal spending cuts begin."),
     ("2017-12-22", "Tax Cuts and Jobs Act", ""),
     ("2020-03-27", "CARES Act", "$2.2 trillion pandemic relief signed."),
+    ("2020-12-27", "Second pandemic relief bill", "$900 billion, including $600 payments, in the year-end appropriations act."),
     ("2021-03-11", "American Rescue Plan", "$1.9 trillion pandemic relief signed."),
-    ("2022-08-16", "Inflation Reduction Act", ""),
+    ("2021-11-15", "Infrastructure Investment and Jobs Act", "$1.2 trillion over several years for roads, transit, broadband, water and the grid."),
+    ("2022-08-09", "CHIPS and Science Act", "$52 billion in grants and a 25% tax credit for semiconductor plants."),
+    ("2022-08-16", "Inflation Reduction Act", "Energy and manufacturing tax credits, drug-price negotiation, a corporate minimum tax."),
     ("2025-07-04", "One Big Beautiful Bill Act", "Extends the 2017 tax cuts and changes spending programs."),
 ]
 monetary = [
