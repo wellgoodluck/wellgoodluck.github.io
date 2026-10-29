@@ -19,6 +19,6 @@ No ads. No tracking of any kind: the site sets no cookies, loads nothing from an
 
 ## If you want to chip in
 
-There is [a tip jar on Ko‑fi](https://ko-fi.com/economyincontext). It is optional and changes nothing: no perks, no names, no influence over what gets written. Money covers the domains first; anything beyond that is thanks for the time.
+[Donations are taken on Ko‑fi](https://ko-fi.com/economyincontext), one-time or monthly. A donation is optional and changes nothing: no perks, no names, no influence over what gets written. Money covers the domains first; anything beyond that is thanks for the time.
 
-If you would rather help another way, a correction is worth more than a tip. Write to [hello@economyincontext.org](mailto:hello@economyincontext.org).
+If you would rather help another way, a correction is worth more than a donation. Write to [hello@economyincontext.org](mailto:hello@economyincontext.org).
