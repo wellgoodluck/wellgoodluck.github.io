@@ -3,6 +3,9 @@ title: Real vs. Nominal: The Raise That Didn't Feel Like One
 dek: Nominal is the number on the check. Real is what the check buys. Every argument about whether people are better off is an argument about which one to use.
 date: 2026-10-28
 kind: concept
+label: Real vs. nominal
+hook: the raise that didn't feel like one
+order: 2
 ---
 
 ## In one sentence

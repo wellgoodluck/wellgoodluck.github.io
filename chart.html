@@ -53,6 +53,10 @@
   .crumb a { text-decoration: none; border-bottom: 1px solid var(--hairline); }
   .masthead h1 { margin: 0; font-size: clamp(26px, 4vw, 36px); font-weight: 700; letter-spacing: -0.015em; line-height: 1.15; }
   .masthead .sub { margin: 4px 0 0; color: var(--ink-2); font-size: 17px; }
+  .masthead .explainer { margin: 6px 0 0; font-size: 14.5px; color: var(--ink-2); }
+  .masthead .explainer a { text-decoration: none; border-bottom: 1px solid var(--hairline); }
+  .masthead .explainer a:hover { border-color: var(--ink); }
+  .masthead .explainer[hidden] { display: none; }
 
   .layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 28px; padding: 22px 0 40px; }
   @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
@@ -75,7 +79,7 @@
 
   .chart-head { display: flex; align-items: center; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; margin: 22px 0 6px; }
   .ranges { display: inline-flex; border: 1px solid var(--hairline); border-radius: 4px; overflow: hidden; }
-  .ranges button { background: transparent; border: 0; padding: 4px 10px; font-size: 13px; cursor: pointer; color: var(--ink-2); }
+  .ranges button { background: transparent; border: 0; padding: 4px 10px; font-size: 13px; cursor: pointer; color: var(--ink-2); white-space: nowrap; }
   .ranges button + button { border-left: 1px solid var(--hairline); }
   .ranges button:focus-visible { outline-offset: -2px; }
   .ranges button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
@@ -187,6 +191,7 @@
     <p class="crumb"><a href="./">← Economy in Context</a></p>
     <h1 id="title">Loading…</h1>
     <p class="sub" id="subtitle"></p>
+    <p class="explainer" id="explainer" hidden></p>
   </div>
 </header>
 
@@ -260,21 +265,30 @@
     return { ticks, step };
   }
   function decimalsFor(step, scale) { const s = step / (scale || 1); return s >= 1 ? 0 : Math.min(3, Math.ceil(-Math.log10(s))); }
+  // dollar axes show whole dollars or full cents ($2.50, not $2.5)
+  function axisDecimals(step, d) { const k = decimalsFor(step, d.scale); return d.prefix === '$' && k === 1 ? 2 : k; }
   function appliesTo(o, id) { return o.applies_to === 'all' || (Array.isArray(o.applies_to) && o.applies_to.includes(id)) || (Array.isArray(o.for) && o.for.includes(id)); }
 
   // ---- context sentence & strip (same logic as the almanac page) ----------
+  // Prices of things (display.adjust) are compared in today's dollars; headline and year-ago stay as charged.
+  function compareContext(t) { return t.display.adjust && t.context_real ? t.context_real : t.context; }
+  function adjusted(t) { return !!(t.display.adjust && t.context_real); }
   function contextSentence(t) {
-    const c = t.context, noun = periodNoun(t.freq), since = parseDate(c.since).getUTCFullYear(), parts = [];
+    const c = compareContext(t), noun = periodNoun(t.freq), since = parseDate(c.since).getUTCFullYear(), parts = [];
     const pct = c.percentile_below, deficit = t.display.sense === 'deficit';
     const hiWord = deficit ? 'A smaller deficit than ' : 'Higher than ', loWord = deficit ? 'A larger deficit than ' : 'Lower than ';
-    parts.push(pct >= 50 ? hiWord + Math.round(pct) + '% of ' + noun + ' since ' + since + '.' : loWord + Math.round(100 - pct) + '% of ' + noun + ' since ' + since + '.');
+    // a record is said once, below; otherwise the share stays between 1% and 99% (never "higher than 100%")
+    const share = v => Math.min(99, Math.max(1, Math.round(v))), isRecord = pct >= 50 ? c.highest_since == null : c.lowest_since == null;
+    if (!isRecord) parts.push(pct >= 50 ? hiWord + share(pct) + '% of ' + noun + ' since ' + since + '.' : loWord + share(100 - pct) + '% of ' + noun + ' since ' + since + '.');
     const cur = c.current.value, prev = c.previous.value;
     if (cur > prev) { if (c.highest_since == null) parts.push(deficit ? 'The smallest deficit on record.' : 'The highest on record.'); else if (yearsBetween(c.highest_since, c.current.date) >= 1) parts.push((deficit ? 'Smallest deficit since ' : 'Highest since ') + fmtPeriod(c.highest_since, t.freq) + '.'); }
     else if (cur < prev) { if (c.lowest_since == null) parts.push(deficit ? 'The largest deficit on record.' : 'The lowest on record.'); else if (yearsBetween(c.lowest_since, c.current.date) >= 1) parts.push((deficit ? 'Largest deficit since ' : 'Lowest since ') + fmtPeriod(c.lowest_since, t.freq) + '.'); }
+    if (adjusted(t) && parts.length) parts[0] = 'Adjusted for inflation, ' + parts[0].charAt(0).toLowerCase() + parts[0].slice(1);
     return parts.join(' ');
   }
   function buildStrip(t) {
-    const c = t.context, d = t.display, lo = c.typical_low, hi = c.typical_high, cur = c.current.value, avg = c.baseline_2015_19;
+    const c = compareContext(t), d = t.display, lo = c.typical_low, hi = c.typical_high, cur = c.current.value, avg = c.baseline_2015_19;
+    const rangeLabel = adjusted(t) ? 'typical range, in today’s dollars' : 'typical range';
     const box = el('div', { class: 'strip' });
     function draw() {
       const old = box.querySelector('svg'); if (old) old.remove();
@@ -293,7 +307,7 @@
       else svg.appendChild(svgEl('circle', { class: 'now', cx: pos(cur), cy: y, r: 7 }));
       const l1 = svgEl('text', { x: padL, y: y - 12, 'text-anchor': 'start' }); l1.textContent = fmtValue(lo, d);
       const l2 = svgEl('text', { x: W - padR, y: y - 12, 'text-anchor': 'end' }); l2.textContent = fmtValue(hi, d);
-      const l3 = svgEl('text', { x: W / 2, y: y - 12, 'text-anchor': 'middle' }); l3.textContent = 'typical range';
+      const l3 = svgEl('text', { x: W / 2, y: y - 12, 'text-anchor': 'middle' }); l3.textContent = rangeLabel;
       svg.appendChild(l1); svg.appendChild(l2); svg.appendChild(l3); box.appendChild(svg);
     }
     if ('ResizeObserver' in window) { let w = 0; new ResizeObserver(() => { const nw = box.clientWidth; if (nw && nw !== w) { w = nw; draw(); } }).observe(box); } else requestAnimationFrame(draw);
@@ -399,7 +413,9 @@
       let lo = Math.min(...plotted), hi = Math.max(...plotted);
       const compPts = comps.map(o => ({ o, pts: o.observations.filter(inWin) }));
       compPts.forEach(c => c.pts.forEach(p => { const v = clampV(p[1]); if (v < lo) lo = v; if (v > hi) hi = v; }));
-      const lineVals = lines.map(o => ({ o, v: o.type === 'line' ? o.value : o.stat === 'median' ? ctx.median : t.context.baseline_2015_19 })).filter(x => x.v != null);
+      // on a price tile the chart is as charged, so its median and 2015–19 lines are too (the tile's range is in today's dollars)
+      const lineVals = lines.map(o => ({ o: o.type === 'stat' && t.display.adjust ? Object.assign({}, o, { label: o.label + ' (as charged)' }) : o,
+        v: o.type === 'line' ? o.value : o.stat === 'median' ? ctx.median : t.context.baseline_2015_19 })).filter(x => x.v != null);
       lineVals.forEach(x => { if (x.v < lo) lo = x.v; if (x.v > hi) hi = x.v; });
       if (lo === hi) { lo -= 1; hi += 1; }
       const pad = (hi - lo) * 0.08; lo -= pad; hi += pad;
@@ -418,7 +434,7 @@
       });
 
       // y grid
-      const { ticks, step } = niceTicks(lo, hi, narrow ? 4 : 6), dec = decimalsFor(step, d.scale), axis = svgEl('g', { class: 'axis' });
+      const { ticks, step } = niceTicks(lo, hi, narrow ? 4 : 6), dec = axisDecimals(step, d), axis = svgEl('g', { class: 'axis' });
       ticks.forEach(v => {
         svg.appendChild(svgEl('line', { class: v === 0 ? 'zero' : 'grid-line', x1: mL, x2: width - mR, y1: ys(v), y2: ys(v) }));
         const tx = svgEl('text', { x: mL - 6, y: ys(v) + 4, 'text-anchor': 'end' }); tx.textContent = fmtValue(v, d, { decimals: dec, nosign: true }); axis.appendChild(tx);
@@ -536,7 +552,7 @@
         const top = cursorY + 12, sys_ = v => top + (shi - v) / (shi - slo) * (subH - 12);
         const sdisp = o.display || d;
         recRects.forEach(r => svg.appendChild(svgEl('rect', { class: 'rec', x: r[0], y: top, width: r[1], height: subH - 12 })));
-        const st = niceTicks(slo, shi, 3), sdec = decimalsFor(st.step, sdisp.scale), sax = svgEl('g', { class: 'axis' });
+        const st = niceTicks(slo, shi, 3), sdec = axisDecimals(st.step, sdisp), sax = svgEl('g', { class: 'axis' });
         st.ticks.forEach(v => { svg.appendChild(svgEl('line', { class: 'grid-line', x1: mL, x2: width - mR, y1: sys_(v), y2: sys_(v) })); const tx = svgEl('text', { x: mL - 6, y: sys_(v) + 4, 'text-anchor': 'end' }); tx.textContent = fmtValue(v, sdisp, { decimals: sdec, nosign: true }); sax.appendChild(tx); });
         svg.appendChild(sax);
         const title = svgEl('text', { class: 'sub-title', x: mL, y: cursorY + 6 }); title.textContent = o.label; svg.appendChild(title);
@@ -769,7 +785,8 @@
     det.addEventListener('toggle', () => { if (det.open && cur) refresh(cur[0], cur[1]); });
     function csv() {
       const comps = activeSeries();
-      const lines = ['date,' + csvQ(t.title + ' (' + d.unit + ')') + comps.map(o => ',' + csvQ(o.label)).join('')];
+      // the CSV carries raw values, so its header names the raw unit where the page shows a scaled one (cents vs dollars)
+      const lines = ['date,' + csvQ(t.title + ' (' + (d.csv_unit || d.unit) + ')') + comps.map(o => ',' + csvQ(o.label)).join('')];
       const maps = comps.map(joinMap);
       t.observations.forEach(p => lines.push(p[0] + ',' + p[1] + maps.map((m, k) => { const v = lookup(m, comps[k], p[0]); return ',' + (v == null ? '' : v); }).join('')));
       lines.push(''); lines.push('# ' + ctx.data.attribution); lines.push('# ' + t.source.url);
@@ -780,7 +797,7 @@
   }
 
   // ---- page -----------------------------------------------------------------
-  function render(data, compData, ovData) {
+  function render(data, compData, ovData, exData) {
     const main = document.getElementById('main'); main.innerHTML = '';
     document.getElementById('attribution').textContent = data.attribution;
     const t = data.tiles.find(x => x.id === state.id);
@@ -801,6 +818,13 @@
     setMeta('meta[property="og:description"]', t.subtitle + '. ' + contextSentence(t));
     setMeta('meta[name="description"]', t.title + ': ' + t.subtitle + '. ' + contextSentence(t) + ' Full history with optional overlays.');
     document.getElementById('subtitle').textContent = t.subtitle;
+    const ex = ((exData && exData.explainers) || {})[t.id];
+    if (ex && !state.embed) {
+      const p = document.getElementById('explainer');
+      p.appendChild(document.createTextNode('In plain words: '));
+      p.appendChild(el('a', { href: ex.url, text: ex.title + ' →' }));
+      p.hidden = false;
+    }
 
     // overlays: hand-compiled ones plus every companion series that applies here
     const comps = (compData.companions || []).filter(c => appliesTo(c, t.id)).map(c => ({
@@ -866,7 +890,8 @@
     fetch('data/series.json', { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }),
     fetch('data/companions.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : { companions: [] }).catch(() => ({ companions: [] })),
     fetch('data/overlays.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : { overlays: [] }).catch(() => ({ overlays: [] })),
-  ]).then(([data, comp, ov]) => render(data, comp, ov))
+    fetch('data/explainers.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).catch(() => ({})),
+  ]).then(([data, comp, ov, ex]) => render(data, comp, ov, ex))
     .catch(err => { const main = document.getElementById('main'); main.innerHTML = ''; main.appendChild(el('p', { class: 'status', text: 'The figures could not be loaded (' + err.message + '). Try again in a few minutes.' })); });
 })();
 </script>

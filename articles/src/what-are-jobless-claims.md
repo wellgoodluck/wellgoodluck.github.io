@@ -3,6 +3,9 @@ title: What Jobless Claims Are, and Why They Move First
 dek: A weekly count of people filing for unemployment benefits. It is the fastest gauge of the job market, the noisiest, and it misses most of the people who lose work.
 date: 2026-10-28
 kind: concept
+tile: claims
+label: Jobless claims
+hook: why they move first
 ---
 
 ## In one sentence

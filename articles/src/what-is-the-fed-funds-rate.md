@@ -3,6 +3,9 @@ title: What the Fed Funds Rate Is, and How It Reaches Your Kitchen Table
 dek: One overnight rate that banks charge each other sets the price of almost every dollar you borrow or save, with a delay of months to years.
 date: 2026-10-28
 kind: concept
+tile: fed_funds
+label: Fed funds rate
+hook: how it reaches your kitchen table
 ---
 
 ## In one sentence

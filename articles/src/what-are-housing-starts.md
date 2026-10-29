@@ -3,6 +3,9 @@ title: What Housing Starts Are, and Why Today's Number Is 2028's Rent
 dek: The count of homes on which construction began this month, stated as a yearly pace. It is a forecast of supply, and supply is what rents and prices answer to, a year or two later.
 date: 2026-10-28
 kind: concept
+tile: housing_starts
+label: Housing starts
+hook: why today's number is 2028's rent
 ---
 
 ## In one sentence

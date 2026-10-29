@@ -3,6 +3,9 @@ title: What the Jobs Report Counts, and Why the Number Changes After It's Announ
 dek: The most watched number of the month is a first count from a survey of employers. It is revised twice, then again a year later, and the revisions have a direction.
 date: 2026-10-28
 kind: concept
+tile: payrolls
+label: The jobs report
+hook: why the number changes after it's announced
 ---
 
 ## In one sentence

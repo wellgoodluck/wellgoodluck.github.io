@@ -3,6 +3,9 @@ title: What the Unemployment Rate Is, and Who It Doesn't Count
 dek: A headcount of people looking for work, taken from 60,000 households. It is the most watched number in the economy, and it leaves out everyone who stopped looking.
 date: 2026-10-28
 kind: concept
+tile: unemployment
+label: Unemployment rate
+hook: who it doesn't count
 ---
 
 ## In one sentence

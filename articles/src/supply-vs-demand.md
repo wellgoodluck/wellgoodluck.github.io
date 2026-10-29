@@ -3,6 +3,9 @@ title: Supply vs. Demand: Why the Same Price Rise Can Call for Opposite Response
 dek: Prices rise when too many people want something, and they rise when there is less of it to go around. The number looks the same. The cure doesn't.
 date: 2026-10-28
 kind: concept
+label: Supply vs. demand
+hook: why the same price rise can call for opposite responses
+order: 5
 ---
 
 ## In one sentence

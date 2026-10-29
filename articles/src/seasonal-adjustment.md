@@ -3,6 +3,9 @@ title: Seasonal Adjustment: Why December Doesn't Count as a Boom
 dek: Nearly every number on this site has had the calendar removed from it. That is the right thing to do, and it is the reason some months look strange.
 date: 2026-10-28
 kind: concept
+label: Seasonal adjustment
+hook: why December doesn't count as a boom
+order: 3
 ---
 
 ## In one sentence

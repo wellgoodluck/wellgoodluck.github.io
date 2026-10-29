@@ -3,6 +3,9 @@ title: Why the Government Is Not a Household, and What It Is Instead
 dek: Every budget speech reaches for the kitchen table. The comparison is natural, it is wrong in four specific ways, and there is a better one.
 date: 2026-10-28
 kind: concept
+label: The government is not a household
+hook: what it is instead
+order: 6
 ---
 
 ## In one sentence

@@ -3,6 +3,9 @@ title: What the 10-Year Treasury Yield Is, and Why It Sets Your Mortgage Rate
 dek: The interest rate the government pays to borrow for a decade. The Fed doesn't set it. Bond buyers do, by guessing what the Fed will do for the next ten years.
 date: 2026-10-28
 kind: concept
+tile: ten_year
+label: 10-year Treasury yield
+hook: why it sets your mortgage rate
 ---
 
 ## In one sentence

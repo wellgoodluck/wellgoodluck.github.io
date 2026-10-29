@@ -1,6 +1,6 @@
 ---
 title: You Rent
-dek: Four of the almanac's ten numbers reach a renter directly, and the one that matters most arrives a year late.
+dek: Four numbers reach a renter directly, and the one that matters most arrives a year late.
 date: 2026-10-28
 kind: path
 order: 1

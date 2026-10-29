@@ -35,7 +35,11 @@ API_KEY = os.environ.get("FRED_API_KEY", "").strip()
 #   display  how the page formats values: scale divides the raw value, then
 #            decimals/prefix/suffix apply; signed adds a leading + on positives;
 #            clip [lo, hi] (raw units) keeps one freak reading from flattening the
-#            chart — clipped points are marked and labeled, never hidden
+#            chart — clipped points are marked and labeled, never hidden;
+#            adjust "cpi" (prices of things) bases the typical range and the
+#            "higher than" sentence on the inflation-adjusted history, in dollars
+#            of the latest reading's month, because a raw price only trends up.
+#            The headline, comparisons and chart stay as charged.
 # ---------------------------------------------------------------------------
 TILES = [
     # ---- Jobs -------------------------------------------------------------
@@ -199,6 +203,69 @@ TILES = [
         "display": {"scale": 1000, "decimals": 1, "suffix": "B", "signed": True,
                     "unit": "billions of dollars", "clip": [-150000, 20000], "sense": "deficit"},
         "note": "Seasonally adjusted. Negative means the country bought more from abroad than it sold.",
+    },
+    # ---- What things cost -------------------------------------------------
+    # BLS average prices (collected for the CPI) and EIA's weekly pump survey.
+    # Not seasonally adjusted. adjust "cpi": see the display notes above.
+    {
+        "id": "gas",
+        "section": "What things cost",
+        "title": "Gasoline",
+        "subtitle": "Regular, U.S. average pump price per gallon, weekly",
+        "series": "GASREGW",
+        "params": {"observation_start": "1990-08-20"},
+        "freq": "w",
+        "display": {"scale": 1, "decimals": 2, "prefix": "$", "signed": False,
+                    "unit": "dollars per gallon", "adjust": "cpi"},
+        "note": "Not seasonally adjusted. EIA's weekly survey of retail stations, all formulations. The chart shows the price as charged; the range and the comparison above it are adjusted for inflation.",
+    },
+    {
+        "id": "electricity",
+        "section": "What things cost",
+        "title": "Electricity",
+        "subtitle": "U.S. average price per kilowatt-hour, the unit on a power bill, monthly",
+        "series": "APU000072610",
+        "params": {"observation_start": "1978-11-01"},
+        "freq": "m",
+        "display": {"scale": 0.01, "decimals": 1, "suffix": "¢", "signed": False,
+                    "unit": "cents per kilowatt-hour", "csv_unit": "dollars per kilowatt-hour", "adjust": "cpi"},
+        "note": "Not seasonally adjusted. BLS average price across U.S. cities, collected for the CPI. The chart shows the price as charged; the range and the comparison above it are adjusted for inflation.",
+    },
+    {
+        "id": "eggs",
+        "section": "What things cost",
+        "title": "Eggs",
+        "subtitle": "Grade A large, U.S. average price per dozen, monthly",
+        "series": "APU0000708111",
+        "params": {"observation_start": "1980-01-01"},
+        "freq": "m",
+        "display": {"scale": 1, "decimals": 2, "prefix": "$", "signed": False,
+                    "unit": "dollars per dozen", "adjust": "cpi"},
+        "note": "Not seasonally adjusted. BLS average price across U.S. cities, collected for the CPI. The chart shows the price as charged; the range and the comparison above it are adjusted for inflation.",
+    },
+    {
+        "id": "ground_beef",
+        "section": "What things cost",
+        "title": "Ground beef",
+        "subtitle": "100% beef, U.S. average price per pound, monthly",
+        "series": "APU0000703112",
+        "params": {"observation_start": "1984-01-01"},
+        "freq": "m",
+        "display": {"scale": 1, "decimals": 2, "prefix": "$", "signed": False,
+                    "unit": "dollars per pound", "adjust": "cpi"},
+        "note": "Not seasonally adjusted. BLS average price across U.S. cities, collected for the CPI. The chart shows the price as charged; the range and the comparison above it are adjusted for inflation.",
+    },
+    {
+        "id": "coffee",
+        "section": "What things cost",
+        "title": "Coffee",
+        "subtitle": "Ground roast, U.S. average price per pound, monthly",
+        "series": "APU0000717311",
+        "params": {"observation_start": "1980-01-01"},
+        "freq": "m",
+        "display": {"scale": 1, "decimals": 2, "prefix": "$", "signed": False,
+                    "unit": "dollars per pound", "adjust": "cpi"},
+        "note": "Not seasonally adjusted. BLS average price across U.S. cities, collected for the CPI. The chart shows the price as charged; the range and the comparison above it are adjusted for inflation.",
     },
 ]
 
@@ -590,6 +657,44 @@ def household_lines(tiles_out, companions_out, extras):
             lines["trade"] = (f"At this month's pace the country buys about {money(-tr * 1e6 * 12 / (pop * 1000))} more from abroad per person each year than it sells.", src("population"))
     except Exception: pass
 
+    # What things cost: the price now, a year ago, and the 2019 average, which is also
+    # restated in today's dollars (the price level, 2019 = 100, for the latest reading's month).
+    def price_level_for(d):
+        pl = C.get("price_level") or []
+        by_month = {month_key(x): v for x, v in pl}
+        return by_month.get(month_key(d), pl[-1][1] if pl else None)
+    def average_in(tid, year):
+        vals = [v for d, v in T[tid]["observations"] if d.startswith(f"{year}-")]
+        return mean(vals) if vals else None
+    def price(v): return cents(v) if v < 20 else money(v)
+    cpi_src = [{"series": "CPIAUCSL", "url": "https://fred.stlouisfed.org/series/CPIAUCSL"}]
+    price_lines = {   # tile id: (opening, how the 2019 figure is named, quantity)
+        "gas": ("Filling a 15-gallon tank costs", "a tank", 15),
+        "electricity": ("At this price, 1,000 kilowatt-hours cost", "the same 1,000 kilowatt-hours", 1000),
+        "eggs": ("A dozen costs", "a dozen", 1),
+        "ground_beef": ("A pound costs", "a pound", 1),
+        "coffee": ("A pound costs", "a pound", 1),
+    }
+    for tid, (opening, noun, qty) in price_lines.items():
+        if tid not in T:
+            continue
+        try:
+            now = qty * cur(tid)
+            txt = f"{opening} {price(now)}"
+            ya = year_ago(tid)
+            if ya:
+                ya *= qty
+                txt += (f", up from {price(ya)} a year ago" if now > ya * 1.005 else
+                        f", down from {price(ya)} a year ago" if now < ya * 0.995 else ", about the same as a year ago")
+            txt += "."
+            y19 = average_in(tid, 2019)
+            if y19:
+                y19 *= qty
+                pl = price_level_for(T[tid]["context"]["current"]["date"])
+                txt += f" In 2019 {noun} averaged {price(y19)}" + (f", about {price(y19 * pl / 100)} in today's dollars." if pl else ".")
+            lines[tid] = (txt, cpi_src)
+        except Exception: pass
+
     for t in tiles_out:
         if t["id"] in lines:
             text, sources = lines[t["id"]]
@@ -640,6 +745,18 @@ DERIVED = [
         "why": "The spread lenders charge over Treasuries. Normally 1.5–2 points; wider in stress, as in 2022–24.",
     },
 ]
+# Each price tile also gets its inflation-adjusted line on the detail page: the same
+# history the tile's range and "higher than" sentence are computed from.
+for _t in TILES:
+    if _t["display"].get("adjust") == "cpi":
+        DERIVED.append({
+            "id": _t["id"] + "_real",
+            "label": "In today's dollars (adjusted for inflation)",
+            "for": [_t["id"]],
+            "op": "deflate", "a": _t["id"], "b": "cpi_index", "freq": _t["freq"],
+            "why": "The same price with inflation taken out, in dollars of the latest reading's month, using the CPI. "
+                   "The typical range and the comparison on the tile are computed from this line.",
+        })
 
 # ---------------------------------------------------------------------------
 # First prints: what each month's figure was when it was first reported, from
@@ -894,6 +1011,40 @@ def month_key(d):
     return d[:7]
 
 
+def deflate(obs, cpi):
+    """A price history restated in dollars of its latest reading's month, using the CPI.
+    Each reading is scaled by its own month's index. Months after the latest CPI use the
+    latest CPI (so the newest readings equal their prices as charged); a month missing
+    inside the CPI's span (October 2025 was never published) uses the average of its
+    neighbors. Readings before the CPI begins are dropped."""
+    months = sorted((month_key(d), v) for d, v in cpi)
+    if len(months) < 2:
+        raise RuntimeError("no CPI")
+    by_month = dict(months)
+    first, last = months[0][0], months[-1][0]
+    keys = [m for m, _ in months]
+
+    def index_at(m):
+        if m in by_month:
+            return by_month[m]
+        if m > last:
+            return months[-1][1]
+        if m < first:
+            return None
+        i = next(k for k, km in enumerate(keys) if km > m)      # neighbors around the gap
+        return (months[i - 1][1] + months[i][1]) / 2
+
+    base = index_at(month_key(obs[-1][0]))
+    out = []
+    for d, v in obs:
+        c = index_at(month_key(d))
+        if c:
+            out.append((d, v * base / c))
+    if len(out) < 3:
+        raise RuntimeError("inputs do not overlap")
+    return out
+
+
 def derive(spec, by_id):
     """Compute a derived series from already-fetched ones. Returns [(date, value)]."""
     a = by_id.get(spec["a"])
@@ -918,6 +1069,11 @@ def derive(spec, by_id):
         if len(out) < 3:
             raise RuntimeError("inputs do not overlap")
         return out
+    if spec["op"] == "deflate":
+        b = by_id.get(spec["b"])
+        if not b:
+            raise RuntimeError(f"missing input {spec['b']}")
+        return deflate(a, b)
     raise RuntimeError(f"unknown op {spec['op']}")
 
 
@@ -1015,6 +1171,17 @@ def main():
             "observations": [[d, round(v, 3)] for d, v in obs],
         })
 
+    # Price tiles: the typical range and the "higher than" sentence come from the
+    # inflation-adjusted history; the headline, comparisons and chart stay as charged.
+    # Without the CPI the tile falls back to its raw history.
+    for t in tiles_out:
+        if t["display"].get("adjust") != "cpi":
+            continue
+        try:
+            t["context_real"] = context_for(deflate(by_id[t["id"]], by_id["cpi_index"]), t["freq"])
+        except Exception as e:
+            print(f"{t['id']:16s} inflation-adjusted context skipped: {e}", file=sys.stderr, flush=True)
+
     for dv in DERIVED:
         try:
             obs = derive(dv, by_id)
@@ -1059,7 +1226,7 @@ def main():
         "generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "attribution": "Source: FRED, Federal Reserve Bank of St. Louis. Underlying data from "
                        "the Bureau of Labor Statistics, Bureau of Economic Analysis, Census Bureau, "
-                       "Federal Reserve Board, Freddie Mac and the NBER.",
+                       "Energy Information Administration, Federal Reserve Board, Freddie Mac and the NBER.",
         "baseline": {"label": "2015–19 average", "start": BASELINE_START.isoformat(),
                      "end": BASELINE_END.isoformat()},
         "recessions": recession_spans(rec),

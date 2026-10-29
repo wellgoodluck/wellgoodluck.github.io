@@ -3,6 +3,9 @@ title: What GDP Is, and Why 2% Growth Can Feel Like Nothing
 dek: Everything the country produced in three months, stated as if it kept up for a year, adjusted for inflation, and revised twice. Each of those is a place to misread it.
 date: 2026-10-28
 kind: concept
+tile: gdp
+label: GDP
+hook: why 2% growth can feel like nothing
 ---
 
 ## In one sentence

@@ -3,6 +3,9 @@ title: What the Trade Deficit Is, and Why It Isn't a Score
 dek: The country buys more from abroad than it sells, and has every year since 1975. Whether that is a problem depends on what the other side of the ledger is doing.
 date: 2026-10-28
 kind: concept
+tile: trade
+label: Trade deficit
+hook: why it isn't a score
 ---
 
 ## In one sentence

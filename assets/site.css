@@ -34,7 +34,7 @@ a:hover { text-decoration-color: var(--ink); }
 .crumb .sep { color: var(--muted); margin: 0 6px; }
 
 /* Article ------------------------------------------------------------------ */
-.article { padding: 28px 0 40px; }
+.article { padding-top: 28px; padding-bottom: 40px; }   /* top and bottom only: .wrap keeps the 16px side gutter */
 .article article, .article > h1, .article > .dek, .article > .article-list { max-width: var(--measure); }
 .article h1 { margin: 0 0 8px; font-size: clamp(28px, 4.4vw, 40px); font-weight: 700; letter-spacing: -0.015em; line-height: 1.12; }
 .article .dek { margin: 0 0 10px; font-size: clamp(18px, 2.2vw, 21px); color: var(--ink-2); line-height: 1.4; }
@@ -70,6 +70,7 @@ a:hover { text-decoration-color: var(--ink); }
 
 /* Index ---------------------------------------------------------------------- */
 .article-list { list-style: none; margin: 22px 0 0; padding: 0; }
+.article .article-list { margin: 22px 0 0; padding: 0; }   /* beats ".article ul", which indented the index lists */
 .article-list li { padding: 16px 0; border-top: 1px solid var(--hairline); display: grid; gap: 2px; }
 .article-list li:last-child { border-bottom: 1px solid var(--hairline); }
 .article-list a { text-decoration: none; }
@@ -77,6 +78,27 @@ a:hover { text-decoration-color: var(--ink); }
 .article-list a:hover .t { text-decoration: underline; text-decoration-color: var(--muted); text-underline-offset: 3px; }
 .article-list .d { color: var(--ink-2); font-size: 16px; }
 .article-list .when { color: var(--muted); font-size: 14px; margin-top: 2px; }
+
+/* Index layout: jump links, Latest with its folded earlier pieces, Plain words split into
+   The numbers (grouped as on the almanac) and The ideas, in one-line entries */
+.article > .jump, .article > h2, .article > h3, .article > .lede, .article > .num-group,
+.article > .compact-list, .article > details.earlier { max-width: var(--measure); }
+.jump { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 16px 0 0; font-size: 15px; }
+.jump a { text-decoration: none; border-bottom: 1px solid var(--hairline); padding-bottom: 1px; }
+.jump a:hover { border-color: var(--ink); }
+.article .lede { margin: 0 0 8px; color: var(--ink-2); font-size: 16px; }
+.article .num-group h4 { margin: 20px 0 4px; font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.article .compact-list { list-style: none; margin: 6px 0 0; padding: 0; }
+.article .compact-list li { margin: 0; padding: 8px 0; border-top: 1px solid var(--hairline); line-height: 1.4; }
+.article .compact-list li:last-child { border-bottom: 1px solid var(--hairline); }
+.article .compact-list a { font-weight: 600; text-decoration: none; }
+.article .compact-list a:hover { text-decoration: underline; text-decoration-color: var(--muted); }
+.article .compact-list .h { color: var(--ink-2); }
+.article .compact-list .when { display: block; color: var(--muted); font-size: 13px; margin-top: 2px; }
+.article details.earlier { margin: 4px 0 0; }
+.article details.earlier summary { cursor: pointer; color: var(--ink-2); font-size: 15px; padding: 10px 0 4px; }
+.article details.earlier .article-list { margin-top: 6px; }
+.article h3#the-numbers, .article h3#the-ideas { margin-top: 30px; font-size: 20px; font-weight: 700; }
 
 footer.about { border-top: 1px solid var(--hairline); padding: 22px 0 44px; font-size: 14px; color: var(--ink-2); }
 footer.about p { max-width: 48em; margin: 0 0 8px; }

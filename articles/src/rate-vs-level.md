@@ -3,6 +3,9 @@ title: Rate vs. Level: Why Inflation Fell and Prices Didn't
 dek: Half the arguments about the economy are two people reading different gauges on the same dashboard.
 date: 2026-10-28
 kind: concept
+label: Rate vs. level
+hook: why inflation fell and prices didn't
+order: 1
 ---
 
 ## In one sentence

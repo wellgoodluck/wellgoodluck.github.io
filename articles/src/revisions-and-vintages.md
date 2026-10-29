@@ -3,6 +3,9 @@ title: Revisions and Vintages: The Number You Remember Is Not the Number in the 
 dek: Most economic figures are published before the data are in, then corrected for months or years. The first version is the one everyone reads.
 date: 2026-10-28
 kind: concept
+label: Revisions and vintages
+hook: the number you remember is not the number in the record
+order: 4
 ---
 
 ## In one sentence

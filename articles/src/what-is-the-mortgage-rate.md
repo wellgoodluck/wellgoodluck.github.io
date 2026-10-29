@@ -3,6 +3,9 @@ title: What the Mortgage Rate Is, and Why the Fed Can't Lower It
 dek: The 10-year Treasury yield plus a markup. The Fed controls neither directly, which is why mortgage rates rose after it cut in 2024.
 date: 2026-10-28
 kind: concept
+tile: mortgage
+label: Mortgage rate
+hook: why the Fed can't lower it
 ---
 
 ## In one sentence

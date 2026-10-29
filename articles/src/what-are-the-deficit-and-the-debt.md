@@ -3,6 +3,9 @@ title: What the Deficit and the Debt Are, and Which One the Argument Is About
 dek: The deficit is this year's borrowing. The debt is all the years added up. Most fights over "the deficit" are about one while pointing at the other.
 date: 2026-10-28
 kind: concept
+tile: deficit, debt
+label: The deficit and the debt
+hook: this year's borrowing versus all the years added up
 ---
 
 ## In one sentence

@@ -3,6 +3,9 @@ title: What Inflation Is, and Why Prices Never Go Back
 dek: Inflation is the speed at which prices rise. When it comes down, the car slows; the odometer never runs backward.
 date: 2026-10-28
 kind: concept
+tile: cpi, core_cpi
+label: Inflation
+hook: why prices never go back
 ---
 
 ## In one sentence

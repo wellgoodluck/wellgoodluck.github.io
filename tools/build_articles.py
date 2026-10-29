@@ -14,7 +14,15 @@ Each source file starts with a front-matter block:
     updated: 2026-10-28          (optional)
     kind: concept                (optional: concept = Plain words; path = household path;
                                   page = built and in the sitemap but not listed on the index)
-    order: 1                     (optional: sort key within the household paths)
+    order: 1                     (optional: sort key within the household paths, and within
+                                  the Plain words ideas)
+    tile: cpi, core_cpi          (optional, Plain words only: the almanac indicators this page
+                                  explains. Puts it under "The numbers" in the almanac's own
+                                  grouping and order, and links each of those tiles and chart
+                                  pages to it. A Plain words page without one is an "idea".)
+    label: Inflation             (optional: the short name used in the Plain words lists)
+    hook: why prices never go back   (optional: the phrase after the label in those lists,
+                                  and after "In plain words:" on the tiles)
     ---
 
 then Markdown. Supported: # ## ### headings, paragraphs, **bold**, *italic*,
@@ -277,32 +285,121 @@ def render_map():
             'loop\u2019s output.</figcaption></figure>')
 
 
+LATEST_SHOWN = 6     # timely pieces listed in full; older ones fold under "Earlier"
+
+
+def tile_ids(a):
+    """The almanac indicator ids a Plain words page explains (its tile: line), in order."""
+    return [x.strip() for x in a.get("tile", "").split(",") if x.strip()]
+
+
+def sort_order(a, default=99):
+    try:
+        return int(a.get("order", default))
+    except ValueError:
+        return default
+
+
+def load_tiles():
+    """[(indicator id, section)] in almanac order, from data/series.json; empty if it can't be read."""
+    import json
+    try:
+        with open(os.path.join("data", "series.json"), encoding="utf-8") as f:
+            return [(t["id"], t["section"]) for t in json.load(f).get("tiles", [])]
+    except Exception as e:                                       # a bad data file must not break the build
+        print(f"index: no almanac order ({e}); The numbers listed alphabetically")
+        return []
+
+
 def render_index(articles):
     page = HEAD.format(title="Articles", desc="Longer reads on the U.S. economy: what the figures show, what is settled and what is argued about.",
                        canonical=f"{SITE}/articles/")
     page = page.replace('<a href="./">Articles</a>', "Articles")
     page += '<main class="wrap article">\n<h1>Articles</h1>\n<p class="dek">Longer reads on what the figures show, what is settled, and what is argued about.</p>\n'
-    def listing(items):
+
+    def updated_note(a):
+        return (f'<span class="when">Updated {fmt_date(a["updated"])}</span>'
+                if a.get("updated") and a["updated"] != a["date"] else "")
+
+    def listing(items, dated):
+        # Full entries: title, dek, and the date for timely pieces. Evergreen pages show a
+        # date only once they have been updated, so a list of identical launch dates never reads as stale.
         out = '<ul class="article-list">\n'
         for a in items:
             out += (f'<li><a href="{a["slug"]}.html"><span class="t">{inline(a["title"])}</span></a>'
                     + (f'<span class="d">{inline(a["dek"])}</span>' if a.get("dek") else "")
-                    + f'<span class="when">{fmt_date(a["date"])}</span></li>\n')
+                    + (f'<span class="when">{fmt_date(a["date"])}</span>' if dated else updated_note(a)) + "</li>\n")
         return out + "</ul>\n"
-    timely = [a for a in articles if a.get("kind") not in ("concept", "path", "page")]
+
+    def compact(items):
+        # One line each: the short name, then the hook. Page titles stay as they are for search.
+        out = '<ul class="compact-list">\n'
+        for a in items:
+            label, hook = a.get("label") or a["title"], a.get("hook") or ("" if a.get("label") else a.get("dek", ""))
+            out += (f'<li><a href="{a["slug"]}.html">{inline(label)}</a>'
+                    + (f'<span class="h"><span class="sep" aria-hidden="true"> — </span>{inline(hook)}</span>' if hook else "")
+                    + updated_note(a) + "</li>\n")
+        return out + "</ul>\n"
+
+    timely = [a for a in articles if a.get("kind") not in ("concept", "path", "page")]    # newest first (main() sorts)
+    paths = sorted((a for a in articles if a.get("kind") == "path"), key=lambda a: (sort_order(a, 9), a["title"]))
     concepts = [a for a in articles if a.get("kind") == "concept"]
-    paths = [a for a in articles if a.get("kind") == "path"]
+    numbers = [a for a in concepts if tile_ids(a)]
+    ideas = sorted((a for a in concepts if not tile_ids(a)), key=lambda a: (sort_order(a), a["title"]))
+
+    jump = [("#latest", "Latest", timely), ("#household-paths", "Your situation", paths),
+            ("#the-numbers", "The numbers", numbers), ("#the-ideas", "The ideas", ideas)]
+    page += ('<nav class="jump" aria-label="On this page">'
+             + "".join(f'<a href="{h}">{t}</a>' for h, t, items in jump if items) + "</nav>\n")
+
     if timely:
-        page += listing(timely)
+        page += '<h2 id="latest">Latest</h2>\n' + listing(timely[:LATEST_SHOWN], dated=True)
+        if len(timely) > LATEST_SHOWN:
+            page += (f'<details class="earlier"><summary>Earlier pieces ({len(timely) - LATEST_SHOWN})</summary>\n'
+                     + listing(timely[LATEST_SHOWN:], dated=True) + "</details>\n")
     if paths:
         page += '<h2 id="household-paths">Start from your situation</h2>\n<p class="dek">Which of the numbers reach you, in what order, and how long they take. One page per kind of household.</p>\n'
-        page += listing(sorted(paths, key=lambda a: (a.get("order", "9"), a["title"])))
+        page += listing(paths, dated=False)
     if concepts:
         page += '<h2 id="plain-words">Plain words</h2>\n<p class="dek">What each number is, how it reaches your household, and where the usual analogies break. Evergreen; updated when the facts change.</p>\n'
+    if numbers:
+        tiles = load_tiles()
+        position = {tid: i for i, (tid, _) in enumerate(tiles)}
+        section_of = dict(tiles)
+        numbers.sort(key=lambda a: (position.get(tile_ids(a)[0], len(tiles)), a["title"]))
+        groups = []                              # [(almanac section, [pages])], in the almanac's order
+        for a in numbers:
+            sec = section_of.get(tile_ids(a)[0], "More numbers" if tiles else "")
+            if groups and groups[-1][0] == sec:
+                groups[-1][1].append(a)
+            else:
+                groups.append((sec, [a]))
+        page += '<h3 id="the-numbers">The numbers</h3>\n<p class="lede">Pages for the numbers on the almanac, grouped as they are there.</p>\n'
         page += render_map() + "\n"
-        page += listing(sorted(concepts, key=lambda a: a["title"]))
+        for sec, items in groups:
+            page += '<section class="num-group">' + (f"<h4>{html.escape(sec)}</h4>" if sec else "") + compact(items) + "</section>\n"
+    if ideas:
+        page += '<h3 id="the-ideas">The ideas</h3>\n<p class="lede">The handful of ideas that untangle most arguments about the numbers.</p>\n'
+        page += compact(ideas)
     page += "</main>\n" + FOOT
     return page
+
+
+def write_explainers(out_root, articles):
+    """data/explainers.json: indicator id -> its Plain words page, from each page's tile: line.
+    The almanac and the chart pages read it to link every number to its explainer."""
+    import json
+    ex = {}
+    for a in articles:
+        if a.get("kind") != "concept":
+            continue
+        for tid in tile_ids(a):
+            ex[tid] = {"url": f"articles/{a['slug']}.html", "title": a["title"], "hook": a.get("hook", "")}
+    os.makedirs(os.path.join(out_root, "data"), exist_ok=True)
+    with open(os.path.join(out_root, "data", "explainers.json"), "w", encoding="utf-8") as f:
+        json.dump({"note": "Written by tools/build_articles.py from the tile: line of each Plain words page.",
+                   "explainers": ex}, f, ensure_ascii=False, separators=(",", ":"))
+    print(f"built data/explainers.json ({len(ex)} indicators)")
 
 
 def main():
@@ -326,6 +423,7 @@ def main():
     with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
         f.write(render_index(articles))
     print(f"built articles/index.html ({len(articles)} articles)")
+    write_explainers(out_root, articles)
     write_sitemap(out_root, articles)
 
 
