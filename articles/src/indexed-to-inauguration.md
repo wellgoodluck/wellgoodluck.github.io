@@ -20,7 +20,7 @@ The figures below are computed from the almanac's own data: payroll jobs, the un
 
 **What the president controls.** Interest rates, which move more than any law, are set by the Fed. Taxes and spending need Congress, and the almanac's event markers show how few major laws pass in a term. Oil prices are set abroad. The business cycle is mostly inherited: a president who takes office at the bottom (Reagan, Obama) gets the recovery; one who takes office at the top (G.W. Bush, Trump in 2017 and again in 2025) gets the next downturn or the slowdown. The lane on the chart shows who was in office. It does not show who was driving.
 
-{chart id=payrolls range=25y ov=president,payrolls_3mo caption="Jobs added per month, three-month average, with the party of the president as a lane. The pandemic months are clipped so the rest of the chart is readable; the full values are in the table on the chart page."}
+{{chart id=payrolls range=25y ov=president,payrolls_3mo caption="Jobs added per month, three-month average, with the party of the president as a lane. The pandemic months are clipped so the rest of the chart is readable; the full values are in the table on the chart page."}}
 
 ## The numbers, both ways
 

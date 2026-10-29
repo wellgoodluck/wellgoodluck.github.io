@@ -14,7 +14,7 @@ Over the whole record, the first print has been revised up more often than down.
 
 Two things stand out. The 2010s were the most accurate decade in the series: the average revision in either direction was about 49,000, half what it had been in the 1960s. And the 2020s reversed the long-run sign: for the first decade in the record, most months have been revised down, and in 2024 and 2025 the average revision was about 94,000 a month downward, with the economy not in recession. Whether that is the birth-death model lagging a slowdown in new businesses, falling survey response, or the immigration drop making the population estimates stale, is argued below.
 
-{chart id=payrolls range=all ov=payrolls_first caption="Every month since 1955: jobs added as first reported against the figure in the record today. The pandemic months are clipped. Where the first-print line sits above the current line, the announcement was too high; through most of the record it sits below."}
+{{chart id=payrolls range=all ov=payrolls_first caption="Every month since 1955: jobs added as first reported against the figure in the record today. The pandemic months are clipped. Where the first-print line sits above the current line, the announcement was too high; through most of the record it sits below."}}
 
 ## Around the turns
 

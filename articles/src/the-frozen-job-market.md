@@ -10,7 +10,7 @@ Four of the almanac's numbers describe the same thing from four sides. Payrolls 
 
 That is a market in which it is very hard to lose a job and very hard to find one. For the employed it reads as security. For the twenty-two-year-old, the laid-off, and the person who wants to leave a bad job, it reads as a wall. The pages on [claims](what-are-jobless-claims.html), [unemployment](what-is-the-unemployment-rate.html), [wage work](you-work-for-a-wage.html) and [small business](you-run-a-small-business.html) each touch it. This article asks what the combination has meant historically.
 
-{chart id=unemployment range=10y ov=hires_rate,quits_rate,layoffs_rate caption="The unemployment rate with the three turnover rates from the JOLTS survey. The 2026 pattern is low layoffs, low hiring, low quits: the market has stopped churning in both directions."}
+{{chart id=unemployment range=10y ov=hires_rate,quits_rate,layoffs_rate caption="The unemployment rate with the three turnover rates from the JOLTS survey. The 2026 pattern is low layoffs, low hiring, low quits: the market has stopped churning in both directions."}}
 
 ## The precedents
 
