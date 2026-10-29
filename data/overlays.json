@@ -639,7 +639,7 @@
    "lane": "At war",
    "label": "U.S. at war",
    "applies_to": "all",
-   "note": "Rule: declared wars and conflicts Congress authorized, from the authorization to the end of U.S. combat, plus Korea, fought under a UN resolution. Smaller deployments are not shown.",
+   "note": "Rule: declared wars and conflicts Congress authorized, from the authorization to the end of U.S. combat, plus Korea, fought under a UN resolution. Conflicts without an authorization (Kosovo, Libya, the 2026 strikes on Iran) are not shown here; those that moved an indicator are under Shocks and crises.",
    "segments": [
     {
      "start": "1941-12-08",
@@ -667,15 +667,21 @@
     },
     {
      "start": "2001-09-18",
-     "end": "2021-08-30",
+     "end": "2002-10-16",
      "label": "Afghanistan",
      "note": "2001 authorization to the completion of the withdrawal."
     },
     {
      "start": "2002-10-16",
      "end": "2011-12-18",
-     "label": "Iraq",
-     "note": "2002 authorization (combat began March 2003) to the departure of the last U.S. troops."
+     "label": "Afghanistan & Iraq",
+     "note": "Afghanistan: 2001 authorization to the completion of the withdrawal. Iraq: 2002 authorization (combat began March 2003) to the departure of the last U.S. troops."
+    },
+    {
+     "start": "2011-12-18",
+     "end": "2021-08-30",
+     "label": "Afghanistan",
+     "note": "2001 authorization to the completion of the withdrawal."
     }
    ],
    "source": {
@@ -712,6 +718,11 @@
      "note": "Stocks fall 22% in a day."
     },
     {
+     "date": "1990-08-02",
+     "label": "Iraq invades Kuwait",
+     "note": "Oil doubles within two months; the recession is dated from July."
+    },
+    {
      "date": "2000-03-10",
      "label": "Dot-com peak",
      "note": "The Nasdaq's high; it loses three-quarters of its value over the next two years."
@@ -745,9 +756,19 @@
      "note": "Declared March 13; the WHO had called it a pandemic on the 11th."
     },
     {
+     "date": "2022-02-24",
+     "label": "Russia invades Ukraine",
+     "note": "Oil passes $120 and U.S. gasoline tops $5 by June; wheat and fertilizer prices jump."
+    },
+    {
      "date": "2023-03-10",
      "label": "Silicon Valley Bank fails",
      "note": "Second-largest bank failure in U.S. history at the time."
+    },
+    {
+     "date": "2026-02-28",
+     "label": "U.S. and Israel strike Iran",
+     "note": "Iran closes the Strait of Hormuz to most shipping within days; gasoline is up a third over the following months. No congressional authorization, so not shown on the war lane."
     }
    ]
   },

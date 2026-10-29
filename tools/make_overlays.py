@@ -64,6 +64,26 @@ wars = [
     {"start": "2002-10-16", "end": "2011-12-18", "label": "Iraq", "note": "2002 authorization (combat began March 2003) to the departure of the last U.S. troops."},
 ]
 
+def flatten(segments):
+    """Split overlapping periods into non-overlapping segments; where two overlap, the label joins both.
+    Afghanistan (2001-21) and Iraq (2002-11) otherwise draw on top of each other and the label is clipped."""
+    edges = sorted({d for sg in segments for d in (sg["start"], sg["end"])})
+    out = []
+    for a, b in zip(edges, edges[1:]):
+        active = [sg for sg in segments if sg["start"] <= a and sg["end"] >= b]
+        if not active:
+            continue
+        label = " & ".join(sg["label"] for sg in active)
+        note = " ".join(f"{sg['label']}: {sg['note']}" for sg in active if sg.get("note")) if len(active) > 1 else active[0].get("note", "")
+        if out and out[-1]["label"] == label and out[-1]["end"] == a:
+            out[-1]["end"] = b
+        else:
+            out.append({"start": a, "end": b, "label": label, **({"note": note} if note else {})})
+    return out
+
+
+wars = flatten(wars)
+
 # ---- Fed balance sheet ---------------------------------------------------------
 qe = [
     {"start": "2008-11-25", "end": "2010-03-31", "label": "QE1", "kind": "expand"},
@@ -110,12 +130,15 @@ shocks = [
     ("1987-10-19", "Black Monday", "Stocks fall 22% in a day."),
     ("2000-03-10", "Dot-com peak", "The Nasdaq's high; it loses three-quarters of its value over the next two years."),
     ("2001-09-11", "September 11 attacks", ""),
+    ("1990-08-02", "Iraq invades Kuwait", "Oil doubles within two months; the recession is dated from July."),
     ("2005-08-29", "Hurricane Katrina", "Jobless claims and energy prices jump in the weeks after."),
     ("2008-03-16", "Bear Stearns rescue", ""),
     ("2008-09-15", "Lehman Brothers fails", "The largest bankruptcy in U.S. history; credit markets seize."),
     ("2013-05-22", "Taper tantrum", "Bond yields jump after the Fed signals the end of QE3 purchases."),
     ("2020-03-13", "COVID national emergency", "Declared March 13; the WHO had called it a pandemic on the 11th."),
+    ("2022-02-24", "Russia invades Ukraine", "Oil passes $120 and U.S. gasoline tops $5 by June; wheat and fertilizer prices jump."),
     ("2023-03-10", "Silicon Valley Bank fails", "Second-largest bank failure in U.S. history at the time."),
+    ("2026-02-28", "U.S. and Israel strike Iran", "Iran closes the Strait of Hormuz to most shipping within days; gasoline is up a third over the following months. No congressional authorization, so not shown on the war lane."),
 ]
 fiscal = [
     ("1986-10-22", "Tax Reform Act of 1986", "Lowers rates, broadens the base."),
@@ -164,7 +187,7 @@ min_wage = [  # effective date, new federal minimum
 ]
 
 def items(lst):
-    return [{"date": d, "label": l, **({"note": n} if n else {})} for d, l, n in lst]
+    return [{"date": d, "label": l, **({"note": n} if n else {})} for d, l, n in sorted(lst)]
 
 POLITICAL_NOTE = ("Control is shown as of inauguration (January 20) and the seating of each Congress (January 3). "
                   "Policy acts with a lag, often a year or more, and shocks do not follow the election calendar.")
@@ -220,7 +243,7 @@ overlays = [
      "source": {"label": "Federal Reserve Board, Open Market Operations", "url": "https://www.federalreserve.gov/monetarypolicy/openmarket.htm"}},
     {"id": "wars", "type": "era", "group": "Eras", "lane": "At war", "label": "U.S. at war",
      "applies_to": "all",
-     "note": "Rule: declared wars and conflicts Congress authorized, from the authorization to the end of U.S. combat, plus Korea, fought under a UN resolution. Smaller deployments are not shown.",
+     "note": "Rule: declared wars and conflicts Congress authorized, from the authorization to the end of U.S. combat, plus Korea, fought under a UN resolution. Conflicts without an authorization (Kosovo, Libya, the 2026 strikes on Iran) are not shown here; those that moved an indicator are under Shocks and crises.",
      "segments": wars,
      "source": {"label": "Congressional Research Service, Declarations of War and Authorizations", "url": "https://crsreports.congress.gov/product/pdf/RL/RL31133"}},
     # ---- Events --------------------------------------------------------------
