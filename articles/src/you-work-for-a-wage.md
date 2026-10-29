@@ -2,6 +2,7 @@
 title: You Work for a Wage
 dek: Two numbers decide your year, pay and prices, and a third decides how much say you have in the first one. The rest arrive through your employer.
 date: 2026-10-28
+updated: 2026-10-29
 kind: path
 order: 4
 ---
@@ -26,7 +27,7 @@ What that average hides is the spread. Through 2023 the lowest-paid quarter of w
 
 ## The unemployment rate is your leverage
 
-When the rate is low, employers compete for workers; when it is high, workers compete for jobs. The clearest evidence is what happens to people who switch: in 2022, with unemployment at 3.5%, job-switchers got raises about two points larger than people who stayed, and the share of workers quitting hit a record. By 2025–26, with the rate near 4.2% and hiring at its slowest pace outside a recession in more than a decade, the switcher premium had mostly closed. Nothing about the rate itself changed much. What changed was how easy it was to leave.
+When the rate is low, employers compete for workers; when it is high, workers compete for jobs. The clearest evidence is what happens to people who switch: in 2022, with unemployment at 3.5%, job-switchers got raises about two points larger than people who stayed, and the share of workers quitting hit a record. From mid-2024 to mid-2025, with the rate near 4.2% and hiring at its slowest pace outside a recession in more than a decade, the switcher premium closed entirely; it has since reopened to about its 2019 size, but about a fifth fewer workers quit each month than in 2019. Nothing about the rate itself changed much. What changed was how easy it was to leave.
 
 The rate also sets the cost of a layoff: at 3.5% the next job is weeks away; at 6% it is months. [The unemployment rate](what-is-the-unemployment-rate.html) explains who is counted, and the prime-age employment ratio on its chart is the better gauge of how full the room is.
 

@@ -543,6 +543,43 @@ COMPANIONS = [
         "freq": "m",
         "why": "Used to compute the mortgage spread.",
     },
+    {
+        "id": "uempmed",
+        "label": "Median weeks unemployed",
+        "for": ["unemployment"],
+        "series": "UEMPMED",
+        "params": {"observation_start": "1967-07-01"},
+        "freq": "m",
+        "why": "How long the typical unemployed person has been looking so far. It rises when jobs are scarce and falls when they are plentiful. Different scale: weeks.",
+        "panel": "own", "display": {"scale": 1, "decimals": 1, "suffix": " wks"},
+    },
+    {
+        "id": "wti",
+        "label": "Crude oil (WTI), dollars per barrel",
+        "for": [],
+        "series": "WTISPLC",
+        "params": {"observation_start": "1946-01-01"},
+        "freq": "m",
+        "why": "Used to compute crude oil in today's dollars.",
+    },
+    {
+        "id": "customs_duties",
+        "label": "Customs duties collected",
+        "for": [],
+        "series": "B235RC1Q027SBEA",
+        "params": {"observation_start": "1959-01-01"},
+        "freq": "q",
+        "why": "Used to compute the effective tariff rate.",
+    },
+    {
+        "id": "goods_imports",
+        "label": "Imports of goods",
+        "for": [],
+        "series": "A255RC1Q027SBEA",
+        "params": {"observation_start": "1959-01-01"},
+        "freq": "q",
+        "why": "Used to compute the effective tariff rate.",
+    },
 ]
 
 # Derived series, computed here from the fetched data so the page never has to
@@ -780,6 +817,22 @@ DERIVED = [
         "for": ["mortgage"],
         "op": "diff", "a": "mortgage_monthly", "b": "ten_year", "freq": "m",
         "why": "The spread lenders charge over Treasuries. Normally 1.5–2 points; wider in stress, as in 2022–24.",
+    },
+    {
+        "id": "oil_real",
+        "label": "Crude oil (WTI) in today's dollars, per barrel",
+        "for": ["cpi", "core_cpi", "gas"],
+        "op": "deflate", "a": "wti", "b": "cpi_index", "freq": "m",
+        "why": "The price of a barrel of West Texas Intermediate crude, restated with the CPI in dollars of the latest month. Before 1982 it is the posted price, which changed only a few times a decade until the 1970s. Different scale: dollars per barrel.",
+        "panel": "own", "display": {"scale": 1, "decimals": 0, "prefix": "$"},
+    },
+    {
+        "id": "tariff_rate",
+        "label": "Effective tariff rate (customs duties ÷ imports of goods)",
+        "for": ["trade"],
+        "op": "ratio", "a": "customs_duties", "b": "goods_imports", "freq": "q",
+        "why": "What tariffs collected per dollar of goods imported: the average rate actually paid, after exemptions and shifts in what is bought. Quarterly; different scale: percent.",
+        "panel": "own", "display": {"scale": 1, "decimals": 1, "suffix": "%"},
     },
 ]
 # Each price tile also gets its inflation-adjusted line on the detail page: the same
@@ -1111,6 +1164,16 @@ def derive(spec, by_id):
         if not b:
             raise RuntimeError(f"missing input {spec['b']}")
         return deflate(a, b)
+    if spec["op"] == "ratio":
+        # a as a percent of b, matched on the same date (both inputs share a frequency)
+        b = by_id.get(spec["b"])
+        if not b:
+            raise RuntimeError(f"missing input {spec['b']}")
+        bd = dict(b)
+        out = [(d, 100.0 * v / bd[d]) for d, v in a if bd.get(d)]
+        if len(out) < 3:
+            raise RuntimeError("inputs do not overlap")
+        return out
     raise RuntimeError(f"unknown op {spec['op']}")
 
 
@@ -1198,6 +1261,7 @@ def main():
         by_id[c["id"]] = obs
         companions_out.append({
             "id": c["id"], "label": c["label"], "for": c["for"], "why": c["why"], "freq": c["freq"],
+            **{k: c[k] for k in ("panel", "display") if k in c},
             "source": {
                 "series": c["series"],
                 "url": f"https://fred.stlouisfed.org/series/{c['series']}",
@@ -1229,6 +1293,7 @@ def main():
         companions_out.append({
             "id": dv["id"], "label": dv["label"], "for": dv["for"], "why": dv["why"], "freq": dv["freq"],
             "derived": {k: dv[k] for k in ("op", "a", "b") if k in dv},
+            **{k: dv[k] for k in ("panel", "display") if k in dv},
             "observations": [[d, round(v, 3)] for d, v in obs],
         })
 

@@ -833,11 +833,13 @@
       p.hidden = false;
     }
 
-    // overlays: hand-compiled ones plus every companion series that applies here
+    // overlays: hand-compiled ones plus every companion series that applies here.
+    // A companion can ask for its own sub-panel (`panel: "own"`) and carry its own number format (`display`).
+    (compData.companions || []).forEach(c => { if (c.panel === 'own') OWN_SCALE[c.id] = true; });
     const comps = (compData.companions || []).filter(c => appliesTo(c, t.id)).map(c => ({
       id: c.id, type: 'series', group: 'Companion series', label: c.label, applies_to: c.for, why: c.why, observations: c.observations, freq: c.freq,
       source: c.source ? { label: 'FRED ' + c.source.series, url: c.source.url } : null,
-      display: c.id === 'continuing_claims' ? { scale: 1000, decimals: 0, suffix: 'K', clip: [0, 4000000] } : c.id === 'price_level' || c.id === 'dollar_index' ? { scale: 1, decimals: 0, suffix: '' } : OWN_SCALE[c.id] ? { scale: 1, decimals: 1, suffix: '%' } : null,
+      display: c.display ? c.display : c.id === 'continuing_claims' ? { scale: 1000, decimals: 0, suffix: 'K', clip: [0, 4000000] } : c.id === 'price_level' || c.id === 'dollar_index' ? { scale: 1, decimals: 0, suffix: '' } : OWN_SCALE[c.id] ? { scale: 1, decimals: 1, suffix: '%' } : null,
     }));
     const overlays = ovData.overlays.concat(comps);
     const ovById = {}; overlays.forEach(o => ovById[o.id] = o);

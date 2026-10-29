@@ -94,3 +94,7 @@ Cumulative figures since 2019 are from BLS Consumer Price Index data as compiled
 - [YCharts – US M2 Money Supply, year over year](https://ycharts.com/indicators/us_m2_money_supply_yoy)
 - [Bernanke and Blanchard, "What Caused the US Pandemic-Era Inflation?" (Brookings, 2023)](https://www.brookings.edu/articles/what-caused-the-u-s-pandemic-era-inflation/)
 - [Brookings – Furman's response and the demand-vs-supply debate](https://www.brookings.edu/articles/what-lessons-from-the-inflation-of-the-2020s-should-the-federal-reserve-remember-when-it-revisits-its-policy-framework/)
+
+## Corrections
+
+- October 29, 2026: An earlier version put the rise in airfares at 23% year over year. The Bureau of Labor Statistics figure is 22.4%.
