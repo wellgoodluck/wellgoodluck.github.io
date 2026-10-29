@@ -82,9 +82,12 @@
   .wrap { max-width: var(--max); margin: 0 auto; padding: 0 16px; }
 
   /* Masthead ------------------------------------------------------------- */
-  .masthead { padding: 40px 0 24px; border-bottom: 1px solid var(--hairline); }
+  .masthead { padding: 40px 0 0; }
+  .masthead .title-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px 20px; margin: 0 0 10px; }
+  .masthead .site-link { font-size: 15px; font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--hairline); padding-bottom: 1px; white-space: nowrap; }
+  .masthead .site-link:hover { border-color: var(--ink); }
   .masthead h1 {
-    margin: 0 0 10px;
+    margin: 0;
     font-size: clamp(30px, 4.6vw, 44px);
     font-weight: 700;
     letter-spacing: -0.015em;
@@ -97,10 +100,24 @@
     color: var(--ink-2);
   }
   .masthead .updated { margin: 14px 0 0; color: var(--muted); font-size: 14px; }
-  .sections-nav { margin: 18px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 15px; }
-  .sections-nav a { text-decoration: none; border-bottom: 1px solid var(--hairline); padding-bottom: 1px; }
+  /* Section nav: below the masthead; on phones one sideways-scrolling row that stays at the top */
+  .secnav { background: var(--page); border-bottom: 1px solid var(--hairline); }
+  .sections-nav { margin: 0; padding: 18px 0 24px; list-style: none; display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 15px; }
+  .sections-nav a { text-decoration: none; border-bottom: 1px solid var(--hairline); padding-bottom: 1px; white-space: nowrap; }
   .sections-nav a:hover { border-color: var(--ink); }
-  .sections-nav .nav-articles { margin-left: auto; font-weight: 600; }
+  section.group, .tile, .glance, #how-to-read { scroll-margin-top: 12px; }
+  @media (max-width: 760px) {
+    .masthead { padding-top: 22px; }
+    .masthead .title-row { gap: 4px 12px; }
+    .masthead h1 { font-size: 28px; letter-spacing: -0.02em; }   /* stays on one line beside Articles at 375 */
+    .masthead .site-link { font-size: 14px; }
+    .masthead .updated { margin-top: 10px; }
+    .secnav { position: sticky; top: 0; z-index: 5; }
+    .sections-nav { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 12px 16px; margin: 0 -16px; gap: 0 20px; }
+    .sections-nav::-webkit-scrollbar { display: none; }
+    .sections-nav li:last-child { padding-right: 16px; }
+    section.group, .tile, .glance, #how-to-read { scroll-margin-top: 56px; }
+  }
 
   .banner {
     background: var(--banner); color: var(--banner-ink);
@@ -196,6 +213,7 @@
   .ranges button + button { border-left: 1px solid var(--hairline); }
   .ranges button:focus-visible { outline-offset: -2px; }
   .ranges button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+  @media (max-width: 760px) { .ranges button { padding: 8px 12px; } }   /* about 36px tall: a thumb-sized target */
   .chart { position: relative; min-height: 190px; }
   .chart svg { display: block; width: 100%; height: 190px; overflow: visible; }
   .chart .grid-line { stroke: var(--grid); stroke-width: 1; }
@@ -239,7 +257,7 @@
   @media print {
     :root { --page: #fff; --surface: #fff; }
     body { background: #fff; }
-    .sections-nav, .ranges, .chart-head .full, details.table, .tip, .banner, .view-switch { display: none !important; }
+    .secnav, .masthead .site-link, .ranges, .chart-head .full, details.table, .tip, .banner, .view-switch { display: none !important; }
     .glance { break-inside: avoid; }
     .masthead .updated a { display: none; }
     .tile { break-inside: avoid; }
@@ -254,12 +272,12 @@
 
 <header class="masthead">
   <div class="wrap">
-    <h1>Economy in Context</h1>
+    <div class="title-row"><h1>Economy in Context</h1><a class="site-link" href="articles/">Articles</a></div>
     <p class="tagline">The main numbers on the U.S. economy, each shown against its own history, so you can see what is high, what is low and what is normal.</p>
     <p class="updated" id="updated"></p>
-    <ul class="sections-nav" id="nav"></ul>
   </div>
 </header>
+<nav class="secnav" aria-label="Sections"><div class="wrap"><ul class="sections-nav" id="nav"></ul></div></nav>
 
 <main class="wrap" id="main">
   <p class="status" id="status">Loading the latest figures…</p>
@@ -712,10 +730,10 @@
     main.innerHTML = '';
     const gen = new Date(data.generated);
     const upd = document.getElementById('updated');
-    upd.textContent = 'Updated ' + MONTHS_LONG[gen.getMonth()] + ' ' + gen.getDate() + ', ' + gen.getFullYear() +
-      ' from FRED, the Federal Reserve Bank of St. Louis’s data service. Figures refresh automatically as agencies publish. · ';
+    upd.textContent = 'Updated ' + MONTHS_LONG[gen.getMonth()] + ' ' + gen.getDate() + ', ' + gen.getFullYear() + ' · data from FRED · ';
     upd.appendChild(el('a', { href: '#how-to-read', text: 'How to read this page ↓' }));
-    document.getElementById('attribution').textContent = data.attribution;
+    // the provenance sentence lives in the footer; the masthead keeps a short Updated line
+    document.getElementById('attribution').textContent = data.attribution + ' Figures refresh automatically as agencies publish.';
     if (data.sample) {
       const b = document.getElementById('banner');
       b.textContent = 'Sample data. These are placeholder figures for layout only; the first scheduled refresh replaces them with real ones.';
@@ -726,7 +744,7 @@
     const nav = document.getElementById('nav');
     // ?view=tiles is the page as it was before the overview: the tiles alone, with a way back
     if (new URLSearchParams(location.search).get('view') === 'tiles') main.appendChild(el('p', { class: 'view-switch' }, ['Tiles only. ', el('a', { href: './', text: 'Show all the numbers at a glance →' })]));
-    else main.appendChild(buildGlance(data, sections));
+    else { main.appendChild(buildGlance(data, sections)); nav.appendChild(el('li', {}, [el('a', { href: '#at-a-glance', text: 'At a glance' })])); }
     sections.forEach(s => {
       const id = 's-' + s.toLowerCase().replace(/[^a-z]+/g, '-');
       nav.appendChild(el('li', {}, [el('a', { href: '#' + id, text: s })]));
@@ -737,7 +755,6 @@
       sec.appendChild(grid);
       main.appendChild(sec);
     });
-    nav.appendChild(el('li', { class: 'nav-articles' }, [el('a', { href: 'articles/', text: 'Articles' })]));
     // tiles render after the data loads, so a link to a section or tile has nothing to land on at first
     if (location.hash.length > 1) {
       const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));

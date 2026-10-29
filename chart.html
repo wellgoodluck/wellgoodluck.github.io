@@ -98,6 +98,7 @@
   .ranges button + button { border-left: 1px solid var(--hairline); }
   .ranges button:focus-visible { outline-offset: -2px; }
   .ranges button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+  @media (max-width: 760px) { .ranges button { padding: 8px 12px; } }   /* about 36px tall on phones */
   .custom { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-2); flex-wrap: wrap; }
   .custom .fields { display: inline-flex; align-items: center; gap: 6px; }
   .custom .fields[hidden] { display: none; }
