@@ -257,6 +257,15 @@ COMPANIONS = [
         "why": "Involuntary separations as a share of employment. The monthly counterpart of weekly jobless claims.",
     },
     {
+        "id": "productivity",
+        "label": "Labor productivity, change from a year ago",
+        "for": ["gdp"],
+        "series": "OPHNFB",
+        "params": {"units": "pc1", "observation_start": "1947-01-01"},
+        "freq": "q",
+        "why": "Output per hour worked in the nonfarm business sector. The number where technology shows up, usually years after the investment. Note the 1995\u20132004 run.",
+    },
+    {
         "id": "u6",
         "label": "U-6 (incl. part-time for economic reasons and marginally attached)",
         "for": ["unemployment"],
