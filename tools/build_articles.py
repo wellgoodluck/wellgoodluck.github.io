@@ -12,7 +12,8 @@ Each source file starts with a front-matter block:
     dek: One sentence under the title.
     date: 2026-10-24
     updated: 2026-10-28          (optional)
-    kind: concept                (optional: concept = Plain words; path = household path)
+    kind: concept                (optional: concept = Plain words; path = household path;
+                                  page = built and in the sitemap but not listed on the index)
     order: 1                     (optional: sort key within the household paths)
     ---
 
@@ -191,7 +192,7 @@ FOOT = """
 <footer class="about">
   <div class="wrap">
     <p>Articles on this site aim to lay out what the figures show, what is settled, what is argued about and by whom. Every number links to its source where one exists, and corrections are noted on the article. The charts are live from the almanac and update as agencies publish.</p>
-    <p>Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+    <p>This site has no ads, no tracking and no agenda beyond putting the numbers in context. It is paid for by one reader; <a href="how-this-site-is-paid-for.html">here is how</a>, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
   </div>
 </footer>
 </body>
@@ -288,7 +289,7 @@ def render_index(articles):
                     + (f'<span class="d">{inline(a["dek"])}</span>' if a.get("dek") else "")
                     + f'<span class="when">{fmt_date(a["date"])}</span></li>\n')
         return out + "</ul>\n"
-    timely = [a for a in articles if a.get("kind") not in ("concept", "path")]
+    timely = [a for a in articles if a.get("kind") not in ("concept", "path", "page")]
     concepts = [a for a in articles if a.get("kind") == "concept"]
     paths = [a for a in articles if a.get("kind") == "path"]
     if timely:
