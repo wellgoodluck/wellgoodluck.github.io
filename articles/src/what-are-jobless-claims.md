@@ -2,6 +2,7 @@
 title: What Jobless Claims Are, and Why They Move First
 dek: A weekly count of people filing for unemployment benefits. It is the fastest gauge of the job market, the noisiest, and it misses most of the people who lose work.
 date: 2026-10-28
+updated: 2026-10-29
 kind: concept
 tile: claims
 label: Jobless claims
@@ -54,12 +55,13 @@ A smoke detector covers the whole room. Claims cover only the people who qualify
 
 **Whether benefits keep people from working.** The 2020–21 supplements, $600 and then $300 a week on top of state benefits, revived an old argument. About half the states ended the supplements early in mid-2021. By most studies, employment in those states rose a little faster than elsewhere, far less than the benefit cut would have predicted, and spending in them fell. One side reads that as benefits mattering; the other as benefits mattering a little, at a moment when the real constraint was somewhere else. The size of the effect is argued. Nobody has shown it to be zero or large.
 
-**Claims as a recession signal.** A sustained rise of 50,000 or more in the four-week average from its low has preceded every recession in the series. It has also preceded nothing, as in 2024, when claims rose, the Sahm rule tripped in August, and no recession followed. Smoke, no fire. The argument is whether that episode means the rules are broken or the economy got lucky; the next downturn will settle it, and not before.
+**Claims as a recession signal.** A common rule watches for the four-week average to rise 50,000 or more above its low of the past year. By this site's count, since 1967 that happened before three recessions began (1980, 1990–91 and 2001) and within about three months after the other five began, so it has worked more often as a fast confirmation than as a forecast. It has also happened about ten times with no recession, most recently in June 2023, when the average rose from about 198,000 to about 251,000. In 2024 claims rose again, by about 38,000, the Sahm rule tripped in early August, and still no recession followed. Smoke, no fire. The argument is whether those episodes mean the rules are broken or the economy got lucky; the next downturn will settle it, and not before.
 
 ## See also
 
 - [Jobs added](what-is-the-jobs-report.html): the monthly count this number forecasts.
 - [The unemployment rate](what-is-the-unemployment-rate.html): the broader headcount, and the Sahm rule.
+- [What a recession is](what-is-a-recession.html): claims beside the other warning lights.
 - The almanac's [jobless claims](../chart.html?id=claims) with every overlay.
 
 ## Sources
@@ -68,3 +70,7 @@ A smoke detector covers the whole room. Claims cover only the people who qualify
 - [FRED: Initial claims (ICSA)](https://fred.stlouisfed.org/series/ICSA), [four-week average (IC4WSA)](https://fred.stlouisfed.org/series/IC4WSA), [continuing claims (CCSA)](https://fred.stlouisfed.org/series/CCSA).
 - [BLS, Job Openings and Labor Turnover Survey](https://www.bls.gov/jlt/), the hiring and layoff rates.
 - [Coombs et al., "Early Withdrawal of Pandemic Unemployment Insurance: Effects on Employment and Earnings" (2022), summarized by the Labor Department's CLEAR review](https://clear.dol.gov/Study/Early-Withdrawal-Pandemic-Unemployment-Insurance-Effects-Employment-and-Earnings-Coombs-et-al).
+
+## Corrections
+
+October 29, 2026: An earlier version said a rise of 50,000 in the four-week average had preceded every recession in the series, and gave 2024 as a time it preceded nothing. In five of the eight recessions since 1967 the rise came just after the recession began, not before. The rule's most recent false alarm was in June 2023; in 2024 claims rose by about 38,000, short of the 50,000 mark.
