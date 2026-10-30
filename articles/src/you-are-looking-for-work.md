@@ -20,7 +20,7 @@ The other paths cover rent, a mortgage, a paycheck, retirement income and runnin
 
 Employers listed 7.1 million open jobs in August, about as many as in 2019. What changed is the line in front of them. There were 7.0 million unemployed people in August, against about 6 million in 2019, so the ratio of openings to job seekers fell to about one to one, from 1.2 in 2019 and a record 2.0 in March 2022.
 
-Openings are ads; hires are doors that actually open. Employers hired 5.2 million people in August, about 11% fewer than in a typical month of 2019, even though the workforce is larger now. As a share of the workforce, August's 3.3% hiring rate was lower than in about three months out of four since 2000. Layoffs, at 1.0%, were near the record low, and that is the other half of the frozen market: few people are being pushed out, so few seats open up. [The frozen job market](the-frozen-job-market.html) has what the combination has meant before.
+Openings are ads; hires are doors that actually open. Employers hired 5.2 million people in August, about 11% fewer than in a typical month of 2019, even though the workforce is larger now. As a share of the workforce, {{v hires_rate period else="August 2026"}}'s {{v hires_rate fmt=pct1 else="3.3%"}} hiring rate was {{fig hires_rank else="lower than in about three months out of four since 2000"}}. Layoffs, at {{v layoffs_rate fmt=pct1 else="1.0%"}}, were near the record low, {{check layoffs_rate.percentile <= 10 "layoffs near the record low"}} and that is the other half of the frozen market: few people are being pushed out, so few seats open up. [The frozen job market](the-frozen-job-market.html) has what the combination has meant before.
 
 ## How long it takes
 
@@ -34,7 +34,7 @@ Long searches carry a penalty of their own. In a field experiment that sent fict
 
 Unemployment insurance is run by the states, so how much and for how long depend on where you worked. Twenty-six weeks is the standard. As of July 2026, fourteen states paid fewer at most, as few as 12 in Arkansas and Florida, and several of them tie the number of weeks to their own unemployment rate, so the limit rises if the state's job market worsens; Massachusetts pays up to 30. In the second quarter of 2026 the average weekly benefit was about $501, people collected for an average of 15.8 weeks, and about four in ten people who started collecting used up all their weeks. Benefits are taxable income.
 
-Only people who lose a job through no fault of their own qualify. People who quit, people entering the workforce for the first time, and most gig and contract workers do not, which is why [jobless claims](what-are-jobless-claims.html) undercount the unemployed: about 1.7 million people were collecting benefits in mid-October, against 7.1 million unemployed in September.
+Only people who lose a job through no fault of their own qualify. People who quit, people entering the workforce for the first time, and most gig and contract workers do not, which is why [jobless claims](what-are-jobless-claims.html) undercount the unemployed: about {{v continuing_claims fmt=millions1 else="1.7 million"}} people were collecting benefits in {{v continuing_claims period else="mid-October"}}, against 7.1 million unemployed in September. {{due 2026-11-07 "October jobs report: the unemployed count and the search-length figures on this page"}}
 
 ## Health coverage
 

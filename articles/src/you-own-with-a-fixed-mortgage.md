@@ -25,7 +25,7 @@ Neither cost shows up in the almanac directly. Both sit inside the inflation num
 
 ## Inflation shrinks your payment
 
-A $2,000 monthly payment fixed in 2020 is about $1,540 in 2020 dollars today: prices have risen 30% since, and the payment hasn't. Fixed in 2022, it is about $1,740. This is the mirror image of the saver's loss in [real vs. nominal](real-vs-nominal.html): the lender agreed to a fixed number of dollars, and every month of inflation makes those dollars easier to come by. Your wages, rent for the next owner, and the price of the house all rose; the debt didn't. Over a 30-year loan at even 2–3% inflation, the final payments are made in dollars worth about half the first ones.
+A $2,000 monthly payment fixed in 2020 is about {{fig pmt2000_2020 else="$1,540"}} in 2020 dollars at {{v cpi_index period else="September 2026"}} prices: prices have risen {{fig prices_since_2020 else="30%"}} since, and the payment hasn't. Fixed in 2022, it is about {{fig pmt2000_2022 else="$1,740"}}. This is the mirror image of the saver's loss in [real vs. nominal](real-vs-nominal.html): the lender agreed to a fixed number of dollars, and every month of inflation makes those dollars easier to come by. Your wages, rent for the next owner, and the price of the house all rose; the debt didn't. Over a 30-year loan at even 2–3% inflation, the final payments are made in dollars worth about half the first ones.
 
 {{chart id=cpi range=10y ov=price_level height=720 caption="Inflation (top) and the price level (below, 2019 = 100). A fixed payment is a horizontal line against the lower chart: whatever the level does, the dollars owed stay put."}}
 
@@ -35,7 +35,7 @@ Your mortgage rate ignores the Fed. The rest of your finances don't. A home equi
 
 ## Mortgage rates, though yours is locked
 
-Two effects, both about leaving. First, the price of moving: if you hold a 3% mortgage and today's rate is 7.3%, the same loan on the next house costs about $1,000 more a month per $400,000 borrowed, and the Federal Housing Finance Agency estimates that each point of gap cuts the chance of a sale by about 18%. That is the lock-in effect, and it is why so few homes are for sale. Second, the price of your house: fewer buyers can qualify at 7% than at 3%, which should push prices down, and mostly hasn't, because lock-in cut the number of sellers at the same time. The result is a market with few transactions at high prices, which is good for your net worth on paper and bad for anyone who needs to move.
+Two effects, both about leaving. First, the price of moving: if you hold a 3% mortgage and the average rate on {{v mortgage period as=day}} was {{v mortgage fmt=pct1}}, the same loan on the next house costs about {{fig pmt_gap_100}} more a month per $400,000 borrowed, and the Federal Housing Finance Agency estimates that each point of gap cuts the chance of a sale by about 18%. That is the lock-in effect, and it is why so few homes are for sale. Second, the price of your house: fewer buyers can qualify at 7% than at 3%, {{check mortgage.value >= 6.5 "rates near 7%"}} which should push prices down, and mostly hasn't, because lock-in cut the number of sellers at the same time. The result is a market with few transactions at high prices, which is good for your net worth on paper and bad for anyone who needs to move.
 
 {{chart id=mortgage range=10y caption="The 30-year mortgage rate. The gap between where it was in 2020–21 and where it is now is the lock-in effect: the cost of trading a loan taken at the low for one taken today."}}
 

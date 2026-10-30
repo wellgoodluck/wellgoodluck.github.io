@@ -30,7 +30,7 @@ Low jobless claims mean nobody is being laid off, which means nobody is on the m
 
 ## Inflation, from both sides
 
-Your costs arrive first. Materials, freight, insurance, rent and wages all rose in 2021–23, and they rose before you could reprice, which is where small-business margins went in 2022. Then the question of how much you can pass through, which depends on whether your customers' pay kept up: it did, with a lag, through 2025, and it has fallen behind prices again in 2026 as energy rose. The rent line and the wage line on [the inflation chart](../chart.html?id=cpi&range=5y&ov=cpi_rent,wages,real_wages) are your two biggest costs and your customers' budget, on the same axis.
+Your costs arrive first. Materials, freight, insurance, rent and wages all rose in 2021–23, and they rose before you could reprice, which is where small-business margins went in 2022. Then the question of how much you can pass through, which depends on whether your customers' pay kept up: it did, with a lag, through 2025, and it has fallen behind prices again in 2026 as energy rose. The rent line and the wage line on [the inflation chart](../chart.html?id=cpi&range=5y&ov=cpi_rent,wages,real_wages) are your two biggest costs and your customers' budget, on the same axis. {{check real_wages.value < 0 "pay fallen behind prices again in 2026"}}
 
 Tariffs land here too, as a cost on imported inputs. The broad tariffs of 2025 were struck down in February 2026 and partly replaced under other authorities, so the tariff on a given import has changed several times in two years, and the arguments below take that up.
 

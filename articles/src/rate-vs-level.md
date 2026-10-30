@@ -14,7 +14,7 @@ A level is where something stands, a rate is how fast it is changing, and most h
 
 ## The analogy
 
-The speedometer and the odometer. Inflation is the speedometer: 9% in mid-2022 meant prices rising fast; 3.7% now means rising more slowly. The price level is the odometer: about 131 on a scale where 2019 is 100, meaning the same basket costs 31% more. "Inflation is down" means the car slowed. The odometer never runs backward. It only slows.
+The speedometer and the odometer. Inflation is the speedometer: 9% in mid-2022 meant prices rising fast; {{v cpi}} in {{v cpi period}} means rising more slowly. The price level is the odometer: about {{fig price_level_int else="131"}} on a scale where 2019 is 100, meaning the same basket costs {{fig price_level_pct else="31%"}} more. {{check cpi.value < 6 "inflation well below 2022's 9%"}} "Inflation is down" means the car slowed. The odometer never runs backward. It only slows.
 
 The same two gauges sit on every indicator, and headlines usually read the speedometer:
 

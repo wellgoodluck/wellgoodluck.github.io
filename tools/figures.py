@@ -568,6 +568,97 @@ def val_gas_real_max_year(D):
     return float(_d(max(D.get("gas_real")["obs"], key=lambda o: o[1])[0]).year)
 
 
+# --- phase 2b ------------------------------------------------------------------
+_FRACTIONS = [(0.1, "about one month in ten"), (0.2, "about one month in five"), (0.25, "about one month in four"),
+              (1 / 3, "about one month in three"), (0.5, "about half of all months"), (2 / 3, "about two months in three"),
+              (0.75, "about three months out of four"), (0.8, "about four months in five"), (0.9, "about nine months in ten")]
+
+
+def _frac_words(x):
+    return min(_FRACTIONS, key=lambda f: abs(f[0] - x))[1]
+
+
+def fig_hires_rank(D):
+    """'lower than in about three months out of four since 2000' (share of earlier months strictly higher)."""
+    obs = D.get("hires_rate")["obs"]
+    cur, hist = obs[-1][1], [v for _, v in obs[:-1]]
+    hi = sum(v > cur for v in hist) / len(hist)
+    lo = sum(v < cur for v in hist) / len(hist)
+    first = _d(obs[0][0]).year
+    if hi >= lo:
+        return (f"the lowest since the series began in {first}" if lo == 0 else f"lower than in {_frac_words(hi)} since {first}"), []
+    return (f"the highest since the series began in {first}" if hi == 0 else f"higher than in {_frac_words(lo)} since {first}"), []
+
+
+def fig_quits_vs_2019(D):
+    obs = D.get("quits_rate")["obs"]
+    base = [v for d, v in obs if d.startswith("2019")]
+    r = obs[-1][1] / (sum(base) / len(base)) - 1
+    if abs(r) < 0.05:
+        return "about as many workers quit as in a typical month of 2019", []
+    words = min([(0.1, "a tenth"), (0.2, "a fifth"), (0.25, "a quarter"), (1 / 3, "a third"), (0.5, "half")],
+                key=lambda w: abs(w[0] - abs(r)))[1]
+    return f"about {words} {'fewer' if r < 0 else 'more'} workers quit than in a typical month of 2019", []
+
+
+def _cpi_avg(D, year):
+    vals = [v for d, v in D.get("cpi_index")["obs"] if d.startswith(str(year))]
+    return sum(vals) / len(vals)
+
+
+def fig_pmt2000_2020(D):
+    return fmt(2000 * _cpi_avg(D, 2020) / D.get("cpi_index")["obs"][-1][1], "usd10"), ["https://fred.stlouisfed.org/series/CPIAUCSL"]
+
+
+def fig_pmt2000_2022(D):
+    return fmt(2000 * _cpi_avg(D, 2022) / D.get("cpi_index")["obs"][-1][1], "usd10"), []
+
+
+def fig_prices_since_2020(D):
+    return f"{round((D.get('cpi_index')['obs'][-1][1] / _cpi_avg(D, 2020) - 1) * 100)}%", []
+
+
+def fig_pmt_gap_100(D):
+    return f"${round(_pmt_diff(D) / 100) * 100:,}", []
+
+
+def fig_price_level_int(D):
+    return f"{round(D.get('price_level')['obs'][-1][1])}", []
+
+
+def fig_price_level_pct(D):
+    return f"{round(D.get('price_level')['obs'][-1][1] - 100)}%", []
+
+
+def fig_real_ff_words(D):
+    v = D.get("real_fed_funds")["obs"][-1][1]
+    if v < 0:
+        return f"below zero, about {_signed_pct(v)}", []
+    n, frac = int(v), v - int(v)
+    if frac < 0.1:
+        return f"about {n}%", []
+    if frac < 0.45:
+        return f"a little over {n}%", []
+    if frac < 0.6:
+        return f"about {n}.5%", []
+    if frac < 0.9:
+        return f"a little under {n + 1}%", []
+    return f"about {n + 1}%", []
+
+
+def fig_claims_history_pos(D):
+    p = D.context("claims")["percentile"]
+    if p <= 15:
+        return "near the low end of its history", []
+    if p <= 35:
+        return "in the lower part of its history", []
+    if p < 65:
+        return "in the middle of its history", []
+    if p < 85:
+        return "in the upper part of its history", []
+    return "near the high end of its history", []
+
+
 FIGS = {
     "claims_low": fig_claims_low,
     "continuing_claims": fig_continuing_claims,
@@ -584,6 +675,10 @@ FIGS = {
     "trade_3mo_month": fig_trade_3mo_month, "trade_3mo": fig_trade_3mo, "trade_3mo_share": fig_trade_3mo_share,
     "gas_tank": fig_gas_tank, "gas_tank_year_ago": fig_gas_tank_year_ago, "gas_real_rank": fig_gas_real_rank,
     "gas_2022_today": fig_gas_2022_today, "gas_real_max": fig_gas_real_max,
+    "hires_rank": fig_hires_rank, "quits_vs_2019": fig_quits_vs_2019,
+    "pmt2000_2020": fig_pmt2000_2020, "pmt2000_2022": fig_pmt2000_2022, "prices_since_2020": fig_prices_since_2020,
+    "pmt_gap_100": fig_pmt_gap_100, "price_level_int": fig_price_level_int, "price_level_pct": fig_price_level_pct,
+    "real_ff_words": fig_real_ff_words, "claims_history_pos": fig_claims_history_pos,
 }
 VALUES = {      # usable on the left of a check as fig:<name>
     "claims_rule_last": val_claims_rule_last,

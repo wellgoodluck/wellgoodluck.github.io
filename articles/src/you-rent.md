@@ -43,7 +43,7 @@ The almanac's [housing starts](what-are-housing-starts.html) page shows the tota
 
 ## Your paycheck against prices
 
-Whether a rent increase is survivable depends on the real wage, pay minus inflation. Typical hourly pay is up about 39% since 2019 ([AHETPI](https://fred.stlouisfed.org/series/AHETPI)); prices overall about 31%; rent about 36%. So the average worker has gained ground on prices overall and, narrowly, on rent, the largest single item in most renters' budgets. [Real vs. nominal](real-vs-nominal.html) explains the subtraction. The year-over-year version is on the inflation chart as a companion, and it has been negative since the spring of 2026 as energy prices rose.
+Whether a rent increase is survivable depends on the real wage, pay minus inflation. Typical hourly pay is up about 39% since 2019 ([AHETPI](https://fred.stlouisfed.org/series/AHETPI)); prices overall about 31%; rent about 36%. So the average worker has gained ground on prices overall and, narrowly, on rent, the largest single item in most renters' budgets. [Real vs. nominal](real-vs-nominal.html) explains the subtraction. The year-over-year version is on the inflation chart as a companion, and it has been negative since the spring of 2026 as energy prices rose. {{check real_wages.value < 0 "real wages negative since spring 2026"}}
 
 ## The Fed
 

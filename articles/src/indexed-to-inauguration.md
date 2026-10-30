@@ -8,7 +8,7 @@ date: 2026-10-28
 
 Who did better on the economy? The almanac shows the party of the president as a lane under every chart, and it stops there, because the next step, lining up each term and scoring it, is not a chart setting. It is a set of choices, and every choice moves the answer. This article makes the choices in the open, shows the numbers both ways, and leaves the verdict where it belongs.
 
-The figures below are computed from the almanac's own data: payroll jobs, the unemployment rate, the Consumer Price Index and real GDP, for every president since Reagan, with the current term counted through September 2026.
+The figures below are computed from the almanac's own data: payroll jobs, the unemployment rate, the Consumer Price Index and real GDP, for every president since Reagan, with the current term counted through September 2026. {{due 2027-02-06 "payroll benchmark revision: recompute the current term's tables"}} {{due 2029-01-20 "end of the term: recompute every table"}}
 
 ## Four choices that decide the answer
 

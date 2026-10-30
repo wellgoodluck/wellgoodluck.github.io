@@ -8,7 +8,7 @@ updated: 2026-10-30
 
 ## The number
 
-Consumer prices rose about 28% from 2019 to early 2026, and this year's energy surge has pushed that to about 31%. Most of it happened in 2021 and 2022, when inflation ran 5–8% a year. The rest of the time, prices crept up at the 2–3% pace people barely notice.
+Consumer prices rose about 28% from 2019 to early 2026, and this year's energy surge has pushed that to about 31%. Most of it happened in 2021 and 2022, when inflation ran 5–8% a year. The rest of the time, prices crept up at the 2–3% pace people barely notice. {{check price_level.value >= 128 "the 30% in the title"}} {{check price_level.value <= 135 "the 30% in the title"}}
 
 That average hides a lot. By September 2026, against the 2019 average, gasoline is up 65%, ground beef 64%, auto insurance 48%, electricity 45%, meals away from home 40%, eggs 37%, rent 36%, and used cars 32%. If you rent, drive, and eat beef, your personal inflation ran well above the headline figure.
 

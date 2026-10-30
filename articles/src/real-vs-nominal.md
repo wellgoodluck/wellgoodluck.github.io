@@ -14,7 +14,7 @@ A nominal figure is measured in dollars as they are; a real figure is the same t
 
 ## The analogy
 
-A ruler that shrinks. Dollars are the ruler everything gets measured with, and since 2019 the ruler has shrunk by about a quarter. Measured with it, your pay grew a lot. Measured in what it buys, it grew a little. "Real" means re-measuring with a ruler that stays the same length: this year's dollars, all the way back.
+A ruler that shrinks. Dollars are the ruler everything gets measured with, and since 2019 the ruler has shrunk by about a quarter. {{check price_level.value >= 125 "the ruler shrunk by about a quarter"}} {{check price_level.value <= 140 "the ruler shrunk by about a quarter"}} Measured with it, your pay grew a lot. Measured in what it buys, it grew a little. "Real" means re-measuring with a ruler that stays the same length: this year's dollars, all the way back.
 
 The pair turns up everywhere, and the nominal one is usually the headline:
 
@@ -36,7 +36,7 @@ A ruler shrinks the same for everyone. Inflation doesn't. "Real" wages deflated 
 
 **Which ruler.** The CPI and the Fed's preferred PCE index differ by a few tenths a year, which compounds: real wages since 2019 look a few points better deflated by PCE than by CPI. Other rulers (chained CPI, CPI-W for Social Security, a basket without shelter) each move the answer, which is why a technical dispute has a political edge: the ruler you pick decides whether the 2020s read as a raise or a cut.
 
-**Whether the Fed should think in real rates.** The Fed sets a nominal rate but judges whether policy is tight by the real one, nominal minus expected inflation, against a "neutral" real rate it cannot observe. In late 2026 the real Fed funds rate is a little over 1%. One camp says that is barely restrictive with inflation rising; the other says neutral has fallen and 1% is plenty for a job market already soft. Neither can see the neutral rate, which is why the argument never ends.
+**Whether the Fed should think in real rates.** The Fed sets a nominal rate but judges whether policy is tight by the real one, nominal minus expected inflation, against a "neutral" real rate it cannot observe. In {{v real_fed_funds period else="September 2026"}} the real Fed funds rate was {{fig real_ff_words else="a little over 1%"}}. {{check real_fed_funds.value > 0 "a positive real rate"}} One camp says that is barely restrictive with inflation rising; the other says neutral has fallen and 1% is plenty for a job market already soft. Neither can see the neutral rate, which is why the argument never ends.
 
 ## See also
 
