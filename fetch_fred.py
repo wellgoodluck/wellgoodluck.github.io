@@ -651,6 +651,8 @@ COMPANIONS = [
      "params": {"observation_start": "2015-01-01"}, "freq": "m", "why": "Used for search length in article text."},
     {"id": "long_term_share", "label": "Share of the unemployed out of work 27 weeks or more", "for": [], "series": "LNS13025703",
      "params": {"observation_start": "2015-01-01"}, "freq": "m", "why": "Used for long-term unemployment in article text."},
+    {"id": "rent_level", "label": "CPI, rent of primary residence, index", "for": [], "series": "CUSR0000SEHA",
+     "params": {"observation_start": "2018-01-01"}, "freq": "m", "why": "Used for rent since 2019 in article text."},
     {"id": "eci_wages", "label": "Employment Cost Index, private wages and salaries, change from a year ago (not seasonally adjusted)",
      "for": [], "series": "CIU2020000000000I", "params": {"units": "pc1", "observation_start": "2002-01-01"}, "freq": "q",
      "why": "Used for the ECI line on the hourly pay page; not seasonally adjusted, as BLS headlines it."},

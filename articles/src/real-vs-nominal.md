@@ -18,7 +18,7 @@ A ruler that shrinks. Dollars are the ruler everything gets measured with, and s
 
 The pair turns up everywhere, and the nominal one is usually the headline:
 
-- **Wages.** Typical hourly pay for production and nonsupervisory workers is up about 38% since September 2019. Prices are up about 31%. The real raise over seven years is about 5%, less than 1% a year, which is why a 38% raise feels like treading water.
+- **Wages.** From September 2019 to {{fig sep2019_month else="September 2026"}}, typical hourly pay for production and nonsupervisory workers rose about {{fig pay_since_sep2019 else="38%"}} ([AHETPI](https://fred.stlouisfed.org/series/AHETPI)) and prices about {{fig prices_since_sep2019 else="31%"}} ([CPIAUCSL](https://fred.stlouisfed.org/series/CPIAUCSL)). {{fig real_raise_sep2019 else="The real raise over seven years is about 5%, less than 1% a year"}}, which is why a raise that size feels like treading water. {{check fig:real_raise_sep2019 < 10 "treading water: real raise since Sept 2019 under 10%"}}
 - **Interest.** A 4% savings yield with 3.7% inflation earns about 0.3% real. In 2021–22 the Fed's rate was zero and inflation ran 7%, so holding cash lost 7% a year. The real Fed funds line on the almanac is this subtraction done every month.
 - **Debt.** A fixed mortgage payment is nominal and never changes, so inflation shrinks it in real terms. That is the saver's loss arriving on the borrower's side of the ledger. The federal debt works the same way, which is why inflation is sometimes called the quiet default.
 - **Growth.** The almanac's GDP figure is real. Nominal GDP grew about 9% in 2022; real GDP grew about 2%. The difference was prices, not production.

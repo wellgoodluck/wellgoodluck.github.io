@@ -187,6 +187,8 @@ def fmt(v, how):
         return f"${round(v / 10) * 10:,.0f}"
     if how == "k_millions2":                       # a series in thousands, as millions (housing starts)
         return f"{v / 1000:.2f} million"
+    if how == "k_millions1":                       # a series in thousands, as millions to one decimal
+        return f"{v / 1000:.1f} million"
     if how == "k_round10k":                        # a series in thousands, to the nearest 10,000
         return f"{round(v / 10) * 10000:,.0f}"
     raise ValueError(f"unknown format '{how}'")
@@ -659,6 +661,296 @@ def fig_claims_history_pos(D):
     return "near the high end of its history", []
 
 
+# --- phase 3b: series added Oct 30 (pay level, rent level, unemployed, openings, search length, ECI) ---
+def _avg_year(obs, year):
+    vals = [v for d, v in obs if d.startswith(str(year))]
+    return sum(vals) / len(vals)
+
+
+def _since_2019(D, sid):
+    obs = D.get(sid)["obs"]
+    return obs[-1][0], obs[-1][1] / _avg_year(obs, 2019) - 1
+
+
+def _pay_prices_rent(D):
+    """Pay, prices and rent since the 2019 average, on the latest month all three have."""
+    d, (pay, pl, rent) = _aligned(D, "pay_level", "price_level", "rent_level")
+    p0 = _avg_year(D.get("pay_level")["obs"], 2019)
+    r0 = _avg_year(D.get("rent_level")["obs"], 2019)
+    return d, pay / p0 - 1, pl / 100 - 1, rent / r0 - 1           # price_level is already 2019 = 100
+
+
+def _pay_prices(D):
+    d, (pay, pl) = _aligned(D, "pay_level", "price_level")
+    return d, pay / _avg_year(D.get("pay_level")["obs"], 2019) - 1, pl / 100 - 1
+
+
+def _pct_round(x):
+    return f"{round(x * 100)}%"
+
+
+def fig_pp_month(D):
+    return month_year(_pay_prices(D)[0]), []
+
+
+def fig_pay_since_2019(D):
+    return _pct_round(_pay_prices(D)[1]), ["https://fred.stlouisfed.org/series/AHETPI"]
+
+
+def fig_prices_since_2019(D):
+    return _pct_round(_pay_prices(D)[2]), ["https://fred.stlouisfed.org/series/CPIAUCSL"]
+
+
+def _years_since_mid_2019(d):
+    return (_d(d) - date(2019, 7, 1)).days / 365.25
+
+
+_NUMBERS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"]
+
+
+def _years_words(yrs):
+    n = int(round(yrs))
+    w = _NUMBERS[n] if n < len(_NUMBERS) else str(n)
+    return "one year" if n == 1 else f"{w} years"
+
+
+def fig_real_gain_since_2019(D):
+    """'a real gain of about 5% over seven years, less than 1% a year' and its other forms."""
+    d, pay, prices = _pay_prices(D)
+    pay_r, prices_r = round(pay * 100) / 100, round(prices * 100) / 100   # from the two figures as printed
+    real = (1 + pay_r) / (1 + prices_r) - 1
+    yrs = _years_since_mid_2019(d)
+    n = _years_words(yrs)
+    per = (1 + real) ** (1 / yrs) - 1
+    if abs(real) < 0.005:
+        return f"no real gain over {n}", []
+    word = "gain" if real > 0 else "loss"
+    pace = "less than 1% a year" if abs(per) < 0.01 else f"about {abs(per) * 100:.1f}% a year"
+    return f"a real {word} of about {round(abs(real) * 100)}% over {n}, {pace}", []
+
+
+def fig_rent_since_2019(D):
+    return _pct_round(_pay_prices_rent(D)[3]), ["https://fred.stlouisfed.org/series/CUSR0000SEHA"]
+
+
+def fig_rent_month(D):
+    return month_year(_pay_prices_rent(D)[0]), []
+
+
+def fig_rent3_pay(D):
+    return _pct_round(_pay_prices_rent(D)[1]), ["https://fred.stlouisfed.org/series/AHETPI"]
+
+
+def fig_rent3_prices(D):
+    return _pct_round(_pay_prices_rent(D)[2]), ["https://fred.stlouisfed.org/series/CPIAUCSL"]
+
+
+def val_rent_minus_prices(D):
+    d, pay, prices, rent = _pay_prices_rent(D)
+    return round(rent * 100) - round(prices * 100)
+
+
+def fig_rent_verdict(D):
+    d, pay, prices, rent = _pay_prices_rent(D)
+    pay_r, prices_r, rent_r = (round(x * 100) for x in (pay, prices, rent))
+    gained_prices = pay_r > prices_r
+    gap = pay_r - rent_r
+    first = "gained ground on prices overall" if gained_prices else "lost ground to prices overall"
+    if gap > 5:
+        second = "and on rent" if gained_prices else "but gained on rent"
+    elif gap > 0:
+        second = "and, narrowly, on rent" if gained_prices else "but, narrowly, gained on rent"
+    elif gap == 0:
+        second = "and kept even with rent" if gained_prices else "and only kept even with rent"
+    elif gap >= -5:
+        second = "but, narrowly, not on rent" if gained_prices else "and, narrowly, to rent"
+    else:
+        second = "but not on rent" if gained_prices else "and to rent"
+    return f"So the average worker has {first} {second}", []
+
+
+def _pay_prices_sep2019(D):
+    pay = D.get("pay_level")["obs"]
+    cpi = D.get("cpi_index")["obs"]
+    p0 = dict(pay)["2019-09-01"]
+    c0 = dict(cpi)["2019-09-01"]
+    d, (p, c) = _aligned(D, "pay_level", "cpi_index")
+    return d, p / p0 - 1, c / c0 - 1
+
+
+def fig_pay_since_sep2019(D):
+    return _pct_round(_pay_prices_sep2019(D)[1]), ["https://fred.stlouisfed.org/series/AHETPI"]
+
+
+def fig_prices_since_sep2019(D):
+    return _pct_round(_pay_prices_sep2019(D)[2]), []
+
+
+def fig_sep2019_month(D):
+    return month_year(_pay_prices_sep2019(D)[0]), []
+
+
+def fig_real_raise_sep2019(D):
+    """'The real raise over seven years is about 5%, less than 1% a year'."""
+    d, p, c = _pay_prices_sep2019(D)
+    p_r, c_r = round(p * 100) / 100, round(c * 100) / 100
+    real = (1 + p_r) / (1 + c_r) - 1
+    yrs = (_d(d) - date(2019, 9, 1)).days / 365.25
+    n = _years_words(yrs)
+    per = (1 + real) ** (1 / yrs) - 1
+    pace = "less than 1% a year" if abs(per) < 0.01 else f"about {abs(per) * 100:.1f}% a year"
+    if real < 0:
+        return f"The real change over {n} is a loss of about {round(-real * 100)}%, {pace}", []
+    return f"The real raise over {n} is about {round(real * 100)}%, {pace}", []
+
+
+def val_real_raise_sep2019(D):
+    d, p, c = _pay_prices_sep2019(D)
+    return round(((1 + round(p, 2)) / (1 + round(c, 2)) - 1) * 100, 1)
+
+
+def fig_search_median(D):
+    obs = D.get("uempmed")["obs"]
+    return f"{obs[-1][1]:.1f} weeks", ["https://fred.stlouisfed.org/series/UEMPMED"]
+
+
+def fig_search_mean(D):
+    return f"{D.get('uempmean')['obs'][-1][1]:.1f} weeks", ["https://fred.stlouisfed.org/series/UEMPMEAN"]
+
+
+def fig_long_term_pct(D):
+    return f"{D.get('long_term_share')['obs'][-1][1]:.1f}%", ["https://fred.stlouisfed.org/series/LNS13025703"]
+
+
+def fig_search_median_vs_2019(D):
+    obs = D.get("uempmed")["obs"]
+    base = _avg_year(obs, 2019)
+    cur = obs[-1][1]
+    if abs(cur - base) < 0.3:
+        return f"about the same as the 2019 average of {base:.1f}", []
+    return f"{'up' if cur > base else 'down'} from an average of {base:.1f} in 2019", []
+
+
+def fig_long_term_words(D):
+    """'more than a quarter' of the unemployed looking six months or longer."""
+    s = D.get("long_term_share")["obs"][-1][1] / 100
+    for x, w in [(0.5, "half"), (1 / 3, "a third"), (0.25, "a quarter"), (0.2, "a fifth"), (0.1, "a tenth")]:
+        if abs(s - x) < 0.012:
+            return f"about {w}", []
+        if s > x:
+            return f"more than {w}", []
+        if x - s < 0.03:
+            return f"nearly {w}", []
+    return "fewer than one in ten", []
+
+
+def fig_long_term_count(D):
+    d, (share, unemp) = _aligned(D, "long_term_share", "unemployed")
+    return f"about {share / 100 * unemp / 1000:.1f} million", ["https://fred.stlouisfed.org/series/UNEMPLOY"]
+
+
+def fig_long_term_2019(D):
+    return f"{round(_avg_year(D.get('long_term_share')['obs'], 2019))}%", []
+
+
+def _jolts_cps(D):
+    d, (op, un) = _aligned(D, "openings", "unemployed")
+    return d, op, un
+
+
+def fig_openings_month(D):
+    return month_year(_jolts_cps(D)[0]), []
+
+
+def fig_openings(D):
+    return f"{_jolts_cps(D)[1] / 1000:.1f} million", ["https://fred.stlouisfed.org/series/JTSJOL"]
+
+
+def fig_openings_vs_2019(D):
+    d, op, un = _jolts_cps(D)
+    r = op / _avg_year(D.get("openings")["obs"], 2019) - 1
+    if abs(r) < 0.05:
+        return "about as many as in 2019", []
+    return f"about {round(abs(r) * 100)}% {'more' if r > 0 else 'fewer'} than in 2019", []
+
+
+def fig_unemployed_aligned(D):
+    return f"{_jolts_cps(D)[2] / 1000:.1f} million", ["https://fred.stlouisfed.org/series/UNEMPLOY"]
+
+
+def val_unemployed_vs_2019(D):
+    """Percent change in the unemployed count from its 2019 average, on the JOLTS-aligned month."""
+    return round((_jolts_cps(D)[2] / _avg_year(D.get("unemployed")["obs"], 2019) - 1) * 100, 1)
+
+
+def val_openings_vs_2019(D):
+    return round((_jolts_cps(D)[1] / _avg_year(D.get("openings")["obs"], 2019) - 1) * 100, 1)
+
+
+def fig_unemployed_2019(D):
+    return f"about {round(_avg_year(D.get('unemployed')['obs'], 2019) / 1000)} million", []
+
+
+def fig_ratio_sentence(D):
+    """'the ratio of openings to job seekers fell to about one to one, from 1.2 in 2019 and a record 2.0 in March 2022'."""
+    d, op, un = _jolts_cps(D)
+    o, u = dict(D.get("openings")["obs"]), dict(D.get("unemployed")["obs"])
+    common = sorted(set(o) & set(u))
+    ratios = [(x, o[x] / u[x]) for x in common]
+    r = op / un
+    r19 = sum(v for x, v in ratios if x.startswith("2019")) / len([1 for x, v in ratios if x.startswith("2019")])
+    top = max(ratios, key=lambda t: t[1])
+    now = "about one to one" if abs(r - 1) < 0.1 else f"{r:.1f}"
+    if top[0] == d:
+        return f"the ratio of openings to job seekers rose to a record {r:.1f}, from {r19:.1f} in 2019", []
+    if round(r, 1) == round(r19, 1):
+        return f"the ratio of openings to job seekers was {r:.1f}, the same as in 2019, against a record {top[1]:.1f} in {month_year(top[0])}", []
+    verb = "fell to" if r < r19 else "rose to"
+    if round(r, 1) == round(top[1], 1):
+        return f"the ratio of openings to job seekers {verb} {r:.1f}, from {r19:.1f} in 2019, level with its record in {month_year(top[0])}", []
+    return f"the ratio of openings to job seekers {verb} {now}, from {r19:.1f} in 2019 and a record {top[1]:.1f} in {month_year(top[0])}", []
+
+
+def fig_unemployed_count(D):
+    return fmt(D.get("unemployed")["obs"][-1][1], "k_millions1"), ["https://fred.stlouisfed.org/series/UNEMPLOY"]
+
+
+def _eci(D):
+    obs = D.get("eci_wages")["obs"]
+    d, v = obs[-1]
+    end = _d(d)
+    end_month = date(end.year, end.month + 2, 1).isoformat()          # the quarter's last month
+    return d, v, (obs[-2] if len(obs) > 1 else None), end_month
+
+
+def fig_eci_month(D):
+    return month_year(_eci(D)[3]), []
+
+
+def fig_eci_now(D):
+    return fmt(_eci(D)[1], "pct1"), ["https://fred.stlouisfed.org/series/CIU2020000000000I"]
+
+
+def fig_eci_vs_prev(D):
+    d, v, prev, _ = _eci(D)
+    if not prev:
+        raise KeyError("no previous quarter")
+    pe = _d(prev[0])
+    prev_month = MONTHS[(pe.month + 2) - 1]
+    if round(v, 1) == round(prev[1], 1):
+        return f"the same pace as in the year to {prev_month}", []
+    return f"{'up' if v > prev[1] else 'down'} from {prev[1]:.1f}% in the year to {prev_month}", []
+
+
+def fig_eci_real(D):
+    d, v, prev, end_month = _eci(D)
+    cpi = dict(D.get("cpi")["obs"])[end_month]
+    real = ((1 + round(v, 1) / 100) / (1 + round(cpi, 1) / 100) - 1) * 100
+    if abs(real) < 0.05:
+        return "about even after inflation", []
+    return f"{'up' if real > 0 else 'down'} {abs(real):.1f}% after inflation", []
+
+
 FIGS = {
     "claims_low": fig_claims_low,
     "continuing_claims": fig_continuing_claims,
@@ -679,11 +971,25 @@ FIGS = {
     "pmt2000_2020": fig_pmt2000_2020, "pmt2000_2022": fig_pmt2000_2022, "prices_since_2020": fig_prices_since_2020,
     "pmt_gap_100": fig_pmt_gap_100, "price_level_int": fig_price_level_int, "price_level_pct": fig_price_level_pct,
     "real_ff_words": fig_real_ff_words, "claims_history_pos": fig_claims_history_pos,
+    "pp_month": fig_pp_month, "pay_since_2019": fig_pay_since_2019, "prices_since_2019": fig_prices_since_2019,
+    "real_gain_since_2019": fig_real_gain_since_2019, "rent_since_2019": fig_rent_since_2019, "rent_month": fig_rent_month,
+    "rent3_pay": fig_rent3_pay, "rent3_prices": fig_rent3_prices, "rent_verdict": fig_rent_verdict,
+    "search_mean": fig_search_mean, "long_term_pct": fig_long_term_pct,
+    "pay_since_sep2019": fig_pay_since_sep2019, "prices_since_sep2019": fig_prices_since_sep2019,
+    "sep2019_month": fig_sep2019_month, "real_raise_sep2019": fig_real_raise_sep2019,
+    "search_median": fig_search_median, "search_median_vs_2019": fig_search_median_vs_2019,
+    "long_term_words": fig_long_term_words, "long_term_count": fig_long_term_count, "long_term_2019": fig_long_term_2019,
+    "openings_month": fig_openings_month, "openings": fig_openings, "openings_vs_2019": fig_openings_vs_2019,
+    "unemployed_aligned": fig_unemployed_aligned, "unemployed_2019": fig_unemployed_2019, "ratio_sentence": fig_ratio_sentence,
+    "unemployed_count": fig_unemployed_count,
+    "eci_month": fig_eci_month, "eci_now": fig_eci_now, "eci_vs_prev": fig_eci_vs_prev, "eci_real": fig_eci_real,
 }
 VALUES = {      # usable on the left of a check as fig:<name>
     "claims_rule_last": val_claims_rule_last,
     "cpi_core_gap": val_cpi_core_gap, "u6_gap": val_u6_gap, "trade_share": val_trade_share,
     "gas_vs_2022_real": val_gas_vs_2022_real, "gas_real_max_year": val_gas_real_max_year,
+    "rent_minus_prices": val_rent_minus_prices, "unemployed_vs_2019": val_unemployed_vs_2019,
+    "real_raise_sep2019": val_real_raise_sep2019, "openings_vs_2019": val_openings_vs_2019,
 }
 
 
