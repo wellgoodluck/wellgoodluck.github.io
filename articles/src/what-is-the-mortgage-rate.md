@@ -16,11 +16,11 @@ The almanac's mortgage rate is Freddie Mac's weekly average of what lenders quot
 
 A markup on a wholesale price. Lenders don't hold your loan for thirty years with their own money. Most mortgages are sold into bonds, and the investors who buy those bonds price them against the 10-year Treasury, the safest long loan there is. So the mortgage rate is the 10-year yield, the wholesale price of ten-year money, plus a markup for the things that make a mortgage riskier than a Treasury: you might refinance the moment rates fall, someone has to service the loan, the government agency guaranteeing it takes a fee, and the lender takes a margin.
 
-The markup is normally 1.5 to 2 points. In 2022–23 it widened to nearly 3, because rates were swinging wildly and the Fed had stopped buying mortgage bonds. By late 2026 it is back to about 1.9. That means today's 7.3% rate is not a markup problem. It is a wholesale problem: the 10-year is at 5%.
+The markup is normally 1.5 to 2 points. In 2022–23 it widened to nearly 3, because rates were swinging wildly and the Fed had stopped buying mortgage bonds. By late 2026 it is back to about 1.9. That means today's 7.3% rate is not a markup problem. It is a wholesale problem: the 10-year is at 5%. {{check mortgage_minus_ten.value <= 2.1 "the spread is back to about 1.9"}} {{check ten_year.value >= 4.6 "the 10-year is at 5%"}} {{check mortgage.value >= 6.8 "today's 7.3% rate"}}
 
 ## How it reaches your kitchen table
 
-**If you're buying: the day you lock.** On a $400,000 loan, the monthly payment for principal and interest is about $1,690 at 3% and about $2,740 at 7.3%. Same house, $1,050 a month more, over $12,000 a year, for thirty years. That arithmetic is why home sales fell to 1995 levels when rates doubled.
+**If you're buying: the day you lock.** On a $400,000 loan, the monthly payment for principal and interest is about $1,690 at 3% and about {{fig pmt_now}} at {{v mortgage fmt=pct2}}, the average rate on {{v mortgage period as=day}}. Same house, {{fig pmt_diff}} a month more, {{fig pmt_diff_year}} a year, for thirty years. {{check mortgage.value >= 4 "rates well above 3%"}} That arithmetic is why home sales fell to 1995 levels when rates doubled.
 
 **If you already own with a fixed rate: never.** Your payment was set the day you closed. This is the lock-in effect: most outstanding mortgages carry rates well below 5%, taken out or refinanced in 2020–21, and the people holding them don't sell, because the next house would come with a rate two or three points higher. Fewer listings, fewer sales, and prices that held up through a doubling of rates.
 

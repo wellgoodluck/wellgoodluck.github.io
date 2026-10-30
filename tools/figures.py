@@ -60,7 +60,7 @@ class Data:
         s = json.load(open(os.path.join(root, "series.json"), encoding="utf-8"))
         for t in s.get("tiles", []):
             self.series[t["id"]] = {"kind": "tile", "obs": t.get("observations", []), "freq": t.get("freq", "m"),
-                                    "ctx": t.get("context"),
+                                    "ctx": t.get("context"), "ctx_real": t.get("context_real"),
                                     "url": (t.get("source") or {}).get("url"), "units": (t.get("source") or {}).get("fred_units", ""),
                                     "transform": (t.get("source") or {}).get("transform", "")}
         for k, e in (s.get("extras") or {}).items():
@@ -185,6 +185,10 @@ def fmt(v, how):
         return f"${v:,.2f}"
     if how == "usd10":
         return f"${round(v / 10) * 10:,.0f}"
+    if how == "k_millions2":                       # a series in thousands, as millions (housing starts)
+        return f"{v / 1000:.2f} million"
+    if how == "k_round10k":                        # a series in thousands, to the nearest 10,000
+        return f"{round(v / 10) * 10000:,.0f}"
     raise ValueError(f"unknown format '{how}'")
 
 
@@ -264,13 +268,327 @@ def val_claims_rule_last(D):
     return last_start
 
 
+# --- helpers for the figures below ------------------------------------------------
+def _aligned(D, *sids):
+    """The latest date every series has, and each series' value on it."""
+    maps = [dict((d, v) for d, v in D.get(s)["obs"]) for s in sids]
+    common = set(maps[0]).intersection(*maps[1:])
+    if not common:
+        raise KeyError(f"no common date for {', '.join(sids)}")
+    d = max(common)
+    return d, [m[d] for m in maps]
+
+
+def _pct_of_history(obs):
+    cur = obs[-1][1]
+    hist = [v for _, v in obs[:-1]]
+    below = sum(1 for v in hist if v < cur)
+    equal = sum(1 for v in hist if v == cur)
+    return 100.0 * (below + 0.5 * equal) / len(hist)
+
+
+def _share(x):
+    return min(99, max(1, round(x)))                # as on the tiles: 1–99%, a record is said once
+
+
+def _rank_phrase(D, sid, unit, own="its "):
+    """'its highest since July 2007' / 'its highest on record' / 'higher than 63% of months since 1953'."""
+    c = D.context(sid)
+    cur_d = c["value"][0]
+    for side in ("lowest", "highest"):
+        since = c[f"{side}_since"]
+        if since is None:
+            return f"{own}{side} on record"
+        if years_between(since, cur_d) >= 1:
+            return f"{own}{side} since {month_year(since)}"
+    p, first = c["percentile"], _d(c["since"]).year
+    if p < 50:
+        return f"lower than {_share(100 - p)}% of {unit} since {first}"
+    return f"higher than {_share(p)}% of {unit} since {first}"
+
+
+def _signed_pct(x, places=1):
+    s = f"{abs(x):.{places}f}%"
+    return ("−" + s) if round(x, places) < 0 else s
+
+
+def _month(d, ref):
+    """'April' when d is in the same year as ref, else 'April 2025'."""
+    x = _d(d)
+    return MONTHS[x.month - 1] if x.year == _d(ref).year else month_year(d)
+
+
+def _payment(principal, rate_pct, years=30):
+    r = rate_pct / 100 / 12
+    n = years * 12
+    return principal * r / (1 - (1 + r) ** -n)
+
+
+# --- pay against prices (inflation page, hourly pay page) --------------------------
+def fig_pay_cpi_month(D):
+    d, _ = _aligned(D, "pay", "cpi")
+    return month_year(d), []
+
+
+def fig_pay_cpi_pay(D):
+    _, (pay, cpi) = _aligned(D, "pay", "cpi")
+    return fmt(pay, "pct1"), ["https://fred.stlouisfed.org/series/AHETPI"]
+
+
+def fig_pay_cpi_cpi(D):
+    _, (pay, cpi) = _aligned(D, "pay", "cpi")
+    return fmt(cpi, "pct1"), ["https://fred.stlouisfed.org/series/CPIAUCSL"]
+
+
+def _real_gap(D):
+    _, (pay, cpi) = _aligned(D, "pay", "cpi")
+    return round(pay, 1) - round(cpi, 1)            # from the two figures as printed, so the text adds up
+
+
+def fig_pay_cpi_buys(D):
+    g = _real_gap(D)
+    if abs(g) < 0.05:
+        return "so an hour of work bought about as much as it did a year before", []
+    return f"so an hour of work bought about {abs(g):.1f}% {'less' if g < 0 else 'more'} than it did a year before", []
+
+
+def fig_pay_cpi_verdict(D):
+    g = _real_gap(D)
+    if abs(g) < 0.05:
+        return "so typical paychecks about kept pace over the year", []
+    return f"so typical paychecks {'lost' if g < 0 else 'gained'} ground over the year", []
+
+
+def fig_real_wage_run(D):
+    """How long the gap between pay growth and inflation has been on its current side of zero."""
+    obs = [o for o in D.get("real_wages")["obs"] if o[1] is not None]
+    neg = obs[-1][1] < 0
+    start = obs[-1][0]
+    for d, v in reversed(obs[:-1]):
+        if (v < 0) != neg:
+            break
+        start = d
+    side = "below" if neg else "above"
+    if start == obs[-1][0]:
+        return f"That gap went {side} zero in {_month(start, start)}", []
+    return f"That gap has been {side} zero every month since {_month(start, obs[-1][0])}", []
+
+
+# --- prices ----------------------------------------------------------------------
+def _cpi_mom(D):
+    obs = D.get("cpi_index")["obs"]
+    return (obs[-1][1] / obs[-2][1] - 1) * 100
+
+
+def fig_cpi_mom(D):
+    return _signed_pct(_cpi_mom(D)), ["https://fred.stlouisfed.org/series/CPIAUCSL"]
+
+
+def fig_cpi_mom_annual(D):
+    m = round(_cpi_mom(D), 1) / 100                # from the monthly figure as printed, so the text adds up
+    return "about " + _signed_pct(((1 + m) ** 12 - 1) * 100, 0), []
+
+
+def val_cpi_core_gap(D):
+    _, (a, b) = _aligned(D, "cpi", "core_cpi")
+    return round(a - b, 2)
+
+
+# --- jobs --------------------------------------------------------------------------
+def fig_epop_vs_record(D):
+    obs = D.get("prime_age_epop")["obs"]
+    cur = obs[-1][1]
+    hist = obs[:-1]
+    top = max(hist, key=lambda o: o[1])
+    gap = round(top[1] - cur, 1)
+    yr = _d(top[0]).year
+    if gap <= 0:
+        return "a record", []
+    if gap < 0.5:
+        return f"just below its {yr} record", []
+    if gap < 1:
+        return f"under a point below its {yr} record", []
+    if gap < 1.5:
+        return f"a little over a point below its {yr} record", []
+    return f"{gap:.1f} points below its {yr} record", []
+
+
+def val_u6_gap(D):
+    _, (u6, u) = _aligned(D, "u6", "unemployment")
+    return round(u6 - u, 1)
+
+
+def fig_payrolls_vs_avg(D):
+    """'September 2026's 29,000 sits in an average of about 51,000' and its negative forms."""
+    d, (m, a) = _aligned(D, "payrolls", "payrolls_3mo")
+    mm = f"{abs(round(m)) * 1000:,.0f}"
+    aa = f"{abs(round(a)) * 1000:,.0f}"
+    first = f"{month_year(d)}'s {mm}" if m >= 0 else f"{month_year(d)}'s loss of {mm}"
+    second = f"an average of about {aa}" if a >= 0 else f"an average loss of about {aa}"
+    return f"{first} sits in {second}", ["https://fred.stlouisfed.org/series/PAYEMS"]
+
+
+# --- growth and rates ----------------------------------------------------------------
+def fig_gdp_quarterly(D):
+    a = D.get("gdp")["obs"][-1][1]
+    return _signed_pct(((1 + a / 100) ** 0.25 - 1) * 100, 2), []
+
+
+def fig_ten_year_rank(D):
+    return _rank_phrase(D, "ten_year", "months"), []
+
+
+def fig_pmt_now(D):
+    return fmt(_payment(400000, D.get("mortgage")["obs"][-1][1]), "usd10"), []
+
+
+def _pmt_diff(D):
+    now = round(_payment(400000, D.get("mortgage")["obs"][-1][1]) / 10) * 10
+    then = round(_payment(400000, 3.0) / 10) * 10
+    return now - then
+
+
+def fig_pmt_diff(D):
+    return fmt(_pmt_diff(D), "usd0"), []
+
+
+def fig_pmt_diff_year(D):
+    y = _pmt_diff(D) * 12
+    k = int(y // 1000) * 1000
+    return (f"over ${k:,}" if y > k else f"${k:,}"), []
+
+
+def fig_pay_rank_norm(D):
+    c = D.context("pay")
+    p, first = c["percentile"], _d(c["since"]).year
+    rank = (f"lower than about {_share(100 - p)}% of months since {first}" if p < 50
+            else f"higher than about {_share(p)}% of months since {first}")
+    gap = c["value"][1] - c["baseline"][1]
+    if abs(gap) < 0.3:
+        norm = "close to the pre-pandemic norm"
+    elif 0 < gap < 1:
+        norm = "not far above the pre-pandemic norm"
+    elif gap >= 1:
+        norm = "well above the pre-pandemic norm"
+    elif gap > -1:
+        norm = "a little below the pre-pandemic norm"
+    else:
+        norm = "well below the pre-pandemic norm"
+    return f"{rank} and {norm}", []
+
+
+# --- housing and trade ------------------------------------------------------------
+def fig_starts_month(D):
+    d, _ = _aligned(D, "housing_starts", "single_family_starts")
+    return month_year(d), []
+
+
+def fig_starts_total(D):
+    _, (tot, sf) = _aligned(D, "housing_starts", "single_family_starts")
+    return fmt(tot, "k_millions2"), ["https://fred.stlouisfed.org/series/HOUST"]
+
+
+def fig_starts_houses(D):
+    _, (tot, sf) = _aligned(D, "housing_starts", "single_family_starts")
+    return fmt(sf, "k_round10k"), ["https://fred.stlouisfed.org/series/HOUST1F"]
+
+
+def fig_starts_apartments(D):
+    _, (tot, sf) = _aligned(D, "housing_starts", "single_family_starts")
+    return fmt(tot - sf, "k_round10k"), []
+
+
+def _trade_3mo(D):
+    obs = D.get("trade")["obs"][-3:]
+    return obs[-1][0], -sum(v for _, v in obs) / 3            # $ millions a month, deficit positive
+
+
+def fig_trade_3mo_month(D):
+    return month_year(_trade_3mo(D)[0]), []
+
+
+def fig_trade_3mo(D):
+    d, m = _trade_3mo(D)
+    word = "deficit" if m >= 0 else "surplus"
+    return f"a {word} of about ${round(abs(m) / 5000) * 5} billion a month", ["https://fred.stlouisfed.org/series/BOPGSTB"]
+
+
+def val_trade_share(D):
+    _, m = _trade_3mo(D)
+    gdp = D.get("nominal_gdp")["obs"][-1][1]                   # $ billions, annual rate
+    return round(m * 12 / 1000 / gdp * 100, 1)
+
+
+def fig_trade_3mo_share(D):
+    return f"{abs(val_trade_share(D)):.1f}%", ["https://fred.stlouisfed.org/series/GDP"]
+
+
+# --- gasoline ----------------------------------------------------------------------
+def fig_gas_tank(D):
+    return fmt(D.get("gas")["obs"][-1][1] * 15, "usd0"), []
+
+
+def fig_gas_tank_year_ago(D):
+    ya = D.context("gas")["year_ago"]
+    return fmt(ya[1] * 15, "usd0"), []
+
+
+def fig_gas_real_rank(D):
+    """Where today's price sits in its history in today's dollars (the gas_real companion; ranks
+    don't depend on which month's dollars the history is stated in)."""
+    obs = D.get("gas_real")["obs"]
+    p = _pct_of_history(obs)
+    first = _d(obs[0][0]).year
+    if p < 50:
+        return f"lower than about {_share(100 - p)}% of weeks since {first}", []
+    return f"higher than about {_share(p)}% of weeks since {first}", []
+
+
+def _gas_2022_peak(D):
+    nominal = [o for o in D.get("gas")["obs"] if o[0].startswith("2022")]
+    d = max(nominal, key=lambda o: o[1])[0]
+    real = dict((x, v) for x, v in D.get("gas_real")["obs"])
+    return d, real[d]
+
+
+def fig_gas_2022_today(D):
+    return fmt(_gas_2022_peak(D)[1], "usd2"), []
+
+
+def val_gas_vs_2022_real(D):
+    return round(D.get("gas_real")["obs"][-1][1] - _gas_2022_peak(D)[1], 2)
+
+
+def fig_gas_real_max(D):
+    top = max(D.get("gas_real")["obs"], key=lambda o: o[1])
+    return fmt(top[1], "usd2"), []
+
+
+def val_gas_real_max_year(D):
+    return float(_d(max(D.get("gas_real")["obs"], key=lambda o: o[1])[0]).year)
+
+
 FIGS = {
     "claims_low": fig_claims_low,
     "continuing_claims": fig_continuing_claims,
     "pension_3000_2019": fig_pension_3000_2019,
+    "pay_cpi_month": fig_pay_cpi_month, "pay_cpi_pay": fig_pay_cpi_pay, "pay_cpi_cpi": fig_pay_cpi_cpi,
+    "pay_cpi_buys": fig_pay_cpi_buys, "pay_cpi_verdict": fig_pay_cpi_verdict, "real_wage_run": fig_real_wage_run,
+    "cpi_mom": fig_cpi_mom, "cpi_mom_annual": fig_cpi_mom_annual,
+    "epop_vs_record": fig_epop_vs_record, "payrolls_vs_avg": fig_payrolls_vs_avg,
+    "gdp_quarterly": fig_gdp_quarterly, "ten_year_rank": fig_ten_year_rank,
+    "pmt_now": fig_pmt_now, "pmt_diff": fig_pmt_diff, "pmt_diff_year": fig_pmt_diff_year,
+    "pay_rank_norm": fig_pay_rank_norm,
+    "starts_month": fig_starts_month, "starts_total": fig_starts_total, "starts_houses": fig_starts_houses,
+    "starts_apartments": fig_starts_apartments,
+    "trade_3mo_month": fig_trade_3mo_month, "trade_3mo": fig_trade_3mo, "trade_3mo_share": fig_trade_3mo_share,
+    "gas_tank": fig_gas_tank, "gas_tank_year_ago": fig_gas_tank_year_ago, "gas_real_rank": fig_gas_real_rank,
+    "gas_2022_today": fig_gas_2022_today, "gas_real_max": fig_gas_real_max,
 }
 VALUES = {      # usable on the left of a check as fig:<name>
     "claims_rule_last": val_claims_rule_last,
+    "cpi_core_gap": val_cpi_core_gap, "u6_gap": val_u6_gap, "trade_share": val_trade_share,
+    "gas_vs_2022_real": val_gas_vs_2022_real, "gas_real_max_year": val_gas_real_max_year,
 }
 
 
@@ -364,7 +682,10 @@ def render(body, D, slug, report, offset=0):
                 v, d, s = _field(D, path)
                 field = path.partition(".")[2] or "value"
                 if "period" in args[1:]:
-                    text = period(d, s["freq"]) if field not in ("lowest_since", "highest_since", "since") else month_year(v)
+                    if field in ("lowest_since", "highest_since", "since"):
+                        text = month_year(v)
+                    else:
+                        text = period(d, {"day": "d", "month": "m", "year": "a"}.get(kw.get("as"), s["freq"]))
                 elif field in ("lowest_since", "highest_since", "since"):
                     text = month_year(v) if v else "on record"
                 else:

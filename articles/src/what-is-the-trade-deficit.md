@@ -38,7 +38,7 @@ Growth here against growth abroad, first: Americans buy more imports when the ec
 
 **Goods or the total.** The headline most outlets report is the goods deficit, which is larger. The almanac shows goods and services together, the figure that matches the mirror-image accounting.
 
-**Against the economy.** About $85 billion a month is about 3% of GDP, where it has been, within a point, since the 2008 recession. The 2006 peak was near 6%. The monthly figure swings $10–20 billion on the timing of shipments, so the three-month average is the signal.
+**Against the economy.** Over the three months to {{fig trade_3mo_month}} the balance was {{fig trade_3mo}}, about {{fig trade_3mo_share else="3%"}} of GDP, where it has been, within a point, since the 2008 recession. {{check fig:trade_share >= 2 "within a point of 3% of GDP"}} {{check fig:trade_share <= 4 "within a point of 3% of GDP"}} The 2006 peak was near 6%. The monthly figure swings $10–20 billion on the timing of shipments, so the three-month average is the signal.
 
 **Watch the import line, not the balance, after a tariff.** Tariffs show up first as a surge of imports before they take effect, then a drop; the balance looks worse, then better, for reasons that have nothing to do with competitiveness.
 
@@ -66,6 +66,6 @@ Your grocery store cannot retaliate, and a country's partners can. Your surplus 
 ## Sources
 
 - [Bureau of Economic Analysis and Census Bureau, U.S. International Trade in Goods and Services](https://www.bea.gov/data/intl-trade-investment/international-trade-goods-and-services), the monthly release; [Census, trade by country](https://www.census.gov/foreign-trade/balance/index.html).
-- [FRED: Goods and services balance (BOPGSTB)](https://fred.stlouisfed.org/series/BOPGSTB), [goods (BOPGTB)](https://fred.stlouisfed.org/series/BOPGTB), [services (BOPSTB)](https://fred.stlouisfed.org/series/BOPSTB), [broad dollar index (DTWEXBGS)](https://fred.stlouisfed.org/series/DTWEXBGS).
+- [FRED: Goods and services balance (BOPGSTB)](https://fred.stlouisfed.org/series/BOPGSTB), [goods (BOPGTB)](https://fred.stlouisfed.org/series/BOPGTB), [services (BOPSTB)](https://fred.stlouisfed.org/series/BOPSTB), [nominal GDP (GDP)](https://fred.stlouisfed.org/series/GDP), [broad dollar index (DTWEXBGS)](https://fred.stlouisfed.org/series/DTWEXBGS).
 - [Autor, Dorn and Hanson, "The China Shock" (Annual Review of Economics, 2016)](https://www.annualreviews.org/doi/10.1146/annurev-economics-080315-015041), the regional job losses.
 - [Congressional Research Service, "U.S. Trade Deficit: Causes and Consequences"](https://crsreports.congress.gov/), the saving-investment accounting in plain terms.

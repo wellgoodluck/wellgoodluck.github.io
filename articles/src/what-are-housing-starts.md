@@ -13,7 +13,7 @@ hook: why today's number is 2028's rent
 
 Housing starts are the number of new homes on which construction began in the month, counted by the Census Bureau from building permits and site visits, and stated as the annual pace that month's count would make if it continued for twelve months.
 
-The total splits into two things that move on different clocks: single-family houses, and apartments and other buildings with two or more units. In September 2026 the total was 1.22 million at an annual rate, about 860,000 of them houses and about 360,000 apartments.
+The total splits into two things that move on different clocks: single-family houses, and apartments and other buildings with two or more units. In {{fig starts_month else="September 2026"}} the total was {{fig starts_total else="1.22 million"}} at an annual rate, about {{fig starts_houses else="860,000"}} of them houses and about {{fig starts_apartments else="360,000"}} apartments.
 
 ## The analogy
 

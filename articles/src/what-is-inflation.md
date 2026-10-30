@@ -28,7 +28,7 @@ In order of how fast you feel it:
 
 **Rent: at your next lease.** Rents on new leases move first. The index catches up over about a year, because it samples all renters, most of whom are mid-lease. So the shelter line in the CPI runs roughly twelve months behind apartment listings, and since shelter is a third of the index, that lag alone held the headline up through 2023 after new rents had cooled.
 
-**Your paycheck: at your next raise.** Wages follow prices with a lag of six months to a year, and only partly. Whether you are gaining ground is the real wage: your raise minus inflation. Pay for production and nonsupervisory workers rose 3.3% in the year to September 2026 against inflation of 3.7%, so typical paychecks lost ground this year after gaining it steadily from mid-2023 to early 2026.
+**Your paycheck: at your next raise.** Wages follow prices with a lag of six months to a year, and only partly. Whether you are gaining ground is the real wage: your raise minus inflation. Pay for production and nonsupervisory workers rose {{fig pay_cpi_pay}} in the year to {{fig pay_cpi_month}} against inflation of {{fig pay_cpi_cpi}}, {{fig pay_cpi_verdict}}.
 
 **Social Security: next January.** The cost-of-living adjustment is set from the CPI for urban wage earners (CPI-W) averaged over July–September, announced in October and paid from January. The 2027 adjustment is 3.6%. The lag runs the same direction every time: a price jump in the spring is not made up until the following January, and a shock in the fall waits fifteen months.
 
@@ -42,9 +42,9 @@ Two families of causes, and the right response to each is different. **Demand**:
 
 Three questions before reacting to a headline.
 
-**Year over year, or the month?** The headline "3.7%" compares September 2026 with September 2025. The monthly change, 0.6% in that report, is what is happening now; at that pace for a year it would be about 7%. One hot month is noise. Three in a row is a trend. The yearly figure also carries "base effects": a bad month a year ago dropping out of the window lowers the rate without anything happening now.
+**Year over year, or the month?** The headline "{{v cpi}}" compares {{v cpi period}} with {{v cpi.year_ago period}}. The monthly change, {{fig cpi_mom else="0.6%"}} in that report, is what is happening now; at that pace for a year it would be {{fig cpi_mom_annual else="about 7%"}}. One hot month is noise. Three in a row is a trend. The yearly figure also carries "base effects": a bad month a year ago dropping out of the window lowers the rate without anything happening now.
 
-**Headline or core?** Headline includes everything. Core strips food and energy. When they diverge, as in September 2026 (3.7% headline, 2.6% core), the gap says the story is a commodity shock, not a broad one. When core climbs too, it has spread.
+**Headline or core?** Headline includes everything. Core strips food and energy. When they diverge, as in September 2026 (3.7% headline, 2.6% core), the gap says the story is a commodity shock, not a broad one. When core climbs too, it has spread. {{check fig:cpi_core_gap >= 0.8 "headline and core diverge, as in September 2026"}}
 
 **Which index?** The Fed's 2% target is on a different index, PCE, which weights health care more and shelter less and usually runs a few tenths below the CPI. The almanac shows the CPI because your COLA and most contracts use it; the PCE companion on the chart is what the Fed is aiming at.
 

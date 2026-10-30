@@ -33,7 +33,7 @@ The economy is the size of the tub. It grows most years, so a given water level 
 
 ## What moves it
 
-Receipts and outlays, both as shares of the economy, and both are on the deficit chart as companions. Receipts run around 17% of GDP and move with the business cycle and tax law; outlays run around 23% and move with the age of the population, health care costs, interest rates and the occasional war or pandemic. The gap between them is the deficit. The argument about whether to close it from the top line or the bottom line is the oldest in American politics, and the chart shows both lines so it can be argued from the same picture.
+Receipts and outlays, both as shares of the economy, and both are on the deficit chart as companions. Receipts, {{v receipts fmt=pct0 else="17%"}} of GDP in fiscal {{v receipts period else="2025"}}, move with the business cycle and tax law; outlays, {{v outlays fmt=pct0 else="23%"}}, move with the age of the population, health care costs, interest rates and the occasional war or pandemic. The gap between them is the deficit. The argument about whether to close it from the top line or the bottom line is the oldest in American politics, and the chart shows both lines so it can be argued from the same picture.
 
 The debt moves with the deficit, and also with interest rates: when rates rise, old debt is refinanced at the new rate as it matures, so the interest line on the chart lags the Fed by a few years and is still catching up to the 2022–23 hikes.
 

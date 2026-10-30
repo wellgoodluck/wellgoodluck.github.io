@@ -18,7 +18,7 @@ A road with four toll booths, one after another, and every gallon pays all four.
 
 ## How it reaches your kitchen table
 
-**Your tank: within days.** At $4.27 a gallon, filling a 15-gallon tank costs about $64. A year ago it cost about $46. Of all the almanac's prices, this one reaches you fastest: stations reprice daily, and you buy it every week or two.
+**Your tank: within days.** At {{v gas fmt=usd2}} a gallon on {{v gas period as=day}}, filling a 15-gallon tank costs about {{fig gas_tank}}. A year earlier it cost about {{fig gas_tank_year_ago}}. Of all the almanac's prices, this one reaches you fastest: stations reprice daily, and you buy it every week or two.
 
 **Everything that moves by truck or plane: within weeks.** Diesel and jet fuel are made from the same crude. Airline fares were up 22% from a year earlier in September as jet fuel fed through, and freight costs reach store shelves over the following months. [Why everything costs 30% more](why-everything-costs-30-percent-more.html) follows the chain.
 
@@ -36,7 +36,7 @@ In 2026 the first two booths did nearly all of it: from the 2025 average to May,
 
 **Against the season.** The series is not seasonally adjusted. Prices usually rise in spring, when stations switch from winter gasoline to the summer blend, which costs more to make, and the driving season begins, so part of any spring rise is the calendar.
 
-**Against history, adjusted for inflation.** The almanac's range for gas is in today's dollars, because a raw price only ever trends up. At $4.27, gas is higher than about 80% of weeks since 1990 by that measure, but below its June 2022 peak of $5.01, which would be about $5.70 today, and well below June 2008, about $6.33 in today's dollars.
+**Against history, adjusted for inflation.** The almanac's range for gas is in today's dollars, because a raw price only ever trends up. At {{v gas fmt=usd2}}, gas is {{fig gas_real_rank else="higher than about 80% of weeks since 1990"}} by that measure, but below its June 2022 peak of $5.01, which would be about {{fig gas_2022_today else="$5.71"}} today, and well below June 2008, about {{fig gas_real_max else="$6.33"}} in today's dollars. {{check fig:gas_vs_2022_real < 0 "below the June 2022 peak in today's dollars"}} {{check fig:gas_real_max_year == 2008 "June 2008 is the real peak"}}
 
 {{chart id=gas range=all ov=gas_real,ev_shocks caption="The pump price as charged, the same price in today's dollars, and the shocks marked on it, among them Katrina in 2005, Ukraine in 2022 and Iran in 2026. The series begins in August 1990, weeks after Iraq invaded Kuwait. Adjusted for inflation, 2008 was the most expensive gas on record."}}
 

@@ -34,7 +34,7 @@ Hiring minus separations, across about 160 million jobs. A reading of plus 29,00
 
 ## How to read this month's number
 
-**Noise first.** Anything within about 100,000 of last month is the same number. Use the three-month average on the chart; September 2026's 29,000 sits in an average of about 51,000.
+**Noise first.** Anything within about 100,000 of last month is the same number. Use the three-month average on the chart; {{fig payrolls_vs_avg else="September 2026's 29,000 sits in an average of about 51,000"}}.
 
 **Then the revisions.** The number you remember from jobs Friday is not the number in the record. Since 2023 the gap between each month's first print and today's figure has averaged about 65,000, nearly all of it downward; in 2024 and 2025 the first prints ran about 90,000 a month too high. That pattern is not new; first prints ran high through 2008 as well. Surveys count late responders, and businesses that are closing don't return surveys.
 

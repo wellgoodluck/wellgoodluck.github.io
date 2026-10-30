@@ -21,7 +21,7 @@ What lenders charge for time. The Fed sets the price of money overnight. The 10-
 
 ## How it reaches your kitchen table
 
-**Mortgage rates: within days.** A 30-year mortgage rate is the 10-year yield plus a spread of roughly 1.5 to 2 points, and lenders reprice daily. In October 2026 the 10-year is 5.0%, its highest since 2007, and the mortgage rate is 7.3%. When the Fed cut three times in late 2024 and mortgage rates rose a full point, this was the line that went up: the market decided inflation and deficits would keep long rates high regardless. [Mortgage rates](what-is-the-mortgage-rate.html) has the spread.
+**Mortgage rates: within days.** A 30-year mortgage rate is the 10-year yield plus a spread of roughly 1.5 to 2 points, and lenders reprice daily. In {{v ten_year period}} the 10-year averaged {{v ten_year}}, {{fig ten_year_rank}}, and the 30-year mortgage rate averaged {{v mortgage_monthly else="7.3%"}} in {{v mortgage_monthly period else="October 2026"}}. When the Fed cut three times in late 2024 and mortgage rates rose a full point, this was the line that went up: the market decided inflation and deficits would keep long rates high regardless. [Mortgage rates](what-is-the-mortgage-rate.html) has the spread.
 
 **Car loans, student loans, business borrowing: weeks.** Priced off Treasuries of matching length. A company's bond pays the Treasury yield plus a markup for its own risk.
 
@@ -67,7 +67,7 @@ A pooled bet assumes the bettors are betting. The biggest buyers of Treasuries o
 ## Sources
 
 - [U.S. Treasury, Daily Treasury Par Yield Curve Rates](https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve), the daily closes.
-- [FRED: 10-year yield, monthly (GS10)](https://fred.stlouisfed.org/series/GS10), [daily (DGS10)](https://fred.stlouisfed.org/series/DGS10), [10-year minus Fed funds (T10YFF)](https://fred.stlouisfed.org/series/T10YFF), [3-month Treasury yield (GS3M)](https://fred.stlouisfed.org/series/GS3M), for the 10-year minus 3-month line; the dates of the inversions are from the monthly series on the chart.
+- [FRED: 10-year yield, monthly (GS10)](https://fred.stlouisfed.org/series/GS10), [daily (DGS10)](https://fred.stlouisfed.org/series/DGS10), [30-year mortgage rate (MORTGAGE30US)](https://fred.stlouisfed.org/series/MORTGAGE30US), [10-year minus Fed funds (T10YFF)](https://fred.stlouisfed.org/series/T10YFF), [3-month Treasury yield (GS3M)](https://fred.stlouisfed.org/series/GS3M), for the 10-year minus 3-month line; the dates of the inversions are from the monthly series on the chart.
 - [Campbell Harvey, "Can the Fed Pull Off a Soft Landing?", CFA Institute, March 13, 2024](https://rpc.cfainstitute.org/blogs/enterprising-investor/2024/can-the-fed-pull-off-a-soft-landing), his record for the 10-year minus 3-month spread.
 - [Federal Reserve Bank of New York, Treasury Term Premia](https://www.newyorkfed.org/research/data_indicators/term-premia-tabs), the estimates argued about above, and [The Yield Curve as a Leading Indicator](https://www.newyorkfed.org/research/capital_markets/ycfaq).
 - [Freddie Mac, Primary Mortgage Market Survey](https://www.freddiemac.com/pmms), the mortgage rate the spread is measured from.
