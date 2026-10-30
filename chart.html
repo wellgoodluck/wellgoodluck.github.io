@@ -599,7 +599,7 @@
         const sdisp = o.display || d;
         recRects.forEach(r => svg.appendChild(svgEl('rect', { class: 'rec', x: r[0], y: top, width: r[1], height: subH - 12 })));
         const st = niceTicks(slo, shi, 3), sdec = axisDecimals(st.step, sdisp), sax = svgEl('g', { class: 'axis' });
-        st.ticks.forEach(v => { svg.appendChild(svgEl('line', { class: 'grid-line', x1: mL, x2: width - mR, y1: sys_(v), y2: sys_(v) })); const tx = svgEl('text', { x: mL - 6, y: sys_(v) + 4, 'text-anchor': 'end' }); tx.textContent = fmtValue(v, sdisp, { decimals: sdec, nosign: true }); sax.appendChild(tx); });
+        st.ticks.forEach(v => { svg.appendChild(svgEl('line', { class: v === 0 ? 'zero' : 'grid-line', x1: mL, x2: width - mR, y1: sys_(v), y2: sys_(v) })); const tx = svgEl('text', { x: mL - 6, y: sys_(v) + 4, 'text-anchor': 'end' }); tx.textContent = fmtValue(v, sdisp, { decimals: sdec, nosign: true }); sax.appendChild(tx); });
         svg.appendChild(sax);
         const title = svgEl('text', { class: 'sub-title', x: mL, y: cursorY + 6 }); title.textContent = o.label; svg.appendChild(title);
         let p = ''; sp.forEach((q, i) => { p += (i ? 'L' : 'M') + xs(parseDate(q[0]).getTime()).toFixed(1) + ',' + sys_(sclamp(q[1])).toFixed(1); });

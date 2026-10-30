@@ -279,6 +279,19 @@ TILES = [
         "note": "Not seasonally adjusted. BLS average price across U.S. cities, collected for the CPI. The chart shows the price as charged; the range and the comparison above it are adjusted for inflation.",
     },
     {
+        "id": "milk",
+        "agency": "BLS",
+        "section": "What things cost",
+        "title": "Milk",
+        "subtitle": "Whole, U.S. average price per gallon, monthly",
+        "series": "APU0000709112",
+        "params": {"observation_start": "1995-07-01"},
+        "freq": "m",
+        "display": {"scale": 1, "decimals": 2, "prefix": "$", "signed": False,
+                    "unit": "dollars per gallon", "adjust": "cpi"},
+        "note": "Not seasonally adjusted. BLS average price across U.S. cities, collected for the CPI; whole milk only, since July 1995. The chart shows the price as charged; the range and the comparison above it are adjusted for inflation.",
+    },
+    {
         "id": "ground_beef",
         "agency": "BLS",
         "section": "What things cost",
@@ -351,6 +364,15 @@ COMPANIONS = [
         "params": {"units": "pc1", "observation_start": "1948-01-01"},
         "freq": "m",
         "why": "The all-items index, including food and energy.",
+    },
+    {
+        "id": "ppi",
+        "label": "Producer prices (PPI final demand), change from a year ago",
+        "for": ["cpi", "core_cpi"],
+        "series": "PPIFIS",
+        "params": {"units": "pc1", "observation_start": "2009-11-01"},
+        "freq": "m",
+        "why": "What domestic producers are paid for goods, services and construction sold to final buyers, seasonally adjusted. Prices from the seller's side: taxes, subsidies and distribution costs can open a gap with the CPI, and part of what it covers, such as exports, government purchases and new equipment, never reaches a store shelf. The index starts in November 2009, so the change from a year earlier starts in November 2010.",
     },
     {
         "id": "cpi_shelter",
@@ -605,6 +627,15 @@ COMPANIONS = [
         "freq": "q",
         "why": "Used to compute the effective tariff rate.",
     },
+    {
+        "id": "gs3m",
+        "label": "3-month Treasury yield, monthly average",
+        "for": [],
+        "series": "GS3M",
+        "params": {"observation_start": "1981-09-01"},
+        "freq": "m",
+        "why": "Used to compute the 10-year minus 3-month spread.",
+    },
 ]
 
 # Derived series, computed here from the fetched data so the page never has to
@@ -771,6 +802,7 @@ def household_lines(tiles_out, companions_out, extras):
         "gas": ("Filling a 15-gallon tank costs", "a tank", 15),
         "electricity": ("At this price, 1,000 kilowatt-hours cost", "the same 1,000 kilowatt-hours", 1000),
         "eggs": ("A dozen costs", "a dozen", 1),
+        "milk": ("A gallon costs", "a gallon", 1),
         "ground_beef": ("A pound costs", "a pound", 1),
         "coffee": ("A pound costs", "a pound", 1),
     }
@@ -835,6 +867,14 @@ DERIVED = [
         "for": ["cpi", "core_cpi", "pay"],
         "op": "diff", "a": "wages", "b": "cpi", "freq": "m",
         "why": "Wage growth after inflation, as a simple difference. Above zero, pay is outrunning prices; below, prices are winning. Compares against headline CPI on both charts.",
+    },
+    {
+        "id": "ten_minus_3m",
+        "label": "10-year yield minus 3-month Treasury yield",
+        "for": ["ten_year", "fed_funds"],
+        "op": "diff", "a": "ten_year", "b": "gs3m", "freq": "m",
+        "why": "The slope of the curve the New York Fed uses in its recession model (FRED publishes it daily as T10Y3M). It went below zero before each of the four recessions since the series begins in 1982, and stayed below zero from late 2022 through 2024 with no recession. Different scale: percentage points; below the zero line, the curve is inverted.",
+        "panel": "own", "display": {"scale": 1, "decimals": 1, "suffix": ""},
     },
     {
         "id": "mortgage_minus_ten",
