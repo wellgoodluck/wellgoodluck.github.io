@@ -2,6 +2,7 @@
 title: What Technology Does to the Numbers, and When
 dek: Steam, electricity, computers and now AI have all arrived the same way: a surge of investment, a long wait, and then a productivity line that moves. The wait is the part nobody prices in.
 date: 2026-10-28
+updated: 2026-10-29
 ---
 
 ## The pattern
@@ -38,7 +39,7 @@ Two things are different this time, and both are argued below. The investment is
 
 **Whether this is 1999.** One side: the capital spending is running ahead of any revenue, as it did then, and when the spending slows, so does the growth it has been carrying, perhaps a third of recent GDP growth by some estimates. The other: the 1999 lesson is that the bust hit investors and left the economy with the infrastructure, and that productivity kept rising through the wreckage. Both can be true. The question the data can't answer yet is how much of the current investment will be lit.
 
-**Whether it takes the jobs.** The unemployment rate has never risen in aggregate because of a technology; the fastest investment years of the 1990s were the years unemployment fell below 4%. What technology does is move work between occupations, and it has done that every time: telephone operators, typists, bank tellers (whose numbers rose for thirty years after the ATM and fell only after 2010), travel agents. One side says this wave is different because it reaches the professions; the other says every wave was said to be different. The almanac's job numbers will show the aggregate. They won't show the occupations, which is where this argument lives.
+**Whether it takes the jobs.** Every earlier wave moved work between occupations: telephone operators, typists, bank tellers (whose numbers rose for thirty years after the ATM and fell only after 2010), travel agents. Whether this one also raises unemployment for the economy as a whole is the argument. One side says this wave is different because it reaches the professions. The other says every wave was said to be different, and that none so far has kept the unemployment rate up: the investment boom of the late 1990s coincided with unemployment falling under 4% in 2000, the lowest since 1969. The almanac's job numbers will show the aggregate. They won't show the occupations, which is where this argument lives.
 
 **Who gets the gains.** Engels' pause is the historical warning: half a century of productivity before wages followed. The 1995–2004 boom was faster, and real wages did rise, but the share of national income going to labor fell after 2000 and has not recovered. One side reads that as the pattern repeating and argues for policy to redistribute the gains; the other says the 2021–23 compression showed a tight labor market does the job without it. [Real vs. nominal](real-vs-nominal.html) is the page for reading whether wages are keeping up when the productivity line moves.
 
@@ -56,3 +57,7 @@ Two things are different this time, and both are argued below. The investment is
 - [Robert Allen, "Engels' pause" (Explorations in Economic History, 2009)](https://doi.org/10.1016/j.eeh.2009.04.004), the fifty-year lag.
 - [Robert Solow, review in the New York Times Book Review, July 12, 1987](https://www.nytimes.com/1987/07/12/books/we-d-better-watch-out.html), the productivity paradox.
 - [FRED: Nasdaq Composite (NASDAQCOM)](https://fred.stlouisfed.org/series/NASDAQCOM), [unemployment rate (UNRATE)](https://fred.stlouisfed.org/series/UNRATE), [10-year yield (GS10)](https://fred.stlouisfed.org/series/GS10), the dot-com figures.
+
+## Corrections
+
+October 29, 2026: An earlier version stated as fact that no technology has ever raised the unemployment rate for the economy as a whole. That is one side's reading of the record, and the paragraph now presents it as such.

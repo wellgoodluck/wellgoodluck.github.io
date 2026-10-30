@@ -2,6 +2,7 @@
 title: What the 10-Year Treasury Yield Is, and Why It Sets Your Mortgage Rate
 dek: The interest rate the government pays to borrow for a decade. The Fed doesn't set it. Bond buyers do, by guessing what the Fed will do for the next ten years.
 date: 2026-10-28
+updated: 2026-10-29
 kind: concept
 tile: ten_year
 label: 10-year Treasury yield
@@ -36,7 +37,7 @@ Expectations for the Fed, first: a hotter inflation report raises the 10-year th
 
 ## How to read this month's number
 
-**Against the Fed funds rate.** The slope of the curve, the 10-year minus the Fed's rate, is on the chart as a companion. Normal is one to two points above. Below zero, an inverted curve, means the market expects cuts, usually because it expects a slowdown. That has preceded every recession since the 1970s, and in 2022–24 it preceded nothing: the deepest inversion since 1981, minus 1.5 points in May 2023, and no recession.
+**Against the Fed funds rate.** The slope of the curve, the 10-year minus the Fed's rate, is on the chart as a companion, along with the 10-year minus the 3-month bill, the version the New York Fed uses to estimate the odds of a recession. Normal is one to two points above. Below zero, an inverted curve, means the market expects cuts, usually because it expects a slowdown. The Fed funds version went below zero before each of the eight recessions since 1969. It also went below zero with no recession following in 1966–67 and 1998, and for two years in 2022–24, the deepest inversion since 1981 (minus 1.5 points in May 2023), with no recession so far; it dipped below zero again briefly in 2025.
 
 **Against inflation.** A 5% yield with inflation expected near 2.5% is a real return of about 2.5%, high by the standards of the 2010s and ordinary by the standards of the 1990s.
 
@@ -54,7 +55,7 @@ A pooled bet assumes the bettors are betting. The biggest buyers of Treasuries o
 
 **Whether the bond market disciplines governments.** The case for: Britain in September 2022, when a budget of unfunded tax cuts sent gilt yields up a point in days, forced the Bank of England to intervene, and ended a prime minister's term in seven weeks. The case against: the United States ran large deficits through 2017–2024 and the market, with the world's reserve currency, mostly didn't charge for them until recently, if it is charging now. Both sides agree the discipline exists in principle. They disagree about how far from it the United States stands.
 
-**The inverted curve.** After 2022–24 one camp says the signal is broken, distorted by the Fed's balance sheet and by foreign demand; the other says it predicted the slowdown the Fed then managed without a recession, and that an indicator with one miss in fifty years is still an indicator. The next recession will reopen the question either way.
+**The inverted curve.** After 2022–24 one camp says the signal is broken, distorted by the Fed's balance sheet and by foreign demand. The other, Campbell Harvey among them, points to the measure he studies, the 10-year minus the 3-month bill, which by his count had called eight out of eight recessions since the 1960s without a false signal, and argues that the warning itself softened the slowdown as companies cut back early. The Fed funds version on this chart has a looser record, with misses in 1966–67 and 1998 as well. The next recession will reopen the question either way.
 
 ## See also
 
@@ -66,6 +67,11 @@ A pooled bet assumes the bettors are betting. The biggest buyers of Treasuries o
 ## Sources
 
 - [U.S. Treasury, Daily Treasury Par Yield Curve Rates](https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve), the daily closes.
-- [FRED: 10-year yield, monthly (GS10)](https://fred.stlouisfed.org/series/GS10), [daily (DGS10)](https://fred.stlouisfed.org/series/DGS10), [10-year minus Fed funds (T10YFF)](https://fred.stlouisfed.org/series/T10YFF).
+- [FRED: 10-year yield, monthly (GS10)](https://fred.stlouisfed.org/series/GS10), [daily (DGS10)](https://fred.stlouisfed.org/series/DGS10), [10-year minus Fed funds (T10YFF)](https://fred.stlouisfed.org/series/T10YFF), [3-month Treasury yield (GS3M)](https://fred.stlouisfed.org/series/GS3M), for the 10-year minus 3-month line; the dates of the inversions are from the monthly series on the chart.
+- [Campbell Harvey, "Can the Fed Pull Off a Soft Landing?", CFA Institute, March 13, 2024](https://rpc.cfainstitute.org/blogs/enterprising-investor/2024/can-the-fed-pull-off-a-soft-landing), his record for the 10-year minus 3-month spread.
 - [Federal Reserve Bank of New York, Treasury Term Premia](https://www.newyorkfed.org/research/data_indicators/term-premia-tabs), the estimates argued about above, and [The Yield Curve as a Leading Indicator](https://www.newyorkfed.org/research/capital_markets/ycfaq).
 - [Freddie Mac, Primary Mortgage Market Survey](https://www.freddiemac.com/pmms), the mortgage rate the spread is measured from.
+
+## Corrections
+
+October 29, 2026: An earlier version implied that 2022–24 was the only time the 10-year minus Fed funds spread had gone below zero without a recession following. It also did in 1966–67 and 1998.

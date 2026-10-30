@@ -39,7 +39,7 @@ Layoffs, and then the calendar. Seasonal adjustment removes the predictable spik
 
 **Know the levels, roughly.** With today's workforce, about 200,000 a week is a low-layoff economy; the 2015–19 average was about 245,000; 300,000 and rising has historically meant trouble; above 400,000 is a recession. The workforce grows, so the same count means a little less each decade.
 
-**Check continuing claims.** If initial claims stay low while continuing claims rise, as in 2024–25 when initial claims held near 220,000 and continuing claims climbed toward two million, people who lose jobs are taking longer to find new ones. That is the frozen market's signature. In October 2026 the four-week average is about 198,000, the lowest since 2022, and continuing claims are about 1.73 million, down from the 2025 peak.
+**Check continuing claims.** If initial claims stay low while continuing claims rise, as in 2024–25 when initial claims held near 220,000 and continuing claims climbed toward two million, people who lose jobs are taking longer to find new ones. That is the frozen market's signature. In the week of October 24, 2026 the four-week average was 196,750, the lowest since October 1969, when the workforce was less than half its present size; continuing claims, reported a week behind, were about 1.70 million, down from 1.96 million at the 2025 peak.
 
 **Discount the holiday weeks.** Thanksgiving, Christmas, New Year's and the Fourth of July produce prints that mean nothing either way.
 
@@ -67,7 +67,7 @@ A smoke detector covers the whole room. Claims cover only the people who qualify
 ## Sources
 
 - [U.S. Department of Labor, Unemployment Insurance Weekly Claims](https://www.dol.gov/ui/data.pdf), the Thursday release, and [weekly claims data](https://oui.doleta.gov/unemploy/claims.asp), the states' counts.
-- [FRED: Initial claims (ICSA)](https://fred.stlouisfed.org/series/ICSA), [four-week average (IC4WSA)](https://fred.stlouisfed.org/series/IC4WSA), [continuing claims (CCSA)](https://fred.stlouisfed.org/series/CCSA).
+- [FRED: Initial claims (ICSA)](https://fred.stlouisfed.org/series/ICSA), [four-week average (IC4WSA)](https://fred.stlouisfed.org/series/IC4WSA), [continuing claims (CCSA)](https://fred.stlouisfed.org/series/CCSA); [civilian labor force (CLF16OV)](https://fred.stlouisfed.org/series/CLF16OV), 81.5 million in October 1969 and 170.3 million in September 2026.
 - [BLS, Job Openings and Labor Turnover Survey](https://www.bls.gov/jlt/), the hiring and layoff rates.
 - [Coombs et al., "Early Withdrawal of Pandemic Unemployment Insurance: Effects on Employment and Earnings" (2022), summarized by the Labor Department's CLEAR review](https://clear.dol.gov/Study/Early-Withdrawal-Pandemic-Unemployment-Insurance-Effects-Employment-and-Earnings-Coombs-et-al).
 

@@ -462,7 +462,7 @@ COMPANIONS = [
         "series": "SAHMREALTIME",
         "params": {"observation_start": "1959-12-01"},
         "freq": "m",
-        "why": "3-month average unemployment rate minus its low of the prior 12 months. A reading of 0.5 or more has coincided with the start of every recession since 1970.",
+        "why": "3-month average unemployment rate minus its low of the prior 12 months, as first published each month. It reached 0.5 within four months of the start of every recession since 1970, and twice without one: for a month in late 1976, and in 2024.",
     },
     {
         "id": "household_employment",
@@ -660,6 +660,11 @@ EXTRAS = [
      "params": {"observation_start": "2015-01-01"}},
     {"id": "nominal_gdp", "series": "GDP", "label": "Nominal GDP, billions, annual rate",
      "params": {"observation_start": "2015-01-01"}},
+    # The deficit tile (FYFSGDA188S) divides by calendar-year GDP, so a fiscal year's share of GDP
+    # appears only once that calendar year's GDP is complete, about four months after the year
+    # closes. The dollar figure arrives in October; the household line reports it in the gap.
+    {"id": "deficit_dollars", "series": "FYFSD", "label": "Federal surplus or deficit, millions of dollars, fiscal year",
+     "params": {"observation_start": "2015-01-01"}},
 ]
 
 
@@ -769,7 +774,20 @@ def household_lines(tiles_out, companions_out, extras):
         txt = (f"Of every dollar the government spent, about {round(-d_ / ol * 100)}\u00a2 was borrowed." if ol and d_ < 0
                else f"The government took in more than it spent, a surplus of {d_:.1f}% of GDP." if d_ >= 0 else "")
         if txt:
-            lines["deficit"] = (txt + f" The deficit was {abs(d_):.1f}% of GDP; the 2015{EN}19 average was {abs(base('deficit')):.1f}%.", [])
+            txt += f" The deficit was {abs(d_):.1f}% of GDP; the 2015{EN}19 average was {abs(base('deficit')):.1f}%."
+            srcs = []
+            # A newer fiscal year in dollars (FYFSD dates are fiscal-year ends) than the tile's share of GDP
+            dd, fy_tile = X.get("deficit_dollars"), int(T["deficit"]["context"]["current"]["date"][:4])
+            if dd and int(dd["date"][:4]) > fy_tile:
+                fy, v, pv = int(dd["date"][:4]), dd["value"], dd.get("previous")
+                def tril(m): return f"${abs(m) / 1e6:.2f} trillion"
+                word = "deficit" if v < 0 else "surplus"
+                txt += f" Fiscal {fy}'s {word} is already reported: {tril(v)}"
+                if pv and int(pv["date"][:4]) == fy - 1 and v < 0 and pv["value"] < 0:
+                    txt += f", {'up' if abs(v) > abs(pv['value']) else 'down'} from {tril(pv['value'])} in fiscal {fy - 1}"
+                txt += f". As a share of GDP it appears here once full-year {fy} GDP is published, in early {fy + 1}."
+                srcs = src("deficit_dollars")
+            lines["deficit"] = (txt, srcs)
     except Exception: pass
     try:
         ig = latest("interest_gdp"); pop = extra("population"); gd = extra("gross_debt_dollars"); ng = extra("nominal_gdp")
@@ -852,7 +870,7 @@ DERIVED = [
         "label": "10-year yield minus Fed funds rate",
         "for": ["ten_year", "fed_funds"],
         "op": "diff", "a": "ten_year", "b": "fed_funds", "freq": "m",
-        "why": "The slope of the curve. Below zero (an inverted curve) has preceded every recession since the 1970s, usually by a year or more.",
+        "why": "The slope of the curve. It went below zero (an inverted curve) before each of the eight recessions since 1969, and also in 1966–67, 1998 and 2022–24 with no recession following; it dipped below zero again briefly in 2025.",
     },
     {
         "id": "price_level",
@@ -873,7 +891,7 @@ DERIVED = [
         "label": "10-year yield minus 3-month Treasury yield",
         "for": ["ten_year", "fed_funds"],
         "op": "diff", "a": "ten_year", "b": "gs3m", "freq": "m",
-        "why": "The slope of the curve the New York Fed uses in its recession model (FRED publishes it daily as T10Y3M). It went below zero before each of the four recessions since the series begins in 1982, and stayed below zero from late 2022 through 2024 with no recession. Different scale: percentage points; below the zero line, the curve is inverted.",
+        "why": "The slope of the curve the New York Fed uses in its recession model (FRED publishes it daily as T10Y3M). It went below zero before each of the four recessions since the series begins in 1982, and stayed below zero from late 2022 through 2024 with no recession; its monthly average dipped just below zero several times in 2025. Different scale: percentage points; below the zero line, the curve is inverted.",
         "panel": "own", "display": {"scale": 1, "decimals": 1, "suffix": ""},
     },
     {
@@ -1380,6 +1398,8 @@ def main():
                 raise RuntimeError("no observations")
             extras[x["id"]] = {"series": x["series"], "label": x["label"], "date": obs[-1][0], "value": obs[-1][1],
                                "url": f"https://fred.stlouisfed.org/series/{x['series']}"}
+            if len(obs) > 1:
+                extras[x["id"]]["previous"] = {"date": obs[-2][0], "value": obs[-2][1]}
         except Exception as e:
             print(f"  skipped: {e}", file=sys.stderr, flush=True)
     try:

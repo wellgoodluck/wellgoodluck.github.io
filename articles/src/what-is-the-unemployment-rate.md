@@ -2,6 +2,7 @@
 title: What the Unemployment Rate Is, and Who It Doesn't Count
 dek: A headcount of people looking for work, taken from 60,000 households. It is the most watched number in the economy, and it leaves out everyone who stopped looking.
 date: 2026-10-28
+updated: 2026-10-29
 kind: concept
 tile: unemployment
 label: Unemployment rate
@@ -24,7 +25,7 @@ The count is useful because the door is where the pressure is. But it only count
 
 **Your raise: within a year.** When the line is short, employers compete for workers and pay climbs, fastest for people who switch jobs. In 2022, with the rate at 3.5%, typical hourly pay rose about 5% a year. When the line is long, raises stall. This is the channel the Fed watches, because wage growth feeds prices.
 
-**Your hours and your job: now, if it's you.** The rate is an average; for the person laid off it is 100%. The useful signal for everyone else is direction. The rate rarely rises a little: once its three-month average is half a point above its low of the past year, a recession has already begun, every time since 1970.
+**Your hours and your job: now, if it's you.** The rate is an average; for the person laid off it is 100%. The useful signal for everyone else is direction. The rate rarely rises a little: once its three-month average is half a point above its low of the past year, a recession has usually already begun. That happened within four months of the start of every recession since 1970, and twice without one, for a month in late 1976 and in 2024 (see [What a recession is](what-is-a-recession.html)).
 
 **Benefits: by state formula.** Extended unemployment benefits switch on when a state's own rate crosses set thresholds, so the state figure, not the national one, decides how long a check lasts.
 
@@ -70,4 +71,8 @@ A party has a door. The labor force doesn't. People drift between looking and no
 - [BLS, Alternative measures of labor underutilization (Table A-15)](https://www.bls.gov/news.release/empsit.t15.htm), U-1 through U-6.
 - [FRED: Unemployment rate (UNRATE)](https://fred.stlouisfed.org/series/UNRATE), [U-6 (U6RATE)](https://fred.stlouisfed.org/series/U6RATE), [Prime-age employment-population ratio (LNS12300060)](https://fred.stlouisfed.org/series/LNS12300060), [Sahm rule (SAHMREALTIME)](https://fred.stlouisfed.org/series/SAHMREALTIME), [CBO natural rate (NROU)](https://fred.stlouisfed.org/series/NROU).
 - [FOMC Summary of Economic Projections, September 2026](https://www.federalreserve.gov/monetarypolicy/fomcprojtabl20260916.htm), the longer-run estimate.
-- [Sahm, "Direct Stimulus Payments to Individuals" (Hamilton Project, 2019)](https://www.hamiltonproject.org/publication/policy-proposal/direct-stimulus-payments-to-individuals/), where the rule was proposed.
+- [Sahm, "Direct Stimulus Payments to Individuals" (Hamilton Project, 2019)](https://www.hamiltonproject.org/publication/policy-proposal/direct-stimulus-payments-to-individuals/), where the rule was proposed; [FRED: Real-time Sahm rule indicator (SAHMREALTIME)](https://fred.stlouisfed.org/series/SAHMREALTIME), its record since 1959, including late 1976 and 2024.
+
+## Corrections
+
+October 29, 2026: An earlier version said a half-point rise in the three-month average had meant a recession had begun every time since 1970. It also happened without a recession in late 1976 and in 2024.
