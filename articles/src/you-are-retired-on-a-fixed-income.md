@@ -2,6 +2,7 @@
 title: You're Retired on a Fixed Income
 dek: Inflation is the number that reaches you first and hardest, and the raise that answers it arrives a year late. The Fed reaches your savings in days.
 date: 2026-10-28
+updated: 2026-10-30
 kind: path
 order: 3
 ---
@@ -28,7 +29,7 @@ Two other things about the formula. The index is for wage earners, who spend les
 
 ## The Fed, through your cash
 
-Savings accounts, money market funds and short-term Treasury bills follow the Fed funds rate within days of a decision, in both directions. From 2009 to 2015 and again in 2020–21, cash earned nothing while prices rose; from 2023 on it has earned a real return for the first time since 2007. The 2026 hikes raised it again. That makes the Fed's decisions the most immediate number on this page for anyone holding cash, with one caveat: the large traditional banks barely passed the increases on, and the gap between an account paying 0.01% and one paying near the Fed funds rate is a choice of bank, not a market condition. [The Fed funds rate](what-is-the-fed-funds-rate.html) has the order in which everything else follows.
+Savings accounts, money market funds and short-term Treasury bills follow the Fed funds rate within days of a decision, in both directions. From 2009 to 2015 and again in 2020–21, cash earned nothing while prices rose; from 2023 on it has earned a real return for the first time since 2007. The Fed's September 2026 hike, its only one this year, raised it again. That makes the Fed's decisions the most immediate number on this page for anyone holding cash, with one caveat: the large traditional banks barely passed the increases on, and the gap between an account paying 0.01% and one paying near the Fed funds rate is a choice of bank, not a market condition. [The Fed funds rate](what-is-the-fed-funds-rate.html) has the order in which everything else follows.
 
 ## The 10-year, through bonds
 
@@ -70,3 +71,7 @@ The benefit is indexed, which almost no private income is. Cash and bonds finall
 - [Medicare.gov, Medicare costs](https://www.medicare.gov/basics/costs/medicare-costs), the current Part B premium and the income brackets.
 - [Social Security and Medicare Boards of Trustees, annual report](https://www.ssa.gov/oact/tr/), the trust fund projections.
 - [FRED: Fed funds rate (FEDFUNDS)](https://fred.stlouisfed.org/series/FEDFUNDS), [10-year yield (GS10)](https://fred.stlouisfed.org/series/GS10), [CPI (CPIAUCSL)](https://fred.stlouisfed.org/series/CPIAUCSL).
+
+## Corrections
+
+October 30, 2026: An earlier version referred to "the 2026 hikes." The Fed has raised its target once in 2026, in September.

@@ -2,6 +2,7 @@
 title: What the Deficit and the Debt Are, and Which One the Argument Is About
 dek: The deficit is this year's borrowing. The debt is all the years added up. Most fights over "the deficit" are about one while pointing at the other.
 date: 2026-10-28
+updated: 2026-10-30
 kind: concept
 tile: deficit, debt
 label: The deficit and the debt
@@ -24,7 +25,7 @@ The economy is the size of the tub. It grows most years, so a given water level 
 
 **Interest rates: through the 10-year yield.** More borrowing means more Treasury bonds for the market to absorb, and the price it charges is the term premium on [the 10-year](what-is-the-10-year-yield.html), which sets mortgages and every other long rate. Economists argue about how much; the range of estimates is a tenth to a third of a point on the 10-year for each 10 points of debt-to-GDP.
 
-**Taxes and programs: at the next budget.** Interest on the debt is now about 3.2% of GDP, more than defense, and every dollar of it is a dollar that either comes from taxes, is cut from something else, or is borrowed again. The deficit is the number that decides which.
+**Taxes and programs: at the next budget.** Interest on the debt was about 3.9% of GDP in fiscal 2025 ([FYOIGDA188S](https://fred.stlouisfed.org/series/FYOIGDA188S)), more than defense, and every dollar of it is a dollar that either comes from taxes, is cut from something else, or is borrowed again. The deficit is the number that decides which.
 
 **Inflation: if it is monetized.** A government that borrows in its own currency can always pay, in dollars; whether those dollars are worth what they were is the inflation question. The 2021 relief, financed by borrowing while the Fed bought the bonds, is the recent case, and [supply vs. demand](supply-vs-demand.html) takes up how much of the inflation that followed came from it.
 
@@ -42,7 +43,7 @@ The debt moves with the deficit, and also with interest rates: when rates rise, 
 
 **As a share of GDP.** A 6% deficit with the economy at full employment is a different thing from a 6% deficit in a recession. The 2015–19 average was about 3.5%; the 2026 figure, near 6% with unemployment at 4%, is the part of the current argument that both sides agree is unusual.
 
-**The debt figure to use.** Debt held by the public, on the almanac, excludes what the government owes its own trust funds. The gross figure, on the chart as a companion, includes it and runs about 20 points higher; it is the figure on the "debt clock" and in most headlines. Economists use the public figure because the trust-fund debt is money the government owes itself.
+**The debt figure to use.** Debt held by the public, on the almanac, excludes what the government owes its own trust funds. The gross figure, on the chart as a companion, includes it and runs about 24 points higher (121% against 97% in the second quarter of 2026; [GFDEGDQ188S](https://fred.stlouisfed.org/series/GFDEGDQ188S)); it is the figure on the "debt clock" and in most headlines. Economists use the public figure because the trust-fund debt is money the government owes itself.
 
 {{chart id=debt range=all ov=interest_gdp,cbo_debt_2056,debt_ww2_peak caption="Debt held by the public as a share of GDP since 1970, with interest on it, the 1946 peak, and where the Congressional Budget Office projects it under current law. The debt crossed its 1946 record in 2020 and is near 100%."}}
 
@@ -71,3 +72,7 @@ A bathtub overflows. Nobody knows where the economy's rim is, and the countries 
 - [Congressional Budget Office, The Long-Term Budget Outlook: 2026 to 2056](https://www.cbo.gov/publication/62044), the projection on the chart.
 - [OMB Historical Tables, Table 7.1](https://www.whitehouse.gov/omb/information-resources/budget/historical-tables/), the debt back to 1940, including the 1946 peak.
 - [U.S. Treasury, Monthly Treasury Statement](https://fiscal.treasury.gov/reports-statements/mts/), the running deficit within the year.
+
+## Corrections
+
+October 30, 2026: An earlier version said interest on the debt is about 3.2% of GDP and that gross debt runs about 20 points above debt held by the public. Interest was 3.9% of GDP in fiscal 2025 (3.2% was fiscal 2023), and the gap was about 24 points in the second quarter of 2026.

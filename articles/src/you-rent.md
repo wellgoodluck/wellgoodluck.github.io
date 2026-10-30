@@ -2,6 +2,7 @@
 title: You Rent
 dek: Four numbers reach a renter directly, and the one that matters most arrives a year late.
 date: 2026-10-28
+updated: 2026-10-30
 kind: path
 order: 1
 ---
@@ -20,7 +21,7 @@ Jobless claims, the unemployment rate and GDP reach you the way they reach every
 
 The rent line inside the inflation number is the slowest part of it. The index samples all renters, most of whom are mid-lease, so it reports what people are paying, not what landlords are asking. Asking rents move first; the index catches up over about twelve months. In 2022 the listings sites were already showing rents flattening while the official rent figure was still climbing toward its 2023 peak of nearly 9% a year. In 2024 and 2025 the opposite happened: listings went flat or down in the cities that had built the most, and the index spent a year easing toward them.
 
-Over the whole stretch since 2019, rent in the index is up about 41%, against about 31% for prices overall. If your rent tracked the average, your inflation ran above the headline, and the gap is one reason the official number has felt low to renters for five years.
+Over the whole stretch since 2019, rent in the index is up about 36% ([CUSR0000SEHA](https://fred.stlouisfed.org/series/CUSR0000SEHA)), against about 31% for prices overall. If your rent tracked the average, your inflation ran above the headline, and the gap is one reason the official number has felt low to renters for five years.
 
 The index has a second housing line, "owners' equivalent rent," an estimate of what homeowners would pay to rent their own homes. It is larger than the rent line and it is not your rent; when people argue that housing inflation is overstated, that is the line they mean.
 
@@ -42,7 +43,7 @@ The almanac's [housing starts](what-are-housing-starts.html) page shows the tota
 
 ## Your paycheck against prices
 
-Whether a rent increase is survivable depends on the real wage, pay minus inflation. Typical hourly pay is up about 38% since 2019; prices overall about 31%; rent about 41%. So the average worker gained ground on everything except rent, and rent is the largest single item in most renters' budgets. [Real vs. nominal](real-vs-nominal.html) explains the subtraction. The year-over-year version is on the inflation chart as a companion, and it has been negative since the spring of 2026 as energy prices rose.
+Whether a rent increase is survivable depends on the real wage, pay minus inflation. Typical hourly pay is up about 39% since 2019 ([AHETPI](https://fred.stlouisfed.org/series/AHETPI)); prices overall about 31%; rent about 36%. So the average worker has gained ground on prices overall and, narrowly, on rent, the largest single item in most renters' budgets. [Real vs. nominal](real-vs-nominal.html) explains the subtraction. The year-over-year version is on the inflation chart as a companion, and it has been negative since the spring of 2026 as energy prices rose.
 
 ## The Fed
 
@@ -74,3 +75,7 @@ Renters are the one group fully insulated from the two costs that have hit owner
 - [FRED: Housing starts, five units or more (HOUST5F)](https://fred.stlouisfed.org/series/HOUST5F) and [completions (COMPUTSA)](https://fred.stlouisfed.org/series/COMPUTSA).
 - [National Association of Realtors, research and statistics](https://www.nar.realtor/research-and-statistics), the first-time buyer share.
 - [Federal Housing Finance Agency, "The Lock-In Effect of Rising Mortgage Rates"](https://www.fhfa.gov/research/papers/wp2403).
+
+## Corrections
+
+October 30, 2026: An earlier version put the rise in rent since 2019 at about 41% and said the average worker had gained ground on everything except rent. The BLS rent index is up about 36%, a little less than average hourly pay (about 39%).

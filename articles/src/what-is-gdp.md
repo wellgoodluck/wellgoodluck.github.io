@@ -2,7 +2,7 @@
 title: What GDP Is, and Why 2% Growth Can Feel Like Nothing
 dek: Everything the country produced in three months, stated as if it kept up for a year, adjusted for inflation, and revised twice. Each of those is a place to misread it.
 date: 2026-10-28
-updated: 2026-10-29
+updated: 2026-10-30
 kind: concept
 tile: gdp
 label: GDP
@@ -45,7 +45,7 @@ A paycheck is money someone can spend. GDP counts things nobody buys: government
 
 ## What people argue about
 
-**GDP versus how people feel.** In 2023–24 the United States grew faster than any other large rich country, inflation fell, unemployment stayed under 4%, and consumer sentiment surveys sat at levels usually seen in recessions. One side says the data were right and the mood was partisanship plus the memory of 2022's price jump, the level rather than the rate. The other says the aggregates missed what households felt: prices up 20% in three years, interest on cards and car loans that GDP doesn't subtract, and gains concentrated at the top. The data can show the growth and the price level. It can't say which one people should weigh.
+**GDP versus how people feel.** In 2023–24 the United States grew faster than any other large rich country, inflation fell, unemployment stayed between 3.4% and 4.2% ([UNRATE](https://fred.stlouisfed.org/series/UNRATE)), and consumer sentiment surveys sat at levels usually seen in recessions. One side says the data were right and the mood was partisanship plus the memory of 2022's price jump, the level rather than the rate. The other says the aggregates missed what households felt: prices up 20% in three years, interest on cards and car loans that GDP doesn't subtract, and gains concentrated at the top. The data can show the growth and the price level. It can't say which one people should weigh.
 
 **Whether government spending counts.** Government purchases are in GDP at cost. One camp says that inflates the figure with spending nobody chose and that produces nothing measurable; the other says private output depends on roads, courts and schools, and that markets simply don't price public goods. Transfers like Social Security aren't in GDP at all. Both sides agree on the accounting; they disagree about whether it measures value.
 
@@ -62,3 +62,7 @@ A paycheck is money someone can spend. GDP counts things nobody buys: government
 - [Bureau of Economic Analysis, Gross Domestic Product](https://www.bea.gov/data/gdp/gross-domestic-product), the quarterly release, and the [NIPA Handbook](https://www.bea.gov/resources/methodologies/nipa-handbook), how it is built.
 - [FRED: Real GDP growth (A191RL1Q225SBEA)](https://fred.stlouisfed.org/series/A191RL1Q225SBEA), [real GDP (GDPC1)](https://fred.stlouisfed.org/series/GDPC1), [real GDP per capita (A939RX0Q048SBEA)](https://fred.stlouisfed.org/series/A939RX0Q048SBEA), [consumer sentiment (UMCSENT)](https://fred.stlouisfed.org/series/UMCSENT); [ALFRED vintages of A191RL1Q225SBEA](https://alfred.stlouisfed.org/series?seid=A191RL1Q225SBEA), the first estimates.
 - [National Bureau of Economic Research, Business Cycle Dating](https://www.nber.org/research/business-cycle-dating), how recessions are actually dated.
+
+## Corrections
+
+October 30, 2026: An earlier version said unemployment stayed under 4% in 2023–24. It ranged from 3.4% to 4.2%, and was above 4% from June to November 2024.

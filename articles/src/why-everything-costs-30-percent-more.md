@@ -2,7 +2,7 @@
 title: Why Everything Costs 30% More Than It Did in 2019
 dek: Four overlapping shocks raised prices, a fifth is under way, and none of them is going to put prices back where they were.
 date: 2026-10-24
-updated: 2026-10-28
+updated: 2026-10-30
 ---
 
 
@@ -10,7 +10,7 @@ updated: 2026-10-28
 
 Consumer prices rose about 28% from 2019 to early 2026, and this year's energy surge has pushed that to about 31%. Most of it happened in 2021 and 2022, when inflation ran 5–8% a year. The rest of the time, prices crept up at the 2–3% pace people barely notice.
 
-That average hides a lot. Eggs are up 84%, ground beef 79%, restaurant meals 51%, electricity 48%, gasoline 47%, rent 41%, auto insurance 32%, and used cars 30%. Chicken wings are cheaper than they were in 2019. If you rent, drive, and eat beef, your personal inflation ran well above the headline figure.
+That average hides a lot. By September 2026, against the 2019 average, gasoline is up 65%, ground beef 64%, auto insurance 48%, electricity 45%, meals away from home 40%, eggs 37%, rent 36%, and used cars 32%. If you rent, drive, and eat beef, your personal inflation ran well above the headline figure.
 
 {{chart id=cpi range=10y ov=price_level,fed_target height=720 caption="Inflation is the top line: the yearly rate of change. The price level underneath is the thing itself, with 2019 set to 100. The rate came down; the level did not."}}
 
@@ -42,7 +42,7 @@ Russia invaded Ukraine in February 2022, just as inflation was already running h
 
 Russia and Ukraine together supplied about a quarter of the world's wheat exports and a large share of sunflower oil and corn. Ukrainian ports were blockaded for months. Food prices respond to energy and fertilizer with a lag of roughly a year, so grocery inflation peaked in 2023 even as energy was already cooling.
 
-A few things made this worse in the U.S. specifically. Avian flu wiped out tens of millions of laying hens in 2022 and again in 2024–25, which is most of why eggs are up 84%. Drought shrank the cattle herd to its smallest since the 1950s, which is why beef is up 79%. Those were separate shocks that happened to land on top of everything else.
+A few things made this worse in the U.S. specifically. Avian flu wiped out tens of millions of laying hens in 2022 and again in 2024–25, which is most of why egg prices peaked in March 2025 at nearly two and a half times their 2019 average; they are up 37% now. Drought shrank the cattle herd to its smallest since the 1950s, which is why ground beef is up 64%. Those were separate shocks that happened to land on top of everything else.
 
 ## Wave 4: The second round (2021–24)
 
@@ -52,9 +52,9 @@ The first three waves explain why prices spiked. This one explains why they stay
 
 {{chart id=cpi range=5y ov=core_cpi_on_cpi,wages,real_wages caption="Headline and core inflation against wage growth. Real wages (the green line) fell below zero for two years from mid-2021, gained ground from spring 2023 to early 2026, and went negative again this year as energy prices rose."}}
 
-**Wages.** The labor market got very tight in 2021–22, with two job openings for every unemployed person. Average wages rose about 25% cumulatively. That's good for workers, but it flows straight into anything made of labor: restaurants, haircuts, repairs, childcare, medical care. Services inflation was the last piece to cool.
+**Wages.** The labor market got very tight in 2021–22, with two job openings for every unemployed person. Average hourly pay for production and nonsupervisory workers is up about 39% since 2019 ([AHETPI](https://fred.stlouisfed.org/series/AHETPI)). That's good for workers, but it flows straight into anything made of labor: restaurants, haircuts, repairs, childcare, medical care. Services inflation was the last piece to cool.
 
-**Auto insurance** is a good example of how the waves compound. Cars became worth more, so claims cost more. Repairs got more expensive because parts and mechanics did. Accident severity rose. Premiums went up more than 50% from 2019 to 2024, and insurers were still catching up to costs they'd already absorbed.
+**Auto insurance** is a good example of how the waves compound. Cars became worth more, so claims cost more. Repairs got more expensive because parts and mechanics did. Accident severity rose. Premiums went up more than 50% from December 2019 to December 2024 ([BLS](https://data.bls.gov/timeseries/CUUR0000SETE)), and insurers were still catching up to costs they'd already absorbed.
 
 ## Why prices never came back down
 
@@ -62,7 +62,7 @@ Inflation is a rate, not a level. When the Fed "beat inflation" in 2023–24, th
 
 Getting prices back to 2019 would require deflation, a sustained fall in the general price level. Outside the Great Depression and a few months in 2008–09, that hasn't happened in modern America, and nobody in charge wants it to. Deflation means wages fall, debts get heavier in real terms, and people delay purchases waiting for lower prices, which deepens the slump. The Fed's job is to hold inflation near 2%, not zero and not negative.
 
-There's also a ratchet. Wages rose along with prices, and wages almost never fall in nominal terms. Every business's cost base is permanently higher, so its prices are too. In aggregate, average pay has roughly caught up with prices since 2019, but unevenly, and the memory of what things used to cost doesn't adjust. The $4 coffee feels expensive because you remember when it was $3, even if your paycheck is 25% bigger too.
+There's also a ratchet. Wages rose along with prices, and wages almost never fall in nominal terms. Every business's cost base is permanently higher, so its prices are too. In aggregate, average pay has outrun prices since 2019, about 39% against about 31%, but unevenly, and the memory of what things used to cost doesn't adjust. The $4 coffee feels expensive because you remember when it was $3, even if your paycheck has grown by more than that.
 
 ## What's happening now (2025–26)
 
@@ -84,7 +84,7 @@ What the evidence doesn't support is a single-cause story. "Corporate greed" doe
 
 ## Sources
 
-Cumulative figures since 2019 are from BLS Consumer Price Index data as compiled by [Keeping Up With Inflation](https://keepingupwithinflation.com/statistics/inflation-since-2019/) ([category breakdown](https://keepingupwithinflation.com/post/price-changes-since-2019-every-category-on-one-chart/)). Figures for the 2020–24 period that aren't linked (relief totals, M2 growth, home prices, wages) are approximate and widely reported.
+Price changes since 2019 are from BLS Consumer Price Index series, not seasonally adjusted, September 2026 against the 2019 average: [ground beef](https://data.bls.gov/timeseries/CUUR0000SEFC01), [gasoline](https://data.bls.gov/timeseries/CUUR0000SETB01), [motor vehicle insurance](https://data.bls.gov/timeseries/CUUR0000SETE), [electricity](https://data.bls.gov/timeseries/CUUR0000SEHF01), [food away from home](https://data.bls.gov/timeseries/CUUR0000SEFV), [eggs](https://data.bls.gov/timeseries/CUUR0000SEFH), [rent of primary residence](https://data.bls.gov/timeseries/CUUR0000SEHA), [used cars and trucks](https://data.bls.gov/timeseries/CUUR0000SETA02). Pay since 2019 is [average hourly earnings of production and nonsupervisory workers (AHETPI)](https://fred.stlouisfed.org/series/AHETPI). Figures for the 2020–24 period that aren't linked (relief totals, M2 growth, home prices) are approximate and widely reported.
 
 - [BLS Consumer Price Index, September 2026 release](https://www.bls.gov/news.release/cpi.nr0.htm)
 - [SimianX – Latest US CPI data and release schedule](https://www.simianx.ai/stories/us-cpi-report-latest-inflation-data-and-release-schedule)
@@ -98,3 +98,4 @@ Cumulative figures since 2019 are from BLS Consumer Price Index data as compiled
 ## Corrections
 
 - October 29, 2026: An earlier version put the rise in airfares at 23% year over year. The Bureau of Labor Statistics figure is 22.4%.
+- October 30, 2026: An earlier version gave price changes since 2019 from a third-party compilation that did not match BLS data: eggs 84%, ground beef 79%, restaurant meals 51%, electricity 48%, gasoline 47%, rent 41%, auto insurance 32% and used cars 30%. The figures now come directly from BLS, September 2026 against the 2019 average. It also said chicken wings were cheaper than in 2019, which BLS data can't show (chicken overall is up 37%), put the rise in average wages at about 25% (it is about 39%), and said pay had roughly caught up with prices (it has outrun them).

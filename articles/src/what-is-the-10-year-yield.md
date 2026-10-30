@@ -2,7 +2,7 @@
 title: What the 10-Year Treasury Yield Is, and Why It Sets Your Mortgage Rate
 dek: The interest rate the government pays to borrow for a decade. The Fed doesn't set it. Bond buyers do, by guessing what the Fed will do for the next ten years.
 date: 2026-10-28
-updated: 2026-10-29
+updated: 2026-10-30
 kind: concept
 tile: ten_year
 label: 10-year Treasury yield
@@ -33,7 +33,7 @@ What lenders charge for time. The Fed sets the price of money overnight. The 10-
 
 ## What moves it
 
-Expectations for the Fed, first: a hotter inflation report raises the 10-year the same morning because the market pencils in higher rates for longer. Inflation expectations themselves. The term premium, which rises when investors are uncertain or when there is more debt to absorb. Supply, meaning deficits, and demand, meaning foreign central banks, pension funds, insurers and the Fed itself: the Fed's bond-buying pushed the 10-year to 0.6% in 2020, and its runoff since 2022 has removed that buyer. And fear: in a panic money runs into Treasuries, prices rise and the yield falls, which is why the 10-year can drop on bad news.
+Expectations for the Fed, first: a hotter inflation report raises the 10-year the same morning because the market pencils in higher rates for longer. Inflation expectations themselves. The term premium, which rises when investors are uncertain or when there is more debt to absorb. Supply, meaning deficits, and demand, meaning foreign central banks, pension funds, insurers and the Fed itself: the Fed's bond-buying pushed the 10-year to 0.6% in 2020, and its runoff from 2022 to December 2025, when it [stopped shrinking its holdings](https://www.federalreserve.gov/newsevents/pressreleases/monetary20251029a.htm), took that buyer away. And fear: in a panic money runs into Treasuries, prices rise and the yield falls, which is why the 10-year can drop on bad news.
 
 ## How to read this month's number
 
@@ -75,3 +75,5 @@ A pooled bet assumes the bettors are betting. The biggest buyers of Treasuries o
 ## Corrections
 
 October 29, 2026: An earlier version implied that 2022–24 was the only time the 10-year minus Fed funds spread had gone below zero without a recession following. It also did in 1966–67 and 1998.
+
+October 30, 2026: An earlier version described the Fed's runoff of its bond holdings as still under way. It ended on December 1, 2025.

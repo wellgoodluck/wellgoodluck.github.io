@@ -2,6 +2,7 @@
 title: You Own With a Fixed Mortgage
 dek: The payment never changes, which is the whole point. Everything around it does, and the thing that changes most is what the payment is worth.
 date: 2026-10-28
+updated: 2026-10-30
 kind: path
 order: 2
 ---
@@ -44,7 +45,7 @@ Slowly, and locally. New supply holds prices down over years, and the effect is 
 
 ## Where you come out ahead
 
-Nearly everywhere, which is why the arguments below are mostly about whether that's fair. The payment is fixed while rents rose 41% since 2019; inflation erodes the debt; the house rose with prices; and the interest on the mortgage is partly deductible. Against that, three things. You carry the costs a renter doesn't: insurance, property tax, and maintenance, which is mostly labor and has risen faster than the index. Your wealth is in one asset in one zip code that you can't spend without borrowing against it or moving, and moving is what the lock-in makes expensive. And the fixed payment that protected you on the way up would protect you just as well if prices fell, which they sometimes do.
+Nearly everywhere, which is why the arguments below are mostly about whether that's fair. The payment is fixed while rents rose about 36% since 2019 ([BLS rent index](https://fred.stlouisfed.org/series/CUSR0000SEHA)); inflation erodes the debt; the house rose with prices; and the interest on the mortgage is partly deductible. Against that, three things. You carry the costs a renter doesn't: insurance, property tax, and maintenance, which is mostly labor and has risen faster than the index. Your wealth is in one asset in one zip code that you can't spend without borrowing against it or moving, and moving is what the lock-in makes expensive. And the fixed payment that protected you on the way up would protect you just as well if prices fell, which they sometimes do.
 
 ## What people argue about
 
@@ -67,3 +68,7 @@ Nearly everywhere, which is why the arguments below are mostly about whether tha
 - [Federal Housing Finance Agency, "The Lock-In Effect of Rising Mortgage Rates" (working paper 24-03)](https://www.fhfa.gov/research/papers/wp2403).
 - [U.S. Treasury, Federal Insurance Office, "Analyses of U.S. Homeowners Insurance Markets, 2018–2022" (January 2025)](https://home.treasury.gov/news/press-releases/jy2791), premiums by region and risk.
 - [Federal Reserve, Survey of Consumer Finances](https://www.federalreserve.gov/econres/scfindex.htm), housing wealth by household.
+
+## Corrections
+
+October 30, 2026: An earlier version said rents rose 41% since 2019. The BLS rent index is up about 36%.

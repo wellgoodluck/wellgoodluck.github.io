@@ -2,6 +2,7 @@
 title: What Housing Starts Are, and Why Today's Number Is 2028's Rent
 dek: The count of homes on which construction began this month, stated as a yearly pace. It is a forecast of supply, and supply is what rents and prices answer to, a year or two later.
 date: 2026-10-28
+updated: 2026-10-30
 kind: concept
 tile: housing_starts
 label: Housing starts
@@ -12,7 +13,7 @@ hook: why today's number is 2028's rent
 
 Housing starts are the number of new homes on which construction began in the month, counted by the Census Bureau from building permits and site visits, and stated as the annual pace that month's count would make if it continued for twelve months.
 
-The total splits into two things that move on different clocks: single-family houses, and apartments in buildings of five or more units. In September 2026 the total was 1.22 million at an annual rate, about 860,000 of them houses and about 360,000 apartments.
+The total splits into two things that move on different clocks: single-family houses, and apartments and other buildings with two or more units. In September 2026 the total was 1.22 million at an annual rate, about 860,000 of them houses and about 360,000 apartments.
 
 ## The analogy
 
@@ -71,3 +72,7 @@ A farmer who plants, harvests. A builder who starts can stop: 2008 left half-bui
 - [FRED: Housing starts (HOUST)](https://fred.stlouisfed.org/series/HOUST), [single-family (HOUST1F)](https://fred.stlouisfed.org/series/HOUST1F), [five units or more (HOUST5F)](https://fred.stlouisfed.org/series/HOUST5F), [completions (COMPUTSA)](https://fred.stlouisfed.org/series/COMPUTSA), [units under construction (UNDCONTSA)](https://fred.stlouisfed.org/series/UNDCONTSA).
 - [Freddie Mac, "Housing Supply: A Growing Deficit" (2021)](https://www.freddiemac.com/research/insight/20210507-housing-supply), one of the shortage estimates.
 - [Mast, "The Effect of New Market-Rate Housing Construction on the Low-Income Housing Market" (Upjohn Institute, 2019)](https://research.upjohn.org/up_workingpapers/307/), the moving-chain evidence.
+
+## Corrections
+
+October 30, 2026: An earlier version defined the second group as buildings of five or more units. The apartment figures here are total starts minus single-family, which also counts buildings of two to four units.
