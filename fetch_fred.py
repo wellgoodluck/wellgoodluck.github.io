@@ -18,7 +18,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from statistics import mean
 
 API = os.environ.get("FRED_API_BASE", "https://api.stlouisfed.org/fred").rstrip("/")
@@ -636,6 +636,24 @@ COMPANIONS = [
         "freq": "m",
         "why": "Used to compute the 10-year minus 3-month spread.",
     },
+    # Series read only by the live figures in article text (tools/figures.py), offered on no chart.
+    # All tagged Public Domain: Citation Requested on FRED (checked Oct 30, 2026).
+    {"id": "pay_level", "label": "Average hourly earnings, production and nonsupervisory workers, dollars",
+     "for": [], "series": "AHETPI", "params": {"observation_start": "2018-01-01"}, "freq": "m",
+     "why": "Used for pay since 2019 in article text."},
+    {"id": "unemployed", "label": "Unemployed people, thousands", "for": [], "series": "UNEMPLOY",
+     "params": {"observation_start": "2015-01-01"}, "freq": "m", "why": "Used for the unemployed count in article text."},
+    {"id": "openings", "label": "Job openings, thousands (JOLTS)", "for": [], "series": "JTSJOL",
+     "params": {"observation_start": "2000-12-01"}, "freq": "m", "why": "Used for openings per unemployed person in article text."},
+    {"id": "hires_level", "label": "Hires, thousands (JOLTS)", "for": [], "series": "JTSHIL",
+     "params": {"observation_start": "2015-01-01"}, "freq": "m", "why": "Used for the number of hires in article text."},
+    {"id": "uempmean", "label": "Average weeks unemployed", "for": [], "series": "UEMPMEAN",
+     "params": {"observation_start": "2015-01-01"}, "freq": "m", "why": "Used for search length in article text."},
+    {"id": "long_term_share", "label": "Share of the unemployed out of work 27 weeks or more", "for": [], "series": "LNS13025703",
+     "params": {"observation_start": "2015-01-01"}, "freq": "m", "why": "Used for long-term unemployment in article text."},
+    {"id": "eci_wages", "label": "Employment Cost Index, private wages and salaries, change from a year ago (not seasonally adjusted)",
+     "for": [], "series": "CIU2020000000000I", "params": {"units": "pc1", "observation_start": "2002-01-01"}, "freq": "q",
+     "why": "Used for the ECI line on the hourly pay page; not seasonally adjusted, as BLS headlines it."},
 ]
 
 # Derived series, computed here from the fetched data so the page never has to
@@ -665,6 +683,11 @@ EXTRAS = [
     # closes. The dollar figure arrives in October; the household line reports it in the gap.
     {"id": "deficit_dollars", "series": "FYFSD", "label": "Federal surplus or deficit, millions of dollars, fiscal year",
      "params": {"observation_start": "2015-01-01"}},
+    # FOMC Summary of Economic Projections, longer-run medians (quarterly; dated by meeting).
+    {"id": "fomc_longrun_ffr", "series": "FEDTARMDLR", "label": "FOMC longer-run Fed funds rate, median",
+     "params": {"observation_start": "2012-01-01"}},
+    {"id": "fomc_longrun_unrate", "series": "UNRATEMDLR", "label": "FOMC longer-run unemployment rate, median",
+     "params": {"observation_start": "2012-01-01"}},
 ]
 
 
@@ -1260,6 +1283,35 @@ def derive(spec, by_id):
     raise RuntimeError(f"unknown op {spec['op']}")
 
 
+def release_calendar(series_ids):
+    """The last and next three scheduled release dates of every FRED release behind the given series,
+    for the weekly check of what came out. Each failure is noted and skipped; never raises."""
+    today = date.today().isoformat()
+    releases = {}
+    for sid in series_ids:
+        try:
+            r = fred_get("series/release", {"series_id": sid})["releases"][0]
+        except Exception as e:
+            print(f"  calendar: no release for {sid} ({e})", file=sys.stderr, flush=True)
+            continue
+        time.sleep(0.5)                        # FRED allows about 120 requests a minute
+        rel = releases.setdefault(r["id"], {"id": r["id"], "name": r.get("name"), "link": r.get("link"), "series": []})
+        rel["series"].append(sid)
+    for rel in releases.values():
+        try:
+            data = fred_get("release/dates", {"release_id": rel["id"], "include_release_dates_with_no_data": "true",
+                                              "sort_order": "desc", "limit": 400})
+            ds = sorted({d["date"] for d in data.get("release_dates", [])})
+            past = [d for d in ds if d <= today]
+            rel["last"] = past[-1] if past else None
+            rel["next"] = [d for d in ds if d > today][:3]
+        except Exception as e:
+            rel["error"] = str(e)[:160]
+        time.sleep(0.5)
+    out = sorted(releases.values(), key=lambda r: (r.get("next") or ["9999-12-31"])[0])
+    return {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "releases": out}
+
+
 def recession_spans(obs):
     """USREC 0/1 monthly -> [[start, end], ...] where end is the last month in recession."""
     spans, start, last = [], None, None
@@ -1410,6 +1462,16 @@ def main():
     print("recessions      USREC", flush=True)
     rec = get_observations(RECESSIONS_SERIES, {"observation_start": RECESSIONS_START})
 
+    # Release calendar for the weekly article check: which releases came out and which are next.
+    calendar = None
+    try:
+        ids = [t["series"] for t in TILES] + [c["series"] for c in COMPANIONS] + [x["series"] for x in EXTRAS]
+        print("calendar        FRED release dates", flush=True)
+        calendar = release_calendar(list(dict.fromkeys(ids)))
+        print(f"  {len(calendar['releases'])} releases", flush=True)
+    except Exception as e:                     # never let the calendar fail the run
+        print(f"calendar skipped: {e}", file=sys.stderr, flush=True)
+
     payload = {
         "generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "attribution": "Source: FRED, Federal Reserve Bank of St. Louis. Underlying data from "
@@ -1419,6 +1481,7 @@ def main():
                      "end": BASELINE_END.isoformat()},
         "recessions": recession_spans(rec),
         "extras": extras,
+        "calendar": calendar,
         "tiles": tiles_out,
     }
 
