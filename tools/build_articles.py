@@ -33,9 +33,15 @@ site's own detail page:
     {{chart id=cpi range=10y ov=fed_target,pce caption="Inflation and the Fed's target."}}
 
 Anything under `## Sources`, up to the next heading, is rendered as a sources list.
+
+Live figures in the text ({{v …}}, {{fig …}}) and invisible review markers ({{check …}},
+{{due …}}) are filled in from data/ by tools/figures.py before the Markdown is rendered; see
+that file. The build prints a one-line summary plus any failing check, passed due date or
+warning, and writes them to build-report.json (or $FIGURES_REPORT), outside the published folder.
 """
 
 import html
+import json
 import os
 import re
 import shlex
@@ -411,18 +417,44 @@ def write_explainers(out_root, articles):
     print(f"built data/explainers.json ({len(ex)} indicators)")
 
 
+def body_offset(path, body):
+    """Lines before the body (the front matter), so directive warnings name the file's own line."""
+    text = open(path, encoding="utf-8").read()
+    return text[: len(text) - len(body)].count("\n")
+
+
+def load_figures():
+    """tools/figures.py and the committed data, or None. A missing module or unreadable data
+    leaves every live figure at its else= text with a warning; the build itself never fails on it."""
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import figures
+        return figures, figures.Data("data")
+    except Exception as e:                                  # noqa: BLE001
+        print(f"figures: not available ({e}); live figures print their fallback text")
+        return None, None
+
+
 def main():
     out_root = sys.argv[1] if len(sys.argv) > 1 else "public"
     out_dir = os.path.join(out_root, "articles")
     os.makedirs(out_dir, exist_ok=True)
+    figures, data = load_figures()
+    report = figures.new_report() if figures else None
     articles = []
     if os.path.isdir(SRC_DIR):
         for name in sorted(os.listdir(SRC_DIR)):
             if name.endswith(".md"):
-                a = parse(os.path.join(SRC_DIR, name))
+                path = os.path.join(SRC_DIR, name)
+                a = parse(path)
                 if a["draft"]:
                     print(f"skip draft {name}")
                     continue
+                if figures and data:
+                    a["body"] = figures.render(a["body"], data, a["slug"], report, body_offset(path, a["body"]))
+                elif "{{v " in a["body"] or "{{fig " in a["body"] or "{{check " in a["body"] or "{{due " in a["body"]:
+                    a["body"] = re.sub(r"\s*\{\{\s*(?:check|due)\s+.*?\}\}", "", a["body"])
+                    a["body"] = re.sub(r"\{\{\s*(?:v|fig)\s+.*?\}\}", "", a["body"])
                 articles.append(a)
     articles.sort(key=lambda a: a["date"], reverse=True)
     for a in articles:
@@ -434,6 +466,13 @@ def main():
     print(f"built articles/index.html ({len(articles)} articles)")
     write_explainers(out_root, articles)
     write_sitemap(out_root, articles)
+    if report is not None:
+        print(figures.summarize(report))
+        try:                                                # outside the published folder; read by the weekly check
+            with open(os.environ.get("FIGURES_REPORT", "build-report.json"), "w", encoding="utf-8") as f:
+                json.dump(report, f, indent=1)
+        except OSError as e:
+            print(f"figures: could not write the report ({e})")
 
 
 def write_sitemap(out_root, articles):

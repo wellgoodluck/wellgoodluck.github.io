@@ -27,7 +27,7 @@ A smoke detector. It is cheap, it is fast, it goes off before you can see flames
 
 **The jobs report: before it's published.** The claims count for the week containing the 12th of the month is the main input to forecasts of that month's payroll number, which arrives about three weeks later.
 
-**Hiring: by what it can't tell you.** Low claims mean few layoffs. They say nothing about hiring. Since 2023 claims have sat near record lows relative to the size of the workforce while hiring slowed to its weakest pace outside a recession in more than a decade: a market in which it is hard to lose a job and hard to find one. If you are employed, low claims say your job is safe. If you are looking, they say nothing.
+**Hiring: by what it can't tell you.** Low claims mean few layoffs. They say nothing about hiring. Since 2023 claims have sat near record lows relative to the size of the workforce while hiring slowed to its weakest pace outside a recession in more than a decade: a market in which it is hard to lose a job and hard to find one. If you are employed, low claims say your job is safe. If you are looking, they say nothing. {{check claims.percentile <= 15 "claims near record lows"}} {{check hires_rate.value <= 3.5 "hiring at its weakest outside a recession in more than a decade"}}
 
 ## What moves it
 
@@ -37,9 +37,9 @@ Layoffs, and then the calendar. Seasonal adjustment removes the predictable spik
 
 **Average it.** One week is noise. The four-week average on the chart is the signal.
 
-**Know the levels, roughly.** With today's workforce, about 200,000 a week is a low-layoff economy; the 2015–19 average was about 245,000; 300,000 and rising has historically meant trouble; above 400,000 is a recession. The workforce grows, so the same count means a little less each decade.
+**Know the levels, roughly.** With today's workforce, about 200,000 a week is a low-layoff economy; the 2015–19 average was about {{v claims.baseline fmt=thousands}}; 300,000 and rising has historically meant trouble; above 400,000 is a recession. The workforce grows, so the same count means a little less each decade.
 
-**Check continuing claims.** If initial claims stay low while continuing claims rise, as in 2024–25 when initial claims held near 220,000 and continuing claims climbed toward two million, people who lose jobs are taking longer to find new ones. That is the frozen market's signature. In the week of October 24, 2026 the four-week average was 196,750, the lowest since October 1969, when the workforce was less than half its present size; continuing claims, reported a week behind, were about 1.70 million, down from 1.96 million at the 2025 peak.
+**Check continuing claims.** If initial claims stay low while continuing claims rise, as in 2024–25 when initial claims held near 220,000 and continuing claims climbed toward two million, people who lose jobs are taking longer to find new ones. That is the frozen market's signature. In {{v claims period}} the four-week average was {{v claims}}, {{fig claims_low}}; continuing claims, reported a week behind, were {{fig continuing_claims else="about 1.70 million, down from 1.96 million at the 2025 peak"}}.
 
 **Discount the holiday weeks.** Thanksgiving, Christmas, New Year's and the Fourth of July produce prints that mean nothing either way.
 
@@ -51,11 +51,11 @@ A smoke detector covers the whole room. Claims cover only the people who qualify
 
 ## What people argue about
 
-**Strong or frozen.** Claims near 200,000 can be read as a strong job market (nobody is being laid off) or a stuck one (nobody is being hired either, and employers hold on to the workers they have). The hiring rate in the Labor Department's turnover survey has been at levels last seen in the early 2010s; the layoff rate near record lows. The data supports both readings at once: it is a low-churn market, and low churn is good for the people inside and bad for the people trying to get in.
+**Strong or frozen.** Claims near 200,000 can be read as a strong job market (nobody is being laid off) or a stuck one (nobody is being hired either, and employers hold on to the workers they have). The hiring rate in the Labor Department's turnover survey has been at levels last seen in the early 2010s; the layoff rate near record lows. The data supports both readings at once: it is a low-churn market, and low churn is good for the people inside and bad for the people trying to get in. {{check claims.value <= 230000 "claims near 200,000"}} {{check hires_rate.value <= 3.5 "hiring rate at early-2010s levels"}} {{check layoffs_rate.percentile <= 10 "layoff rate near record lows"}}
 
 **Whether benefits keep people from working.** The 2020–21 supplements, $600 and then $300 a week on top of state benefits, revived an old argument. About half the states ended the supplements early in mid-2021. By most studies, employment in those states rose a little faster than elsewhere, far less than the benefit cut would have predicted, and spending in them fell. One side reads that as benefits mattering; the other as benefits mattering a little, at a moment when the real constraint was somewhere else. The size of the effect is argued. Nobody has shown it to be zero or large.
 
-**Claims as a recession signal.** A common rule watches for the four-week average to rise 50,000 or more above its low of the past year. By this site's count, since 1967 that happened before three recessions began (1980, 1990–91 and 2001) and within about three months after the other five began, so it has worked more often as a fast confirmation than as a forecast. It has also happened about ten times with no recession, most recently in June 2023, when the average rose from about 198,000 to about 251,000. In 2024 claims rose again, by about 38,000, the Sahm rule tripped in early August, and still no recession followed. Smoke, no fire. The argument is whether those episodes mean the rules are broken or the economy got lucky; the next downturn will settle it, and not before.
+**Claims as a recession signal.** A common rule watches for the four-week average to rise 50,000 or more above its low of the past year. By this site's count, since 1967 that happened before three recessions began (1980, 1990–91 and 2001) and within about three months after the other five began, so it has worked more often as a fast confirmation than as a forecast. It has also happened about ten times with no recession, most recently in June 2023, when the average rose from about 198,000 to about 251,000. In 2024 claims rose again, by about 38,000, the Sahm rule tripped in early August, and still no recession followed. Smoke, no fire. The argument is whether those episodes mean the rules are broken or the economy got lucky; the next downturn will settle it, and not before. {{check fig:claims_rule_last <= 2023-12-31 "the rule's most recent false alarm is still June 2023"}}
 
 ## See also
 
