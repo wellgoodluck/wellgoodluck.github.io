@@ -5,9 +5,12 @@ history. Live at [economyincontext.org](https://economyincontext.org).
 
 ## How it works
 
-- `index.html` is the whole site: one page, no framework, no tracking. The
-  typeface (Public Sans, open license) is served from `assets/fonts/`, so the
-  page makes no third-party requests.
+- `index.html` is the whole site: one page, no framework, no cookies. The
+  typeface (Public Sans, open license) is served from `assets/fonts/`. The one
+  third-party request is the page-view count to GoatCounter
+  (`assets/count.js`, a copy of GoatCounter's script, ISC license, from
+  arp242/goatcounter commit c031008); it stores no IP addresses and skips
+  framed pages, so chart embeds aren't counted.
 - `chart.html` is the detail page: one indicator at full size
   (`chart.html?id=unemployment`), with optional overlays. Reference lines and
   companion series come from `data/companions.json`; eras (party control, Fed

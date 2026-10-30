@@ -208,9 +208,10 @@ FOOT = """
   <div class="wrap">
     <p>Articles on this site aim to lay out what the figures show, what is settled, what is argued about and by whom. Every number links to its source where one exists, and corrections are noted on the article. The charts are live from the almanac and update as agencies publish.</p>
     <p class="reuse">Free to reuse with credit: Economy in Context (economyincontext.org). The charts and writing here are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Credit the data to its source, named on each chart.</p>
-    <p>This site has no ads, no tracking and no agenda beyond putting the numbers in context. It is paid for by one reader; <a href="how-this-site-is-paid-for.html">here is how</a>, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+    <p>This site has no ads and no agenda beyond putting the numbers in context. It sets no cookies and keeps nothing that identifies you; it does count page views. It is paid for by one reader; <a href="how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
   </div>
 </footer>
+<script data-goatcounter="https://economyincontext.goatcounter.com/count" async src="/assets/count.js"></script>
 </body>
 </html>
 """

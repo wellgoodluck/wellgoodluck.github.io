@@ -242,7 +242,7 @@
     <p><strong>About overlays.</strong> Reference lines and companion series come from the same sources as the main figures. Eras and events are compiled by hand from the primary records linked beside each one, and each overlay states its selection rule. Nothing here is a claim about cause: the overlays show when things happened, and the reader decides what to make of it.</p>
     <p id="attribution"></p>
     <p class="reuse">Free to reuse with credit: Economy in Context (economyincontext.org). The charts and writing here are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Credit the data to its source, named on each chart.</p>
-    <p>This site has no ads, no tracking and no agenda beyond putting the numbers in context. It is paid for by one reader; <a href="articles/how-this-site-is-paid-for.html">here is how</a>, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+    <p>This site has no ads and no agenda beyond putting the numbers in context. It sets no cookies and keeps nothing that identifies you; it does count page views. It is paid for by one reader; <a href="articles/how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
   </div>
 </footer>
 
@@ -978,5 +978,13 @@
     .catch(err => { const main = document.getElementById('main'); main.innerHTML = ''; main.appendChild(el('p', { class: 'status', text: 'The figures could not be loaded (' + err.message + '). Try again in a few minutes.' })); });
 })();
 </script>
+<script>
+/* Count every chart page as /chart.html?id=<indicator>: range and overlays are a view, not a page */
+(window.goatcounter = window.goatcounter || {}).path = function () {
+  var id = new URLSearchParams(location.search).get('id');
+  return '/chart.html' + (id ? '?id=' + encodeURIComponent(id) : '');
+};
+</script>
+<script data-goatcounter="https://economyincontext.goatcounter.com/count" async src="/assets/count.js"></script>
 </body>
 </html>
