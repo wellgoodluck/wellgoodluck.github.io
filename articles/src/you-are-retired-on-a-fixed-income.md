@@ -47,7 +47,7 @@ A retiree who owns outright is insulated from mortgage rates except through the 
 
 ## Where you come out ahead
 
-The benefit is indexed, which almost no private income is. Cash and bonds finally pay a real return, after fifteen years in which they mostly didn't. And the biggest cost in most retirements, housing, is fixed or paid off for the two-thirds of retirees who own. Against that: no raise to negotiate when prices move, a formula that answers inflation a year late, health-care costs that rise faster than the index measuring them, and a bond market that proved in 2022 it could lose a decade of coupons in a year. {{check real_fed_funds.value > 0 "cash and bonds pay a real return"}}
+The benefit is indexed, which almost no private income is. Cash and bonds finally pay a real return, after fifteen years in which they mostly didn't. And the biggest cost in most retirements, housing, is fixed or paid off for the roughly four in five households headed by someone 65 or older that own their home ([Census, 79.1% in the third quarter of 2026](https://www.census.gov/housing/hvs/files/qtr326/Q326press.pdf)). Against that: no raise to negotiate when prices move, a formula that answers inflation a year late, health-care costs that rise faster than the index measuring them, and a bond market that proved in 2022 it could lose a decade of coupons in a year. {{check real_fed_funds.value > 0 "cash and bonds pay a real return"}}
 
 ## What people argue about
 
@@ -70,8 +70,11 @@ The benefit is indexed, which almost no private income is. Cash and bonds finall
 - [BLS, CPI for urban wage earners (CPI-W)](https://www.bls.gov/cpi/), and [Research price index for the elderly (CPI-E)](https://www.bls.gov/cpi/research-series/r-cpi-e-home.htm).
 - [Medicare.gov, Medicare costs](https://www.medicare.gov/basics/costs/medicare-costs), the current Part B premium and the income brackets.
 - [Social Security and Medicare Boards of Trustees, annual report](https://www.ssa.gov/oact/tr/), the trust fund projections.
+- [Census Bureau, Housing Vacancies and Homeownership, third quarter 2026](https://www.census.gov/housing/hvs/files/qtr326/Q326press.pdf) (October 28, 2026), Table 6: homeownership by age of householder.
 - [FRED: Fed funds rate (FEDFUNDS)](https://fred.stlouisfed.org/series/FEDFUNDS), [10-year yield (GS10)](https://fred.stlouisfed.org/series/GS10), [CPI (CPIAUCSL)](https://fred.stlouisfed.org/series/CPIAUCSL).
 
 ## Corrections
 
 October 30, 2026: An earlier version referred to "the 2026 hikes." The Fed has raised its target once in 2026, in September.
+
+October 30, 2026: An earlier version said two-thirds of retirees own their homes. Two-thirds is the homeownership rate for all households; for households headed by someone 65 or older it is about four in five (79.1% in the third quarter of 2026).
