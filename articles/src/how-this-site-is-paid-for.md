@@ -1,14 +1,14 @@
 ---
 title: How This Site Is Paid For
-dek: It costs almost nothing to run, and that is the plan.
+dek: What it costs, who pays, and what it will not do.
 date: 2026-10-28
-updated: 2026-10-30
+updated: 2026-10-31
 kind: page
 ---
 
 ## What it costs
 
-Two domain names, about $30 a year together. Hosting is free: the pages are static files served by GitHub, the figures come from the St. Louis Fed's public data service, and the email forwarding is free. There is no server, no database, and no bill for traffic. The other cost is time, which is considerable and unpaid.
+Two domain names, about $30 a year together, and research tools, about $200 a month: about $2,430 a year in all. Hosting is free: the pages are static files served by GitHub, the figures come from the St. Louis Fed's public data service, and the email forwarding is free. There is no server, no database, and no bill for traffic. The other cost is time, which is considerable and unpaid.
 
 ## Who pays
 
@@ -26,6 +26,6 @@ What the counts show is which pages get read and which sites send readers here. 
 
 ## If you want to chip in
 
-[Donations are taken on Ko‑fi](https://ko-fi.com/economyincontext), one-time or monthly. A donation is optional and changes nothing: no perks, no names, no influence over what gets written. Money covers the domains first; anything beyond that is thanks for the time.
+[Donations are taken on Ko‑fi](https://ko-fi.com/economyincontext), one-time or monthly. A donation is optional and changes nothing: no perks, no names, no influence over what gets written. Money goes to the costs above first; anything beyond that is thanks for the time.
 
 If you would rather help another way, a correction is worth more than a donation. Write to [hello@economyincontext.org](mailto:hello@economyincontext.org).
