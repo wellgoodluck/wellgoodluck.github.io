@@ -2,6 +2,7 @@
 title: Indexed to Inauguration: How to Compare Presidents Honestly
 dek: The comparison people most want is the one the almanac deliberately doesn't offer as a button. Here it is as an article, with the method stated, so you can see how much the method decides.
 date: 2026-10-28
+updated: 2026-10-31
 ---
 
 ## The question
@@ -16,7 +17,7 @@ The figures below are computed from the almanac's own data: payroll jobs, the un
 
 **What to count.** Jobs added in total favors eight-year terms over four; jobs per month fixes that. The unemployment rate is a level, so what matters is where it started as much as where it ended: Reagan took office with it at 7.5%, Obama at 7.8%, and both left it lower; Trump took office with it at 4.7% and had little room to improve it. Inflation and growth are rates per year and compare cleanly, with the caveat that [rate vs. level](rate-vs-level.html) explains: a president can bring inflation down and leave prices up.
 
-**What to do with a shock.** The pandemic erased 22 million jobs in March and April of 2020 and the rebound added 12 million back by December. Counted from inauguration, Trump's first term shows jobs falling by 58,000 a month; counted through February 2020 it shows them rising by 180,000 a month. Counted from inauguration, Biden's term shows 321,000 a month, the fastest on record; counted from one year in, after the rebound, 179,000. Both pairs of numbers are true. The article you read decides which one you see.
+**What to do with a shock.** The pandemic erased 22 million jobs in March and April of 2020 and the rebound added 12 million back by December. Counted from inauguration, Trump's first term shows jobs falling by 58,000 a month; counted through February 2020 it shows them rising by 180,000 a month. Counted from inauguration, Biden's term shows 321,000 a month, the most jobs per month of any term since the payroll series began in 1939; counted from one year in, after the rebound, 179,000. Both pairs of numbers are true. The article you read decides which one you see.
 
 **What the president controls.** Interest rates, which move more than any law, are set by the Fed. Taxes and spending need Congress, and the almanac's event markers show how few major laws pass in a term. Oil prices are set abroad. The business cycle is mostly inherited: a president who takes office at the bottom (Reagan, Obama) gets the recovery; one who takes office at the top (G.W. Bush, Trump in 2017 and again in 2025) gets the next downturn or the slowdown. The lane on the chart shows who was in office. It does not show who was driving.
 
@@ -30,7 +31,7 @@ Jobs per month and the unemployment rate, first from inauguration to the end of 
 
 Inflation and growth, per year, on the same two clocks:
 
-<table><thead><tr><th>President</th><th>Inflation per year, from inauguration</th><th>Same, one year in</th><th>Real GDP growth per year, from inauguration</th><th>Same, one year in</th></tr></thead><tbody><tr><td>Reagan</td><td>4.2%</td><td>3.8%</td><td>3.4%</td><td>4.1%</td></tr><tr><td>G.H.W. Bush</td><td>4.2%</td><td>3.5%</td><td>2.0%</td><td>2.1%</td></tr><tr><td>Clinton</td><td>2.6%</td><td>2.5%</td><td>3.7%</td><td>3.5%</td></tr><tr><td>G.W. Bush</td><td>2.4%</td><td>2.6%</td><td>1.7%</td><td>1.8%</td></tr><tr><td>Obama</td><td>1.8%</td><td>1.7%</td><td>2.2%</td><td>2.4%</td></tr><tr><td>Trump, first term</td><td>1.9%</td><td>3.2%</td><td>2.1%</td><td>2.3%</td></tr><tr><td>Biden</td><td>5.0%</td><td>3.7%</td><td>2.9%</td><td>2.6%</td></tr><tr><td>Trump, second term (to Sept. 2026)</td><td>3.2%</td><td>4.5%</td><td>2.6%</td><td>2.2%</td></tr></tbody></table>
+<table><thead><tr><th>President</th><th>Inflation per year, from inauguration</th><th>Same, one year in</th><th>Real GDP growth per year, from inauguration</th><th>Same, one year in</th></tr></thead><tbody><tr><td>Reagan</td><td>4.2%</td><td>3.8%</td><td>3.4%</td><td>4.1%</td></tr><tr><td>G.H.W. Bush</td><td>4.2%</td><td>3.5%</td><td>2.0%</td><td>2.1%</td></tr><tr><td>Clinton</td><td>2.6%</td><td>2.5%</td><td>3.7%</td><td>3.5%</td></tr><tr><td>G.W. Bush</td><td>2.4%</td><td>2.6%</td><td>1.7%</td><td>1.8%</td></tr><tr><td>Obama</td><td>1.8%</td><td>1.7%</td><td>2.2%</td><td>2.4%</td></tr><tr><td>Trump, first term</td><td>1.9%</td><td>3.2%</td><td>2.1%</td><td>2.3%</td></tr><tr><td>Biden</td><td>5.0%</td><td>3.7%</td><td>2.9%</td><td>2.6%</td></tr><tr><td>Trump, second term (to Sept. 2026)</td><td>3.2%</td><td>4.5%</td><td>2.7%</td><td>2.8%</td></tr></tbody></table>
 
 ## What the tables show
 
@@ -55,3 +56,7 @@ Whether the lag should be a year, two, or none; whether the 2020 shutdown belong
 
 - All figures computed from the almanac's data files: [FRED PAYEMS](https://fred.stlouisfed.org/series/PAYEMS) (monthly change, summed over each window), [UNRATE](https://fred.stlouisfed.org/series/UNRATE) (first month of each window), [CPIAUCSL](https://fred.stlouisfed.org/series/CPIAUCSL) (annualized change in the index between the first months), [A191RL1Q225SBEA](https://fred.stlouisfed.org/series/A191RL1Q225SBEA) (quarterly annualized rates compounded over the quarters in each window). Inauguration windows run from the January of inauguration to the January the term ended; lagged windows shift both ends by twelve months, and the current term's lagged window ends at the latest data.
 - [NBER, business cycle dates](https://www.nber.org/research/business-cycle-dating), the recessions marked on the charts.
+
+## Corrections
+
+October 31, 2026: An earlier version said Biden's 321,000 jobs a month was "the fastest on record." It was the most jobs per month of any term since the payroll series began in 1939, but as a rate of growth, 2.6% a year, six terms grew faster, among them Lyndon Johnson's 1965–69 term (3.9% a year) and Jimmy Carter's (3.1%). The current term's growth figures in the second table now include the third quarter of 2026, published October 29.
