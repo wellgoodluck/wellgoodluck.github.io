@@ -519,6 +519,15 @@ COMPANIONS = [
         "why": "Prices, the other half of a paycheck. When this line is above pay growth, an hour of work buys less than it did a year before.",
     },
     {
+        "id": "premiums",
+        "label": "Health insurance premiums (PPI), change from a year ago",
+        "for": ["cpi", "core_cpi", "pay"],
+        "series": "PCU524114524114",
+        "params": {"units": "pc1", "observation_start": "2002-12-01"},
+        "freq": "m",
+        "why": "What health insurers charge for the same policies, from the Producer Price Index for health insurance carriers: the whole premium, the employer's share included; plans employers pay for themselves are not covered. Not seasonally adjusted, so most of each year's change shows up in January. It is not the CPI's health insurance index, which tracks what insurers keep after paying claims (adjusted for medical prices) and can fall while premiums rise. The index starts in December 2002, so the change from a year earlier starts in December 2003.",
+    },
+    {
         "id": "receipts",
         "label": "Federal receipts, share of GDP",
         "for": ["deficit"],

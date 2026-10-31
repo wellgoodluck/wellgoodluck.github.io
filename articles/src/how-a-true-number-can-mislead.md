@@ -6,7 +6,7 @@ kind: concept
 label: True numbers that mislead
 hook: the questions to ask of any number in an argument
 order: 9
-featured: 2026-11-04
+featured: 2026-10-31
 ---
 
 ## In one sentence
