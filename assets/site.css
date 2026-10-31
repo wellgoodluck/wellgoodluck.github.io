@@ -86,6 +86,8 @@ a:hover { text-decoration-color: var(--ink); }
 .jump { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 16px 0 0; font-size: 15px; }
 .jump a { text-decoration: none; border-bottom: 1px solid var(--hairline); padding-bottom: 1px; }
 .jump a:hover { border-color: var(--ink); }
+/* the feed, under the jump links on the articles index */
+.article > .feed-link { max-width: var(--measure); margin: 10px 0 0; font-size: 14px; color: var(--ink-2); }
 /* Featured line on the articles index (same look as the almanac's; set by a featured: date in front matter) */
 .featured { margin: 20px 0 0; padding: 10px 0; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); font-size: 15px; line-height: 1.45; text-wrap: pretty; }
 .article > .featured { max-width: calc(var(--measure) * 17 / 15); }   /* the list's width: 42em at the body's 17px */
@@ -129,7 +131,7 @@ h1, h2, h3, h4, .dek { text-wrap: balance; }
 @media print {
   :root { --page: #fff; --surface: #fff; }
   body { background: #fff; }
-  .crumb, .jump, .featured { display: none !important; }
+  .crumb, .jump, .featured, .feed-link { display: none !important; }
   .article figure.chart-embed, .article .table-scroll, .map { break-inside: avoid; }
   .article figure.chart-embed { width: 100%; }
   footer.about { padding-bottom: 0; }

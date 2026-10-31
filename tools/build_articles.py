@@ -38,6 +38,10 @@ site's own detail page:
 
 Anything under `## Sources`, up to the next heading, is rendered as a sources list.
 
+The build also writes one page per chart (chart/<id>/index.html, from the copy of chart.html already in
+the output folder; see tools/chart_pages.py), the articles feed (articles/feed.xml, Atom), and the sitemap.
+Links in articles to chart.html?id=<id> are pointed at chart/<id>/; embeds stay on chart.html.
+
 Live figures in the text ({{v …}}, {{fig …}}) and invisible review markers ({{check …}},
 {{due …}}) are filled in from data/ by tools/figures.py before the Markdown is rendered; see
 that file. The build prints a one-line summary plus any failing check, passed due date or
@@ -85,14 +89,14 @@ def chart_directive(line):
         if k in attrs:
             q.append(f"{k}={attrs[k]}")
     query = "&".join(q)
-    full = query.replace("embed=1&", "").replace("&embed=1", "")
+    view = "&".join(x for x in q if not x.startswith(("id=", "embed=")))
     cap = attrs.get("caption", "")
     height = attrs.get("height", "600")
     return (f'<figure class="chart-embed">'
             f'<iframe src="../chart.html?{html.escape(query, quote=True)}" title="Chart: {html.escape(attrs["id"])}" '
             f'loading="lazy" height="{html.escape(height)}"></iframe>'
             f'<figcaption>{inline(cap) + " " if cap else ""}'
-            f'<a href="../chart.html?{html.escape(full, quote=True)}">Full chart and context →</a></figcaption></figure>')
+            f'<a href="../chart/{html.escape(attrs["id"], quote=True)}/{"?" + html.escape(view, quote=True) if view else ""}">Full chart and context →</a></figcaption></figure>')
 
 
 def md_to_html(text):
@@ -211,6 +215,7 @@ HEAD = """<!doctype html>
 <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
 <link rel="icon" href="/assets/icon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="alternate" type="application/atom+xml" title="Economy in Context: new articles" href="/articles/feed.xml">
 <meta property="og:image" content="https://economyincontext.org/assets/og-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -253,7 +258,7 @@ def render_article(a):
     page += f'<p class="dateline">{dates}</p>\n'
     page += md_to_html(a["body"])
     page += "\n</article>\n</main>\n" + FOOT
-    return page
+    return clean_chart_links(page, CHART_IDS) if clean_chart_links else page
 
 
 # ---------------------------------------------------------------------------
@@ -387,6 +392,7 @@ def render_index(articles):
             ("#the-numbers", "The numbers", numbers), ("#the-ideas", "The ideas", ideas)]
     page += ('<nav class="jump" aria-label="On this page">'
              + "".join(f'<a href="{h}">{t}</a>' for h, t, items in jump if items) + "</nav>\n")
+    page += '<p class="feed-link">New and updated articles by feed reader: <a href="feed.xml">the Atom feed</a>.</p>\n'
 
     if timely:
         page += '<h2 id="latest">Latest</h2>\n' + listing(timely[:LATEST_SHOWN], dated=True)
@@ -461,10 +467,30 @@ def load_figures():
         return None, None
 
 
+CHART_IDS = []
+clean_chart_links = None
+
+
+def load_chart_pages():
+    """tools/chart_pages.py, or None (then no chart pages and article links stay on chart.html)."""
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import chart_pages
+        return chart_pages
+    except Exception as e:                                  # noqa: BLE001
+        print(f"chart pages: not available ({e})")
+        return None
+
+
 def main():
+    global CHART_IDS, clean_chart_links
     out_root = sys.argv[1] if len(sys.argv) > 1 else "public"
     out_dir = os.path.join(out_root, "articles")
     os.makedirs(out_dir, exist_ok=True)
+    cp = load_chart_pages()
+    if cp:                                                  # before the articles, which link to these pages
+        CHART_IDS = cp.write_chart_pages(out_root)
+        clean_chart_links = cp.clean_chart_links if CHART_IDS else None
     figures, data = load_figures()
     report = figures.new_report() if figures else None
     articles = []
@@ -491,6 +517,7 @@ def main():
         f.write(render_index(articles))
     print(f"built articles/index.html ({len(articles)} articles)")
     write_explainers(out_root, articles)
+    write_feed(out_dir, articles)
     write_sitemap(out_root, articles)
     if report is not None:
         print(figures.summarize(report))
@@ -501,20 +528,62 @@ def main():
             print(f"figures: could not write the report ({e})")
 
 
+FEED_KINDS = {"concept": "Plain words", "path": "Household paths"}
+
+
+def write_feed(out_dir, articles):
+    """articles/feed.xml: an Atom feed of the listed articles, newest first by date or update. Dates come from
+    the front matter only (date, updated), so a live figure changing never makes an entry look new; a
+    correction or update that sets updated: does."""
+    from xml.sax.saxutils import escape
+    listed = [a for a in articles if a.get("kind") != "page"]
+    stamp = lambda d: f"{d}T00:00:00Z"
+    when = lambda a: max(a["date"], a.get("updated") or a["date"])
+    listed.sort(key=lambda a: (when(a), a["date"]), reverse=True)
+    x = lambda s: escape(s, {'"': "&quot;"})
+    out = ['<?xml version="1.0" encoding="utf-8"?>', '<feed xmlns="http://www.w3.org/2005/Atom">',
+           "  <title>Economy in Context: articles</title>",
+           "  <subtitle>What the figures on the U.S. economy show, what is settled, and what is argued about.</subtitle>",
+           f'  <link rel="self" type="application/atom+xml" href="{SITE}/articles/feed.xml"/>',
+           f'  <link rel="alternate" type="text/html" href="{SITE}/articles/"/>',
+           f"  <id>{SITE}/articles/</id>",
+           f"  <updated>{stamp(when(listed[0])) if listed else stamp(date.today().isoformat())}</updated>",
+           "  <author><name>Economy in Context</name></author>",
+           f"  <icon>{SITE}/assets/icon-192.png</icon>",
+           "  <rights>CC BY 4.0: free to reuse with credit to Economy in Context (economyincontext.org)</rights>"]
+    for a in listed:
+        url = f"{SITE}/articles/{a['slug']}.html"
+        out += ["  <entry>", f"    <title>{x(a['title'])}</title>", f'    <link rel="alternate" type="text/html" href="{url}"/>',
+                f"    <id>{url}</id>", f"    <published>{stamp(a['date'])}</published>", f"    <updated>{stamp(when(a))}</updated>",
+                f'    <category term="{x(FEED_KINDS.get(a.get("kind"), "Latest"))}"/>']
+        if a.get("dek"):
+            out.append(f"    <summary>{x(a['dek'])}</summary>")
+        out.append("  </entry>")
+    out.append("</feed>")
+    with open(os.path.join(out_dir, "feed.xml"), "w", encoding="utf-8") as f:
+        f.write("\n".join(out) + "\n")
+    print(f"built articles/feed.xml ({len(listed)} entries)")
+
+
 def write_sitemap(out_root, articles):
-    """sitemap.xml and robots.txt at the site root: the almanac, the chart index, one chart page per
-    indicator (read from data/series.json when present), the articles index and every article."""
+    """sitemap.xml and robots.txt at the site root: the almanac, the chart index, one page per chart
+    (those chart_pages wrote this build), the articles index and every article."""
     import json
     from datetime import datetime, timezone
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    urls = [(f"{SITE}/", today, "daily", "1.0"), (f"{SITE}/chart.html", today, "weekly", "0.6")]
-    series_path = os.path.join("data", "series.json")
-    if os.path.exists(series_path):
-        try:
-            for t in json.load(open(series_path, encoding="utf-8")).get("tiles", []):
-                urls.append((f"{SITE}/chart.html?id={t['id']}", today, "daily", "0.8"))
-        except Exception as e:                                  # a bad data file must not break the build
-            print(f"sitemap: skipped chart pages ({e})")
+    urls = [(f"{SITE}/", today, "daily", "1.0")]
+    if CHART_IDS:                                               # the pages written this build
+        urls.append((f"{SITE}/chart/", today, "weekly", "0.6"))
+        urls += [(f"{SITE}/chart/{tid}/", today, "daily", "0.8") for tid in CHART_IDS]
+    else:                                                       # no chart pages: the old addresses, from the data
+        urls.append((f"{SITE}/chart.html", today, "weekly", "0.6"))
+        series_path = os.path.join("data", "series.json")
+        if os.path.exists(series_path):
+            try:
+                for t in json.load(open(series_path, encoding="utf-8")).get("tiles", []):
+                    urls.append((f"{SITE}/chart.html?id={t['id']}", today, "daily", "0.8"))
+            except Exception as e:                              # a bad data file must not break the build
+                print(f"sitemap: skipped chart pages ({e})")
     urls.append((f"{SITE}/articles/", today, "weekly", "0.8"))
     for a in articles:
         urls.append((f"{SITE}/articles/{a['slug']}.html", a.get("updated") or a["date"], "monthly", "0.7"))

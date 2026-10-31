@@ -1,0 +1,225 @@
+#!/usr/bin/env python3
+"""
+One page per chart: <out>/chart/<id>/index.html for every tile in data/series.json, plus the charts
+index at <out>/chart/index.html. Standard library only. Called by tools/build_articles.py, which runs
+in both workflows after chart.html has been copied into the output folder.
+
+Each page is chart.html with its head filled in: a title carrying the latest reading, the meta and
+preview descriptions, and its own canonical address. Link previews (iMessage, Slack, Bluesky, Reddit)
+and search engines read those without running the page's script. chart.html's script finds the id in
+the address and draws the chart as before.
+
+The output copy of chart.html also gets the list of ids that have a page, which its first script uses
+to send an old chart.html?id=<id> link to /chart/<id>/ (embeds, with &embed=1, stay on chart.html).
+
+fmt_value, fmt_period and context_sentence are ports of fmtValue, fmtPeriod and contextSentence in
+chart.html and index.html. The test harness checks they print what the pages print, on every tile.
+"""
+
+import html
+import json
+import os
+import re
+from datetime import date
+from decimal import Decimal, ROUND_HALF_UP
+
+SITE = "https://economyincontext.org"
+MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+MONTHS_LONG = ["January", "February", "March", "April", "May", "June", "July", "August",
+               "September", "October", "November", "December"]
+IDS_PLACEHOLDER = "null /*CHART_IDS*/"
+
+
+# ---------------------------------------------------------------------------
+# Ports of the pages' formatting (keep in step with chart.html)
+# ---------------------------------------------------------------------------
+def _fixed(x, decimals):
+    """x to a fixed number of decimals with thousands commas, rounding as the browser does (half away from zero,
+    on the shortest decimal form of the number)."""
+    q = Decimal(repr(abs(x))).quantize(Decimal(1).scaleb(-decimals), rounding=ROUND_HALF_UP)
+    return f"{q:,.{decimals}f}"
+
+
+def fmt_value(v, d, decimals=None, nosign=False):
+    decimals = d.get("decimals", 0) if decimals is None else decimals
+    x = v / (d.get("scale") or 1)
+    sign = "+" if d.get("signed") and x > 0 and not nosign else ""
+    return ("−" if x < 0 else sign) + d.get("prefix", "") + _fixed(x, decimals) + d.get("suffix", "")
+
+
+def _d(s):
+    return date.fromisoformat(s[:10])
+
+
+def fmt_period(s, freq, long=False):
+    x = _d(s)
+    if freq == "a":
+        return f"FY {x.year}"
+    if freq == "q":
+        return f"Q{(x.month - 1) // 3 + 1} {x.year}"
+    names = MONTHS_LONG if long else MONTHS
+    if freq == "m":
+        return f"{names[x.month - 1]} {x.year}"
+    return f"{names[x.month - 1]} {x.day}, {x.year}"
+
+
+def _years_between(a, b):
+    return (_d(b) - _d(a)).days / 365.25
+
+
+def _period_noun(freq):
+    return {"a": "years", "q": "quarters", "w": "weeks"}.get(freq, "months")
+
+
+def _adjusted(t):
+    return bool(t["display"].get("adjust") and t.get("context_real"))
+
+
+def context_sentence(t):
+    c = t["context_real"] if _adjusted(t) else t["context"]
+    noun, since = _period_noun(t["freq"]), _d(c["since"]).year
+    pct, deficit = c["percentile_below"], t["display"].get("sense") == "deficit"
+    hi_word = "A smaller deficit than " if deficit else "Higher than "
+    lo_word = "A larger deficit than " if deficit else "Lower than "
+    share = lambda v: min(99, max(1, int(Decimal(repr(v)).quantize(Decimal(1), rounding=ROUND_HALF_UP))))
+    is_record = c.get("highest_since") is None if pct >= 50 else c.get("lowest_since") is None
+    parts = []
+    if not is_record:
+        parts.append(f"{hi_word}{share(pct)}% of {noun} since {since}." if pct >= 50
+                     else f"{lo_word}{share(100 - pct)}% of {noun} since {since}.")
+    cur, prev = c["current"]["value"], c["previous"]["value"]
+    since_ok = not _adjusted(t)
+    if cur > prev:
+        if c.get("highest_since") is None:
+            parts.append("The smallest deficit on record." if deficit else "The highest on record.")
+        elif since_ok and _years_between(c["highest_since"], c["current"]["date"]) >= 1:
+            parts.append(("Smallest deficit since " if deficit else "Highest since ") + fmt_period(c["highest_since"], t["freq"]) + ".")
+    elif cur < prev:
+        if c.get("lowest_since") is None:
+            parts.append("The largest deficit on record." if deficit else "The lowest on record.")
+        elif since_ok and _years_between(c["lowest_since"], c["current"]["date"]) >= 1:
+            parts.append(("Largest deficit since " if deficit else "Lowest since ") + fmt_period(c["lowest_since"], t["freq"]) + ".")
+    if _adjusted(t) and parts:
+        parts[0] = "Adjusted for inflation, " + parts[0][0].lower() + parts[0][1:]
+    return " ".join(parts)
+
+
+def headline(t):
+    """(value, period) as the chart page's headline shows them."""
+    d, c = t["display"], t["context"]
+    if t.get("headline"):
+        return fmt_value(t["headline"]["value"], d), fmt_period(t["headline"]["date"], "d", True)
+    return fmt_value(c["current"]["value"], d), fmt_period(c["current"]["date"], t["freq"], True)
+
+
+def page_text(t):
+    """The text a chart's page carries before its script runs."""
+    value, when = headline(t)
+    sentence = context_sentence(t)
+    line = f"{t['title']}: {value} ({when})"
+    return {
+        "title": line + " — Economy in Context",
+        "og_title": line,
+        "description": f"{t['title']}: {t['subtitle']}. {sentence} Full history with optional overlays.".replace("  ", " "),
+        "og_description": (f"{t['subtitle']}. {sentence}").strip(),
+        "status": (line + ". " + sentence).strip(),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Writing the pages
+# ---------------------------------------------------------------------------
+def chart_url(tid, query=""):
+    """The address of a chart's page, relative to the site root, with an optional view query."""
+    return f"chart/{tid}/" + (f"?{query}" if query else "")
+
+
+def _sub(page, old, new, what, warn):
+    if page.count(old) != 1:
+        warn.append(f"{what}: expected one match in chart.html, found {page.count(old)}")
+        return page
+    return page.replace(old, new)
+
+
+def _with_ids(page, ids):
+    return page.replace(IDS_PLACEHOLDER, json.dumps(ids), 1)
+
+
+def _set_head(page, url, title, og_title, desc, og_desc, warn):
+    e = lambda s: html.escape(s, quote=True)
+    page = _sub(page, "<title>Economy in Context</title>", f"<title>{html.escape(title)}</title>", "title", warn)
+    page = re.sub(r'<link rel="canonical" href="[^"]*">', f'<link rel="canonical" href="{e(url)}">', page, count=1)
+    page = re.sub(r'<meta property="og:url" content="[^"]*">', f'<meta property="og:url" content="{e(url)}">', page, count=1)
+    page = re.sub(r'<meta property="og:title" content="[^"]*">', f'<meta property="og:title" content="{e(og_title)}">', page, count=1)
+    if desc:
+        page = re.sub(r'<meta name="description" content="[^"]*">', f'<meta name="description" content="{e(desc)}">', page, count=1)
+    if og_desc:
+        page = re.sub(r'<meta property="og:description" content="[^"]*">', f'<meta property="og:description" content="{e(og_desc)}">', page, count=1)
+    return page
+
+
+def write_chart_pages(out_root, series_path=os.path.join("data", "series.json")):
+    """Write <out>/chart/<id>/index.html per tile and <out>/chart/index.html. Returns the ids written
+    (empty when chart.html or the data can't be read; the build goes on either way)."""
+    src = os.path.join(out_root, "chart.html")
+    if not os.path.exists(src):
+        print(f"chart pages: no {src}; skipped")
+        return []
+    try:
+        tiles = json.load(open(series_path, encoding="utf-8")).get("tiles", [])
+    except Exception as e:                                   # a bad data file must not break the build
+        print(f"chart pages: skipped ({e})")
+        return []
+    base = open(src, encoding="utf-8").read()
+    ids = [t["id"] for t in tiles if re.fullmatch(r"[A-Za-z0-9_-]+", t.get("id", ""))]
+    warn = []
+    if IDS_PLACEHOLDER not in base:
+        warn.append("chart.html has no id-list placeholder; old chart.html links won't move")
+    base_ids = _with_ids(base, ids)
+
+    for t in tiles:
+        if t["id"] not in ids:
+            continue
+        url = f"{SITE}/{chart_url(t['id'])}"
+        try:
+            txt = page_text(t)
+        except Exception as e:                               # missing context: a plain title, the script does the rest
+            warn.append(f"{t['id']}: no reading for the title ({e})")
+            txt = {"title": f"{t['title']} — Economy in Context", "og_title": t["title"], "description": "",
+                   "og_description": "", "status": "Loading the figures…"}
+        page = _set_head(base_ids, url, txt["title"], txt["og_title"], txt["description"], txt["og_description"], warn)
+        page = _sub(page, '<h1 id="title">Loading…</h1>', f'<h1 id="title">{html.escape(t["title"])}</h1>', "h1", warn)
+        page = _sub(page, '<p class="sub" id="subtitle"></p>', f'<p class="sub" id="subtitle">{html.escape(t["subtitle"])}</p>', "subtitle", warn)
+        page = _sub(page, '<p class="status" id="status">Loading the figures…</p>',
+                    f'<p class="status" id="status">{html.escape(txt["status"])}</p>', "status", warn)
+        os.makedirs(os.path.join(out_root, "chart", t["id"]), exist_ok=True)
+        with open(os.path.join(out_root, "chart", t["id"], "index.html"), "w", encoding="utf-8") as f:
+            f.write(page)
+
+    index = _set_head(base_ids, f"{SITE}/chart/", "Charts — Economy in Context", "Charts — Economy in Context", "", "", warn)
+    with open(os.path.join(out_root, "chart", "index.html"), "w", encoding="utf-8") as f:
+        f.write(index)
+    with open(src, "w", encoding="utf-8") as f:              # the redirect list for old links
+        f.write(base_ids)
+    for w in sorted(set(warn)):
+        print(f"chart pages: WARNING {w}")
+    print(f"built chart/ ({len(ids)} chart pages and the index)")
+    return ids
+
+
+def clean_chart_links(page, ids, prefix="../"):
+    """In built article HTML, point links to chart.html?id=<id>… at /chart/<id>/…; iframes (embeds) stay."""
+    known = set(ids)
+
+    def repl(m):
+        tid, rest = m.group(1), m.group(2)
+        if tid not in known:
+            return m.group(0)
+        return f'href="{prefix}{chart_url(tid, rest[5:] if rest.startswith("&amp;") else "")}"'
+    return re.sub(r'href="' + re.escape(prefix) + r'chart\.html\?id=([A-Za-z0-9_-]+)((?:&amp;[^"]*)?)"', repl, page)
+
+
+if __name__ == "__main__":                                   # print each page's text, for review
+    for t in json.load(open(os.path.join("data", "series.json"), encoding="utf-8"))["tiles"]:
+        txt = page_text(t)
+        print(f"{t['id']}\n  title: {txt['title']}\n  preview: {txt['og_title']}\n           {txt['og_description']}\n")

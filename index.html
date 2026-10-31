@@ -15,6 +15,7 @@
 <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
 <link rel="icon" href="/assets/icon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="alternate" type="application/atom+xml" title="Economy in Context: new articles" href="/articles/feed.xml">
 <meta property="og:image" content="https://economyincontext.org/assets/og-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -677,7 +678,7 @@
     }
 
     const head = el('div', { class: 'chart-head' });
-    head.appendChild(el('span', { class: 'range-title' }, [el('a', { class: 'full', href: 'chart.html?id=' + t.id, text: 'Full chart and context →' })]));
+    head.appendChild(el('span', { class: 'range-title' }, [el('a', { class: 'full', href: 'chart/' + t.id + '/', text: 'Full chart and context →' })]));
     const ctl = el('div', { class: 'ranges', role: 'group', 'aria-label': 'Chart range' });
     RANGES.forEach(r => {
       const available = !r.years || yearsBetween(obs[0][0], obs[obs.length - 1][0]) >= r.years - 0.5;
@@ -714,7 +715,7 @@
     const top = el('div', { class: 'tile-top' }), mid = el('div', { class: 'tile-chart' }), foot = el('div', { class: 'tile-foot' });
     tile.appendChild(top); tile.appendChild(mid); tile.appendChild(foot);
     // the title links to the chart page too; the button below is the keyboard path, so the title takes no tab stop
-    top.appendChild(el('h3', {}, [el('a', { class: 'tile-link', href: 'chart.html?id=' + t.id, tabindex: '-1', text: t.title })]));
+    top.appendChild(el('h3', {}, [el('a', { class: 'tile-link', href: 'chart/' + t.id + '/', tabindex: '-1', text: t.title })]));
     top.appendChild(el('p', { class: 'sub', text: t.subtitle }));
 
     const hv = t.headline ? t.headline.value : c.current.value;

@@ -2,6 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>
+/* Each chart has its own page, /chart/<id>/ (written by tools/build_articles.py from this file); the charts
+   index is /chart/. An old chart.html link lands there, view and all. Embeds (&embed=1) stay here. The builder
+   fills in the ids that have a page; with no list (this file opened on its own) nothing moves. */
+(function () {
+  var ids = null /*CHART_IDS*/;
+  if (!ids || !/\/chart\.html$/.test(location.pathname)) return;
+  var q = new URLSearchParams(location.search), id = q.get('id');
+  if (q.get('embed') === '1') return;
+  if (id && ids.indexOf(id) < 0) return;
+  q.delete('id');
+  var rest = q.toString().replace(/%2C/g, ',');
+  location.replace('/chart/' + (id ? id + '/' : '') + (rest ? '?' + rest : '') + location.hash);
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Economy in Context</title>
 <meta name="description" content="One U.S. economic indicator at full size, with its full history and optional overlays: reference lines, companion series, who held power, and major events.">
@@ -16,15 +31,17 @@
 <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
 <link rel="icon" href="/assets/icon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="alternate" type="application/atom+xml" title="Economy in Context: new articles" href="/articles/feed.xml">
 <meta property="og:image" content="https://economyincontext.org/assets/og-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Economy in Context: the main numbers on the U.S. economy, each shown against its own history.">
 <meta name="twitter:card" content="summary_large_image">
 <style>
-  @font-face { font-family: "Public Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("assets/fonts/PublicSans-Regular.woff2") format("woff2"); }
-  @font-face { font-family: "Public Sans"; font-weight: 600; font-style: normal; font-display: swap; src: url("assets/fonts/PublicSans-SemiBold.woff2") format("woff2"); }
-  @font-face { font-family: "Public Sans"; font-weight: 700; font-style: normal; font-display: swap; src: url("assets/fonts/PublicSans-Bold.woff2") format("woff2"); }
+  /* root-relative paths throughout: this file is also served as /chart/<id>/ */
+  @font-face { font-family: "Public Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("/assets/fonts/PublicSans-Regular.woff2") format("woff2"); }
+  @font-face { font-family: "Public Sans"; font-weight: 600; font-style: normal; font-display: swap; src: url("/assets/fonts/PublicSans-SemiBold.woff2") format("woff2"); }
+  @font-face { font-family: "Public Sans"; font-weight: 700; font-style: normal; font-display: swap; src: url("/assets/fonts/PublicSans-Bold.woff2") format("woff2"); }
 
   :root {
     color-scheme: light;
@@ -37,7 +54,7 @@
     --era-a: #d8d6cd; --era-b: #c3c1b7; --war: #6e6c66; --qe-up: #8fcf9f; --qe-down: #e5b47e;
   }
   @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not(.export-light) {   /* "Download image" adds the class for a moment so the image is always in the light colors */
       color-scheme: dark;
       --page: #121211; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
       --hairline: #2c2c2a; --grid: #262624; --series: #2bb3a8; --focus: #2bb3a8; --recession: rgba(240, 239, 236, 0.08);
@@ -210,7 +227,7 @@
   footer p { max-width: 48em; margin: 0 0 8px; }
   p, li, figcaption, .why { text-wrap: pretty; }
   @media print {
-    :root { --page: #fff; --surface: #fff; }
+    :root, :root:not(.export-light) { --page: #fff; --surface: #fff; }
     body { background: #fff; }
     .panel, .actions, details.table, .ranges, .custom, .to-panel, .to-chart, .crumb { display: none !important; }
     .layout { display: block; padding: 12px 0; }
@@ -226,7 +243,7 @@
 
 <header class="masthead">
   <div class="wrap">
-    <p class="crumb"><a href="./">← Economy in Context</a></p>
+    <p class="crumb"><a href="/">← Economy in Context</a></p>
     <h1 id="title">Loading…</h1>
     <p class="sub" id="subtitle"></p>
     <p class="explainer" id="explainer" hidden></p>
@@ -242,7 +259,7 @@
     <p><strong>About overlays.</strong> Reference lines and companion series come from the same sources as the main figures. Eras and events are compiled by hand from the primary records linked beside each one, and each overlay states its selection rule. Nothing here is a claim about cause: the overlays show when things happened, and the reader decides what to make of it.</p>
     <p id="attribution"></p>
     <p class="reuse">Free to reuse with credit: Economy in Context (economyincontext.org). The charts and writing here are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Credit the data to its source, named on each chart.</p>
-    <p>This site has no ads and no agenda beyond putting the numbers in context. It sets no cookies and keeps nothing that identifies you; it does count page views. It is paid for by one reader; <a href="articles/how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+    <p>This site has no ads and no agenda beyond putting the numbers in context. It sets no cookies and keeps nothing that identifies you; it does count page views. It is paid for by one reader; <a href="/articles/how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
   </div>
 </footer>
 
@@ -360,10 +377,15 @@
   }
 
   // ---- state (mirrored in the URL) ----------------------------------------
-  const state = { id: null, range: DEFAULT_RANGE, from: null, to: null, on: new Set(), embed: false };
+  const state = { id: null, range: DEFAULT_RANGE, from: null, to: null, on: new Set(), embed: false, ownPage: false };
+  // a chart's page is /chart/<id>/; chart.html?id=<id> (embeds, and this file opened on its own) also works
+  const SITE = 'https://economyincontext.org';
+  function chartPath(id, query) { const s = query ? String(query).replace(/%2C/g, ',') : ''; return '/chart/' + encodeURIComponent(id) + '/' + (s ? '?' + s : ''); }
   function readUrl() {
     const q = new URLSearchParams(location.search);
-    state.id = q.get('id');
+    const own = location.pathname.match(/\/chart\/([A-Za-z0-9_-]+)\/(?:index\.html)?$/);
+    state.ownPage = !!own;
+    state.id = own ? decodeURIComponent(own[1]) : q.get('id');
     state.embed = q.get('embed') === '1';
     if (q.get('range') && RANGES.some(r => r.key === q.get('range'))) state.range = q.get('range');
     const ym = /^\d{4}-(0[1-9]|1[0-2])$/;
@@ -373,13 +395,16 @@
   }
   function writeUrl() {
     const q = new URLSearchParams();
-    q.set('id', state.id);
+    if (!state.ownPage) q.set('id', state.id);
     if (state.range && state.range !== DEFAULT_RANGE) q.set('range', state.range);
     if (!state.range) { if (state.from) q.set('from', state.from); if (state.to) q.set('to', state.to); }
     if (state.on.size) q.set('ov', Array.from(state.on).join(','));
     if (state.embed) q.set('embed', '1');
-    history.replaceState(null, '', location.pathname + '?' + q.toString());
+    const s = q.toString();
+    history.replaceState(null, '', location.pathname + (s ? '?' + s : ''));
   }
+  // the view as a query string without the id: range, custom months, overlays
+  function viewQuery() { const q = new URLSearchParams(location.search); q.delete('id'); q.delete('embed'); return q.toString(); }
 
   // ---- derived overlays ---------------------------------------------------
   function unifiedSegments(ovById) {
@@ -754,7 +779,146 @@
     head.id = 'chart-top';
     frag.appendChild(head); frag.appendChild(box); frag.appendChild(toPanel); frag.appendChild(legend); frag.appendChild(framing); frag.appendChild(evList);
     if ('ResizeObserver' in window) { let w = 0; new ResizeObserver(() => { const nw = box.clientWidth; if (nw && nw !== w) { w = nw; draw(); } }).observe(box); } else requestAnimationFrame(draw);
-    return { node: frag, redraw: draw };
+
+    // For "Download image": draw this view at a fixed width (the desktop layout, whatever the screen), copy the
+    // chart with every style written onto its elements, read the key and the framing line, then put the chart back.
+    // All in one task, so nothing is painted in between.
+    const STYLE_PROPS = ['fill', 'fill-opacity', 'stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'stroke-linecap',
+      'stroke-linejoin', 'opacity', 'font-size', 'font-weight', 'font-variant-numeric', 'paint-order'];
+    function snapshot(cssWidth) {
+      const keep = [box.style.width, box.style.maxWidth];
+      box.style.width = cssWidth + 'px'; box.style.maxWidth = 'none';
+      try {
+        draw();
+        const live = box.querySelector('svg'), copy = live.cloneNode(true);
+        const a = live.querySelectorAll('*'), b = copy.querySelectorAll('*'), drop = [];
+        for (let i = 0; i < a.length; i++) {
+          const cs = getComputedStyle(a[i]), n = b[i];
+          if (cs.visibility === 'hidden' || cs.display === 'none' || /\b(hit|xhair|hover-dot)\b/.test(a[i].getAttribute('class') || '')) { drop.push(n); continue; }
+          if (a[i].tagName === 'title') continue;
+          n.setAttribute('style', STYLE_PROPS.map(p => p + ':' + cs.getPropertyValue(p)).join(';'));
+          n.removeAttribute('class');
+        }
+        drop.forEach(n => n.remove());
+        copy.removeAttribute('class'); copy.setAttribute('overflow', 'visible');
+        const key = Array.from(legend.children).map(span => {
+          const i = span.querySelector('i'), text = span.textContent.trim();
+          if (!i) return { kind: 'events', text: text.replace(/^▲\s*/, ''), color: getComputedStyle(span).color };
+          const ci = getComputedStyle(i);
+          if (i.classList.contains('dash')) return { kind: 'dash', text, color: ci.borderTopColor };
+          if (i.classList.contains('rec')) return { kind: 'rec', text, color: ci.backgroundColor, edge: ci.borderTopColor };
+          return { kind: 'line', text, color: ci.backgroundColor };
+        });
+        return { svg: copy, width: +live.getAttribute('width'), height: +live.getAttribute('height'), key, framing: framing.hidden ? '' : framing.textContent };
+      } finally {
+        box.style.width = keep[0]; box.style.maxWidth = keep[1];
+        draw();
+      }
+    }
+    return { node: frag, redraw: draw, snapshot };
+  }
+
+  // ---- "Download image": the current view as a PNG ---------------------------
+  // Title, latest reading, the chart (with its credit line), the key, the framing line when a political overlay is
+  // on, and the page's address. Always in the light colors, the fonts embedded, at twice the size.
+  const EXPORT_BOX = 960;                    // the chart's frame width in the image, in CSS pixels
+  let fontFaces = null;
+  function embeddedFonts() {
+    if (fontFaces) return fontFaces;
+    const faces = [[400, 'Regular'], [600, 'SemiBold'], [700, 'Bold']];
+    fontFaces = Promise.all(faces.map(([w, name]) => fetch('/assets/fonts/PublicSans-' + name + '.woff2')
+      .then(r => { if (!r.ok) throw new Error('font HTTP ' + r.status); return r.arrayBuffer(); })
+      .then(buf => new Promise((ok, no) => { const fr = new FileReader(); fr.onload = () => ok(fr.result); fr.onerror = no; fr.readAsDataURL(new Blob([buf], { type: 'font/woff2' })); }))
+      .then(url => '@font-face{font-family:"Public Sans";font-weight:' + w + ';font-style:normal;src:url(' + url + ') format("woff2")}')))
+      .then(parts => parts.join(''))
+      .catch(err => { console.warn('Download image: fonts not embedded', err); fontFaces = null; return ''; });   // system fonts instead
+    return fontFaces;
+  }
+  async function chartImage(ctx, chart) {
+    const t = ctx.tile, d = t.display, c = t.context;
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    const fonts = await embeddedFonts();
+    const root = document.documentElement;
+    let snap, tok;
+    root.classList.add('export-light');
+    try {
+      snap = chart.snapshot(EXPORT_BOX);
+      const cs = getComputedStyle(root), v = n => cs.getPropertyValue(n).trim();
+      tok = { surface: v('--surface'), ink: v('--ink'), ink2: v('--ink-2'), muted: v('--muted'), hairline: v('--hairline'), banner: v('--banner'), bannerInk: v('--banner-ink') };
+    } finally { root.classList.remove('export-light'); }
+
+    const FAMILY = '"Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
+    const meas = document.createElement('canvas').getContext('2d');
+    const width = (s, px, wt) => { meas.font = (wt || 400) + ' ' + px + 'px ' + FAMILY; return meas.measureText(s).width; };
+    function wrap(s, px, wt, max) {
+      const lines = []; let line = '';
+      s.split(/\s+/).forEach(word => { const next = line ? line + ' ' + word : word; if (line && width(next, px, wt) > max) { lines.push(line); line = word; } else line = next; });
+      if (line) lines.push(line);
+      return lines;
+    }
+    const S = (tag, attrs, text) => { const n = document.createElementNS(SVG, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); if (text != null) n.textContent = text; return n; };
+
+    const PAD = 28, W = Math.round(snap.width + PAD * 2), inner = W - PAD * 2;
+    const parts = [];
+    let y = PAD;
+    // title, then what it measures and the latest reading
+    wrap(t.title, 22, 700, inner).forEach(line => { y += 24; parts.push(S('text', { x: PAD, y, style: 'font-size:22px;font-weight:700;fill:' + tok.ink }, line)); });
+    const hv = t.headline ? t.headline.value : c.current.value;
+    const hdate = t.headline ? fmtPeriod(t.headline.date, 'd', true) : fmtPeriod(c.current.date, t.freq, true);
+    const sub = t.subtitle + ' (' + d.unit + '). Latest: ' + fmtValue(hv, d) + ', ' + hdate + '.';
+    y += 4;
+    wrap(sub, 13.5, 400, inner).forEach(line => { y += 19; parts.push(S('text', { x: PAD, y, style: 'font-size:13.5px;fill:' + tok.ink2 }, line)); });
+    y += 12;
+    // the chart, as drawn on the page (credit line included)
+    snap.svg.setAttribute('x', PAD); snap.svg.setAttribute('y', y);
+    parts.push(snap.svg);
+    y += snap.height + 12;
+    // the key, wrapped into rows
+    const KPX = 12.5, ROW = 19;
+    let kx = PAD, ky = y + 13;
+    snap.key.forEach(k => {
+      const sw = k.kind === 'events' ? 10 : 12, w = sw + 6 + width(k.text, KPX);
+      if (kx > PAD && kx + w > W - PAD) { kx = PAD; ky += ROW; }
+      const g = S('g', {});
+      if (k.kind === 'line') g.appendChild(S('rect', { x: kx, y: ky - 5, width: 12, height: 3, rx: 1, fill: k.color }));
+      else if (k.kind === 'dash') g.appendChild(S('line', { x1: kx, x2: kx + 12, y1: ky - 4, y2: ky - 4, stroke: k.color, 'stroke-width': 2, 'stroke-dasharray': '3 2' }));
+      else if (k.kind === 'rec') g.appendChild(S('rect', { x: kx, y: ky - 9, width: 10, height: 10, fill: k.color, stroke: k.edge, 'stroke-width': 1 }));
+      else g.appendChild(S('path', { d: 'M' + kx + ',' + (ky - 9) + ' l8,0 l-4,6 z', fill: k.color }));
+      g.appendChild(S('text', { x: kx + sw + 6, y: ky, style: 'font-size:' + KPX + 'px;fill:' + tok.ink2 }, k.text));
+      parts.push(g);
+      kx += w + 18;
+    });
+    y = ky + 8;
+    // the framing line that political overlays carry on the page goes with the picture
+    if (snap.framing) {
+      const lines = wrap(snap.framing, 13, 400, inner - 24), h = lines.length * 18 + 14;
+      y += 10;
+      parts.push(S('rect', { x: PAD, y, width: inner, height: h, rx: 4, fill: tok.banner }));
+      lines.forEach((line, i) => parts.push(S('text', { x: PAD + 12, y: y + 20 + i * 18, style: 'font-size:13px;fill:' + tok.bannerInk }, line)));
+      y += h;
+    }
+    // where it came from
+    y += 22;
+    parts.push(S('line', { x1: PAD, x2: W - PAD, y1: y - 15, y2: y - 15, stroke: tok.hairline, 'stroke-width': 1 }));
+    parts.push(S('text', { x: PAD, y, style: 'font-size:12px;fill:' + tok.muted }, 'economyincontext.org' + chartPath(t.id)));
+    parts.push(S('text', { x: W - PAD, y, 'text-anchor': 'end', style: 'font-size:12px;fill:' + tok.muted }, 'Free to reuse with credit · CC BY 4.0'));
+    const H = Math.round(y + PAD - 6);
+
+    const out = S('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H });
+    out.appendChild(S('style', {}, fonts + 'text{font-family:' + FAMILY + '}'));
+    out.appendChild(S('rect', { x: 0, y: 0, width: W, height: H, fill: tok.surface }));
+    parts.forEach(p => out.appendChild(p));
+    const xml = new XMLSerializer().serializeToString(out);
+
+    const img = new Image();
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xml);
+    await img.decode();
+    await new Promise(r => setTimeout(r, 80));     // give the embedded fonts a beat in browsers that load them late
+    const scale = 2, canvas = document.createElement('canvas');
+    canvas.width = W * scale; canvas.height = H * scale;
+    const g = canvas.getContext('2d');
+    g.drawImage(img, 0, 0, canvas.width, canvas.height);
+    return new Promise((ok, no) => canvas.toBlob(b => b ? ok(b) : no(new Error('the browser would not make a PNG')), 'image/png'));
   }
 
   // ---- overlays panel -----------------------------------------------------
@@ -862,7 +1026,7 @@
       // the CSV carries raw values, so its header names the raw unit where the page shows a scaled one (cents vs dollars)
       // two lines saying what this is and where it came from, a blank line, then the table
       const series = [t.source.series].concat(comps.map(o => o.source && o.source.label ? o.source.label.replace(/^FRED /, '') : null).filter(Boolean));
-      const lines = [csvQ(t.title + ' (' + (d.csv_unit || d.unit) + '), from Economy in Context: https://economyincontext.org/chart.html?id=' + t.id),
+      const lines = [csvQ(t.title + ' (' + (d.csv_unit || d.unit) + '), from Economy in Context: ' + SITE + chartPath(t.id)),
         csvQ('Data: ' + (t.agency ? t.agency + ' via ' : '') + 'FRED series ' + series.join(', ') + ', retrieved ' + String(ctx.data.generated || '').slice(0, 10)), '',
         'date,' + csvQ(t.title + ' (' + (d.csv_unit || d.unit) + ')') + comps.map(o => ',' + csvQ(o.label)).join('')];
       const maps = comps.map(joinMap);
@@ -883,24 +1047,30 @@
       document.getElementById('title').textContent = 'Pick an indicator';
       document.getElementById('subtitle').textContent = 'Each one gets a full-size chart with optional overlays.';
       const idx = el('div', { class: 'index' }), ul = el('ul');
-      data.tiles.forEach(x => ul.appendChild(el('li', {}, [el('a', { href: 'chart.html?id=' + x.id, text: x.title }), ' — ' + x.subtitle])));
-      idx.appendChild(ul); main.appendChild(idx); document.title = 'Charts — Economy in Context'; return;
+      data.tiles.forEach(x => ul.appendChild(el('li', {}, [el('a', { href: chartPath(x.id), text: x.title }), ' — ' + x.subtitle])));
+      idx.appendChild(ul); main.appendChild(idx); document.title = 'Charts — Economy in Context';
+      const setM = (sel, val) => { const m = document.querySelector(sel); if (m) m.setAttribute(sel.startsWith('link') ? 'href' : 'content', val); };
+      setM('link[rel="canonical"]', SITE + '/chart/'); setM('meta[property="og:url"]', SITE + '/chart/');
+      return;
     }
-    document.title = t.title + ' — Economy in Context';
-    document.getElementById('title').textContent = t.title;
-    // canonical and preview tags for this indicator (the id is the page; range and overlays are a view)
-    const canon = 'https://economyincontext.org/chart.html?id=' + encodeURIComponent(t.id);
+    // the builder writes the title and preview tags into each chart's own page, with the latest reading,
+    // for link previews that don't run scripts; the same tags are set here for chart.html?id= views
+    const canon = SITE + chartPath(t.id);
     const setMeta = (sel, val) => { const m = document.querySelector(sel); if (m) m.setAttribute(sel.startsWith('link') ? 'href' : 'content', val); };
     setMeta('link[rel="canonical"]', canon); setMeta('meta[property="og:url"]', canon);
-    setMeta('meta[property="og:title"]', t.title + ' — Economy in Context');
-    setMeta('meta[property="og:description"]', t.subtitle + '. ' + contextSentence(t));
-    setMeta('meta[name="description"]', t.title + ': ' + t.subtitle + '. ' + contextSentence(t) + ' Full history with optional overlays.');
+    if (!state.ownPage) {
+      document.title = t.title + ' — Economy in Context';
+      setMeta('meta[property="og:title"]', t.title + ' — Economy in Context');
+      setMeta('meta[property="og:description"]', t.subtitle + '. ' + contextSentence(t));
+      setMeta('meta[name="description"]', t.title + ': ' + t.subtitle + '. ' + contextSentence(t) + ' Full history with optional overlays.');
+    }
+    document.getElementById('title').textContent = t.title;
     document.getElementById('subtitle').textContent = t.subtitle;
     const ex = ((exData && exData.explainers) || {})[t.id];
     if (ex && !state.embed) {
       const p = document.getElementById('explainer');
       p.appendChild(document.createTextNode('In plain words: '));
-      p.appendChild(el('a', { href: ex.url, text: ex.title + ' →' }));
+      p.appendChild(el('a', { href: /^(\/|https?:)/.test(ex.url) ? ex.url : '/' + ex.url, text: ex.title + ' →' }));
       p.hidden = false;
     }
 
@@ -922,9 +1092,8 @@
     const c = t.context, d = t.display;
     if (state.embed) {
       document.body.classList.add('embed');
-      const q = new URLSearchParams(location.search); q.delete('embed');
       left.appendChild(el('div', { class: 'embed-head' }, [el('h2', { text: t.title + ': ' + t.subtitle.charAt(0).toLowerCase() + t.subtitle.slice(1) }),
-        el('a', { href: 'chart.html?' + q.toString(), target: '_top', rel: 'noopener', text: 'Full chart and context →' })]));
+        el('a', { href: chartPath(t.id, viewQuery()), target: '_top', rel: 'noopener', text: 'Full chart and context →' })]));
     }
     const hv = t.headline ? t.headline.value : c.current.value;
     const hdate = t.headline ? fmtPeriod(t.headline.date, 'd', true) : fmtPeriod(c.current.date, t.freq, true);
@@ -957,15 +1126,30 @@
     // the iframe for this exact view; a sub-panel needs the taller frame, as in articles
     const embedBtn = el('button', { type: 'button', text: 'Copy embed code' });
     function embedCode() {
-      const q = new URLSearchParams(location.search); q.set('embed', '1');
+      // embeds stay on chart.html: id first, then the view, then embed=1
+      const v = viewQuery(), q = 'id=' + encodeURIComponent(t.id) + (v ? '&' + v : '') + '&embed=1';
       const tall = Array.from(state.on).some(id => OWN_SCALE[id] && ctx.ovById[id] && appliesTo(ctx.ovById[id], t.id));
       const title = (t.title + ' — Economy in Context').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
-      return '<iframe src="https://economyincontext.org/chart.html?' + q.toString().replace(/%2C/g, ',').replace(/&/g, '&amp;') + '" width="100%" height="' + (tall ? 720 : 600) + '" style="border:0" loading="lazy" title="' + title + '"></iframe>';
+      return '<iframe src="' + SITE + '/chart.html?' + q.replace(/%2C/g, ',').replace(/&/g, '&amp;') + '" width="100%" height="' + (tall ? 720 : 600) + '" style="border:0" loading="lazy" title="' + title + '"></iframe>';
     }
     embedBtn.addEventListener('click', () => { navigator.clipboard && navigator.clipboard.writeText(embedCode()).then(() => { embedBtn.textContent = 'Copied'; setTimeout(() => embedBtn.textContent = 'Copy embed code', 1500); }); });
     ctx.embedCode = embedCode;
-    actions.appendChild(dl); actions.appendChild(copy); actions.appendChild(embedBtn);
-    actions.appendChild(el('a', { href: './#i-' + t.id, text: 'Back to the almanac' }));
+    // a PNG of this view, with the title, key and credit built in, for posts and slides where an iframe can't go
+    const imgBtn = el('button', { type: 'button', text: 'Download image' });
+    imgBtn.addEventListener('click', () => {
+      if (imgBtn.disabled) return;
+      imgBtn.disabled = true; imgBtn.textContent = 'Making the image…';
+      chartImage(ctx, chart).then(blob => {
+        const a = el('a', { href: URL.createObjectURL(blob), download: 'economyincontext-' + t.id + '-' + (state.range || 'custom') + '.png' });
+        document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 30000);
+        imgBtn.textContent = 'Download image';
+      }).catch(err => {
+        console.error('Download image:', err); imgBtn.textContent = 'The image could not be made';
+        setTimeout(() => { imgBtn.textContent = 'Download image'; }, 2500);
+      }).finally(() => { imgBtn.disabled = false; });
+    });
+    actions.appendChild(dl); actions.appendChild(imgBtn); actions.appendChild(copy); actions.appendChild(embedBtn);
+    actions.appendChild(el('a', { href: '/#i-' + t.id, text: 'Back to the almanac' }));
     actions.appendChild(el('span', { class: 'reuse-short' }, ['Free to reuse with credit · ', el('a', { href: 'https://creativecommons.org/licenses/by/4.0/', rel: 'license noopener', text: 'CC BY 4.0' })]));
     left.appendChild(actions);
     left.appendChild(table.node);
@@ -978,19 +1162,19 @@
 
   readUrl();
   Promise.all([
-    fetch('data/series.json', { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }),
-    fetch('data/companions.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : { companions: [] }).catch(() => ({ companions: [] })),
-    fetch('data/overlays.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : { overlays: [] }).catch(() => ({ overlays: [] })),
-    fetch('data/explainers.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).catch(() => ({})),
+    fetch('/data/series.json', { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }),
+    fetch('/data/companions.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : { companions: [] }).catch(() => ({ companions: [] })),
+    fetch('/data/overlays.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : { overlays: [] }).catch(() => ({ overlays: [] })),
+    fetch('/data/explainers.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).catch(() => ({})),
   ]).then(([data, comp, ov, ex]) => render(data, comp, ov, ex))
     .catch(err => { const main = document.getElementById('main'); main.innerHTML = ''; main.appendChild(el('p', { class: 'status', text: 'The figures could not be loaded (' + err.message + '). Try again in a few minutes.' })); });
 })();
 </script>
 <script>
-/* Count every chart page as /chart.html?id=<indicator>: range and overlays are a view, not a page */
+/* Count every chart page as /chart/<indicator>/ and the index as /chart/: range and overlays are a view, not a page */
 (window.goatcounter = window.goatcounter || {}).path = function () {
-  var id = new URLSearchParams(location.search).get('id');
-  return '/chart.html' + (id ? '?id=' + encodeURIComponent(id) : '');
+  var own = location.pathname.match(/\/chart\/([A-Za-z0-9_-]+)\/(?:index\.html)?$/), id = own ? own[1] : new URLSearchParams(location.search).get('id');
+  return '/chart/' + (id ? encodeURIComponent(id) + '/' : '');
 };
 </script>
 <script data-goatcounter="https://economyincontext.goatcounter.com/count" async src="/assets/count.js"></script>
