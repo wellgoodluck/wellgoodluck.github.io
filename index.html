@@ -126,6 +126,11 @@
     padding: 10px 16px; font-size: 14px; text-align: center;
   }
 
+  /* Featured article: one line above the overview, only while an article's featured: date is current */
+  .featured { margin: 20px 0 0; padding: 10px 0; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); font-size: 15px; line-height: 1.45; text-wrap: pretty; }
+  .featured .flabel { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-right: 10px; }
+  .featured a { font-weight: 600; color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--hairline); }
+  .featured a:hover { border-color: var(--ink); }
   /* At a glance: every number on one screen (left out with ?view=tiles) ---- */
   .glance { padding: 24px 0 8px; }
   .glance .ghead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px; margin: 0 0 4px; }
@@ -269,7 +274,7 @@
   @media print {
     :root { --page: #fff; --surface: #fff; }
     body { background: #fff; }
-    .secnav, .masthead .site-link, .ranges, .chart-head .full, details.table, .tip, .banner, .view-switch { display: none !important; }
+    .secnav, .masthead .site-link, .ranges, .chart-head .full, details.table, .tip, .banner, .view-switch, .featured { display: none !important; }
     .glance { break-inside: avoid; }
     .masthead .updated a { display: none; }
     .tile { break-inside: avoid; }
@@ -773,6 +778,10 @@
     const sections = [];
     data.tiles.forEach(t => { if (!sections.includes(t.section)) sections.push(t.section); });
     const nav = document.getElementById('nav');
+    // the featured article (from explainers.json, written by the articles build) sits above everything else in main
+    const f = data.featured;
+    if (f && f.url && f.title) main.appendChild(el('aside', { class: 'featured', 'aria-label': 'Featured article' },
+      [el('span', { class: 'flabel', text: 'Featured' }), el('a', { href: f.url, text: f.title }), ' →']));
     // ?view=tiles is the page as it was before the overview: the tiles alone, with a way back
     if (new URLSearchParams(location.search).get('view') === 'tiles') main.appendChild(el('p', { class: 'view-switch' }, ['Tiles only. ', el('a', { href: './', text: 'Show all the numbers at a glance →' })]));
     else { main.appendChild(buildGlance(data, sections)); nav.appendChild(el('li', {}, [el('a', { href: '#at-a-glance', text: 'At a glance' })])); }
@@ -799,7 +808,7 @@
   Promise.all([
     fetch('data/series.json', { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }),
     fetch('data/explainers.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).catch(() => ({})),
-  ]).then(([data, ex]) => { data.explainers = (ex && ex.explainers) || {}; render(data); })
+  ]).then(([data, ex]) => { data.explainers = (ex && ex.explainers) || {}; data.featured = (ex && ex.featured) || null; render(data); })
     .catch(err => {
       const main = document.getElementById('main');
       main.innerHTML = '';

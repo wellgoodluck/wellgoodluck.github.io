@@ -690,7 +690,8 @@
       // legend
       legend.innerHTML = '';
       legend.appendChild(el('span', {}, [el('i', { style: 'background: var(--series)' }), t.title + ' (' + d.unit + ')']));
-      compPts.concat(subs.map(o => ({ o }))).forEach(c => legend.appendChild(el('span', {}, [el('i', { style: 'background:' + colorFor(c.o.id) }), shortLabel(c.o.label)])));
+      // the key always gives the full name (it wraps); only the hover box shortens long ones
+      compPts.concat(subs.map(o => ({ o }))).forEach(c => legend.appendChild(el('span', {}, [el('i', { style: 'background:' + colorFor(c.o.id) }), c.o.label])));
       lineVals.forEach(x => legend.appendChild(el('span', {}, [el('i', { class: 'dash' }), x.o.label])));
       legend.appendChild(el('span', {}, [el('i', { class: 'rec' }), 'Recessions (NBER)']));
       if (evs.length) legend.appendChild(el('span', { text: '▲ ' + evs.map(o => o.label).join(', ') }));
@@ -709,7 +710,14 @@
       }
       ctx.onWindow && ctx.onWindow(start, end);
     }
-    function shortLabel(s) { return s.length > 60 ? s.slice(0, 58) + '…' : s; }
+    // hover box: a long name drops its trailing parenthetical ("U-6 (incl. …)" -> "U-6"), else ends at a word
+    function shortLabel(s) {
+      if (s.length <= 60) return s;
+      const bare = s.replace(/\s*\([^()]*\)\s*$/, '');
+      if (bare !== s && bare.length <= 60) return bare;
+      const cut = s.slice(0, 58), sp = cut.lastIndexOf(' ');
+      return (sp > 30 ? cut.slice(0, sp) : cut).replace(/[\s,;:(—–-]+$/, '') + '…';
+    }
 
     // controls
     const head = el('div', { class: 'chart-head' });

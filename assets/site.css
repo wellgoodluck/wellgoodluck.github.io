@@ -86,6 +86,12 @@ a:hover { text-decoration-color: var(--ink); }
 .jump { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 16px 0 0; font-size: 15px; }
 .jump a { text-decoration: none; border-bottom: 1px solid var(--hairline); padding-bottom: 1px; }
 .jump a:hover { border-color: var(--ink); }
+/* Featured line on the articles index (same look as the almanac's; set by a featured: date in front matter) */
+.featured { margin: 20px 0 0; padding: 10px 0; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); font-size: 15px; line-height: 1.45; text-wrap: pretty; }
+.article > .featured { max-width: calc(var(--measure) * 17 / 15); }   /* the list's width: 42em at the body's 17px */
+.featured .flabel { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-right: 10px; }
+.article .featured a { font-weight: 600; color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--hairline); }
+.article .featured a:hover { border-color: var(--ink); }
 .article .lede { margin: 0 0 8px; color: var(--ink-2); font-size: 16px; }
 .article .num-group h4 { margin: 20px 0 4px; font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
 .article .compact-list { list-style: none; margin: 6px 0 0; padding: 0; }
@@ -123,7 +129,7 @@ h1, h2, h3, h4, .dek { text-wrap: balance; }
 @media print {
   :root { --page: #fff; --surface: #fff; }
   body { background: #fff; }
-  .crumb, .jump { display: none !important; }
+  .crumb, .jump, .featured { display: none !important; }
   .article figure.chart-embed, .article .table-scroll, .map { break-inside: avoid; }
   .article figure.chart-embed { width: 100%; }
   footer.about { padding-bottom: 0; }

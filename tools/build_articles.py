@@ -23,6 +23,10 @@ Each source file starts with a front-matter block:
     label: Inflation             (optional: the short name used in the Plain words lists)
     hook: why prices never go back   (optional: the phrase after the label in those lists,
                                   and after "In plain words:" on the tiles)
+    featured: 2026-11-04         (optional: from that date (UTC, at the next build) the article is
+                                  the Featured line at the top of the almanac and the articles index.
+                                  The newest date that has arrived wins, so featuring another article
+                                  needs only a later date on it; a future date schedules it.)
     ---
 
 then Markdown. Supported: # ## ### headings, paragraphs, **bold**, *italic*,
@@ -170,6 +174,19 @@ def parse(path):
     meta["body"] = m.group(2)
     meta["draft"] = meta.get("draft", "").lower() in ("true", "yes", "1")
     return meta
+
+
+def featured_pick(articles, today=None):
+    """(current, next): the article whose featured: date is the newest one on or before today
+    (UTC), and the soonest one still to come. Either can be None; malformed dates are ignored."""
+    from datetime import datetime, timezone
+    today = today or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    dated = [a for a in articles if re.fullmatch(r"\d{4}-\d{2}-\d{2}", a.get("featured", ""))]
+    past = [a for a in dated if a["featured"] <= today]
+    future = [a for a in dated if a["featured"] > today]
+    cur = max(past, key=lambda a: (a["featured"], a["date"])) if past else None
+    nxt = min(future, key=lambda a: a["featured"]) if future else None
+    return cur, nxt
 
 
 def fmt_date(s):
@@ -331,6 +348,10 @@ def render_index(articles):
                        canonical=f"{SITE}/articles/")
     page = page.replace('<a href="./">Articles</a>', "Articles")
     page += '<main class="wrap article">\n<h1>Articles</h1>\n<p class="dek">Longer reads on what the figures show, what is settled, and what is argued about.</p>\n'
+    feat, _ = featured_pick(articles)
+    if feat:
+        page += (f'<aside class="featured" aria-label="Featured article"><span class="flabel">Featured</span>'
+                 f'<a href="{feat["slug"]}.html">{inline(feat["title"])}</a> →</aside>\n')
 
     def updated_note(a):
         return (f'<span class="when">Updated {fmt_date(a["updated"])}</span>'
@@ -410,11 +431,16 @@ def write_explainers(out_root, articles):
             continue
         for tid in tile_ids(a):
             ex[tid] = {"url": f"articles/{a['slug']}.html", "title": a["title"], "hook": a.get("hook", "")}
+    feat, nxt = featured_pick(articles)
+    featured = {"url": f"articles/{feat['slug']}.html", "title": feat["title"]} if feat else None
     os.makedirs(os.path.join(out_root, "data"), exist_ok=True)
     with open(os.path.join(out_root, "data", "explainers.json"), "w", encoding="utf-8") as f:
-        json.dump({"note": "Written by tools/build_articles.py from the tile: line of each Plain words page.",
-                   "explainers": ex}, f, ensure_ascii=False, separators=(",", ":"))
+        json.dump({"note": "Written by tools/build_articles.py from the tile: line of each Plain words page, "
+                           "and the featured: line of the article featured now.",
+                   "explainers": ex, "featured": featured}, f, ensure_ascii=False, separators=(",", ":"))
     print(f"built data/explainers.json ({len(ex)} indicators)")
+    print("featured: " + (f"{feat['slug']} (since {feat['featured']})" if feat else "none")
+          + (f"; next {nxt['slug']} on {nxt['featured']}" if nxt else ""))
 
 
 def body_offset(path, body):
