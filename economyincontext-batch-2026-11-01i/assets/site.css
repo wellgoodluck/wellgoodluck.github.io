@@ -1,0 +1,170 @@
+/* Economy in Context — shared styles for the articles section.
+   The almanac (index.html) and detail page (chart.html) carry their own copies
+   of the same tokens so each stays a single file. Keep the tokens in sync. */
+
+@font-face { font-family: "Public Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("fonts/PublicSans-Regular.woff2") format("woff2"); }
+@font-face { font-family: "Public Sans"; font-weight: 600; font-style: normal; font-display: swap; src: url("fonts/PublicSans-SemiBold.woff2") format("woff2"); }
+@font-face { font-family: "Public Sans"; font-weight: 700; font-style: normal; font-display: swap; src: url("fonts/PublicSans-Bold.woff2") format("woff2"); }
+
+:root {
+  color-scheme: light;
+  --page: #f6f6f3; --surface: #ffffff; --ink: #1b1b1a; --ink-2: #5a5955; --muted: #72716b;
+  --hairline: #e3e2dc; --grid: #ebeae4; --series: #0b7a75; --focus: #0b7a75;
+  --banner: #fff4d6; --banner-ink: #5a4300; --max: 1120px; --measure: 42em;
+}
+/* dark colors on screen only: printing from a browser in dark mode stays on the light tokens */
+@media screen and (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --page: #121211; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+    --hairline: #2c2c2a; --grid: #262624; --series: #2bb3a8; --focus: #2bb3a8; --banner: #3a2f10; --banner-ink: #f3dfa0;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--page); color: var(--ink); font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 17px; line-height: 1.55; }
+a { color: inherit; text-decoration-color: var(--muted); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--ink); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 16px; }
+
+.masthead { padding: 18px 0 14px; border-bottom: 1px solid var(--hairline); }
+.crumb { margin: 0; font-size: 13.5px; color: var(--ink-2); }
+.crumb a { text-decoration: none; border-bottom: 1px solid var(--hairline); }
+.crumb .sep { color: var(--muted); margin: 0 6px; }
+
+/* Article ------------------------------------------------------------------ */
+.article { padding-top: 28px; padding-bottom: 40px; }   /* top and bottom only: .wrap keeps the 16px side gutter */
+.article article, .article > h1, .article > .dek, .article > .article-list { max-width: var(--measure); }
+.article h1 { margin: 0 0 8px; font-size: 40px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.12; }
+.article .dek { margin: 0 0 10px; font-size: 19px; color: var(--ink-2); line-height: 1.4; }
+.article .dateline { margin: 0 0 28px; font-size: 13.5px; color: var(--muted); }
+.article .dateline .sep { margin: 0 4px; }
+.article h2 { margin: 36px 0 10px; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
+.article h3 { margin: 26px 0 6px; font-size: 19px; font-weight: 600; }
+.article h4 { margin: 20px 0 4px; font-size: 17px; font-weight: 600; }
+.article p { margin: 0 0 16px; }
+.article ul, .article ol { margin: 0 0 16px; padding-left: 22px; }
+.article li { margin: 0 0 6px; }
+.article blockquote { margin: 0 0 16px; padding: 2px 0 2px 16px; border-left: 3px solid var(--hairline); color: var(--ink-2); }
+.article hr { border: 0; border-top: 1px solid var(--hairline); margin: 28px 0; }
+.article strong { font-weight: 600; }
+.article .table-scroll { overflow-x: auto; margin: 0 0 18px; -webkit-overflow-scrolling: touch; }
+.article table { border-collapse: collapse; width: 100%; margin: 0; font-size: 15px; }
+.article .table-scroll table { min-width: 480px; }
+.article th, .article td { padding: 6px 8px; border-top: 1px solid var(--hairline); text-align: left; vertical-align: top; }
+.article th { font-weight: 600; border-top: 0; border-bottom: 1px solid var(--ink-2); }
+.article td.num, .article th.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Live chart embeds: wider than the text column */
+.article figure.chart-embed { margin: 22px 0 26px; width: min(860px, calc(100vw - 32px)); }
+.article figure.chart-embed iframe { display: block; width: 100%; border: 1px solid var(--hairline); border-radius: 6px; background: var(--surface); }
+.article figure.chart-embed figcaption { margin: 8px 0 0; font-size: 13.5px; color: var(--ink-2); max-width: calc(var(--measure) * 17 / 13.5); }   /* the text column's width: 42em at the body's 17px */
+.article figure.chart-embed figcaption a { white-space: nowrap; }
+
+.article ul.sources { font-size: 15px; color: var(--ink-2); padding-left: 20px; }
+.article ul.sources li { margin: 0 0 4px; }
+.article #sources { font-size: 19px; }
+
+.article .note-box { margin: 0 0 18px; padding: 10px 14px; background: var(--banner); color: var(--banner-ink); border-radius: 4px; font-size: 15px; }
+
+/* Index ---------------------------------------------------------------------- */
+.article-list { list-style: none; margin: 22px 0 0; padding: 0; }
+.article .article-list { margin: 22px 0 0; padding: 0; }   /* beats ".article ul", which indented the index lists */
+.article-list li { padding: 16px 0; border-top: 1px solid var(--hairline); display: grid; gap: 2px; }
+.article-list li:last-child { border-bottom: 1px solid var(--hairline); }
+.article-list a { text-decoration: none; }
+.article-list .t { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.25; }
+.article-list a:hover .t { text-decoration: underline; text-decoration-color: var(--muted); text-underline-offset: 3px; }
+.article-list .d { color: var(--ink-2); font-size: 16px; }
+.article-list .when { color: var(--muted); font-size: 13.5px; margin-top: 2px; }
+
+/* Index layout: jump links, Latest with its folded earlier pieces, Plain words split into
+   The numbers (grouped as on the almanac) and The ideas, in one-line entries */
+.article > .jump, .article > h2, .article > h3, .article > .lede, .article > .num-group,
+.article > .compact-list, .article > details.earlier { max-width: var(--measure); }
+.jump { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 16px 0 0; font-size: 15px; }
+.jump a { text-decoration: none; border-bottom: 1px solid var(--hairline); padding-bottom: 1px; }
+.jump a:hover { border-color: var(--ink); }
+/* the feed, under the jump links on the articles index */
+.article > .feed-link { max-width: var(--measure); margin: 10px 0 0; font-size: 13.5px; color: var(--ink-2); }
+/* Featured line on the articles index (same look as the almanac's; set by a featured: date in front matter) */
+.featured { margin: 22px 0 0; padding: 12px 0 14px; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--hairline); font-size: 15px; line-height: 1.45; text-wrap: pretty; }   /* the lead item: a 2px ink rule above, as a newspaper marks it */
+.article > .featured { max-width: calc(var(--measure) * 17 / 15); }   /* the list's width: 42em at the body's 17px */
+.featured .flabel { display: block; margin: 0 0 4px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
+.article .featured a.ftitle { font-size: 22px; font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; color: var(--ink); text-decoration: none; border: 0; }   /* the list's title size */
+.article .featured a.ftitle:hover { text-decoration: underline; text-decoration-color: var(--ink); text-underline-offset: 3px; }
+.featured .fdek { margin: 4px 0 0; color: var(--ink-2); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+@media (max-width: 760px) { .featured .fdek { -webkit-line-clamp: 3; } }
+/* A featured series: the parts in reading order under the dek, each numbered */
+.featured .fparts { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 2px 20px; }
+.featured .fparts li { margin: 0; }
+.featured .fparts a { display: inline-block; padding: 4px 0; font-weight: 600; text-decoration: none; }
+.featured .fparts a:hover { text-decoration: underline; text-decoration-color: var(--ink); }
+/* Series box under an article's dateline, and the next-part line before See also: a 2px ink rule at the left, no box */
+.series-label { display: block; margin: 0 0 2px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
+.article .series { margin: -14px 0 28px; padding: 8px 0 8px 14px; border-left: 2px solid var(--ink); font-size: 15px; line-height: 1.4; }
+.article .series .series-name { margin: 0; }
+.article .series .series-name a { font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--hairline); }
+.article .series .series-name a:hover { border-color: var(--ink); }
+.article .series .series-parts { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 2px 20px; }
+.article .series .series-parts li { margin: 0; padding: 0; color: var(--ink-2); }
+.article .series .series-parts a { display: inline-block; padding: 4px 0; color: var(--ink-2); text-decoration: none; }
+.article .series .series-parts a:hover { color: var(--ink); text-decoration: underline; text-decoration-color: var(--muted); }
+.article .series .series-parts li[aria-current] { padding: 4px 0; color: var(--ink); font-weight: 600; }
+.n { display: inline-block; min-width: 1.5em; height: 1.5em; line-height: calc(1.5em - 2px); margin-right: 3px; border: 1px solid var(--hairline); border-radius: 50%; text-align: center; font-size: 12.5px; font-weight: 600; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.article .series li[aria-current] .n { border-color: var(--ink); color: var(--ink); }
+.article .series-next { margin: 30px 0 0; padding: 8px 0 8px 14px; border-left: 2px solid var(--ink); font-size: 15px; line-height: 1.4; }
+.article .series-next p { margin: 0; }
+.article .series-next a { font-weight: 600; }
+@media (max-width: 760px) { .article .series .series-parts a, .article .series .series-parts li[aria-current], .featured .fparts a { padding: 8px 0; } }
+/* phones: the type scale's smaller steps for the page title, dek and the featured title (40 → 28, 19 → 17, 22 → 19) */
+@media (max-width: 760px) { .article h1 { font-size: 28px; } .article .dek { font-size: 17px; } .article .featured a.ftitle { font-size: 19px; } }
+.article .lede { margin: 0 0 8px; color: var(--ink-2); font-size: 16px; }
+.article .num-group h4 { margin: 20px 0 4px; font-size: 12.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.article .compact-list { list-style: none; margin: 6px 0 0; padding: 0; }
+.article .compact-list li { margin: 0; padding: 8px 0; border-top: 1px solid var(--hairline); line-height: 1.4; }
+.article .compact-list li:last-child { border-bottom: 1px solid var(--hairline); }
+.article .compact-list a { font-weight: 600; text-decoration: none; }
+.article .compact-list a:hover { text-decoration: underline; text-decoration-color: var(--muted); }
+.article .compact-list .h { color: var(--ink-2); }
+.article .compact-list .when { display: block; color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+.article details.earlier { margin: 4px 0 0; }
+.article details.earlier summary { cursor: pointer; color: var(--ink-2); font-size: 15px; padding: 10px 0 4px; }
+.article details.earlier .article-list { margin-top: 6px; }
+.article h3#the-numbers, .article h3#the-ideas { margin-top: 30px; font-size: 19px; font-weight: 700; }
+/* a series inside The ideas: its parts in its own order under the series title */
+.article .num-group.series-group h4 { margin: 20px 0 4px; font-size: 15px; font-weight: 600; color: var(--ink); text-transform: none; letter-spacing: 0; }
+.article > .num-group.series-group { scroll-margin-top: 16px; }
+
+footer.about { border-top: 1px solid var(--hairline); padding: 22px 0 44px; font-size: 13.5px; color: var(--ink-2); }
+footer.about p { max-width: 48em; margin: 0 0 8px; }
+
+/* The map on the Plain words index (built by tools/build_articles.py) */
+.article > figure.map { max-width: 480px; margin: 22px 0 8px; }
+.map svg { display: block; width: 100%; height: auto; font-family: inherit; }
+.map .node rect { fill: var(--surface); stroke: var(--hairline); stroke-width: 1.5; }
+.map .node text { fill: var(--ink); font-size: 15px; font-weight: 600; }
+.map a.node:hover rect, .map a.node:focus rect { stroke: var(--focus); }
+.map a.node:hover text { text-decoration: underline; text-decoration-color: var(--muted); }
+.map .edge { fill: none; stroke: var(--ink-2); stroke-width: 1.5; }
+.map marker path { fill: var(--ink-2); }
+.map .lag { fill: var(--muted); font-size: 12.5px; }
+.map figcaption { margin: 10px 0 0; font-size: 13.5px; color: var(--ink-2); }
+
+/* Wrapping: no single word left alone on a line */
+p, li, figcaption { text-wrap: pretty; }
+h1, h2, h3, h4, .dek { text-wrap: balance; }
+
+/* Print: no navigation chrome, nothing split across pages, and the site's name at the end */
+@media print {
+  :root { --page: #fff; --surface: #fff; }
+  body { background: #fff; }
+  .crumb, .jump, .featured, .feed-link, .series-parts, .series-next { display: none !important; }
+  .article .series { margin-top: 0; }
+  .article figure.chart-embed, .article .table-scroll, .map { break-inside: avoid; }
+  .article figure.chart-embed { width: 100%; }
+  footer.about { padding-bottom: 0; }
+  body::after { content: "economyincontext.org"; display: block; padding: 12px 16px 0; font-size: 12.5px; color: #555; }
+}
