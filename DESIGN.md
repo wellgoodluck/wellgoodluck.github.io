@@ -44,7 +44,7 @@ colors:
   lane-divided-dark: "#2f2f2c"
   lane-easing: "#d9d6cb"
   lane-tightening: "#9f9b90"
-  lane-easing-dark: "#34332f"
+  lane-easing-dark: "#4a4944"
   lane-tightening-dark: "#66645d"
   era-light: "#d8d6cd"
   era-mid: "#c3c1b7"
@@ -193,7 +193,7 @@ A warm-neutral paper-and-ink palette with one teal accent and a reserved set of 
 ### Neutral
 - **Paper**: page background.
 - **Sheet**: tiles, chart frames and other raised-by-border surfaces (white in light mode).
-- **Ink**: headings, values, primary text; also the pressed range button and the tooltip background.
+- **Ink**: headings, values, primary text; also the pressed range button (light mode) and the tooltip background.
 - **Ink Secondary**: sentences, notes, captions, event markers.
 - **Ink Muted**: dates, periods, axis labels, credits (4.5:1 on paper at its lightest; do not lighten it).
 - **Hairline**: borders, row dividers, link underlines.
@@ -219,7 +219,7 @@ A warm-neutral paper-and-ink palette with one teal accent and a reserved set of 
 **Character:** A sturdy public-sector grotesque, open and unfussy; it reads as institutional without being cold, and its tabular figures keep columns of numbers honest.
 
 ### Scale
-The almanac and chart pages use one scale: **11 · 12.5 · 13.5 · 15 · 16 (base) · 17 · 19 · 22 · 28 · 40 · 44px**, with four steps between 11 and 15. Chart text is 11px everywhere inside an SVG (axes, lanes, events, strip labels, credits). The images made for download and social posts have their own sizes, set for the image's frame. Article pages (`assets/site.css`) are not yet on this scale.
+The almanac and chart pages use one scale: **11 · 12.5 · 13.5 · 15 · 16 (base) · 17 · 19 · 22 · 28 · 40 · 44px**, with four steps between 11 and 15. Chart text is 11px everywhere inside an SVG (axes, lanes, events, strip labels, credits). The images made for download and social posts have their own sizes, set for the image's frame. Article pages (`assets/site.css`) use the same scale from 17px body text: the title 40px (28px on phones), the dek 19px (17px), section heads 22px, list titles 22px, captions, datelines and footers 13.5px, small labels 12.5px.
 
 ### Hierarchy
 - **Display** (700, 40px; 28px on phones, 1.1): the site name on the almanac masthead. A chart page's indicator name is 28px at every width, so the reading stays the largest thing on screen.
@@ -231,7 +231,7 @@ The almanac and chart pages use one scale: **11 · 12.5 · 13.5 · 15 · 16 (bas
 - **Context** (600, 15px): the one-sentence verdict under a range strip ("Higher than 67% of months since 1948").
 - **Meta** (400, 13.5px, Ink Secondary or Muted): subtitles, periods, notes, sources, controls (range buttons, custom range, actions), tables.
 - **Caption** (400, 12.5px): legends, the hover box, overlay notes, counts, print footers.
-- **Label** (600, 12.5px, 0.05em, uppercase): small section labels in the overview, "Events in view" and the Featured label.
+- **Label** (600, 12.5px, 0.05em, uppercase): small section labels in the overview and "Events in view"; the Featured label uses Ink Secondary and 0.06em.
 - **Chart text** (400, 11px, tabular numerals): axes, lane labels, event labels and numbers, strip labels, credits.
 
 ### Named Rules
@@ -249,7 +249,7 @@ Print hides navigation and controls, keeps tiles and charts whole, and ends with
 
 ## Elevation & Depth
 
-Flat. There are no shadows anywhere in the system. Depth is tonal and structural only: white sheets on warm paper (dark: slightly lifted charcoal on near-black), separated by 1px hairlines. The pressed range button and the tooltip invert to ink, which is the only "raised" state.
+Flat. There are no shadows anywhere in the system. Depth is tonal and structural only: white sheets on warm paper (dark: slightly lifted charcoal on near-black), separated by 1px hairlines. The pressed range button and the tooltip invert to ink, which is the only "raised" state; in dark mode the pressed button fills with the Range Bar gray instead, with ink text in 600, because an ink block glares on the dark sheet.
 
 ### Named Rules
 **The Paper Rule.** Surfaces are flat. A border separates; nothing floats.
@@ -263,7 +263,7 @@ Gently squared. Three radii: 2px for small swatches and focus outlines, 4px for 
 ### Buttons
 - **Shape:** gently squared (4px).
 - **Full chart and context:** the one tinted button. Teal-ink text on a 10% teal wash with a 45% teal border, 600 weight, 3px 11px padding; hover inverts to teal fill with sheet-colored text.
-- **Range buttons:** a segmented group in one hairline frame, 13px Ink Secondary labels, hairline dividers; the pressed state fills with ink. About 36px tall on phones. Tiles carry two (25 yrs, All); chart pages carry the full set and a custom range.
+- **Range buttons:** a segmented group in one hairline frame, 13px Ink Secondary labels, hairline dividers; the pressed state fills with ink (dark mode: the Range Bar gray, ink text in 600). About 36px tall on phones. Tiles carry two (25 yrs, All); chart pages carry the full set and a custom range.
 - **Action buttons** (Download CSV, Download image, Copy link, Copy embed code): sheet background, hairline border, 13.5px ink text, 4px 10px padding.
 - **Download image menu:** the button opens a list (a disclosure, so it works by keyboard; Escape or a click elsewhere closes it): Full width, Wide 16:9, Square, Portrait 4:5, Story 9:16, each a 600-weight name over a 12.5px Muted line with its pixel size and platforms. Sheet background, hairline border, 4px radius, no shadow; under the button on desktop, opening in place on phones.
 - **Focus:** 2px teal outline with 2px offset on everything focusable.
@@ -273,6 +273,7 @@ Gently squared. Three radii: 2px for small swatches and focus outlines, 4px for 
 - **Chart frame:** sheet background, hairline border, 6px radius; the source credit sits inside the frame along the bottom edge so a cropped screenshot keeps it.
 
 ### Navigation
+- **Featured line:** the lead item above the overview (almanac) and the article list (articles index), shown only while an article's `featured:` date is current. A 2px ink rule above it, as a newspaper marks its lead story, and a hairline below; the "FEATURED" label (12.5px uppercase, Ink Secondary) on its own line; the title in 700 (19px on the almanac, the list's 22px on the articles index, 19px there on phones) with an arrow; then the article's dek in Ink Secondary, cut at two lines (three on phones). No box, no color, no badge.
 - **Masthead:** site name left, "Articles" right on the same row, tagline in Ink Secondary, a short Updated line in Muted.
 - **Section nav:** sticky at the top at every width: text links in Ink Secondary with hairline underlines; the section whose top has passed under the nav is marked (`aria-current`, ink, a 2px underline). On phones it is one sideways-scrolling row of 46px targets that fades at an edge with more to scroll to and keeps the marked link in view. Jumps land just below it (scroll margin from its measured height).
 - **Back to the overview:** "↑ At a glance" at the right of every section heading (not in the tiles-only view).

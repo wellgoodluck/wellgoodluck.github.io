@@ -355,8 +355,9 @@ def render_index(articles):
     page += '<main class="wrap article">\n<h1>Articles</h1>\n<p class="dek">Longer reads on what the figures show, what is settled, and what is argued about.</p>\n'
     feat, _ = featured_pick(articles)
     if feat:
+        dek = f'<p class="fdek">{inline(feat["dek"])}</p>' if feat.get("dek") else ""   # cut to two lines by site.css
         page += (f'<aside class="featured" aria-label="Featured article"><span class="flabel">Featured</span>'
-                 f'<a href="{feat["slug"]}.html">{inline(feat["title"])}</a> →</aside>\n')
+                 f'<a class="ftitle" href="{feat["slug"]}.html">{inline(feat["title"])}</a> →{dek}</aside>\n')
 
     def updated_note(a):
         return (f'<span class="when">Updated {fmt_date(a["updated"])}</span>'
@@ -438,7 +439,7 @@ def write_explainers(out_root, articles):
         for tid in tile_ids(a):
             ex[tid] = {"url": f"articles/{a['slug']}.html", "title": a["title"], "hook": a.get("hook", "")}
     feat, nxt = featured_pick(articles)
-    featured = {"url": f"articles/{feat['slug']}.html", "title": feat["title"]} if feat else None
+    featured = {"url": f"articles/{feat['slug']}.html", "title": feat["title"], "dek": feat.get("dek", "")} if feat else None
     os.makedirs(os.path.join(out_root, "data"), exist_ok=True)
     with open(os.path.join(out_root, "data", "explainers.json"), "w", encoding="utf-8") as f:
         json.dump({"note": "Written by tools/build_articles.py from the tile: line of each Plain words page, "

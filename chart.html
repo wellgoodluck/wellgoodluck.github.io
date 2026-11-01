@@ -66,7 +66,7 @@
       --banner: #3a2f10; --banner-ink: #f3dfa0;
       --c1: #fb8304; --c2: #9980fe; --c3: #7c6713; --c4: #ba0f9b;
       --ref: #a09e97; --dem: #2b4775; --rep: #6e3332; --divided: #2f2f2c; --ind: #6b6a66;
-      --era-a: #3a3935; --era-b: #4a4944; --war: #5e5c57; --qe-up: #34332f; --qe-down: #66645d;
+      --era-a: #3a3935; --era-b: #4a4944; --war: #5e5c57; --qe-up: #4a4944; --qe-down: #66645d;
       --range: #45443f;
     }
   }
@@ -120,7 +120,7 @@
   .headline .value { font-size: 44px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
   .headline .when { color: var(--muted); font-size: 13.5px; }
   .compare { margin: 6px 0 0; color: var(--ink-2); font-size: 13.5px; }
-  .compare span + span::before { content: "\00a0\00a0|\00a0\00a0"; color: var(--hairline); }
+  .compare span + span::before { content: "\00a0\00a0|\00a0\00a0"; content: "\00a0\00a0|\00a0\00a0" / ""; color: var(--hairline); }   /* "/ """: a divider, not read aloud */
 
   .strip { margin: 16px 0 2px; max-width: 560px; }
   .strip svg { display: block; width: 100%; height: 44px; overflow: visible; }
@@ -140,6 +140,8 @@
   .ranges button + button { border-left: 1px solid var(--hairline); }
   .ranges button:focus-visible { outline-offset: -2px; }
   .ranges button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+  /* dark: the pressed range button fills with the range bar's gray; an ink block glared on the dark sheet */
+  @media screen and (prefers-color-scheme: dark) { .ranges button[aria-pressed="true"] { background: var(--range); color: var(--ink); font-weight: 600; } }
   @media (max-width: 760px) { .ranges button { padding: 8px 12px; } }   /* about 36px tall on phones */
   .custom { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--ink-2); flex-wrap: wrap; }
   .custom .fields { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
@@ -219,7 +221,7 @@
   .actions .img-menu { position: relative; }
   .actions .img-menu > summary { list-style: none; padding: 4px 10px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); cursor: pointer; font-size: 13.5px; }
   .actions .img-menu > summary::-webkit-details-marker { display: none; }
-  .actions .img-menu > summary::after { content: " ▾"; color: var(--muted); }
+  .actions .img-menu > summary::after { content: " ▾"; content: " ▾" / ""; color: var(--muted); }   /* "/ """: drawn, not part of the name */
   .img-list { position: absolute; left: 0; top: calc(100% + 4px); z-index: 6; width: 300px; background: var(--surface); border: 1px solid var(--hairline); border-radius: 4px; padding: 4px 0; }
   @media (max-width: 600px) { .actions .img-menu[open] { flex-basis: 100%; } .img-list { position: static; width: auto; margin: 6px 0 0; } }
   .actions .img-list button { display: block; width: 100%; text-align: left; border: 0; border-radius: 0; background: none; padding: 7px 12px; cursor: pointer; }
@@ -244,8 +246,8 @@
   .panel details:last-child { border-bottom: 1px solid var(--hairline); }
   .panel summary { cursor: pointer; font-weight: 600; font-size: 15px; list-style: none; display: flex; justify-content: space-between; align-items: center; }
   .panel summary::-webkit-details-marker { display: none; }
-  .panel summary::after { content: "+"; color: var(--muted); font-weight: 400; }
-  .panel details[open] summary::after { content: "–"; }
+  .panel summary::after { content: "+"; content: "+" / ""; color: var(--muted); font-weight: 400; }   /* the open state is announced; the sign isn't read */
+  .panel details[open] summary::after { content: "–"; content: "–" / ""; }
   .panel summary .count { font-weight: 400; color: var(--muted); font-size: 12.5px; margin-left: 8px; }
   .opt { display: grid; grid-template-columns: 18px 1fr; gap: 0 8px; margin: 8px 0 0; font-size: 13.5px; align-items: start; }
   .opt input { margin: 4px 0 0; accent-color: var(--ink); }   /* not the browser's blue, which is a party's color here */
@@ -687,31 +689,31 @@
       }
       svg.appendChild(axis);
 
-      // reference lines
-      const placed = [];
+      // reference lines. Each label goes where neither the data nor a label already drawn is: scan the plot in
+      // label-width windows, right to left, row by row (above the line first, then just below it, then further out)
+      const placedLabs = [];
       lineVals.slice().sort((a, b) => b.v - a.v).forEach(x => {
         const y = ys(x.v);
         svg.appendChild(svgEl('line', { class: 'ref' + (x.o.stat === 'median' ? ' median' : ''), x1: mL, x2: width - mR, y1: y, y2: y }));
-        let ly = y - 4;                            // above the line; below it if that collides with a label already placed
-        if (placed.some(p => Math.abs(p - ly) < 12)) ly = y + 12;
-        if (placed.some(p => Math.abs(p - ly) < 12)) ly = y + 24;
-        placed.push(ly);
-        // place the label where the data line is farthest from it: scan the plot in label-width windows,
-        // right to left, and take the first window in which no point comes within 12px of the label's row
-        const text = x.o.label.replace(/\s*\(.*\)$/, '') + ' ' + fmtValue(x.v, d); let lw = textW(text, 11) + 8;
+        const text = x.o.label.replace(/\s*\(.*\)$/, '') + ' ' + fmtValue(x.v, d);
         const ptsXY = pts.map(p => [xs(parseDate(p[0]).getTime()), ys(clampV(p[1]))]);
         comps.forEach(o => o.observations.filter(inWin).forEach(p => ptsXY.push([xs(parseDate(p[0]).getTime()), ys(clampV(p[1]))])));
-        let lx = null, anchor = 'end';
-        const tryRow = (row) => { for (let xb = width - mR; xb - lw >= mL; xb -= lw / 2) { if (clearAt(xb - lw, xb, row)) return xb - 2; } return null; };
-        const clearAt = (xa, xb, row) => !ptsXY.some(q => q[0] >= xa && q[0] <= xb && Math.abs(q[1] - (row - 4)) < 12);
-        for (const row of [ly, y - 16, y + 24, y - 28]) { const r = tryRow(row); if (r !== null) { lx = r; ly = row; break; } }
-        let shown = text;
-        if (lx === null) {                                       // no room for the full label anywhere: show just the value, name on hover
+        const hitsLab = (xa, xb, row) => placedLabs.some(q => Math.abs(q.row - row) < 12 && xa < q.x1 + 6 && xb > q.x0 - 6);
+        const hitsData = (xa, xb, row) => ptsXY.some(q => q[0] >= xa && q[0] <= xb && Math.abs(q[1] - (row - 4)) < 12);
+        const tryRow = (row, lw, data) => {
+          for (let xb = width - mR; xb - lw >= mL; xb -= lw / 2) if (!hitsLab(xb - lw, xb, row) && !(data && hitsData(xb - lw, xb, row))) return xb - 2;
+          return null;
+        };
+        const rows = [y - 4, y + 12, y - 16, y + 24, y - 28].filter(r => r - 10 >= mT - 2 && r <= mT + ih + 2);
+        const place = (lw, data) => { for (const row of rows) { const r = tryRow(row, lw, data); if (r !== null) return [r, row]; } return null; };
+        let shown = text, lw = textW(text, 11) + 8, at = place(lw, true);
+        if (!at) {                                    // no room for the full label: show just the value, name on hover
           shown = fmtValue(x.v, d); lw = textW(shown, 11) + 8;
-          for (const row of [y - 4, y - 16, y + 24]) { const r = tryRow(row); if (r !== null) { lx = r; ly = row; break; } }
-          if (lx === null) { lx = width - mR - 2; ly = y - 4; }
+          at = place(lw, true) || place(lw, false) || [width - mR - 2, y - 4];   // clear of the data if possible, of the other labels at least
         }
-        const lab = svgEl('text', { class: 'ref-label', x: lx, y: ly, 'text-anchor': anchor });
+        const [lx, ly] = at;
+        placedLabs.push({ x0: lx - lw + 6, x1: lx, row: ly });
+        const lab = svgEl('text', { class: 'ref-label', x: lx, y: ly, 'text-anchor': 'end' });
         lab.textContent = shown; lab.appendChild(svgEl('title', {})); lab.querySelector('title').textContent = text; svg.appendChild(lab);
       });
 
