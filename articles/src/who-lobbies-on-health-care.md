@@ -1,7 +1,7 @@
 ---
 title: Who Lobbies on Health Care, How Much, and on What
 dek: Health care reported more federal lobbying than any other part of the economy in 2025. Drugmakers, insurers and hospitals spent the most, but doctors, nurses, AARP and patient groups lobby on the same bills, and many patient groups take money from companies with a stake in those bills. What the disclosures show for 2025 and 2026, how to read them, what they leave out, and what the research says lobbying buys.
-date: 2026-11-04
+date: 2026-11-01
 kind: concept
 label: Who lobbies on health care
 hook: disclosed federal lobbying by industry, doctors, unions and patient groups, and what it leaves out
