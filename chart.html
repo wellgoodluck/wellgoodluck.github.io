@@ -95,10 +95,20 @@
     .panel { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow-y: auto; overscroll-behavior: contain; padding-right: 4px; }
     .to-panel, .to-chart { display: none; }
   }
-  .to-panel { margin: 10px 0 0; font-size: 14px; }
-  .to-chart { margin: 0 0 10px; font-size: 13.5px; }
-  .to-panel a, .to-chart a { color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--hairline); }
+  .to-panel { margin: 0; font-size: 14px; }
+  .to-chart { margin: -10px 0 0; font-size: 13.5px; }
+  /* thumb-sized: about 44px tall */
+  .to-panel a, .to-chart a { display: inline-block; padding: 12px 0; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; }
   #chart-top, #overlays { scroll-margin-top: 12px; }
+  /* on phones the panel sits right under the key (see placePanel), and a bar leads back to the chart while it is in view */
+  @media (max-width: 860px) {
+    .panel { margin: 18px 0 0; }
+    .panel summary { min-height: 30px; }
+    .opt > label { padding: 3px 0; }
+  }
+  .see-chart { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; background: var(--surface); border-top: 1px solid var(--hairline); text-align: center; padding-bottom: env(safe-area-inset-bottom, 0); }
+  .see-chart[hidden] { display: none; }
+  .see-chart a { display: block; min-height: 44px; line-height: 44px; font-size: 14.5px; font-weight: 600; color: var(--ink); text-decoration: none; }
 
   .headline { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 14px; margin: 0 0 2px; }
   .headline .value { font-size: 44px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
@@ -151,6 +161,7 @@
   .chart .ev { stroke: var(--ink-2); stroke-width: 1; }
   .chart .ev-mark { fill: var(--ink-2); }
   .chart .ev-label { font-size: 10.5px; fill: var(--ink-2); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
+  .chart .ev-num { font-size: 10px; font-weight: 600; fill: var(--ink-2); font-variant-numeric: tabular-nums; }
   .chart .lane-label { font-size: 11px; fill: var(--muted); }
   .chart .seg-label { font-size: 10.5px; fill: var(--ink); pointer-events: none; }
   .chart .seg-label.light { fill: #fff; }
@@ -158,13 +169,14 @@
   .chart .seg { stroke: var(--surface); stroke-width: 1; }
   .chart .sub-title { font-size: 11px; fill: var(--ink-2); }
   .chart .credit { font-size: 10.5px; fill: var(--muted); }
-  .tip { position: absolute; pointer-events: none; display: none; background: var(--ink); color: var(--surface); font-size: 12px; line-height: 1.35; padding: 6px 9px; border-radius: 4px; white-space: nowrap; transform: translate(-50%, -100%); z-index: 2; max-width: 320px; }
+  .tip { position: absolute; pointer-events: none; display: none; background: var(--ink); color: var(--surface); font-size: 12px; line-height: 1.35; padding: 6px 9px; border-radius: 4px; width: max-content; max-width: min(320px, calc(100% - 16px)); transform: translate(-50%, -100%); z-index: 2; }
   .tip b { font-weight: 600; }
   .tip .k { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; vertical-align: 0; }
   .legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 8px 0 0; font-size: 12.5px; color: var(--ink-2); }
   .legend i { display: inline-block; width: 12px; height: 3px; vertical-align: 3px; margin-right: 6px; border-radius: 1px; }
   .legend i.rec { width: 10px; height: 10px; background: var(--recession); border: 1px solid var(--hairline); vertical-align: -1px; }
   .legend i.dash { height: 0; border-top: 2px dashed var(--ref); }
+  .legend i.lane { width: 10px; height: 10px; border: 1px solid var(--hairline); vertical-align: -1px; border-radius: 0; }
   .framing { margin: 10px 0 0; padding: 8px 12px; background: var(--banner); color: var(--banner-ink); border-radius: 4px; font-size: 13.5px; }
   .framing[hidden] { display: none; }
   .events-list { margin: 12px 0 0; font-size: 13.5px; }
@@ -173,6 +185,7 @@
   @media (max-width: 600px) { .events-list ul { columns: 1; } }
   .events-list li { break-inside: avoid; padding: 2px 0; }
   .events-list .d { color: var(--muted); font-variant-numeric: tabular-nums; margin-right: 6px; }
+  .events-list .num { display: inline-block; min-width: 1.7em; font-weight: 600; color: var(--ink-2); font-variant-numeric: tabular-nums; }
   .events-list .n { color: var(--ink-2); }
   .events-list .src { margin-left: 6px; color: var(--muted); font-size: 12.5px; }
 
@@ -203,6 +216,10 @@
   .panel summary .count { font-weight: 400; color: var(--muted); font-size: 12.5px; margin-left: 8px; }
   .opt { display: grid; grid-template-columns: 18px 1fr; gap: 0 8px; margin: 8px 0 0; font-size: 14px; align-items: start; }
   .opt input { margin: 4px 0 0; accent-color: var(--ink); }   /* not the browser's blue, which is a party's color here */
+  .opt > label { grid-column: 2; cursor: pointer; }
+  .opt input:disabled + label { color: var(--muted); cursor: default; }
+  .why .more { font: inherit; color: var(--ink-2); background: none; border: 0; padding: 2px 2px; margin: 0 0 0 2px; text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 2px; cursor: pointer; }
+  .why .more:hover { text-decoration-color: currentColor; }
   .cap-note { margin: 6px 0 0; font-size: 12.5px; color: var(--ink-2); }
   .adjust-note { margin: 4px 0 0; font-size: 13px; color: var(--ink-2); }
   .status .retry { font: inherit; font-weight: 600; color: var(--ink); background: var(--surface); border: 1px solid var(--hairline); border-radius: 4px; padding: 4px 10px; cursor: pointer; }
@@ -240,7 +257,7 @@
   @media print {
     :root, :root:not(.export-light) { --page: #fff; --surface: #fff; }
     body { background: #fff; }
-    .panel, .actions, details.table, .ranges, .custom, .to-panel, .to-chart, .crumb { display: none !important; }
+    .panel, .actions, details.table, .ranges, .custom, .to-panel, .to-chart, .crumb, .see-chart { display: none !important; }
     .layout { display: block; padding: 12px 0; }
     .chart, figure, .events-list li { break-inside: avoid; }
     footer { padding-bottom: 0; }
@@ -325,6 +342,14 @@
     return n;
   }
   const SVG = 'http://www.w3.org/2000/svg';
+  // the hover box: centered over the point, kept inside the chart's frame, and below the point when there's no room above
+  function placeTip(tip, box, svgRect, sx, sy) {
+    const br = box.getBoundingClientRect(), ox = svgRect.left - br.left, oy = svgRect.top - br.top;
+    const half = tip.offsetWidth / 2 + 4, above = oy + sy - 8 - tip.offsetHeight >= 0;
+    tip.style.left = Math.min(Math.max(ox + sx, half), br.width - half) + 'px';
+    tip.style.top = (above ? oy + sy - 8 : oy + sy + 12) + 'px';
+    tip.style.transform = above ? 'translate(-50%, -100%)' : 'translate(-50%, 0)';
+  }
   function svgEl(tag, attrs) { const n = document.createElementNS(SVG, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); return n; }
   function textW(s, px) { return s.length * (px || 11) * 0.56; }
   function median(vals) { const s = vals.slice().sort((a, b) => a - b); const m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; }
@@ -482,6 +507,8 @@
     const obs = t.observations, d = t.display;
     const legend = el('div', { class: 'legend' }), framing = el('div', { class: 'framing', hidden: '' }), evList = el('div', { class: 'events-list' });
     function activeOverlays() { return overlays.filter(o => state.on.has(o.id) && appliesTo(o, t.id) && (!o.requires || state.on.has(o.requires))); }
+    const EMBED_MIN_PLOT = 140; let embedTrim = 0, fitting = false;
+    if (state.embed && document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (box.isConnected) draw(); });   // the key may wrap differently once the font is in
     function colorFor(id) { return COLORS[state.slots.has(id) ? state.slots.get(id) : 0]; }
 
     function window_() {
@@ -508,12 +535,14 @@
 
       const width = Math.max(300, box.clientWidth - 16 || 700);
       const narrow = width < 560;
-      const laneLabelW = eras.length ? Math.max(...eras.map(o => textW(o.lane, 11))) + 10 : 0;
+      // on a narrow chart each lane's name sits above it instead of in the left margin, so the plot keeps its width
+      const laneLabelW = eras.length && !narrow ? Math.max(...eras.map(o => textW(o.lane, 11))) + 10 : 0, laneNameH = narrow ? 13 : 0;
       const mL = Math.max(narrow ? 44 : 52, laneLabelW), mR = 14, mT = evs.length ? (narrow ? 22 : 40) : 12;
-      const plotH = state.embed ? (narrow ? 200 : 280) : (narrow ? 240 : 380), subH = narrow ? 90 : 120, laneH = 18, laneGap = 4;
+      const basePlotH = state.embed ? (narrow ? 200 : 280) : (narrow ? 240 : 380);
+      const plotH = state.embed ? Math.max(EMBED_MIN_PLOT, basePlotH - embedTrim) : basePlotH, subH = narrow ? 90 : 120, laneH = 18, laneGap = 4;
       const xAxisH = 22;
       const subsH = subs.length * (subH + 10);
-      const lanesH = eras.length ? eras.length * (laneH + laneGap) + 6 : 0;
+      const lanesH = eras.length ? eras.length * (laneH + laneGap + laneNameH) + 6 : 0;
       const creditH = 16;   // the credit line, inside the frame, so a cropped screenshot keeps it
       const height = mT + plotH + xAxisH + subsH + lanesH + 4 + creditH;
       const iw = width - mL - mR, ih = plotH;
@@ -635,16 +664,22 @@
       evs.forEach(o => o.items.forEach(it => { const tm = parseDate(it.date).getTime(); if (tm >= x0 && tm <= x1) evItems.push({ ...it, tm, group: o.label }); }));
       evItems.sort((a, b) => a.tm - b.tm);
       const rowEnd = [-Infinity, -Infinity];   // right edge of the last label placed on each row
-      // markers closer than 9px are drawn as one, with a "+N" badge; every marker names its events on hover
+      // markers closer than 12px (18px on a narrow chart) are drawn as one, with a "+N" badge; every marker names its
+      // events on hover. A narrow chart has no room for names: each marker gets a number, and the list below uses it.
       const groups = [];
-      evItems.forEach(it => { const x = xs(it.tm); const g = groups[groups.length - 1]; if (g && x - g.x < 12) g.items.push(it); else groups.push({ x, items: [it] }); });
-      groups.forEach(g => {
+      evItems.forEach(it => { const x = xs(it.tm); const g = groups[groups.length - 1]; if (g && x - g.x < (narrow ? 18 : 12)) g.items.push(it); else groups.push({ x, items: [it] }); });
+      groups.forEach((g, gi) => {
         const x = g.x, it = g.items[0], n = g.items.length;
+        g.items.forEach(e => { e.num = narrow ? gi + 1 : null; });
         svg.appendChild(svgEl('line', { class: 'ev', x1: x, x2: x, y1: mT - 2, y2: mT + ih, 'stroke-dasharray': '2 3' }));
         const mark = svgEl('path', { class: 'ev-mark', d: 'M' + x + ',' + (mT - 2) + ' l-4,-6 l8,0 z' });
         mark.appendChild(svgEl('title', {})); mark.querySelector('title').textContent = g.items.map(e => evDate(e) + ': ' + e.label).join('\n');
         svg.appendChild(mark);
-        if (narrow) return;
+        if (narrow) {
+          const nt = svgEl('text', { class: 'ev-num', x: Math.min(Math.max(x, mL + 5), width - mR - 5), y: mT - 11, 'text-anchor': 'middle' });
+          nt.textContent = gi + 1; nt.appendChild(svgEl('title', {})); nt.querySelector('title').textContent = mark.querySelector('title').textContent; svg.appendChild(nt);
+          return;
+        }
         // one label per group: the first event's name, plus "+N" when others share the spot; placed by the same
         // two-row collision rule as before, so a crowded stretch shows what fits and the hover title and list name the rest
         const text = (it.label.length > 30 ? it.label.slice(0, 28) + '…' : it.label) + (n > 1 ? ' +' + (n - 1) : ''), w = textW(text, 10.5);
@@ -685,10 +720,32 @@
 
       // era lanes
       const laneTop = cursorY + (eras.length ? 2 : 0);
+      // Party lanes name every full term the same way: full names if they all fit, else last names, else letters. A term
+      // shorter than the office's own (four years for a president, two for Congress), still running, or cut off by the
+      // window may drop to its letter. Other lanes name each segment that fits.
+      const TERM_YEARS = { president: 4, senate: 2, house: 2, unified: 2 }, lastObs = parseDate(obs[obs.length - 1][0]).getTime();
+      const PARTY_NAMES = {
+        full: s => s.label || (s.party === 'X' ? '' : s.party),
+        last: s => s.party === 'X' ? (s.label ? 'Div.' : '') : s.label && !/^Unified /.test(s.label) ? s.label.split(' ').pop() : s.party,
+        letter: s => s.party === 'X' ? '' : s.party,
+      };
+      const fits = (text, w) => text.length === 1 ? w > 12 : textW(text, 10.5) + 8 < w;
       eras.forEach((o, li) => {
-        const y = laneTop + li * (laneH + laneGap);
+        const y = laneTop + li * (laneH + laneGap + laneNameH) + laneNameH;
         const segs = o.id === 'unified' ? unifiedSegments(ctx.ovById) : o.segments;
-        const lab = svgEl('text', { class: 'lane-label', x: mL - 6, y: y + laneH - 5, 'text-anchor': 'end' }); lab.textContent = o.lane; svg.appendChild(lab);
+        const lab = narrow ? svgEl('text', { class: 'lane-label', x: mL, y: y - 3, 'text-anchor': 'start' }) : svgEl('text', { class: 'lane-label', x: mL - 6, y: y + laneH - 5, 'text-anchor': 'end' });
+        lab.textContent = o.lane; svg.appendChild(lab);
+        const visW = s => { const a = Math.max(parseDate(s.start).getTime(), x0), b = Math.min(s.end ? parseDate(s.end).getTime() : x1, x1); return b > a ? xs(b) - xs(a) : 0; };
+        const term = (TERM_YEARS[o.id] || 0) - 0.1;
+        const short = s => !s.end || parseDate(s.start).getTime() < x0 || parseDate(s.end).getTime() > x1
+          || (parseDate(s.end).getTime() - parseDate(s.start).getTime()) / (365.25 * 86400000) < term;
+        let mode = null, lastLab = null;
+        if (segs.some(s => s.party)) {
+          const vis = segs.map(s => ({ s, w: visW(s) })).filter(v => v.w > 0);
+          let decisive = vis.filter(v => !short(v.s));
+          if (!decisive.length) decisive = vis;
+          mode = ['full', 'last', 'letter'].find(m => decisive.every(v => { const n = PARTY_NAMES[m](v.s); return !n || fits(n, v.w); })) || 'letter';
+        }
         segs.forEach(s => {
           const a = Math.max(parseDate(s.start).getTime(), x0), b = Math.min(s.end ? parseDate(s.end).getTime() : x1, x1); if (b <= a) return;
           const w = xs(b) - xs(a);
@@ -700,17 +757,24 @@
           const r = svgEl('rect', { class: 'seg', x: xs(a), y, width: Math.max(1, w), height: laneH, fill });
           r.appendChild(svgEl('title', {})); r.querySelector('title').textContent = (s.label || (s.party === 'D' ? 'Democratic' : s.party === 'R' ? 'Republican' : '')) + ': ' + fmtDate(s.start) + ' – ' + (s.end ? fmtDate(s.end) : 'present') + (s.note ? '. ' + s.note : '');
           svg.appendChild(r);
-          const text = s.label || (s.party === 'D' ? 'D' : s.party === 'R' ? 'R' : '');
+          if (mode) {
+            let name = PARTY_NAMES[mode](s);
+            if (name && !fits(name, w)) name = short(s) && fits(PARTY_NAMES.letter(s), w) ? PARTY_NAMES.letter(s) : '';
+            if (name) { const tl = svgEl('text', { class: 'seg-label', x: xs(a) + w / 2, y: y + laneH - 5, 'text-anchor': 'middle' }); tl.textContent = name; svg.appendChild(tl); }
+            return;
+          }
+          const text = s.label || '';
           const tw = textW(text, 10.5), si = segs.indexOf(s), isLast = si === segs.length - 1;
           const prev = si > 0 ? segs[si - 1] : null, prevText = prev ? (prev.label || '') : '';
           const prevRoom = prev ? xs(Math.max(parseDate(prev.start).getTime(), x0)) * 0 + (xs(a) - xs(Math.max(parseDate(prev.start).getTime(), x0))) : 0;
-          if (text && w > tw + 8) { const tl = svgEl('text', { class: 'seg-label' + (light ? ' light' : ''), x: xs(a) + w / 2, y: y + laneH - 5, 'text-anchor': 'middle' }); tl.textContent = text; svg.appendChild(tl); }
-          else if (text && isLast && !(s.party === 'D' || s.party === 'R') && prevRoom >= tw + textW(prevText, 10.5) + 20) {
+          if (text && w > tw + 8) { const tl = svgEl('text', { class: 'seg-label' + (light ? ' light' : ''), x: xs(a) + w / 2, y: y + laneH - 5, 'text-anchor': 'middle' }); tl.textContent = text; svg.appendChild(tl); lastLab = { tl, a: xs(a), si }; }
+          else if (text && isLast && prevRoom >= tw + textW(prevText, 10.5) + 20) {
             // the current segment is too narrow for its name: write it ending at the segment's right edge, spilling
-            // left over the previous segment, when that segment is wide enough to hold both names
+            // left over the previous segment, when that segment is wide enough to hold both names; the previous name
+            // moves to the middle of what is left
             const tl = svgEl('text', { class: 'seg-label outside', x: xs(a) + w - 3, y: y + laneH - 5, 'text-anchor': 'end' }); tl.textContent = text; svg.appendChild(tl);
+            if (lastLab && lastLab.si === si - 1) lastLab.tl.setAttribute('x', (lastLab.a + xs(a) + w - 3 - tw - 4) / 2);
           }
-          else if (text && w > 12 && text.length > 1 && (s.party === 'D' || s.party === 'R')) { const tl = svgEl('text', { class: 'seg-label' + (light ? ' light' : ''), x: xs(a) + w / 2, y: y + laneH - 5, 'text-anchor': 'middle' }); tl.textContent = s.party; svg.appendChild(tl); }
         });
       });
 
@@ -744,8 +808,7 @@
         const near = evItems.filter(e => Math.abs(e.tm - times[i]) <= 20 * 86400000);
         near.forEach(e => { html += '<br>▲ ' + e.label + ' (' + evDate(e) + ')'; });
         tip.innerHTML = html; tip.style.display = 'block';
-        const sx = cx * (rect.width / width), sy = cy * (rect.height / height);
-        tip.style.left = Math.min(Math.max(sx, 90), rect.width - 90) + 'px'; tip.style.top = Math.max(sy - 10 + 8, 36) + 'px';
+        placeTip(tip, box, rect, cx * (rect.width / width), cy * (rect.height / height));
       }
       function hide() { xhair.setAttribute('visibility', 'hidden'); dots.forEach(x => x.setAttribute('visibility', 'hidden')); tip.style.display = 'none'; }
       hit.addEventListener('mousemove', e => show(e.clientX));
@@ -764,6 +827,12 @@
       compPts.concat(subs.map(o => ({ o }))).forEach(c => legend.appendChild(el('span', {}, [el('i', { style: 'background:' + colorFor(c.o.id) }), c.o.label])));
       lineVals.forEach(x => legend.appendChild(el('span', {}, [el('i', { class: 'dash' }), x.o.label])));
       legend.appendChild(el('span', {}, [el('i', { class: 'rec' }), 'Recessions (NBER)']));
+      // lane colors that carry meaning get a key: party, and the Fed's lighter (easing) and darker (tightening) shades
+      const laneKey = (fill, text) => legend.appendChild(el('span', {}, [el('i', { class: 'lane', style: 'background:' + fill }), text]));
+      const onLane = id => eras.some(o => o.id === id);
+      if (eras.some(o => o.political)) { laneKey('var(--dem)', 'Democratic'); laneKey('var(--rep)', 'Republican'); if (onLane('unified')) laneKey('var(--divided)', 'Divided'); }
+      const cyc = onLane('fed_cycles'), qe = onLane('fed_balance_sheet');
+      if (cyc || qe) { laneKey('var(--qe-up)', 'Fed ' + [cyc && 'cutting rates', qe && 'buying bonds'].filter(Boolean).join(' / ')); laneKey('var(--qe-down)', 'Fed ' + [cyc && 'raising rates', qe && 'shrinking its holdings'].filter(Boolean).join(' / ')); }
       if (evs.length) legend.appendChild(el('span', { text: '▲ ' + evs.map(o => o.label).join(', ') }));
       // framing
       const pol = act.filter(o => o.political);
@@ -774,11 +843,27 @@
         evList.appendChild(el('h3', { text: 'Events in view' }));
         const ul = el('ul');
         // an event may carry its own source (the per-item supply shocks do); it is linked after the note
-        evItems.forEach(e => ul.appendChild(el('li', {}, [el('span', { class: 'd', text: evDate(e) }), e.label, e.note ? el('span', { class: 'n', text: ' — ' + e.note }) : '',
+        evItems.forEach(e => ul.appendChild(el('li', {}, [e.num ? el('span', { class: 'num', text: String(e.num) }) : '', el('span', { class: 'd', text: evDate(e) }), e.label, e.note ? el('span', { class: 'n', text: ' — ' + e.note }) : '',
           e.source ? el('a', { class: 'src', href: e.source, rel: 'noopener', text: 'source' }) : ''])));
         evList.appendChild(ul);
       }
       ctx.onWindow && ctx.onWindow(start, end);
+      // An embed fits its frame. An article's frame has one height for every screen, and on a phone the key, lanes and
+      // framing line wrap taller. On this site's own pages the frame grows to fit (never shrinks); in a frame on another
+      // site, which can't be resized from inside, the plot gives up the difference, down to 140px.
+      if (state.embed && !fitting) {
+        const need = Math.ceil(document.getElementById('main').getBoundingClientRect().bottom + window.scrollY + 8);
+        let fe = null; try { fe = window.frameElement; } catch (e) { fe = null; }
+        if (fe) {
+          if (need > window.innerHeight) {
+            const cs = getComputedStyle(fe), edge = cs.boxSizing === 'border-box' ? parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth) + parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom) : 0;
+            fe.style.height = (need + edge) + 'px';
+          }
+        } else {
+          const next = Math.max(0, Math.min(basePlotH - EMBED_MIN_PLOT, embedTrim + need - window.innerHeight));
+          if (next !== embedTrim) { embedTrim = next; fitting = true; try { draw(); } finally { fitting = false; } }
+        }
+      }
     }
     // hover box: a long name drops its trailing parenthetical ("U-6 (incl. …)" -> "U-6"), else ends at a word
     function shortLabel(s) {
@@ -818,12 +903,19 @@
     head.appendChild(custom);
 
     const toPanel = el('p', { class: 'to-panel' }), toPanelA = el('a', { href: '#overlays' }); toPanel.appendChild(toPanelA);
-    function syncToPanel() { const n = Array.from(state.on).filter(id => ctx.ovById[id] && appliesTo(ctx.ovById[id], t.id)).length; toPanelA.textContent = 'Overlays' + (n ? ' · ' + n + ' on' : '') + ' ↓'; }
+    const panelSlot = el('div', { class: 'panel-slot' });
+    // the jump links and the phone bar say how many overlays are on
+    const seeBar = el('div', { class: 'see-chart', hidden: '' }), seeA = el('a', { href: '#chart-top' }); seeBar.appendChild(seeA);
+    function syncToPanel() {
+      const n = Array.from(state.on).filter(id => ctx.ovById[id] && appliesTo(ctx.ovById[id], t.id)).length;
+      toPanelA.textContent = 'Overlays' + (n ? ' · ' + n + ' on' : '') + ' ↓';
+      seeA.textContent = (n ? n + (n === 1 ? ' overlay' : ' overlays') + ' on · ' : '') + 'See the chart ↑';
+    }
     syncToPanel(); ctx.syncToPanel = syncToPanel;
     const frag = document.createDocumentFragment();
     head.id = 'chart-top';
     if (state.embed) { frag.appendChild(framing); frag.appendChild(head); frag.appendChild(box); frag.appendChild(legend); }
-    else { frag.appendChild(head); frag.appendChild(box); frag.appendChild(toPanel); frag.appendChild(legend); frag.appendChild(framing); frag.appendChild(evList); }
+    else { frag.appendChild(head); frag.appendChild(box); frag.appendChild(toPanel); frag.appendChild(legend); frag.appendChild(framing); frag.appendChild(panelSlot); frag.appendChild(evList); }
     if ('ResizeObserver' in window) { let w = 0; new ResizeObserver(() => { const nw = box.clientWidth; if (nw && nw !== w) { w = nw; draw(); } }).observe(box); } else requestAnimationFrame(draw);
 
     // For "Download image": draw this view at a fixed width (the desktop layout, whatever the screen), copy the
@@ -852,7 +944,7 @@
           if (!i) return { kind: 'events', text: text.replace(/^▲\s*/, ''), color: getComputedStyle(span).color };
           const ci = getComputedStyle(i);
           if (i.classList.contains('dash')) return { kind: 'dash', text, color: ci.borderTopColor };
-          if (i.classList.contains('rec')) return { kind: 'rec', text, color: ci.backgroundColor, edge: ci.borderTopColor };
+          if (i.classList.contains('rec') || i.classList.contains('lane')) return { kind: 'rec', text, color: ci.backgroundColor, edge: ci.borderTopColor };
           return { kind: 'line', text, color: ci.backgroundColor };
         });
         return { svg: copy, width: +live.getAttribute('width'), height: +live.getAttribute('height'), key, framing: framing.hidden ? '' : framing.textContent };
@@ -861,7 +953,7 @@
         draw();
       }
     }
-    return { node: frag, redraw: draw, snapshot };
+    return { node: frag, redraw: draw, snapshot, box, panelSlot, seeBar };
   }
 
   // ---- "Download image": the current view as a PNG ---------------------------
@@ -968,6 +1060,38 @@
   }
 
   // ---- overlays panel -----------------------------------------------------
+  // A note shows its first sentence; the rest folds behind "More". Abbreviations (U.S., Jan., e.g.) and initials
+  // (G.W. Bush) don't end a sentence, a first sentence under 40 characters ("Start dates.") takes the next one with it,
+  // and a remainder too short to be worth a click stays in view.
+  const ABBR = /(?:\b(?:U\.S|U\.K|e\.g|i\.e|vs|etc|approx|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec|St|Mr|Mrs|Ms|Dr|No|Inc|Co|Corp|Gov|Sen|Rep)|\b[A-Z])$/;
+  function splitFirst(s) {
+    const re = /[.!?]["”’)]?(?=\s+["“‘(]?[A-Z0-9])/g; let m;
+    while ((m = re.exec(s))) {
+      if (ABBR.test(s.slice(0, m.index))) continue;
+      const end = m.index + m[0].length;
+      if (end < 40) continue;
+      const rest = s.slice(end).trim();
+      return rest.length > 24 ? [s.slice(0, end), rest] : [s, ''];
+    }
+    return [s, ''];
+  }
+  let noteSeq = 0;
+  // tag: 'span' under an overlay, 'p' for a group's note. extras (Source, As of, Requires) stay in view after the first sentence.
+  function noteEl(tag, cls, text, extras) {
+    const [first, rest] = splitFirst(text || '');
+    const why = el(tag, { class: cls }), id = 'note-' + (++noteSeq);
+    const firstSpan = el('span', { id, text: first }); why.appendChild(firstSpan);
+    let restSpan = null;
+    if (rest) { restSpan = el('span', { class: 'rest', hidden: '' }); restSpan.textContent = ' ' + rest; why.appendChild(restSpan); }
+    (extras || []).forEach(x => { why.appendChild(document.createTextNode(' ')); why.appendChild(x); });
+    if (rest) {
+      const more = el('button', { type: 'button', class: 'more', 'aria-expanded': 'false', text: 'More' });
+      more.addEventListener('click', () => { const open = restSpan.hidden; restSpan.hidden = !open; more.setAttribute('aria-expanded', String(open)); more.textContent = open ? 'Less' : 'More'; });
+      why.appendChild(document.createTextNode(' ')); why.appendChild(more);
+    }
+    why.descId = first ? id : '';
+    return why;
+  }
   function buildPanel(ctx, redraw) {
     const { tile: t, overlays } = ctx;
     const panel = el('aside', { class: 'panel', id: 'overlays', 'aria-label': 'Overlays' });
@@ -983,29 +1107,34 @@
       if (!items.length) return;
       const open = anyOn ? items.some(o => state.on.has(o.id)) : g === 'Reference lines';
       const det = el('details', open ? { open: '' } : {});
-      const gnote = ctx.groupNotes && ctx.groupNotes[g];
+      // a group's note covers the overlays group_note_for names; with none of them on this page, it isn't shown
+      const gfor = ctx.groupNoteFor && ctx.groupNoteFor[g];
+      const gnote = ctx.groupNotes && ctx.groupNotes[g] && (!gfor || items.some(o => gfor.includes(o.id))) ? ctx.groupNotes[g] : '';
       const onCount = items.filter(o => state.on.has(o.id)).length;
       const sum = el('summary', {}, [el('span', { text: g }, [])]);
       const cnt = el('span', { class: 'count' }); sum.firstChild.appendChild(cnt);
       function updateCount() { const n = items.filter(o => state.on.has(o.id) && (!o.requires || state.on.has(o.requires))).length; cnt.textContent = n ? n + ' on' : ''; }
       updateCount();
       det.appendChild(sum);
-      if (gnote) det.appendChild(el('p', { class: 'why gnote', text: gnote }));
+      if (gnote) det.appendChild(noteEl('p', 'why gnote', gnote));
       if (g === 'Companion series') { capNote = el('p', { class: 'cap-note', hidden: '' }); capNote.textContent = 'Four lines at a time, each in its own color. Turn one off to add another.'; det.appendChild(capNote); }
       items.forEach(o => {
         const id = 'ov-' + o.id;
-        const lab = el('label', { class: 'opt', for: id });
+        // the label holds only the name, so a checkbox's accessible name stays short; its first sentence describes it
+        const row = el('div', { class: 'opt' }), lab = el('label', { for: id });
         const cb = el('input', { type: 'checkbox', id });
         if (state.on.has(o.id)) cb.checked = true;
         if (o.requires) { cb.disabled = !state.on.has(o.requires); cb.setAttribute('data-requires', o.requires); }
-        const name = el('span', {});
-        if (o.type === 'series') name.appendChild(el('span', { class: 'sw', 'data-sw': o.id }));
-        name.appendChild(document.createTextNode(o.label));
-        const why = el('span', { class: 'why' });
-        if (o.note || o.why) why.appendChild(document.createTextNode(o.note || o.why));
-        if (o.source && o.source.url) { why.appendChild(document.createTextNode(' ')); why.appendChild(el('a', { href: o.source.url, rel: 'noopener', text: 'Source' })); }
-        if (o.as_of) why.appendChild(document.createTextNode(' As of ' + o.as_of + '.'));
-        if (o.requires) { const req = overlays.find(x => x.id === o.requires); if (req) why.appendChild(document.createTextNode(' Requires "' + req.label + '".')); }
+        if (o.type === 'series') lab.appendChild(el('span', { class: 'sw', 'data-sw': o.id }));
+        lab.appendChild(document.createTextNode(o.label));
+        const extras = [], desc = [];
+        if (o.source && o.source.url) extras.push(el('a', { href: o.source.url, rel: 'noopener', text: 'Source' }));
+        if (o.as_of) extras.push(el('span', { text: 'As of ' + o.as_of + '.' }));
+        if (o.requires) { const req = overlays.find(x => x.id === o.requires); if (req) { const r = el('span', { id: id + '-req', text: 'Requires "' + req.label + '".' }); extras.push(r); desc.push(r.id); } }
+        const note = o.note || o.why;
+        const why = note || extras.length ? noteEl('span', 'why', note, extras) : null;
+        if (why && why.descId) desc.unshift(why.descId);
+        if (desc.length) cb.setAttribute('aria-describedby', desc.join(' '));
         if (o.type === 'series') cb.setAttribute('data-series', '');
         cb.addEventListener('change', () => {
           if (cb.checked) {
@@ -1015,8 +1144,8 @@
           panel.querySelectorAll('input[data-requires="' + o.id + '"]').forEach(x => { x.disabled = !cb.checked; if (!cb.checked && x.checked) { x.checked = false; state.on.delete(x.id.slice(3)); } });
           updateCount(); writeUrl(); redraw(); paintSwatches(); syncCap(); ctx.syncToPanel && ctx.syncToPanel();
         });
-        lab.appendChild(cb); lab.appendChild(name); lab.appendChild(why);
-        det.appendChild(lab);
+        row.appendChild(cb); row.appendChild(lab); if (why) row.appendChild(why);
+        det.appendChild(row);
       });
       panel.appendChild(det);
     });
@@ -1140,7 +1269,7 @@
     }));
     const overlays = ovData.overlays.concat(comps);
     const ovById = {}; overlays.forEach(o => ovById[o.id] = o);
-    const ctx = { tile: t, data, companions: comps, overlays, ovById, politicalNote: ovData.political_note, groupNotes: ovData.group_notes || {}, median: median(t.observations.map(p => p[1])) };
+    const ctx = { tile: t, data, companions: comps, overlays, ovById, politicalNote: ovData.political_note, groupNotes: ovData.group_notes || {}, groupNoteFor: ovData.group_note_for || null, median: median(t.observations.map(p => p[1])) };
     // drop unknown overlay ids from the URL silently
     Array.from(state.on).forEach(id => { if (!ovById[id]) state.on.delete(id); });
     // a price page opens with its today's-dollars line on, so the chart shows what the range and sentence describe
@@ -1193,7 +1322,7 @@
       const act = Array.from(state.on).map(id => ctx.ovById[id]).filter(o => o && appliesTo(o, t.id) && (!o.requires || state.on.has(o.requires)));
       const subs = act.filter(o => OWN_SCALE[o.id]).length, lanes = act.filter(o => o.type === 'era').length;
       const political = act.some(o => o.political), events = act.some(o => o.type === 'events');
-      const h = 600 + subs * 130 + (lanes ? lanes * 22 + 6 : 0) + (political ? 170 : 0) + (events ? 28 : 0) + (adjusted(t) ? 20 : 0);
+      const h = 600 + subs * 130 + (lanes ? lanes * 35 + 6 : 0) + (political ? 170 : 0) + (events ? 28 : 0) + (adjusted(t) ? 20 : 0);
       const title = (t.title + ' — Economy in Context').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
       return '<iframe src="' + SITE + '/chart.html?' + q.replace(/%2C/g, ',').replace(/&/g, '&amp;') + '" width="100%" height="' + Math.ceil(h / 10) * 10 + '" style="border:0" loading="lazy" title="' + title + '"></iframe>';
     }
@@ -1220,7 +1349,20 @@
     left.appendChild(table.node);
 
     layout.appendChild(left);
-    if (!state.embed) layout.appendChild(buildPanel(ctx, chart.redraw));
+    if (!state.embed) {
+      const panel = buildPanel(ctx, chart.redraw), phone = window.matchMedia('(max-width: 860px)');
+      // desktop: a sticky column beside the chart; phone: right under the key, so a checkbox is a short scroll from the chart
+      const placePanel = () => { if (phone.matches) chart.panelSlot.appendChild(panel); else layout.appendChild(panel); syncBar(); };
+      let chartIn = true, panelIn = false;
+      const syncBar = () => { chart.seeBar.hidden = !(phone.matches && panelIn && !chartIn); };
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(es => { chartIn = es[es.length - 1].intersectionRatio > 0.5; syncBar(); }, { threshold: [0, 0.5, 1] }).observe(chart.box);
+        new IntersectionObserver(es => { panelIn = es[es.length - 1].isIntersecting; syncBar(); }).observe(panel);
+      }
+      document.body.appendChild(chart.seeBar);
+      if (phone.addEventListener) phone.addEventListener('change', placePanel); else phone.addListener(placePanel);
+      placePanel();
+    }
     main.appendChild(layout);
     writeUrl();
   }

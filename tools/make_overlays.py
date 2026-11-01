@@ -249,6 +249,20 @@ def sourced(lst):
 POLITICAL_NOTE = ("Control is shown as of inauguration (January 20) and the seating of each Congress (January 3). "
                   "Policy acts with a lag, often a year or more, and shocks do not follow the election calendar.")
 
+# Said once at the top of a panel group instead of under every overlay it covers. The chart page shows the first
+# sentence and folds the rest behind "More"; GROUP_NOTE_FOR names the overlays a note covers, so a page with none
+# of them shows no note.
+GROUP_NOTES = {
+    "Eras": "Party lanes show control as of inauguration (January 20) and the seating of each Congress (January 3). "
+            "Policy acts with a lag, often a year or more, and shocks do not follow the election calendar.",
+    "Events": "Shocks and crises, tax and spending laws, Fed turning points and trade policy are listed only if they moved "
+              "an indicator here or committed federal money on a scale that shows up in the data. The test: " + RULE[0].lower() + RULE[1:],
+}
+GROUP_NOTE_FOR = {
+    "Eras": ["president", "senate", "house", "unified"],
+    "Events": ["ev_shocks", "ev_fiscal", "ev_monetary", "ev_trade"],
+}
+
 overlays = [
     # ---- Reference lines ---------------------------------------------------
     {"id": "fed_target", "type": "line", "group": "Reference lines", "label": "Fed's 2% inflation target",
@@ -280,18 +294,18 @@ overlays = [
      "applies_to": "all", "note": "Half of all readings are above this line, half below."},
     # ---- Eras ----------------------------------------------------------------
     {"id": "president", "type": "era", "group": "Eras", "lane": "Presidency", "label": "Party of the president",
-     "applies_to": "all", "political": True, "note": POLITICAL_NOTE, "segments": segments(presidents),
+     "applies_to": "all", "political": True, "segments": segments(presidents),
      "source": {"label": "The White House", "url": "https://www.whitehouse.gov/about-the-white-house/presidents/"}},
     {"id": "senate", "type": "era", "group": "Eras", "lane": "Senate", "label": "Senate majority",
-     "applies_to": "all", "political": True, "note": POLITICAL_NOTE + " The Senate changed hands three times within the 2001–03 Congress; see the lane.",
+     "applies_to": "all", "political": True, "note": "The Senate changed hands three times within the 2001–03 Congress; see the lane.",
      "segments": segments(senate),
      "source": {"label": "U.S. Senate, Party Division", "url": "https://www.senate.gov/history/partydiv.htm"}},
     {"id": "house", "type": "era", "group": "Eras", "lane": "House", "label": "House majority",
-     "applies_to": "all", "political": True, "note": POLITICAL_NOTE, "segments": segments(house),
+     "applies_to": "all", "political": True, "segments": segments(house),
      "source": {"label": "U.S. House, Party Divisions", "url": "https://history.house.gov/Institution/Party-Divisions/Party-Divisions/"}},
     {"id": "unified", "type": "era", "group": "Eras", "lane": "Government", "label": "Unified or divided government",
      "applies_to": "all", "political": True, "derived_from": ["president", "senate", "house"],
-     "note": POLITICAL_NOTE + " Unified means one party holds the presidency and both chambers."},
+     "note": "Unified means one party holds the presidency and both chambers."},
     {"id": "fed_chair", "type": "era", "group": "Eras", "lane": "Fed chair", "label": "Federal Reserve chair",
      "applies_to": "all", "note": "Monetary policy is set by a 12-member committee, not the chair alone, and its effects take a year or more to show.",
      "segments": fed_chair_segments,
@@ -312,10 +326,10 @@ overlays = [
      "segments": wars,
      "source": {"label": "Congressional Research Service, Declarations of War and Authorizations", "url": "https://crsreports.congress.gov/product/pdf/RL/RL31133"}},
     # ---- Events --------------------------------------------------------------
-    {"id": "ev_shocks", "type": "events", "group": "Events", "label": "Shocks and crises", "applies_to": "all", "note": RULE, "items": items(shocks)},
-    {"id": "ev_fiscal", "type": "events", "group": "Events", "label": "Major tax and spending laws", "applies_to": "all", "note": "Date signed. " + RULE, "items": items(fiscal)},
-    {"id": "ev_monetary", "type": "events", "group": "Events", "label": "Fed turning points", "applies_to": ["fed_funds", "ten_year", "mortgage", "cpi", "core_cpi", "housing_starts"], "note": RULE, "items": items(monetary)},
-    {"id": "ev_trade", "type": "events", "group": "Events", "label": "Trade policy", "applies_to": "all", "note": RULE, "items": items(trade)},
+    {"id": "ev_shocks", "type": "events", "group": "Events", "label": "Shocks and crises", "applies_to": "all", "items": items(shocks)},
+    {"id": "ev_fiscal", "type": "events", "group": "Events", "label": "Major tax and spending laws", "applies_to": "all", "items": items(fiscal)},
+    {"id": "ev_monetary", "type": "events", "group": "Events", "label": "Fed turning points", "applies_to": ["fed_funds", "ten_year", "mortgage", "cpi", "core_cpi", "housing_starts"], "items": items(monetary)},
+    {"id": "ev_trade", "type": "events", "group": "Events", "label": "Trade policy", "applies_to": "all", "items": items(trade)},
     {"id": "ev_shutdowns", "type": "events", "group": "Events", "label": "Government shutdowns (2 weeks or longer)", "applies_to": "all",
      "note": "Start dates. Shorter funding lapses, of which there have been several, are not shown.", "items": items(shutdowns)},
     {"id": "ev_min_wage", "type": "events", "group": "Events", "label": "Federal minimum wage increases", "applies_to": ["payrolls", "unemployment", "claims", "pay", "cpi", "core_cpi"],
@@ -336,9 +350,11 @@ overlays = [
 overlays = [o for o in overlays if o["type"] != "events" or o.get("items")]
 
 out = {
-    "version": "2026-10-29",
+    "version": "2026-10-31",
     "maintenance": "Party lanes need a two-line edit every other January after a new Congress is seated (next: January 2027). Fed chair, FOMC estimates and events are edited as they happen.",
     "political_note": POLITICAL_NOTE,
+    "group_notes": GROUP_NOTES,
+    "group_note_for": GROUP_NOTE_FOR,
     "overlays": overlays,
 }
 path = sys.argv[1] if len(sys.argv) > 1 else "data/overlays.json"

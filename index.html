@@ -251,7 +251,7 @@
   .tip {
     position: absolute; pointer-events: none; display: none;
     background: var(--ink); color: var(--surface); font-size: 12px; line-height: 1.3;
-    padding: 5px 8px; border-radius: 4px; white-space: nowrap; transform: translate(-50%, -100%);
+    padding: 5px 8px; border-radius: 4px; width: max-content; max-width: calc(100% - 16px); transform: translate(-50%, -100%); z-index: 2;
   }
   .tip b { font-weight: 600; }
   .chart-foot { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; margin: 6px 0 0; }
@@ -261,6 +261,11 @@
   .note { margin: 12px 0 0; font-size: 13px; color: var(--ink-2); }
   .source { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
 
+  /* a tile's note, source and readings: always open on desktop (no summary), one closed disclosure on phones */
+  .tile-more > summary { margin: 10px 0 0; padding: 10px 0; font-size: 13.5px; color: var(--ink-2); cursor: pointer; border-top: 1px solid var(--hairline); }
+  .tile-more[open] > summary { padding-bottom: 0; }
+  @media (min-width: 761px) { .tile-more > summary { display: none; } }
+  .chart-foot .legend:first-child { white-space: nowrap; }
   details.table { margin: 10px 0 0; font-size: 13px; }
   details.table summary { cursor: pointer; color: var(--ink-2); }
   details.table table { border-collapse: collapse; margin-top: 8px; width: 100%; max-width: 320px; }
@@ -280,7 +285,7 @@
   @media print {
     :root { --page: #fff; --surface: #fff; }
     body { background: #fff; }
-    .secnav, .masthead .site-link, .ranges, .chart-head .full, details.table, .tip, .banner, .view-switch, .featured { display: none !important; }
+    .secnav, .masthead .site-link, .ranges, .chart-head .full, details.table, .tip, .banner, .view-switch, .featured, .tile-more > summary { display: none !important; }
     .glance { break-inside: avoid; }
     .masthead .updated a { display: none; }
     .tile { break-inside: avoid; }
@@ -329,14 +334,13 @@
 (function () {
   'use strict';
 
+  // two views on a tile; the chart page has the rest
   const RANGES = [
-    { key: '1y', label: '1 yr', years: 1 },
-    { key: '5y', label: '5 yrs', years: 5 },
-    { key: '10y', label: '10 yrs', years: 10 },
     { key: '25y', label: '25 yrs', years: 25 },
     { key: 'all', label: 'All', years: null },
   ];
   const DEFAULT_RANGE = '25y';
+  const DESKTOP = window.matchMedia('(min-width: 761px)');
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -581,6 +585,14 @@
   // dollar axes show whole dollars or full cents ($2.50, not $2.5)
   function axisDecimals(step, d) { const k = decimalsFor(step, d.scale); return d.prefix === '$' && k === 1 ? 2 : k; }
 
+  // the hover box: centered over the point, kept inside the chart's frame, and below the point when there's no room above
+  function placeTip(tip, box, svgRect, sx, sy) {
+    const br = box.getBoundingClientRect(), ox = svgRect.left - br.left, oy = svgRect.top - br.top;
+    const half = tip.offsetWidth / 2 + 4, above = oy + sy - 8 - tip.offsetHeight >= 0;
+    tip.style.left = Math.min(Math.max(ox + sx, half), br.width - half) + 'px';
+    tip.style.top = (above ? oy + sy - 8 : oy + sy + 12) + 'px';
+    tip.style.transform = above ? 'translate(-50%, -100%)' : 'translate(-50%, 0)';
+  }
   function buildChart(t, recessions, wide) {
     const box = el('div', { class: 'chart' });
     const tip = el('div', { class: 'tip' });
@@ -698,9 +710,7 @@
         hdot.setAttribute('cx', cx); hdot.setAttribute('cy', cy); hdot.setAttribute('visibility', 'visible');
         tip.innerHTML = '<b>' + fmtValue(p[1], d) + '</b><br>' + fmtPeriod(p[0], t.freq);
         tip.style.display = 'block';
-        const sx = cx * (rect.width / width), sy = cy * (rect.height / height);
-        tip.style.left = Math.min(Math.max(sx, 60), rect.width - 60) + 'px';
-        tip.style.top = Math.max(sy - 10, 30) + 'px';
+        placeTip(tip, box, rect, cx * (rect.width / width), cy * (rect.height / height));
       }
       function hide() { xhair.setAttribute('visibility', 'hidden'); hdot.setAttribute('visibility', 'hidden'); tip.style.display = 'none'; }
       hit.addEventListener('mousemove', e => show(e.clientX));
@@ -714,9 +724,9 @@
     const head = el('div', { class: 'chart-head' });
     head.appendChild(el('span', { class: 'range-title' }, [el('a', { class: 'full', href: 'chart/' + t.id + '/', text: 'Full chart and context →' })]));
     const ctl = el('div', { class: 'ranges', role: 'group', 'aria-label': 'Chart range' });
-    RANGES.forEach(r => {
-      const available = !r.years || yearsBetween(obs[0][0], obs[obs.length - 1][0]) >= r.years - 0.5;
-      if (!available) return;
+    // a series shorter than 25 years has one view, so no buttons
+    if (yearsBetween(obs[0][0], obs[obs.length - 1][0]) < 24.5) range = 'all';
+    else RANGES.forEach(r => {
       const b = el('button', { type: 'button', text: r.label, 'aria-pressed': String(r.key === range) });
       b.addEventListener('click', () => {
         range = r.key;
@@ -774,14 +784,17 @@
 
     mid.appendChild(buildChart(t, data.recessions, wide));
 
-    foot.appendChild(el('p', { class: 'note', text: t.note }));
+    // note, source and readings: in view on desktop; one closed disclosure on phones, where they tripled a tile's length
+    const more = el('details', { class: 'tile-more' });
+    more.appendChild(el('summary', { text: 'Notes, source and recent readings' }));
+    more.appendChild(el('p', { class: 'note', text: t.note }));
     const src = el('p', { class: 'source' });
     src.appendChild(document.createTextNode('Source: '));
     src.appendChild(el('a', { href: t.source.url, rel: 'noopener', text: 'FRED ' + t.source.series }));
     if (t.headline) { src.appendChild(document.createTextNode(' and ')); src.appendChild(el('a', { href: t.headline.url, rel: 'noopener', text: t.headline.series })); }
     ((t.household && t.household.sources) || []).forEach(x => { src.appendChild(document.createTextNode(', ')); src.appendChild(el('a', { href: x.url, rel: 'noopener', text: x.series })); });
     src.appendChild(document.createTextNode(', updated ' + (t.source.last_updated || '').slice(0, 10)));
-    foot.appendChild(src);
+    more.appendChild(src);
 
     // table view: the last two years of readings
     const det = el('details', { class: 'table' });
@@ -792,7 +805,9 @@
       const tr = el('tr'); tr.appendChild(el('td', { text: fmtPeriod(o[0], t.freq) })); tr.appendChild(el('td', { text: fmtValue(o[1], d) })); tbl.appendChild(tr);
     });
     det.appendChild(tbl);
-    foot.appendChild(det);
+    more.appendChild(det);
+    if (DESKTOP.matches) more.open = true;
+    foot.appendChild(more);
     return tile;
   }
 
@@ -832,6 +847,11 @@
       sec.appendChild(grid);
       main.appendChild(sec);
     });
+    // the tiles' notes are open on desktop and folded on phones; crossing the breakpoint, and printing, resets them
+    const syncMore = open => document.querySelectorAll('.tile-more').forEach(x => { x.open = open; });
+    if (DESKTOP.addEventListener) DESKTOP.addEventListener('change', () => syncMore(DESKTOP.matches)); else DESKTOP.addListener(() => syncMore(DESKTOP.matches));
+    window.addEventListener('beforeprint', () => syncMore(true));
+    window.addEventListener('afterprint', () => syncMore(DESKTOP.matches));
     // tiles render after the data loads, so a link to a section or tile has nothing to land on at first
     if (location.hash.length > 1) {
       const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));

@@ -1,7 +1,25 @@
 {
- "version": "2026-10-29",
+ "version": "2026-10-31",
  "maintenance": "Party lanes need a two-line edit every other January after a new Congress is seated (next: January 2027). Fed chair, FOMC estimates and events are edited as they happen.",
  "political_note": "Control is shown as of inauguration (January 20) and the seating of each Congress (January 3). Policy acts with a lag, often a year or more, and shocks do not follow the election calendar.",
+ "group_notes": {
+  "Eras": "Party lanes show control as of inauguration (January 20) and the seating of each Congress (January 3). Policy acts with a lag, often a year or more, and shocks do not follow the election calendar.",
+  "Events": "Shocks and crises, tax and spending laws, Fed turning points and trade policy are listed only if they moved an indicator here or committed federal money on a scale that shows up in the data. The test: an event is listed if it visibly moved at least one indicator on this site within three months, or committed federal money or changed federal policy on a scale that shows up in GDP investment, household income or an indicator here over the following years. Nothing is listed because it fits a story. Dates are when the thing happened or was signed, not when its effects showed up."
+ },
+ "group_note_for": {
+  "Eras": [
+   "president",
+   "senate",
+   "house",
+   "unified"
+  ],
+  "Events": [
+   "ev_shocks",
+   "ev_fiscal",
+   "ev_monetary",
+   "ev_trade"
+  ]
+ },
  "overlays": [
   {
    "id": "fed_target",
@@ -120,7 +138,6 @@
    "label": "Party of the president",
    "applies_to": "all",
    "political": true,
-   "note": "Control is shown as of inauguration (January 20) and the seating of each Congress (January 3). Policy acts with a lag, often a year or more, and shocks do not follow the election calendar.",
    "segments": [
     {
      "start": "1929-03-04",
@@ -238,7 +255,7 @@
    "label": "Senate majority",
    "applies_to": "all",
    "political": true,
-   "note": "Control is shown as of inauguration (January 20) and the seating of each Congress (January 3). Policy acts with a lag, often a year or more, and shocks do not follow the election calendar. The Senate changed hands three times within the 2001–03 Congress; see the lane.",
+   "note": "The Senate changed hands three times within the 2001–03 Congress; see the lane.",
    "segments": [
     {
      "start": "1933-03-04",
@@ -339,7 +356,6 @@
    "label": "House majority",
    "applies_to": "all",
    "political": true,
-   "note": "Control is shown as of inauguration (January 20) and the seating of each Congress (January 3). Policy acts with a lag, often a year or more, and shocks do not follow the election calendar.",
    "segments": [
     {
      "start": "1933-03-04",
@@ -410,7 +426,7 @@
     "senate",
     "house"
    ],
-   "note": "Control is shown as of inauguration (January 20) and the seating of each Congress (January 3). Policy acts with a lag, often a year or more, and shocks do not follow the election calendar. Unified means one party holds the presidency and both chambers."
+   "note": "Unified means one party holds the presidency and both chambers."
   },
   {
    "id": "fed_chair",
@@ -726,7 +742,6 @@
    "group": "Events",
    "label": "Shocks and crises",
    "applies_to": "all",
-   "note": "An event is listed if it visibly moved at least one indicator on this site within three months, or committed federal money or changed federal policy on a scale that shows up in GDP investment, household income or an indicator here over the following years. Nothing is listed because it fits a story. Dates are when the thing happened or was signed, not when its effects showed up.",
    "items": [
     {
      "date": "1973-10-17",
@@ -809,7 +824,6 @@
    "group": "Events",
    "label": "Major tax and spending laws",
    "applies_to": "all",
-   "note": "Date signed. An event is listed if it visibly moved at least one indicator on this site within three months, or committed federal money or changed federal policy on a scale that shows up in GDP investment, household income or an indicator here over the following years. Nothing is listed because it fits a story. Dates are when the thing happened or was signed, not when its effects showed up.",
    "items": [
     {
      "date": "1986-10-22",
@@ -893,7 +907,6 @@
     "core_cpi",
     "housing_starts"
    ],
-   "note": "An event is listed if it visibly moved at least one indicator on this site within three months, or committed federal money or changed federal policy on a scale that shows up in GDP investment, household income or an indicator here over the following years. Nothing is listed because it fits a story. Dates are when the thing happened or was signed, not when its effects showed up.",
    "items": [
     {
      "date": "1979-10-06",
@@ -935,7 +948,6 @@
    "group": "Events",
    "label": "Trade policy",
    "applies_to": "all",
-   "note": "An event is listed if it visibly moved at least one indicator on this site within three months, or committed federal money or changed federal policy on a scale that shows up in GDP investment, household income or an indicator here over the following years. Nothing is listed because it fits a story. Dates are when the thing happened or was signed, not when its effects showed up.",
    "items": [
     {
      "date": "1994-01-01",

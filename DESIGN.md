@@ -183,7 +183,7 @@ A warm-neutral paper-and-ink palette with one teal accent and a reserved set of 
 - **Companion slots 1–4**: the colors of optional companion series and sub-panel lines on chart pages: rust, violet, ochre and pink in light mode; orange, lavender, dark ochre and deep magenta in dark. Every pair, and each against the teal, stays apart under protanopia and deuteranopia (worst pair 12.9 light, 15.4 dark, OKLab ΔE ×100). A series keeps the slot it was given when it was turned on until it is turned off; four at a time at most. They never appear outside a chart and never carry meaning beyond "which line".
 
 ### Tertiary
-- **Era lanes**: Democratic blue and Republican red as light tints (dark tints in dark mode) of equal lightness, so neither party looks heavier and the data line stays the loudest mark, with dark labels; a pale neutral for divided government; two alternating warm grays for Fed chairs and similar eras; a dark gray with white labels for wars. Fed cycle and balance-sheet lanes use two neutrals, lighter for easing or expanding and darker for tightening or shrinking, so no traffic-light reading. Used only in the lanes under a chart, always labeled.
+- **Era lanes**: Democratic blue and Republican red as light tints (dark tints in dark mode) of equal lightness, so neither party looks heavier and the data line stays the loudest mark, with dark labels; a pale neutral for divided government; two alternating warm grays for Fed chairs and similar eras; a dark gray with white labels for wars. Fed cycle and balance-sheet lanes use two neutrals, lighter for easing or expanding and darker for tightening or shrinking, so no traffic-light reading. Used only in the lanes under a chart, always labeled, and keyed in the legend whenever the color carries the meaning (Democratic, Republican, Divided; "Fed cutting rates / buying bonds", "Fed raising rates / shrinking its holdings").
 - **Framing Banner** (warm cream with dark amber ink): the one tinted block, reserved for the framing line that appears whenever a political overlay is on.
 
 ### Neutral
@@ -233,7 +233,7 @@ A warm-neutral paper-and-ink palette with one teal accent and a reserved set of 
 
 A single centered column, max 1120px, with a 16px side gutter at every width. The almanac opens with the masthead, a section nav, the "At a glance" overview (three columns of compact rows on desktop, one on phones), then indicator tiles two to a row with a 16px gap. In a section with an odd number of tiles, the designated wide tile spans the row at ≥761px: reading and notes on the left (5/12), a taller 300px chart on the right (7/12).
 
-Articles hold text to a 42em measure; embedded charts break out to 860px. Chart pages place the chart and its controls left and a sticky overlay panel right at ≥861px; below that the panel follows the chart, with jump links between them.
+Articles hold text to a 42em measure; embedded charts break out to 860px. Chart pages place the chart and its controls left and a sticky overlay panel right at ≥861px; below that the panel sits right under the chart's key and framing line (the events list, notes and actions follow it), with jump links about 44px tall between chart and panel and a bar at the bottom of the screen that leads back to the chart while the panel is in view and the chart isn't.
 
 At ≤760px the section nav becomes one sideways-scrolling row that sticks to the top; anchor targets carry a 56px scroll margin so jumps land below it, and range buttons grow to about 36px tall. Strips and charts reserve their height before drawing so the page doesn't jump.
 
@@ -255,18 +255,19 @@ Gently squared. Three radii: 2px for small swatches and focus outlines, 4px for 
 ### Buttons
 - **Shape:** gently squared (4px).
 - **Full chart and context:** the one tinted button. Teal-ink text on a 10% teal wash with a 45% teal border, 600 weight, 3px 11px padding; hover inverts to teal fill with sheet-colored text.
-- **Range buttons:** a segmented group in one hairline frame, 13px Ink Secondary labels, hairline dividers; the pressed state fills with ink. About 36px tall on phones.
+- **Range buttons:** a segmented group in one hairline frame, 13px Ink Secondary labels, hairline dividers; the pressed state fills with ink. About 36px tall on phones. Tiles carry two (25 yrs, All); chart pages carry the full set and a custom range.
 - **Action buttons** (Download CSV, Download image, Copy link, Copy embed code): sheet background, hairline border, 13.5px ink text, 4px 10px padding.
 - **Focus:** 2px teal outline with 2px offset on everything focusable.
 
 ### Cards / Containers
-- **Tiles:** sheet background, 1px hairline border, 6px radius, 18px 18px 14px padding, no shadow. Parts in order: title (links to the chart page), subtitle, reading and period, previous and year-ago, range strip, context sentence, household line, plain-words link, chart head with the button and range control, chart, sources, recent readings.
+- **Tiles:** sheet background, 1px hairline border, 6px radius, 18px 18px 14px padding, no shadow. Parts in order: title (links to the chart page), subtitle, reading and period, previous and year-ago, range strip, context sentence, household line, plain-words link, chart head with the button and range control, chart, then one disclosure holding the note, sources and recent readings: open with no summary on desktop, closed on phones behind "Notes, source and recent readings", opened for printing.
 - **Chart frame:** sheet background, hairline border, 6px radius; the source credit sits inside the frame along the bottom edge so a cropped screenshot keeps it.
 
 ### Navigation
 - **Masthead:** site name left, "Articles" right on the same row, tagline in Ink Secondary, a short Updated line in Muted.
 - **Section nav:** text links with hairline underlines that darken to ink on hover; sticky single row on phones.
-- **Overlay panel:** collapsible groups (Reference lines, Companion series, Eras, Events) with a count, labeled checkboxes, a note and source under each; a color swatch appears only once a companion is on.
+- **Overlay panel:** collapsible groups (Reference lines, Companion series, Eras, Events) with a count. A rule shared by several overlays (how party control is dated, how events are chosen) is said once at the top of its group. Each checkbox's label is the overlay's name only; under it, the note's first sentence and its Source, with the rest behind a "More" text button (a first sentence under 40 characters takes the next with it). A color swatch appears only once a companion is on.
+- **See-the-chart bar (phones):** fixed to the bottom edge, sheet background, hairline top border, 44px tall, 600-weight ink text: "N overlays on · See the chart ↑". Shown only while the overlay panel is in view and the chart is not.
 
 ### Range Strip (signature component)
 The site's most original element, and a ranking rather than a ruler. The track (Range Bar) spans an indicator's typical range, the 5th to the 95th percentile of its own history; the latest reading is a teal dot with a sheet-colored ring placed at its rank, so it always agrees with the sentence beneath it; the 2015–19 average is a tick in Ink Secondary placed at that average's own rank. The end labels are the readings at the 5th and 95th percentiles. A reading outside the range shows a teal arrow at the end labeled "below/above the range", stepped clear of the tick. On tiles it carries end labels and the average's value; in the overview it is compact and unlabeled, with the full sentence in its accessible name. Its own accessible name says whether the reading is within, below or above the range and gives the average. Price indicators use the range in today's dollars.
@@ -278,14 +279,20 @@ One line per indicator: title, latest value with its period in Muted, and a comp
 A cream block with dark amber text and 4px radius, shown under a chart whenever a political overlay is on, stating how control is dated and that policy acts with a lag.
 
 ### Tooltip
-Ink background, sheet-colored 12px text, 4px radius; the value in 600, then each companion with a small color key.
+Ink background, sheet-colored 12px text, 4px radius; the value in 600, then each companion with a small color key. It wraps rather than running off a phone screen (at most 320px, and never wider than the chart frame), stays inside the frame, and drops below the point when there is no room above.
+
+### Lanes and events on narrow charts
+Below 560px of chart width, lane names sit above their lanes, left-aligned with the plot, so the plot keeps its width. Party lanes name every full term the same way: full names if all fit, else last names, else letters; a term shorter than the office's own (four years for a president, two for Congress), still running or cut off by the window may drop to its letter. Event markers carry numbers instead of names, and the "Events in view" list repeats them.
+
+### Embeds
+An article's frame has one height for every screen. On this site's own pages the embedded chart grows its frame to fit its content (never shrinks it); in a frame on another site it gives up plot height instead, down to 140px. The embed code still sizes the frame from sub-panels, lanes, framing and events.
 
 ## Do's and Don'ts
 
 ### Do:
 - **Do** keep the reading the largest number on the screen (40px tiles, 44px chart pages).
 - **Do** give every number its period and source, including in downloads, embeds and printed pages.
-- **Do** label every color: legends for series, text in every lane segment wide enough to hold it, hover titles for the rest.
+- **Do** label every color: legends for series, text in every lane segment wide enough to hold it, a legend key for lane colors that carry meaning, hover titles for the rest.
 - **Do** check every change in both color schemes at 1280px and 375px, with contrast computed: text ≥4.5:1, meaningful marks ≥3:1 or backed by labels.
 - **Do** put different scales in a stacked sub-panel under the main chart.
 - **Do** place anything on a range strip by rank, never by value, so the picture and the sentence agree.
