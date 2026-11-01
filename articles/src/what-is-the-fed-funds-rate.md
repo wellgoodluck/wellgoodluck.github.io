@@ -44,7 +44,7 @@ The almanac shows the *effective* rate, the average of what banks actually paid,
 
 The level by itself tells you little. What matters is the level *minus inflation*, the real rate. At 4% with 2% inflation, money has a price. At 4% with 6% inflation, borrowing is free in real terms, whatever the headline says. The chart below has that line.
 
-{{chart id=fed_funds range=25y ov=real_fed_funds,fed_cycles,ev_monetary caption="The Fed funds rate (blue), the same rate after inflation (orange), and each hiking and cutting cycle since 2001. Notice how long the real rate sat below zero after 2008 and again in 2021–22."}}
+{{chart id=fed_funds range=25y ov=real_fed_funds,fed_cycles,ev_monetary caption="The Fed funds rate, the same rate after inflation, and each hiking and cutting cycle since 2001. Notice how long the real rate sat below zero after 2008 and again in 2021–22."}}
 
 ## Where the analogy breaks
 

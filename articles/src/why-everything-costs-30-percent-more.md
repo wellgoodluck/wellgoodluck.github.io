@@ -50,7 +50,7 @@ The first three waves explain why prices spiked. This one explains why they stay
 
 **Housing.** Mortgage rates fell below 3% in 2020–21, and remote work let people move. Home prices rose roughly 45% in three years. Rents follow home prices with a lag of a year to eighteen months, and shelter is about a third of the Consumer Price Index. Rent kept inflation above the Fed's target through 2023 and 2024, long after goods prices had settled down.
 
-{{chart id=cpi range=5y ov=core_cpi_on_cpi,wages,real_wages caption="Headline and core inflation against wage growth. Real wages (the green line) fell below zero for two years from mid-2021, gained ground from spring 2023 to early 2026, and went negative again this year as energy prices rose."}}
+{{chart id=cpi range=5y ov=core_cpi_on_cpi,wages,real_wages caption="Headline and core inflation against wage growth. Real wage growth fell below zero for two years from mid-2021, gained ground from spring 2023 to early 2026, and went negative again this year as energy prices rose."}}
 
 **Wages.** The labor market got very tight in 2021–22, with two job openings for every unemployed person. Average hourly pay for production and nonsupervisory workers is up about 39% since 2019 ([AHETPI](https://fred.stlouisfed.org/series/AHETPI)). That's good for workers, but it flows straight into anything made of labor: restaurants, haircuts, repairs, childcare, medical care. Services inflation was the last piece to cool.
 

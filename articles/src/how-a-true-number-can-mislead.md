@@ -27,7 +27,7 @@ The same thing happens to presidents. Counted from inauguration, jobs fell by 58
 
 **Ask:** why that start date, and is it a peak or a trough? What does the line say from a year earlier, or a year later?
 
-{{chart id=gas range=10y caption="Ten years of regular gasoline. The April 2020 low and the June 2022 peak are both on it, and any claim about the change since then has picked one of them."}}
+{{chart id=gas range=10y ov=none caption="Ten years of regular gasoline. The April 2020 low and the June 2022 peak are both on it, and any claim about the change since then has picked one of them."}}
 
 ## Is it a speed or a distance?
 

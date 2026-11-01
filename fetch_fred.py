@@ -1080,6 +1080,13 @@ def context_for(obs, freq):
 
     base_vals = [v for d, v in obs if BASELINE_START <= to_date(d) <= BASELINE_END]
     baseline = mean(base_vals) if base_vals else None
+    # The 2015–19 average's own rank in the same history: the range strip places its tick by rank, as it does
+    # the dot. The almanac can rank as-charged series itself, but not the today's-dollars history of a price.
+    base_pct = None
+    if baseline is not None:
+        b_below = sum(1 for v in history if v < baseline)
+        b_equal = sum(1 for v in history if v == baseline)
+        base_pct = 100.0 * (b_below + 0.5 * b_equal) / len(history)
 
     lo_i = min(range(len(obs)), key=lambda i: obs[i][1])
     hi_i = max(range(len(obs)), key=lambda i: obs[i][1])
@@ -1109,6 +1116,7 @@ def context_for(obs, freq):
         "percentile_below": round(pct_below, 1),
         "since": obs[0][0],
         "baseline_2015_19": round(baseline, 4) if baseline is not None else None,
+        "baseline_percentile": round(base_pct, 1) if base_pct is not None else None,
         "min": {"date": obs[lo_i][0], "value": obs[lo_i][1]},
         "max": {"date": obs[hi_i][0], "value": obs[hi_i][1]},
         "typical_low": round(p5, 4),

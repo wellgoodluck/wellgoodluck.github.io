@@ -12,7 +12,8 @@
   --hairline: #e3e2dc; --grid: #ebeae4; --series: #0b7a75; --focus: #0b7a75;
   --banner: #fff4d6; --banner-ink: #5a4300; --max: 1120px; --measure: 42em;
 }
-@media (prefers-color-scheme: dark) {
+/* dark colors on screen only: printing from a browser in dark mode stays on the light tokens */
+@media screen and (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
     --page: #121211; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;

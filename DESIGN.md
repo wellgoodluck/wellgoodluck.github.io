@@ -1,0 +1,302 @@
+---
+name: Economy in Context
+description: The main numbers on the U.S. economy, each shown against its own history.
+colors:
+  neutral-ground-teal: "#0b7a75"
+  neutral-ground-teal-dark: "#2bb3a8"
+  teal-button-ink: "#0b6b66"
+  teal-button-ink-dark: "#5cc8be"
+  paper: "#f6f6f3"
+  paper-dark: "#121211"
+  sheet: "#ffffff"
+  sheet-dark: "#1a1a19"
+  ink: "#1b1b1a"
+  ink-dark: "#f0efec"
+  ink-secondary: "#5a5955"
+  ink-secondary-dark: "#c3c2b7"
+  ink-muted: "#72716b"
+  ink-muted-dark: "#898781"
+  hairline: "#e3e2dc"
+  hairline-dark: "#2c2c2a"
+  gridline: "#ebeae4"
+  gridline-dark: "#262624"
+  reference-gray: "#6b6a66"
+  reference-gray-dark: "#a09e97"
+  framing-banner: "#fff4d6"
+  framing-banner-ink: "#5a4300"
+  framing-banner-dark: "#3a2f10"
+  framing-banner-ink-dark: "#f3dfa0"
+  range-bar: "#c4c2b9"
+  range-bar-dark: "#45443f"
+  companion-1: "#903a03"
+  companion-2: "#5624c1"
+  companion-3: "#b88e2f"
+  companion-4: "#eb4ec8"
+  companion-1-dark: "#fb8304"
+  companion-2-dark: "#9980fe"
+  companion-3-dark: "#7c6713"
+  companion-4-dark: "#ba0f9b"
+  lane-democratic: "#b2cdfa"
+  lane-republican: "#f7bbb7"
+  lane-divided: "#e6e5df"
+  lane-democratic-dark: "#2b4775"
+  lane-republican-dark: "#6e3332"
+  lane-divided-dark: "#2f2f2c"
+  lane-easing: "#d9d6cb"
+  lane-tightening: "#9f9b90"
+  lane-easing-dark: "#34332f"
+  lane-tightening-dark: "#66645d"
+  era-light: "#d8d6cd"
+  era-mid: "#c3c1b7"
+  era-war: "#6e6c66"
+  era-war-dark: "#5e5c57"
+typography:
+  display:
+    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontSize: "clamp(30px, 4.6vw, 44px)"
+    fontWeight: 700
+    lineHeight: 1.1
+    letterSpacing: "-0.015em"
+  reading:
+    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontSize: "40px"
+    fontWeight: 600
+    lineHeight: 1
+    letterSpacing: "-0.02em"
+  headline:
+    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontSize: "clamp(28px, 4.4vw, 40px)"
+    fontWeight: 700
+    lineHeight: 1.12
+    letterSpacing: "-0.015em"
+  title:
+    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontSize: "22px"
+    fontWeight: 700
+    lineHeight: 1.2
+    letterSpacing: "-0.01em"
+  tile-title:
+    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontSize: "19px"
+    fontWeight: 700
+    lineHeight: 1.25
+  body:
+    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontSize: "17px"
+    fontWeight: 400
+    lineHeight: 1.55
+  body-compact:
+    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontSize: "16px"
+    fontWeight: 400
+    lineHeight: 1.5
+  context:
+    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontSize: "15px"
+    fontWeight: 600
+  meta:
+    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontSize: "14px"
+    fontWeight: 400
+  label:
+    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontSize: "13px"
+    fontWeight: 600
+    letterSpacing: "0.05em"
+  chart-text:
+    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontSize: "11px"
+    fontWeight: 400
+    fontFeature: "tnum"
+rounded:
+  hairline: "2px"
+  control: "4px"
+  frame: "6px"
+spacing:
+  gutter: "16px"
+  grid-gap: "16px"
+  tile-padding: "18px 18px 14px"
+  page-max: "1120px"
+  measure: "42em"
+components:
+  tile:
+    backgroundColor: "{colors.sheet}"
+    rounded: "{rounded.frame}"
+    padding: "{spacing.tile-padding}"
+  button-full-chart:
+    textColor: "{colors.teal-button-ink}"
+    rounded: "{rounded.control}"
+    padding: "3px 11px"
+  button-full-chart-hover:
+    backgroundColor: "{colors.teal-button-ink}"
+    textColor: "{colors.sheet}"
+  range-button:
+    textColor: "{colors.ink-secondary}"
+    padding: "3px 9px"
+  range-button-pressed:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.sheet}"
+  action-button:
+    backgroundColor: "{colors.sheet}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.control}"
+    padding: "4px 10px"
+  framing-banner:
+    backgroundColor: "{colors.framing-banner}"
+    textColor: "{colors.framing-banner-ink}"
+    rounded: "{rounded.control}"
+    padding: "8px 12px"
+  tooltip:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.sheet}"
+    rounded: "{rounded.control}"
+    padding: "6px 9px"
+---
+
+# Design System: Economy in Context
+
+## Overview
+
+**Creative North Star: "The Public Record"**
+
+The site should look like something a fact-checker could put on screen without apology: neutral, citable, plain. Every visual decision serves one question a reader brings ("is this number high, low or normal?") and refuses to answer a second one ("is that good or bad?"). The look is a well-set page of warm off-white paper and near-black ink, one typeface, hairline rules, and a single teal accent that marks the reading itself. Color is spent on identity (which line is which), never on judgment.
+
+The system has two registers. The almanac and the articles are **printed and plain**: text links with hairline underlines, tiles that read like boxed entries in a reference book, generous measure for reading. Chart pages are **quiet instruments**: compact segmented range controls, tabular numerals, an overlay panel of labeled toggles, a crosshair and tooltip. Both share the same tokens; the chart page simply packs them tighter.
+
+Restraint is the identity. Confirmed rejections: no custom display typeface or brand color system, no motion or transitions, no shadows, no red/green or any value-judgment color on readings, no watermarks across charts, no dual y-axes.
+
+**Key Characteristics:**
+- Warm paper and near-black ink, light and dark schemes from the reader's system setting.
+- One typeface (Public Sans, self-hosted, 400/600/700); hierarchy by size and weight.
+- One accent, Neutral Ground Teal, for the data line, the latest-reading dot and the chart button.
+- Flat surfaces separated by 1px hairlines; no elevation.
+- Every chart carries its source credit inside the frame.
+
+## Colors
+
+A warm-neutral paper-and-ink palette with one teal accent and a reserved set of identity colors that appear only inside charts.
+
+### Primary
+- **Neutral Ground Teal** (light / dark in the frontmatter): the main data series, the latest-reading dot on range strips, the outside-the-range arrow, the focus ring and the tint of the "Full chart and context" button. Chosen because no party owns it; it must stay distinct from both party lanes.
+
+### Secondary
+- **Companion slots 1–4**: the colors of optional companion series and sub-panel lines on chart pages: rust, violet, ochre and pink in light mode; orange, lavender, dark ochre and deep magenta in dark. Every pair, and each against the teal, stays apart under protanopia and deuteranopia (worst pair 12.9 light, 15.4 dark, OKLab ΔE ×100). A series keeps the slot it was given when it was turned on until it is turned off; four at a time at most. They never appear outside a chart and never carry meaning beyond "which line".
+
+### Tertiary
+- **Era lanes**: Democratic blue and Republican red as light tints (dark tints in dark mode) of equal lightness, so neither party looks heavier and the data line stays the loudest mark, with dark labels; a pale neutral for divided government; two alternating warm grays for Fed chairs and similar eras; a dark gray with white labels for wars. Fed cycle and balance-sheet lanes use two neutrals, lighter for easing or expanding and darker for tightening or shrinking, so no traffic-light reading. Used only in the lanes under a chart, always labeled.
+- **Framing Banner** (warm cream with dark amber ink): the one tinted block, reserved for the framing line that appears whenever a political overlay is on.
+
+### Neutral
+- **Paper**: page background.
+- **Sheet**: tiles, chart frames and other raised-by-border surfaces (white in light mode).
+- **Ink**: headings, values, primary text; also the pressed range button and the tooltip background.
+- **Ink Secondary**: sentences, notes, captions, event markers.
+- **Ink Muted**: dates, periods, axis labels, credits (4.5:1 on paper at its lightest; do not lighten it).
+- **Hairline**: borders, row dividers, link underlines.
+- **Range Bar**: the typical-range track on range strips; darker than a hairline because it carries meaning.
+- **Gridline**: chart grid, deliberately quieter than the hairline.
+- **Reference Gray**: dashed reference lines and their labels.
+
+### Named Rules
+**The Identity-Not-Judgment Rule.** Color says which, never whether. No good/bad, up/down or red/green coloring of any reading, anywhere.
+
+**The Neutral Ground Rule.** The data line never takes a party's hue. Companion colors avoid blue, red, teal and green: those belong to the parties and the main series.
+
+**The Four Lines Rule.** A chart carries at most four companion or sub-panel lines, each in its own slot color, and a line keeps its color while it is on. A fifth waits until one is turned off; colors are never reused on one chart.
+
+**The Three Copies Rule.** The tokens are copied in `index.html`, `chart.html` and `assets/site.css`. Change all three together, in both schemes.
+
+## Typography
+
+**Display Font:** Public Sans (with system-ui, -apple-system, Segoe UI, sans-serif)
+**Body Font:** Public Sans
+**Label/Mono Font:** Public Sans with tabular numerals for figures in charts and tables
+
+**Character:** A sturdy public-sector grotesque, open and unfussy; it reads as institutional without being cold, and its tabular figures keep columns of numbers honest.
+
+### Hierarchy
+- **Display** (700, clamp 30–44px, 1.1): the site name on the almanac masthead. Chart pages use a smaller clamp (26–36px).
+- **Reading** (600, 40px on tiles, 44px on chart pages, 1.0, tight tracking): the latest value of an indicator. The largest number on any screen is always the reading.
+- **Headline** (700, clamp 28–40px, 1.12): article titles.
+- **Title** (700, 22px, 1.2): section and article h2 headings; the "At a glance" heading.
+- **Tile title** (700, 19px, 1.25): indicator names on tiles.
+- **Body** (400, 17px, 1.55, 42em measure): article text. The almanac runs at 16px/1.5.
+- **Context** (600, 15px): the one-sentence verdict under a range strip ("Higher than 67% of months since 1948").
+- **Meta** (400, 13–14px, Ink Secondary or Muted): subtitles, periods, notes, sources.
+- **Label** (600, 13px, 0.05em, uppercase): small section labels in the overview and the Featured label.
+- **Chart text** (400, 10.5–11px, tabular numerals): axes, lane labels, event labels, credits.
+
+### Named Rules
+**The Reading Is Loudest Rule.** On any screen the latest value is the largest, heaviest number. Nothing decorative competes with it.
+
+## Layout
+
+A single centered column, max 1120px, with a 16px side gutter at every width. The almanac opens with the masthead, a section nav, the "At a glance" overview (three columns of compact rows on desktop, one on phones), then indicator tiles two to a row with a 16px gap. In a section with an odd number of tiles, the designated wide tile spans the row at ≥761px: reading and notes on the left (5/12), a taller 300px chart on the right (7/12).
+
+Articles hold text to a 42em measure; embedded charts break out to 860px. Chart pages place the chart and its controls left and a sticky overlay panel right at ≥861px; below that the panel follows the chart, with jump links between them.
+
+At ≤760px the section nav becomes one sideways-scrolling row that sticks to the top; anchor targets carry a 56px scroll margin so jumps land below it, and range buttons grow to about 36px tall. Strips and charts reserve their height before drawing so the page doesn't jump.
+
+Print hides navigation and controls, keeps tiles and charts whole, and ends with the domain.
+
+## Elevation & Depth
+
+Flat. There are no shadows anywhere in the system. Depth is tonal and structural only: white sheets on warm paper (dark: slightly lifted charcoal on near-black), separated by 1px hairlines. The pressed range button and the tooltip invert to ink, which is the only "raised" state.
+
+### Named Rules
+**The Paper Rule.** Surfaces are flat. A border separates; nothing floats.
+
+## Shapes
+
+Gently squared. Three radii: 2px for small swatches and focus outlines, 4px for buttons, the segmented range control, the framing banner and the tooltip, and 6px for tiles, chart frames and article embeds. Borders are 1px hairlines. Chart marks are round-capped 2px lines (1.6px for companions), round dots with a 2px sheet-colored ring, and small triangles for event markers and outside-the-range arrows.
+
+## Components
+
+### Buttons
+- **Shape:** gently squared (4px).
+- **Full chart and context:** the one tinted button. Teal-ink text on a 10% teal wash with a 45% teal border, 600 weight, 3px 11px padding; hover inverts to teal fill with sheet-colored text.
+- **Range buttons:** a segmented group in one hairline frame, 13px Ink Secondary labels, hairline dividers; the pressed state fills with ink. About 36px tall on phones.
+- **Action buttons** (Download CSV, Download image, Copy link, Copy embed code): sheet background, hairline border, 13.5px ink text, 4px 10px padding.
+- **Focus:** 2px teal outline with 2px offset on everything focusable.
+
+### Cards / Containers
+- **Tiles:** sheet background, 1px hairline border, 6px radius, 18px 18px 14px padding, no shadow. Parts in order: title (links to the chart page), subtitle, reading and period, previous and year-ago, range strip, context sentence, household line, plain-words link, chart head with the button and range control, chart, sources, recent readings.
+- **Chart frame:** sheet background, hairline border, 6px radius; the source credit sits inside the frame along the bottom edge so a cropped screenshot keeps it.
+
+### Navigation
+- **Masthead:** site name left, "Articles" right on the same row, tagline in Ink Secondary, a short Updated line in Muted.
+- **Section nav:** text links with hairline underlines that darken to ink on hover; sticky single row on phones.
+- **Overlay panel:** collapsible groups (Reference lines, Companion series, Eras, Events) with a count, labeled checkboxes, a note and source under each; a color swatch appears only once a companion is on.
+
+### Range Strip (signature component)
+The site's most original element, and a ranking rather than a ruler. The track (Range Bar) spans an indicator's typical range, the 5th to the 95th percentile of its own history; the latest reading is a teal dot with a sheet-colored ring placed at its rank, so it always agrees with the sentence beneath it; the 2015–19 average is a tick in Ink Secondary placed at that average's own rank. The end labels are the readings at the 5th and 95th percentiles. A reading outside the range shows a teal arrow at the end labeled "below/above the range", stepped clear of the tick. On tiles it carries end labels and the average's value; in the overview it is compact and unlabeled, with the full sentence in its accessible name. Its own accessible name says whether the reading is within, below or above the range and gives the average. Price indicators use the range in today's dollars.
+
+### At-a-glance Row
+One line per indicator: title, latest value with its period in Muted, and a compact range strip; rows grouped under small uppercase section labels, separated by hairlines, each at least 44px tall and linking to its tile.
+
+### Framing Banner
+A cream block with dark amber text and 4px radius, shown under a chart whenever a political overlay is on, stating how control is dated and that policy acts with a lag.
+
+### Tooltip
+Ink background, sheet-colored 12px text, 4px radius; the value in 600, then each companion with a small color key.
+
+## Do's and Don'ts
+
+### Do:
+- **Do** keep the reading the largest number on the screen (40px tiles, 44px chart pages).
+- **Do** give every number its period and source, including in downloads, embeds and printed pages.
+- **Do** label every color: legends for series, text in every lane segment wide enough to hold it, hover titles for the rest.
+- **Do** check every change in both color schemes at 1280px and 375px, with contrast computed: text ≥4.5:1, meaningful marks ≥3:1 or backed by labels.
+- **Do** put different scales in a stacked sub-panel under the main chart.
+- **Do** place anything on a range strip by rank, never by value, so the picture and the sentence agree.
+- **Do** say "as charged" wherever a price is drawn as charged beside a range or sentence in today's dollars.
+- **Do** change tokens in all three files at once.
+
+### Don't:
+- **Don't** add shadows, gradients, motion or transitions.
+- **Don't** color a reading by whether it is good or bad, and don't use red and green as a pair anywhere.
+- **Don't** give the data line or any companion a party's hue (blue or red), or teal or green for companions.
+- **Don't** use a dual y-axis.
+- **Don't** reuse a companion color on one chart, or repaint a line when another is turned on or off.
+- **Don't** add a second typeface or a brand color system beyond these tokens.
+- **Don't** put watermarks across the plot area or add text to copied content.
