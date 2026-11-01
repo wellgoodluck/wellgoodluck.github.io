@@ -53,7 +53,7 @@ colors:
 typography:
   display:
     fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
-    fontSize: "clamp(30px, 4.6vw, 44px)"
+    fontSize: "40px"
     fontWeight: 700
     lineHeight: 1.1
     letterSpacing: "-0.015em"
@@ -96,11 +96,15 @@ typography:
     fontWeight: 600
   meta:
     fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
-    fontSize: "14px"
+    fontSize: "13.5px"
+    fontWeight: 400
+  caption:
+    fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontSize: "12.5px"
     fontWeight: 400
   label:
     fontFamily: "Public Sans, system-ui, -apple-system, Segoe UI, sans-serif"
-    fontSize: "13px"
+    fontSize: "12.5px"
     fontWeight: 600
     letterSpacing: "0.05em"
   chart-text:
@@ -214,17 +218,21 @@ A warm-neutral paper-and-ink palette with one teal accent and a reserved set of 
 
 **Character:** A sturdy public-sector grotesque, open and unfussy; it reads as institutional without being cold, and its tabular figures keep columns of numbers honest.
 
+### Scale
+The almanac and chart pages use one scale: **11 · 12.5 · 13.5 · 15 · 16 (base) · 17 · 19 · 22 · 28 · 40 · 44px**, with four steps between 11 and 15. Chart text is 11px everywhere inside an SVG (axes, lanes, events, strip labels, credits). The images made for download and social posts have their own sizes, set for the image's frame. Article pages (`assets/site.css`) are not yet on this scale.
+
 ### Hierarchy
-- **Display** (700, clamp 30–44px, 1.1): the site name on the almanac masthead. Chart pages use a smaller clamp (26–36px).
+- **Display** (700, 40px; 28px on phones, 1.1): the site name on the almanac masthead. A chart page's indicator name is 28px at every width, so the reading stays the largest thing on screen.
 - **Reading** (600, 40px on tiles, 44px on chart pages, 1.0, tight tracking): the latest value of an indicator. The largest number on any screen is always the reading.
 - **Headline** (700, clamp 28–40px, 1.12): article titles.
 - **Title** (700, 22px, 1.2): section and article h2 headings; the "At a glance" heading.
 - **Tile title** (700, 19px, 1.25): indicator names on tiles.
 - **Body** (400, 17px, 1.55, 42em measure): article text. The almanac runs at 16px/1.5.
 - **Context** (600, 15px): the one-sentence verdict under a range strip ("Higher than 67% of months since 1948").
-- **Meta** (400, 13–14px, Ink Secondary or Muted): subtitles, periods, notes, sources.
-- **Label** (600, 13px, 0.05em, uppercase): small section labels in the overview and the Featured label.
-- **Chart text** (400, 10.5–11px, tabular numerals): axes, lane labels, event labels, credits.
+- **Meta** (400, 13.5px, Ink Secondary or Muted): subtitles, periods, notes, sources, controls (range buttons, custom range, actions), tables.
+- **Caption** (400, 12.5px): legends, the hover box, overlay notes, counts, print footers.
+- **Label** (600, 12.5px, 0.05em, uppercase): small section labels in the overview, "Events in view" and the Featured label.
+- **Chart text** (400, 11px, tabular numerals): axes, lane labels, event labels and numbers, strip labels, credits.
 
 ### Named Rules
 **The Reading Is Loudest Rule.** On any screen the latest value is the largest, heaviest number. Nothing decorative competes with it.
@@ -235,7 +243,7 @@ A single centered column, max 1120px, with a 16px side gutter at every width. Th
 
 Articles hold text to a 42em measure; embedded charts break out to 860px. Chart pages place the chart and its controls left and a sticky overlay panel right at ≥861px; below that the panel sits right under the chart's key and framing line (the events list, notes and actions follow it), with jump links about 44px tall between chart and panel and a bar at the bottom of the screen that leads back to the chart while the panel is in view and the chart isn't.
 
-At ≤760px the section nav becomes one sideways-scrolling row that sticks to the top; anchor targets carry a 56px scroll margin so jumps land below it, and range buttons grow to about 36px tall. Strips and charts reserve their height before drawing so the page doesn't jump.
+The section nav sticks to the top at every width; at ≤760px it becomes one sideways-scrolling row with 46px targets. Anchor targets carry a scroll margin of the nav's measured height so jumps land below it, and range buttons grow to about 36px tall. Strips and charts reserve their height before drawing so the page doesn't jump.
 
 Print hides navigation and controls, keeps tiles and charts whole, and ends with the domain.
 
@@ -266,12 +274,16 @@ Gently squared. Three radii: 2px for small swatches and focus outlines, 4px for 
 
 ### Navigation
 - **Masthead:** site name left, "Articles" right on the same row, tagline in Ink Secondary, a short Updated line in Muted.
-- **Section nav:** text links with hairline underlines that darken to ink on hover; sticky single row on phones.
+- **Section nav:** sticky at the top at every width: text links in Ink Secondary with hairline underlines; the section whose top has passed under the nav is marked (`aria-current`, ink, a 2px underline). On phones it is one sideways-scrolling row of 46px targets that fades at an edge with more to scroll to and keeps the marked link in view. Jumps land just below it (scroll margin from its measured height).
+- **Back to the overview:** "↑ At a glance" at the right of every section heading (not in the tiles-only view).
+- **Skip links:** the first Tab stop on each page, hidden until focused (ink with sheet text): "Skip to the numbers" on the almanac; "Skip to the chart" and "Skip to overlays" on chart pages.
 - **Overlay panel:** collapsible groups (Reference lines, Companion series, Eras, Events) with a count. A rule shared by several overlays (how party control is dated, how events are chosen) is said once at the top of its group. Each checkbox's label is the overlay's name only; under it, the note's first sentence and its Source, with the rest behind a "More" text button (a first sentence under 40 characters takes the next with it). A color swatch appears only once a companion is on.
 - **See-the-chart bar (phones):** fixed to the bottom edge, sheet background, hairline top border, 44px tall, 600-weight ink text: "N overlays on · See the chart ↑". Shown only while the overlay panel is in view and the chart is not.
 
+- **Messages in place:** a bad custom range says why beside the Apply button ("The start has to come before the end."); a refused copy says so and shows the text selected for copying by hand. No dialogs.
+
 ### Range Strip (signature component)
-The site's most original element, and a ranking rather than a ruler. The track (Range Bar) spans an indicator's typical range, the 5th to the 95th percentile of its own history; the latest reading is a teal dot with a sheet-colored ring placed at its rank, so it always agrees with the sentence beneath it; the 2015–19 average is a tick in Ink Secondary placed at that average's own rank. The end labels are the readings at the 5th and 95th percentiles. A reading outside the range shows a teal arrow at the end labeled "below/above the range", stepped clear of the tick. On tiles it carries end labels and the average's value; in the overview it is compact and unlabeled, with the full sentence in its accessible name. Its own accessible name says whether the reading is within, below or above the range and gives the average. Price indicators use the range in today's dollars.
+The site's most original element, and a ranking rather than a ruler. The track (Range Bar) spans an indicator's typical range, the 5th to the 95th percentile of its own history; the latest reading is a teal dot with a sheet-colored ring placed at its rank, so it always agrees with the sentence beneath it; the 2015–19 average is a tick in Ink Secondary placed at that average's own rank, drawn over the dot when the two meet so it is never hidden. The end labels are the readings at the 5th and 95th percentiles. A reading outside the range shows a teal arrow at the end labeled "below/above the range", stepped clear of the tick. On tiles it carries end labels and the average's value; in the overview it is compact and unlabeled, with the full sentence in its accessible name. Its own accessible name says whether the reading is within, below or above the range and gives the average. Price indicators use the range in today's dollars.
 
 ### At-a-glance Row
 One line per indicator: title, latest value with its period in Muted, and a compact range strip; rows grouped under small uppercase section labels, separated by hairlines, each at least 44px tall and linking to its tile.
@@ -283,15 +295,15 @@ A cream block with dark amber text and 4px radius, shown under a chart whenever 
 Ink background, sheet-colored 12px text, 4px radius; the value in 600, then each companion with a small color key. It wraps rather than running off a phone screen (at most 320px, and never wider than the chart frame), stays inside the frame, and drops below the point when there is no room above.
 
 ### Lanes and events on narrow charts
-Below 560px of chart width, lane names sit above their lanes, left-aligned with the plot, so the plot keeps its width. Party lanes name every full term the same way: full names if all fit, else last names, else letters; a term shorter than the office's own (four years for a president, two for Congress), still running or cut off by the window may drop to its letter. Event markers carry numbers instead of names, and the "Events in view" list repeats them.
+Below 560px of chart width, lane names sit above their lanes, left-aligned with the plot, so the plot keeps its width. Party lanes name every full term the same way: full names if all fit, else last names, else letters; a term shorter than the office's own (four years for a president, two for Congress), still running or cut off by the window may drop to its letter. Every event has its own hairline and tick at its own date; marks are never merged. On a narrow chart, or in an image where a name wouldn't fit, each event gets its own number (1 to N by date). Numbers within 18px share a label ("3,4", "3–5", never spanning more than 30px), and a one-line key under the legend names them ("1 Oct 1979 Volcker shock · 2 …"); in an embed the key folds behind "What the numbers mark (N events)" and the frame refits when it opens. The full list with notes stays below on the page. The key's glyph is ▼, as drawn.
 
 ### Images for social posts
-Each shape is laid out for its own frame, never cropped from the wide image: title (19px bold) and subtitle, the reading (32px, 28px in Wide) and its date, the percentile sentence (14px semibold; beside the reading in Wide), the today's-dollars note on price pages, the chart with its plot stretched to fill but no taller than about 3:4 of its width (a taller plot steepens every slope), the key, the framing banner when a party lane is on, numbered events listed (two columns if needed), and a hairline footer with the chart's address and CC BY 4.0. Drawn at 480 CSS px across (720 for Wide) and scaled to the platform's pixels, so type reads in a phone feed; a crowded view is drawn up to 1.6× smaller rather than cut, and only then does a long events list end "…and N more on the chart page". Story keeps the top and bottom 14% empty. Always the light colors.
+Each shape is laid out for its own frame, never cropped from the wide image: title (19px bold) and subtitle, the reading (32px, 28px in Wide) and its date, the percentile sentence (14px semibold; beside the reading in Wide), the today's-dollars note on price pages, the chart with its plot stretched to fill but no taller than about 3:4 of its width (a taller plot steepens every slope), the key, the framing banner when a party lane is on, numbered events listed (two columns if needed; an image numbers and lists its events whenever the chart would leave a marker unnamed, the full-width image too), and a hairline footer with the chart's address and CC BY 4.0. Drawn at 480 CSS px across (720 for Wide) and scaled to the platform's pixels, so type reads in a phone feed; a crowded view is drawn up to 1.6× smaller rather than cut, and only then does a long events list end "…and N more on the chart page". Story keeps the top and bottom 14% empty. Always the light colors.
 
 Clipped-value labels ("Apr 2020: −20,469K, off the chart") take the longest form that fits, beside the mark or else within the plot's width; a companion's name is kept before "off the chart" is.
 
 ### Embeds
-An article's frame has one height for every screen. On this site's own pages the embedded chart grows its frame to fit its content (never shrinks it); in a frame on another site it gives up plot height instead, down to 140px. The embed code still sizes the frame from sub-panels, lanes, framing and events.
+An article's frame has one height for every screen. On this site's own pages the embedded chart grows its frame to fit its content (never shrinks it); in a frame on another site it gives up plot height instead, down to 120px. The embed code still sizes the frame from sub-panels, lanes, framing and events.
 
 ## Do's and Don'ts
 
@@ -303,6 +315,7 @@ An article's frame has one height for every screen. On this site's own pages the
 - **Do** put different scales in a stacked sub-panel under the main chart.
 - **Do** place anything on a range strip by rank, never by value, so the picture and the sentence agree.
 - **Do** say "as charged" wherever a price is drawn as charged beside a range or sentence in today's dollars.
+- **Do** give the median and the 2015–19 average different line patterns (dotted and dashed), keyed in the legend.
 - **Do** change tokens in all three files at once.
 
 ### Don't:

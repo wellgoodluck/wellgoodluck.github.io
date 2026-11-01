@@ -94,7 +94,7 @@
   .masthead .site-link:hover { border-color: var(--ink); }
   .masthead h1 {
     margin: 0;
-    font-size: clamp(30px, 4.6vw, 44px);
+    font-size: 40px;
     font-weight: 700;
     letter-spacing: -0.015em;
     line-height: 1.1;
@@ -102,37 +102,49 @@
   .masthead p.tagline {
     margin: 0;
     max-width: 44em;
-    font-size: clamp(17px, 2vw, 19px);
+    font-size: 17px;
     color: var(--ink-2);
   }
-  .masthead .updated { margin: 14px 0 0; color: var(--muted); font-size: 14px; }
+  .masthead .updated { margin: 14px 0 0; color: var(--muted); font-size: 13.5px; }
   /* Section nav: below the masthead; on phones one sideways-scrolling row that stays at the top */
-  .secnav { background: var(--page); border-bottom: 1px solid var(--hairline); }
-  .sections-nav { margin: 0; padding: 18px 0 24px; list-style: none; display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 15px; }
-  .sections-nav a { text-decoration: none; border-bottom: 1px solid var(--hairline); padding-bottom: 1px; white-space: nowrap; }
-  .sections-nav a:hover { border-color: var(--ink); }
-  section.group, .tile, .glance, #how-to-read { scroll-margin-top: 12px; }
+  .secnav { position: sticky; top: 0; z-index: 5; margin: 14px 0 0; background: var(--page); border-bottom: 1px solid var(--hairline); }
+  .sections-nav { margin: 0; padding: 2px 0; list-style: none; display: flex; flex-wrap: wrap; gap: 0 22px; font-size: 15px; }
+  .sections-nav a { display: inline-block; padding: 9px 0; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 6px; white-space: nowrap; }
+  .sections-nav a:hover { color: var(--ink); text-decoration-color: var(--ink); }
+  .sections-nav a[aria-current] { color: var(--ink); text-decoration-color: var(--ink); text-decoration-thickness: 2px; }
+  /* jumps land below the sticky nav; --nav-h is its measured height */
+  main, section.group, .tile, .glance, #how-to-read { scroll-margin-top: calc(var(--nav-h, 48px) + 8px); }
+  .skip { position: absolute; left: 8px; top: -60px; z-index: 10; padding: 10px 14px; background: var(--ink); color: var(--surface); font-size: 13.5px; font-weight: 600; text-decoration: none; border-radius: 4px; }
+  .skip:focus { top: 8px; }
+  .sec-head { display: flex; justify-content: space-between; align-items: baseline; gap: 4px 16px; flex-wrap: wrap; margin: 0 0 14px; }
+  section.group .sec-head h2 { margin: 0; }
+  .to-glance { font-size: 13.5px; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; padding: 8px 0; white-space: nowrap; }
+  .to-glance:hover { color: var(--ink); text-decoration-color: var(--ink); }
   @media (max-width: 760px) {
     .masthead { padding-top: 22px; }
     .masthead .title-row { gap: 4px 12px; }
     .masthead h1 { font-size: 28px; letter-spacing: -0.02em; }   /* stays on one line beside Articles at 375 */
-    .masthead .site-link { font-size: 14px; }
+    .masthead .site-link { font-size: 13.5px; }
     .masthead .updated { margin-top: 10px; }
-    .secnav { position: sticky; top: 0; z-index: 5; }
-    .sections-nav { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 12px 16px; margin: 0 -16px; gap: 0 20px; }
+    .secnav { margin-top: 10px; }
+    .sections-nav { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 0 16px; margin: 0 -16px; gap: 0 20px; }
     .sections-nav::-webkit-scrollbar { display: none; }
     .sections-nav li:last-child { padding-right: 16px; }
-    section.group, .tile, .glance, #how-to-read { scroll-margin-top: 56px; }
+    .sections-nav a { padding: 12px 0; }   /* about 46px: a thumb-sized target */
+    /* the row fades at an edge with more to scroll to (classes set from the scroll position) */
+    .sections-nav.fade-r { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
+    .sections-nav.fade-l { -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to left, #000 calc(100% - 36px), transparent); }
+    .sections-nav.fade-l.fade-r { -webkit-mask-image: linear-gradient(to right, transparent, #000 36px, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, transparent, #000 36px, #000 calc(100% - 36px), transparent); }
   }
 
   .banner {
     background: var(--banner); color: var(--banner-ink);
-    padding: 10px 16px; font-size: 14px; text-align: center;
+    padding: 10px 16px; font-size: 13.5px; text-align: center;
   }
 
   /* Featured article: one line above the overview, only while an article's featured: date is current */
   .featured { margin: 20px 0 0; padding: 10px 0; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); font-size: 15px; line-height: 1.45; text-wrap: pretty; }
-  .featured .flabel { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-right: 10px; }
+  .featured .flabel { font-size: 12.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-right: 10px; }
   .featured a { font-weight: 600; color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--hairline); }
   .featured a:hover { border-color: var(--ink); }
   /* At a glance: every number on one screen (left out with ?view=tiles) ---- */
@@ -148,13 +160,13 @@
   .glance .key a { color: var(--ink-2); }
   .glance .cols { columns: 3 300px; column-gap: 28px; }
   .glance .grp { break-inside: avoid; margin: 0 0 14px; }
-  .glance h3 { margin: 0 0 2px; font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .glance h3 { margin: 0 0 2px; font-size: 12.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
   .glance h3 .adj { text-transform: none; letter-spacing: 0; font-weight: 400; }
   .glance a.row { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "t v" "s s"; column-gap: 10px; align-items: baseline;
     min-height: 44px; padding: 6px 0 4px; border-top: 1px solid var(--hairline); text-decoration: none; color: inherit; }
   .glance a.row:hover .t { text-decoration: underline; text-decoration-color: var(--muted); text-underline-offset: 3px; }
-  .glance .t { grid-area: t; font-size: 14.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .glance .v { grid-area: v; font-size: 14.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .glance .t { grid-area: t; font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .glance .v { grid-area: v; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .glance .v .p { color: var(--muted); font-size: 12.5px; margin-left: 6px; }
   .glance .mini { grid-area: s; margin: 2px 0 0; min-height: 16px; }
   .glance .mini svg { display: block; width: 100%; height: 16px; overflow: visible; }
@@ -166,7 +178,7 @@
   /* Sections ------------------------------------------------------------- */
   section.group { padding: 28px 0 8px; }
   section.group h2 {
-    margin: 0 0 14px;
+    margin: 0 0 14px;   /* inside .sec-head the row carries the margin */
     font-size: 22px;
     font-weight: 700;
     letter-spacing: -0.01em;
@@ -199,11 +211,11 @@
   .tile h3 { margin: 0; font-size: 19px; font-weight: 700; line-height: 1.25; }
   .tile h3 a { color: inherit; text-decoration: none; }
   .tile h3 a:hover { text-decoration: underline; text-decoration-color: var(--muted); text-underline-offset: 3px; }
-  .tile .sub { margin: 2px 0 0; color: var(--ink-2); font-size: 14px; }
+  .tile .sub { margin: 2px 0 0; color: var(--ink-2); font-size: 13.5px; }
   .headline { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; margin: 14px 0 2px; }
   .headline .value { font-size: 40px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
-  .headline .when { color: var(--muted); font-size: 14px; }
-  .compare { margin: 6px 0 0; color: var(--ink-2); font-size: 14px; }
+  .headline .when { color: var(--muted); font-size: 13.5px; }
+  .compare { margin: 6px 0 0; color: var(--ink-2); font-size: 13.5px; }
   .compare span + span::before { content: "\00a0\00a0|\00a0\00a0"; color: var(--hairline); }
 
   /* Range strip: where the current reading sits in its typical range ------ */
@@ -212,13 +224,14 @@
   .strip .track { stroke: var(--range); stroke-width: 6; stroke-linecap: round; }
   .strip .now { fill: var(--series); stroke: var(--surface); stroke-width: 2; }
   .strip .avg { stroke: var(--ink-2); stroke-width: 2; }
-  .strip text { font-size: 12px; fill: var(--muted); }
+  .strip text { font-size: 11px; fill: var(--muted); }
   .strip text.avg-label { fill: var(--ink-2); }
   .strip .beyond { fill: var(--series); }
-  .strip .beyond-label { font-size: 11px; fill: var(--series); font-weight: 600; }
+  .strip text.qual { fill: var(--ink-2); font-weight: 600; }   /* "in today's dollars" changes how the bar reads */
+  .strip .beyond-label { font-size: 11px; fill: var(--series); font-weight: 600; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
   .context { margin: 6px 0 0; font-size: 15px; font-weight: 600; }
-  .household { margin: 6px 0 0; font-size: 14px; color: var(--ink-2); }
-  .explainer { margin: 8px 0 0; font-size: 14px; }
+  .household { margin: 6px 0 0; font-size: 13.5px; color: var(--ink-2); }
+  .explainer { margin: 8px 0 0; font-size: 13.5px; }
   .explainer a { color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--hairline); }
   .explainer a:hover { color: var(--ink); border-color: var(--ink); }
 
@@ -229,7 +242,7 @@
   .chart-head .full:hover { background: var(--full-ink); border-color: var(--full-ink); color: var(--surface); }
   .ranges { display: inline-flex; border: 1px solid var(--hairline); border-radius: 4px; overflow: hidden; }
   .ranges button {
-    background: transparent; border: 0; padding: 3px 9px; font-size: 13px; cursor: pointer; color: var(--ink-2); white-space: nowrap;
+    background: transparent; border: 0; padding: 3px 9px; font-size: 13.5px; cursor: pointer; color: var(--ink-2); white-space: nowrap;
   }
   .ranges button + button { border-left: 1px solid var(--hairline); }
   .ranges button:focus-visible { outline-offset: -2px; }
@@ -247,35 +260,38 @@
   .chart .hover-dot { fill: var(--series); stroke: var(--surface); stroke-width: 2; }
   .chart .hit { fill: transparent; cursor: crosshair; }
   .chart .clipmark { fill: var(--series); }
-  .chart .cliplabel { font-size: 11px; fill: var(--ink-2); }
+  .chart .cliplabel { font-size: 11px; fill: var(--ink-2); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
   .tip {
     position: absolute; pointer-events: none; display: none;
-    background: var(--ink); color: var(--surface); font-size: 12px; line-height: 1.3;
+    background: var(--ink); color: var(--surface); font-size: 12.5px; line-height: 1.3;
     padding: 5px 8px; border-radius: 4px; width: max-content; max-width: calc(100% - 16px); transform: translate(-50%, -100%); z-index: 2;
   }
   .tip b { font-weight: 600; }
   .chart-foot { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; margin: 6px 0 0; }
-  .legend { font-size: 12px; color: var(--muted); }
+  .legend { font-size: 12.5px; color: var(--muted); }
   .legend i { display: inline-block; width: 10px; height: 10px; background: var(--recession); border: 1px solid var(--hairline); vertical-align: -1px; margin-right: 5px; }
 
-  .note { margin: 12px 0 0; font-size: 13px; color: var(--ink-2); }
-  .source { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+  .note { margin: 12px 0 0; font-size: 13.5px; color: var(--ink-2); }
+  .source { margin: 4px 0 0; font-size: 13.5px; color: var(--muted); }
 
   /* a tile's note, source and readings: always open on desktop (no summary), one closed disclosure on phones */
   .tile-more > summary { margin: 10px 0 0; padding: 10px 0; font-size: 13.5px; color: var(--ink-2); cursor: pointer; border-top: 1px solid var(--hairline); }
   .tile-more[open] > summary { padding-bottom: 0; }
   @media (min-width: 761px) { .tile-more > summary { display: none; } }
   .chart-foot .legend:first-child { white-space: nowrap; }
-  details.table { margin: 10px 0 0; font-size: 13px; }
+  details.table { margin: 10px 0 0; font-size: 13.5px; }
   details.table summary { cursor: pointer; color: var(--ink-2); }
   details.table table { border-collapse: collapse; margin-top: 8px; width: 100%; max-width: 320px; }
+  details.table th { text-align: left; font-weight: 600; font-size: 12.5px; color: var(--muted); padding: 2px 0 4px; }
+  details.table th:last-child { text-align: right; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
   details.table td { padding: 3px 0; border-top: 1px solid var(--hairline); font-variant-numeric: tabular-nums; }
   details.table td:last-child { text-align: right; }
 
   /* About ----------------------------------------------------------------- */
   .about { margin: 40px 0 0; padding: 32px 0 48px; border-top: 1px solid var(--hairline); }
   .about h2 { margin: 0 0 10px; font-size: 22px; }
-  .about p { max-width: 42em; margin: 0 0 12px; color: var(--ink-2); }
+  .about p { max-width: 36em; margin: 0 0 12px; color: var(--ink-2); }
   .about p strong { color: var(--ink); font-weight: 600; }
   .status { padding: 24px 0; color: var(--ink-2); }
   .status .retry { font: inherit; font-weight: 600; color: var(--ink); background: var(--surface); border: 1px solid var(--hairline); border-radius: 4px; padding: 4px 10px; cursor: pointer; }
@@ -287,14 +303,15 @@
     body { background: #fff; }
     .secnav, .masthead .site-link, .ranges, .chart-head .full, details.table, .tip, .banner, .view-switch, .featured, .tile-more > summary { display: none !important; }
     .glance { break-inside: avoid; }
-    .masthead .updated a { display: none; }
+    .masthead .updated .htr, .to-glance, .skip { display: none !important; }
     .tile { break-inside: avoid; }
     .about { padding-bottom: 0; }
-    body::after { content: "economyincontext.org"; display: block; padding: 12px 16px 0; font-size: 12px; color: #555; }
+    body::after { content: "economyincontext.org"; display: block; padding: 12px 16px 0; font-size: 12.5px; color: #555; }
   }
 </style>
 </head>
 <body>
+<a class="skip" href="#main">Skip to the numbers</a>
 
 <div id="banner" class="banner" hidden></div>
 
@@ -316,7 +333,7 @@
     <h2 id="how-to-read">How to read this page</h2>
     <p><strong>The big number</strong> is the latest official reading. The date beside it is the period it describes, which is usually a few weeks behind today, because that is how long the agencies take to count.</p>
     <p><strong>The bar underneath</strong> ranks that reading against everything the indicator has done since records began. It spans the typical range, the middle 90 percent of that history, and the dot sits at the reading's rank: halfway along means half of all past readings were lower, which is what the sentence under it says in words. A dot near either end means today is unusual; a dot in the middle means it is not, whatever the headlines say. A small arrow at either end means the reading is outside the typical range altogether, which is rarer still. The numbers at the ends are the readings at the edges of that middle 90 percent. Because the bar shows rank rather than amount, the same distance along it can stand for a small change in one place and a large one in another.</p>
-    <p><strong>At a glance</strong>, at the top, puts every number's bar in one list so you can scan them all before reading any one in full. Each row links to its tile. Prefer the tiles alone? <a href="?view=tiles">Tiles only</a> leaves the list out.</p>
+    <p><strong>At a glance</strong>, at the top, puts every number's bar in one list so you can scan them all before reading any one in full. Each row links to its tile. Prefer the tiles alone? <a href="?view=tiles">Hide the overview</a> to leave the list out.</p>
     <p><strong>The line in plain terms</strong> restates the reading as something a household would feel: what last year's $100 buys, the payment on the median home at this rate, how many people the unemployment rate represents. It is computed from the same data each time the figures refresh.</p>
     <p><strong>The 2015–19 average</strong> is the last five full years before the pandemic. It is not a target, just a reasonable stand-in for what "normal" felt like recently. Its tick on the bar sits at that average's own rank in the history.</p>
     <p><strong>What things cost</strong> shows prices as charged at the store and the pump, but compares them with the past after taking out inflation, because a raw price almost always sets a record eventually. Their typical range and 2015–19 average are in today's dollars; the chart and the year-ago figure are the prices people actually paid.</p>
@@ -461,10 +478,10 @@
       svg.appendChild(svgEl('line', { class: 'track', x1: padL, x2: W - padR, y1: y, y2: y }));
 
       // 2015–19 average tick, label kept inside the strip's width
-      let ax = null;
+      let ax = null, tick = null;
       if (avg != null && avgRank != null) {
         ax = pos(avgRank);
-        svg.appendChild(svgEl('line', { class: 'avg', x1: ax, x2: ax, y1: y - 9, y2: y + 9 }));
+        tick = svgEl('line', { class: 'avg', x1: ax, x2: ax, y1: y - 9, y2: y + 9 }); svg.appendChild(tick);
         const label = '2015–19 avg ' + fmtValue(avg, d);
         const approxW = label.length * 6.4;
         let anchor = 'middle', lx = ax;
@@ -482,12 +499,13 @@
       else if (where === 'above') { svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (W - padR + 4) + ',' + y + ' l-10,-7 l0,14 z' }));
         let bx = W - padR - 10; if (ax != null && ax < bx + 6 && ax > bx - beyondW - 6) bx = ax - 8;
         const bl = svgEl('text', { class: 'beyond-label', x: bx, y: y + 4, 'text-anchor': 'end' }); bl.textContent = 'above the range'; svg.appendChild(bl); }
-      else svg.appendChild(svgEl('circle', { class: 'now', cx: pos(c.percentile_below), cy: y, r: 7 }));
+      else { const cx = pos(c.percentile_below); svg.appendChild(svgEl('circle', { class: 'now', cx, cy: y, r: 7 }));
+        if (tick && Math.abs(ax - cx) < 9) svg.appendChild(tick); }   // the reading sits on the tick: keep the tick in view
 
       // end labels (typical range)
       const l1 = svgEl('text', { x: padL, y: y - 12, 'text-anchor': 'start' }); l1.textContent = fmtValue(lo, d);
       const l2 = svgEl('text', { x: W - padR, y: y - 12, 'text-anchor': 'end' }); l2.textContent = fmtValue(hi, d);
-      const l3 = svgEl('text', { x: W / 2, y: y - 12, 'text-anchor': 'middle' }); l3.textContent = rangeLabel;
+      const l3 = svgEl('text', { x: W / 2, y: y - 12, 'text-anchor': 'middle', class: adjusted(t) ? 'qual' : '' }); l3.textContent = rangeLabel;
       svg.appendChild(l1); svg.appendChild(l2); svg.appendChild(l3);
       box.appendChild(svg);
     }
@@ -522,10 +540,12 @@
       const pos = p => pad + rankFrac(p) * (W - 2 * pad);        // by rank, as on the tiles
       const svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H, width: W, height: H, 'aria-hidden': 'true' });
       svg.appendChild(svgEl('line', { class: 'track', x1: pad, x2: W - pad, y1: y, y2: y }));
-      if (c.baseline_2015_19 != null && avgRank != null) { const ax = pos(avgRank); svg.appendChild(svgEl('line', { class: 'avg', x1: ax, x2: ax, y1: y - 6, y2: y + 6 })); }
+      let tick = null;
+      if (c.baseline_2015_19 != null && avgRank != null) { const ax = pos(avgRank); tick = svgEl('line', { class: 'avg', x1: ax, x2: ax, y1: y - 6, y2: y + 6 }); svg.appendChild(tick); }
       if (where === 'below') svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (pad - 5) + ',' + y + ' l9,-6 l0,12 z' }));
       else if (where === 'above') svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (W - pad + 5) + ',' + y + ' l-9,-6 l0,12 z' }));
-      else svg.appendChild(svgEl('circle', { class: 'now', cx: pos(c.percentile_below), cy: y, r: 5.5 }));
+      else { const cx = pos(c.percentile_below); svg.appendChild(svgEl('circle', { class: 'now', cx, cy: y, r: 5.5 }));
+        if (tick && Math.abs(+tick.getAttribute('x1') - cx) < 7) svg.appendChild(tick); }
       box.appendChild(svg);
     }
     if ('ResizeObserver' in window) { let w = 0; new ResizeObserver(() => { const nw = box.clientWidth; if (nw && nw !== w) { w = nw; draw(); } }).observe(box); } else requestAnimationFrame(draw);
@@ -535,7 +555,7 @@
     const g = el('section', { class: 'glance', id: 'at-a-glance', 'aria-label': 'All the numbers at a glance' });
     const head = el('div', { class: 'ghead' });
     head.appendChild(el('h2', { text: 'At a glance' }));
-    head.appendChild(el('span', { class: 'view-switch' }, [el('a', { href: '?view=tiles', text: 'Tiles only →' })]));
+    head.appendChild(el('span', { class: 'view-switch' }, [el('a', { href: '?view=tiles', text: 'Hide the overview →' })]));
     g.appendChild(head);
     const keySvg = inner => '<svg width="30" height="14" viewBox="0 0 30 14" aria-hidden="true">' + inner + '</svg>';
     const key = el('p', { class: 'key' });
@@ -683,11 +703,16 @@
         if (!p) return;
         const cx = xs(parseDate(p[0]).getTime()), cy = ys(clampV(p[1]));
         svg.appendChild(svgEl('path', { class: 'clipmark', d: 'M' + cx + ',' + (cy + dir * 6) + ' l-5,' + (-dir * 7) + ' l10,0 z' }));
-        const label = fmtPeriod(p[0], t.freq) + ': ' + fmtValue(p[1], d) + ', off the chart';
-        const tx = svgEl('text', { class: 'cliplabel', y: cy + (dir > 0 ? 14 : -10) });
-        const roomRight = width - mR - cx;
-        if (roomRight > label.length * 6.2) { tx.setAttribute('x', cx + 8); tx.setAttribute('text-anchor', 'start'); }
-        else { tx.setAttribute('x', cx - 8); tx.setAttribute('text-anchor', 'end'); }
+        // the longest form that fits beside the mark, or else within the plot's width, as close to the mark as it goes
+        const when = fmtPeriod(p[0], t.freq) + ': ' + fmtValue(p[1], d), forms = [when + ', off the chart', when], lw = f => f.length * 6.2;
+        const right = width - mR - (cx + 8), left = (cx - 8) - mL;
+        let label = when, anchor = 'start', x = Math.max(mL + 2, Math.min(cx + 8, width - mR - lw(when)));
+        for (const f of forms) {
+          if (lw(f) <= right) { label = f; x = cx + 8; break; }
+          if (lw(f) <= left) { label = f; anchor = 'end'; x = cx - 8; break; }
+          if (lw(f) <= iw - 4) { label = f; x = Math.max(mL + 2, Math.min(cx + 8, width - mR - lw(f))); break; }
+        }
+        const tx = svgEl('text', { class: 'cliplabel', x, y: cy + (dir > 0 ? 14 : -10), 'text-anchor': anchor });
         tx.textContent = label;
         svg.appendChild(tx);
       });
@@ -716,13 +741,16 @@
       hit.addEventListener('mousemove', e => show(e.clientX));
       hit.addEventListener('touchstart', e => { show(e.touches[0].clientX); }, { passive: true });
       hit.addEventListener('touchmove', e => { show(e.touches[0].clientX); }, { passive: true });
-      hit.addEventListener('mouseleave', hide);
-      hit.addEventListener('touchend', hide);
+      // a tap shows the reading for a moment; the mouseleave a browser sends right after a tap is ignored
+      let tapTimer = 0, lastTouch = 0;
+      hit.addEventListener('mouseleave', () => { if (Date.now() - lastTouch > 1000) hide(); });
+      hit.addEventListener('touchstart', () => { clearTimeout(tapTimer); lastTouch = Date.now(); }, { passive: true });
+      hit.addEventListener('touchend', () => { lastTouch = Date.now(); clearTimeout(tapTimer); tapTimer = setTimeout(hide, 2500); });
       box.insertBefore(svg, tip);
     }
 
     const head = el('div', { class: 'chart-head' });
-    head.appendChild(el('span', { class: 'range-title' }, [el('a', { class: 'full', href: 'chart/' + t.id + '/', text: 'Full chart and context →' })]));
+    head.appendChild(el('span', { class: 'range-title' }, [el('a', { class: 'full', href: 'chart/' + t.id + '/', text: 'Full chart and context →', 'aria-label': 'Full chart and context: ' + t.title })]));
     const ctl = el('div', { class: 'ranges', role: 'group', 'aria-label': 'Chart range' });
     // a series shorter than 25 years has one view, so no buttons
     if (yearsBetween(obs[0][0], obs[obs.length - 1][0]) < 24.5) range = 'all';
@@ -800,6 +828,8 @@
     const det = el('details', { class: 'table' });
     det.appendChild(el('summary', { text: 'Show recent readings' }));
     const tbl = el('table');
+    tbl.appendChild(el('caption', { class: 'sr-only', text: t.title + ', recent readings' }));
+    tbl.appendChild(el('thead', {}, [el('tr', {}, [el('th', { scope: 'col', text: 'Period' }), el('th', { scope: 'col', text: d.unit.charAt(0).toUpperCase() + d.unit.slice(1) })])]));
     const n = { m: 24, q: 12, w: 26, d: 24, a: 10 }[t.freq] || 24;
     t.observations.slice(-n).reverse().forEach(o => {
       const tr = el('tr'); tr.appendChild(el('td', { text: fmtPeriod(o[0], t.freq) })); tr.appendChild(el('td', { text: fmtValue(o[1], d) })); tbl.appendChild(tr);
@@ -817,8 +847,8 @@
     main.innerHTML = '';
     const gen = new Date(data.generated);
     const upd = document.getElementById('updated');
-    upd.textContent = 'Updated ' + MONTHS_LONG[gen.getMonth()] + ' ' + gen.getDate() + ', ' + gen.getFullYear() + ' · data from FRED · ';
-    upd.appendChild(el('a', { href: '#how-to-read', text: 'How to read this page ↓' }));
+    upd.textContent = 'New figures last checked ' + MONTHS_LONG[gen.getMonth()] + ' ' + gen.getDate() + ', ' + gen.getFullYear() + ' · data from FRED';
+    upd.appendChild(el('span', { class: 'htr' }, [' · ', el('a', { href: '#how-to-read', text: 'How to read this page ↓' })]));
     // the provenance sentence lives in the footer; the masthead keeps a short Updated line
     document.getElementById('attribution').textContent = data.attribution + ' Figures refresh automatically as agencies publish.';
     if (data.sample) {
@@ -834,19 +864,48 @@
     if (f && f.url && f.title) main.appendChild(el('aside', { class: 'featured', 'aria-label': 'Featured article' },
       [el('span', { class: 'flabel', text: 'Featured' }), el('a', { href: f.url, text: f.title }), ' →']));
     // ?view=tiles is the page as it was before the overview: the tiles alone, with a way back
-    if (new URLSearchParams(location.search).get('view') === 'tiles') main.appendChild(el('p', { class: 'view-switch' }, ['Tiles only. ', el('a', { href: './', text: 'Show all the numbers at a glance →' })]));
+    const hasGlance = new URLSearchParams(location.search).get('view') !== 'tiles';
+    if (!hasGlance) main.appendChild(el('p', { class: 'view-switch' }, ['Showing the tiles without the overview. ', el('a', { href: './', text: 'Show all the numbers at a glance →' })]));
     else { main.appendChild(buildGlance(data, sections)); nav.appendChild(el('li', {}, [el('a', { href: '#at-a-glance', text: 'At a glance' })])); }
     sections.forEach(s => {
       const id = 's-' + s.toLowerCase().replace(/[^a-z]+/g, '-');
       nav.appendChild(el('li', {}, [el('a', { href: '#' + id, text: s })]));
       const sec = el('section', { class: 'group', id });
-      sec.appendChild(el('h2', { text: s }));
+      const head = el('div', { class: 'sec-head' }, [el('h2', { text: s })]);
+      if (hasGlance) head.appendChild(el('a', { class: 'to-glance', href: '#at-a-glance', text: '↑ At a glance' }));
+      sec.appendChild(head);
       const grid = el('div', { class: 'grid' });
       const { tiles, wideId } = sectionTiles(data, s);
       tiles.forEach(t => grid.appendChild(buildTile(t, data, t.id === wideId)));
       sec.appendChild(grid);
       main.appendChild(sec);
     });
+    // wayfinding: the nav stays at the top (sticky); the section whose top has passed under it is marked aria-current
+    const navEl = document.querySelector('.secnav'), links = Array.from(nav.querySelectorAll('a'));
+    const targets = links.map(a => document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let current, ticking = false;
+    function navH() { const h = navEl.offsetHeight; document.documentElement.style.setProperty('--nav-h', h + 'px'); return h; }
+    function fades() { const max = nav.scrollWidth - nav.clientWidth; nav.classList.toggle('fade-l', nav.scrollLeft > 2); nav.classList.toggle('fade-r', max > 2 && nav.scrollLeft < max - 2); }
+    function markCurrent() {
+      ticking = false;
+      const line = navH() + 24;
+      let cur = null;
+      targets.forEach(x => { if (x.getBoundingClientRect().top <= line) cur = x; });
+      if (cur && cur.getBoundingClientRect().bottom < line) cur = null;          // below the last section (the About text)
+      if (cur === current) return;
+      current = cur;
+      links.forEach(a => { if (cur && a.getAttribute('href') === '#' + cur.id) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current'); });
+      const a = links.find(x => x.hasAttribute('aria-current'));
+      if (a && nav.scrollWidth > nav.clientWidth) {
+        const ar = a.getBoundingClientRect(), ur = nav.getBoundingClientRect();
+        if (ar.left < ur.left + 24 || ar.right > ur.right - 24) nav.scrollBy({ left: ar.left - ur.left - 28, behavior: still ? 'auto' : 'smooth' });
+      }
+    }
+    window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(markCurrent); } }, { passive: true });
+    window.addEventListener('resize', () => { navH(); fades(); markCurrent(); });
+    nav.addEventListener('scroll', fades, { passive: true });
+    navH(); fades(); markCurrent();
     // the tiles' notes are open on desktop and folded on phones; crossing the breakpoint, and printing, resets them
     const syncMore = open => document.querySelectorAll('.tile-more').forEach(x => { x.open = open; });
     if (DESKTOP.addEventListener) DESKTOP.addEventListener('change', () => syncMore(DESKTOP.matches)); else DESKTOP.addListener(() => syncMore(DESKTOP.matches));

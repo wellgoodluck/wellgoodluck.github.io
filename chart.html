@@ -80,22 +80,28 @@
   .wrap { max-width: var(--max); margin: 0 auto; padding: 0 16px; }
 
   .masthead { padding: 22px 0 14px; border-bottom: 1px solid var(--hairline); }
-  .crumb { font-size: 14px; color: var(--ink-2); margin: 0 0 10px; }
+  .skips { margin: 0; }
+  .skip { position: absolute; left: 8px; top: -60px; z-index: 10; padding: 10px 14px; background: var(--ink); color: var(--surface); font-size: 13.5px; font-weight: 600; text-decoration: none; border-radius: 4px; }
+  .skip:focus { top: 8px; }
+  body.embed .skips { display: none; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  .crumb { font-size: 13.5px; color: var(--ink-2); margin: 0 0 10px; }
   .crumb a { text-decoration: none; border-bottom: 1px solid var(--hairline); }
-  .masthead h1 { margin: 0; font-size: clamp(26px, 4vw, 36px); font-weight: 700; letter-spacing: -0.015em; line-height: 1.15; }
+  .masthead h1 { margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.15; }
   .masthead .sub { margin: 4px 0 0; color: var(--ink-2); font-size: 17px; }
-  .masthead .explainer { margin: 6px 0 0; font-size: 14.5px; color: var(--ink-2); }
+  .masthead .explainer { margin: 6px 0 0; font-size: 15px; color: var(--ink-2); }
   .masthead .explainer a { text-decoration: none; border-bottom: 1px solid var(--hairline); }
   .masthead .explainer a:hover { border-color: var(--ink); }
   .masthead .explainer[hidden] { display: none; }
 
   .layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 28px; padding: 22px 0 40px; align-items: start; }
-  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+  @media (max-width: 860px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 360px) { .ranges button { padding-left: 6px; padding-right: 6px; } }   /* six buttons fit a 320px screen */
   @media (min-width: 861px) {
     .panel { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow-y: auto; overscroll-behavior: contain; padding-right: 4px; }
     .to-panel, .to-chart { display: none; }
   }
-  .to-panel { margin: 0; font-size: 14px; }
+  .to-panel { margin: 0; font-size: 13.5px; }
   .to-chart { margin: -10px 0 0; font-size: 13.5px; }
   /* thumb-sized: about 44px tall */
   .to-panel a, .to-chart a { display: inline-block; padding: 12px 0; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; }
@@ -108,12 +114,12 @@
   }
   .see-chart { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; background: var(--surface); border-top: 1px solid var(--hairline); text-align: center; padding-bottom: env(safe-area-inset-bottom, 0); }
   .see-chart[hidden] { display: none; }
-  .see-chart a { display: block; min-height: 44px; line-height: 44px; font-size: 14.5px; font-weight: 600; color: var(--ink); text-decoration: none; }
+  .see-chart a { display: block; min-height: 44px; line-height: 44px; font-size: 15px; font-weight: 600; color: var(--ink); text-decoration: none; }
 
   .headline { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 14px; margin: 0 0 2px; }
   .headline .value { font-size: 44px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
-  .headline .when { color: var(--muted); font-size: 14px; }
-  .compare { margin: 6px 0 0; color: var(--ink-2); font-size: 14px; }
+  .headline .when { color: var(--muted); font-size: 13.5px; }
+  .compare { margin: 6px 0 0; color: var(--ink-2); font-size: 13.5px; }
   .compare span + span::before { content: "\00a0\00a0|\00a0\00a0"; color: var(--hairline); }
 
   .strip { margin: 16px 0 2px; max-width: 560px; }
@@ -121,25 +127,28 @@
   .strip .track { stroke: var(--range); stroke-width: 6; stroke-linecap: round; }
   .strip .now { fill: var(--series); stroke: var(--surface); stroke-width: 2; }
   .strip .avg { stroke: var(--ink-2); stroke-width: 2; }
-  .strip text { font-size: 12px; fill: var(--muted); }
+  .strip text { font-size: 11px; fill: var(--muted); }
+  .strip text.qual { fill: var(--ink-2); font-weight: 600; }   /* "in today's dollars" changes how the bar reads */
   .strip text.avg-label { fill: var(--ink-2); }
   .strip .beyond { fill: var(--series); }
   .context { margin: 4px 0 0; font-size: 15px; font-weight: 600; }
 
   .chart-head { display: flex; align-items: center; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; margin: 22px 0 6px; }
   .ranges { display: inline-flex; border: 1px solid var(--hairline); border-radius: 4px; overflow: hidden; }
-  .ranges button { background: transparent; border: 0; padding: 4px 10px; font-size: 13px; cursor: pointer; color: var(--ink-2); white-space: nowrap; }
+  .ranges button { background: transparent; border: 0; padding: 4px 10px; font-size: 13.5px; cursor: pointer; color: var(--ink-2); white-space: nowrap; }
   .ranges button + button { border-left: 1px solid var(--hairline); }
   .ranges button:focus-visible { outline-offset: -2px; }
   .ranges button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
   @media (max-width: 760px) { .ranges button { padding: 8px 12px; } }   /* about 36px tall on phones */
-  .custom { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-2); flex-wrap: wrap; }
-  .custom .fields { display: inline-flex; align-items: center; gap: 6px; }
+  .custom { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--ink-2); flex-wrap: wrap; }
+  .custom .fields { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .custom .fields[hidden] { display: none; }
-  .custom .toggle { background: none; border: 0; padding: 3px 0; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; cursor: pointer; font-size: 13px; }
+  .custom .toggle { background: none; border: 0; padding: 3px 0; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; cursor: pointer; font-size: 13.5px; }
   .custom .toggle:hover { text-decoration-color: var(--ink); }
-  .custom input { padding: 3px 6px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); font-size: 13px; width: 9.5em; }
-  .custom button { padding: 3px 9px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); font-size: 13px; cursor: pointer; }
+  .custom input { padding: 3px 6px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); font-size: 13.5px; width: 9.5em; }
+  .range-msg { flex-basis: 100%; color: var(--ink); font-size: 13.5px; }
+  .range-msg:empty { display: none; }
+  .custom button { padding: 3px 9px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); font-size: 13.5px; cursor: pointer; }
 
   .chart { position: relative; background: var(--surface); border: 1px solid var(--hairline); border-radius: 6px; padding: 8px 8px 4px; }
   .chart svg { display: block; width: 100%; overflow: visible; }
@@ -152,6 +161,7 @@
   .chart.has-comps .line { stroke-width: 2.5; }   /* with companions on, the main series also reads by weight, not only by color */
   .chart .end { fill: var(--series); stroke: var(--surface); stroke-width: 2; }
   .chart .ref { stroke: var(--ref); stroke-width: 1; stroke-dasharray: 4 3; }
+  .chart .ref.median { stroke-width: 1.5; stroke-dasharray: 1 3; stroke-linecap: round; }
   .chart .ref-label { font-size: 11px; fill: var(--ref); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
   .chart .xhair { stroke: var(--muted); stroke-width: 1; }
   .chart .hover-dot { stroke: var(--surface); stroke-width: 2; }
@@ -160,27 +170,32 @@
   .chart .cliplabel { font-size: 11px; fill: var(--ink-2); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
   .chart .ev { stroke: var(--ink-2); stroke-width: 1; }
   .chart .ev-mark { fill: var(--ink-2); }
-  .chart .ev-label { font-size: 10.5px; fill: var(--ink-2); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
-  .chart .ev-num { font-size: 10px; font-weight: 600; fill: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .chart .ev-label { font-size: 11px; fill: var(--ink-2); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
+  .chart .ev-num { font-size: 11px; font-weight: 600; fill: var(--ink-2); font-variant-numeric: tabular-nums; }
   .chart .lane-label { font-size: 11px; fill: var(--muted); }
-  .chart .seg-label { font-size: 10.5px; fill: var(--ink); pointer-events: none; }
+  .chart .seg-label { font-size: 11px; fill: var(--ink); pointer-events: none; }
   .chart .seg-label.light { fill: #fff; }
   .chart .seg-label.outside { fill: var(--ink); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
   .chart .seg { stroke: var(--surface); stroke-width: 1; }
   .chart .sub-title { font-size: 11px; fill: var(--ink-2); }
-  .chart .credit { font-size: 10.5px; fill: var(--muted); }
-  .tip { position: absolute; pointer-events: none; display: none; background: var(--ink); color: var(--surface); font-size: 12px; line-height: 1.35; padding: 6px 9px; border-radius: 4px; width: max-content; max-width: min(320px, calc(100% - 16px)); transform: translate(-50%, -100%); z-index: 2; }
+  .chart .credit { font-size: 11px; fill: var(--muted); }
+  .tip { position: absolute; pointer-events: none; display: none; background: var(--ink); color: var(--surface); font-size: 12.5px; line-height: 1.35; padding: 6px 9px; border-radius: 4px; width: max-content; max-width: min(320px, calc(100% - 16px)); transform: translate(-50%, -100%); z-index: 2; }
   .tip b { font-weight: 600; }
   .tip .k { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; vertical-align: 0; }
   .legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 8px 0 0; font-size: 12.5px; color: var(--ink-2); }
   .legend i { display: inline-block; width: 12px; height: 3px; vertical-align: 3px; margin-right: 6px; border-radius: 1px; }
   .legend i.rec { width: 10px; height: 10px; background: var(--recession); border: 1px solid var(--hairline); vertical-align: -1px; }
   .legend i.dash { height: 0; border-top: 2px dashed var(--ref); }
+  .legend i.dash.dot { border-top-style: dotted; }
   .legend i.lane { width: 10px; height: 10px; border: 1px solid var(--hairline); vertical-align: -1px; border-radius: 0; }
   .framing { margin: 10px 0 0; padding: 8px 12px; background: var(--banner); color: var(--banner-ink); border-radius: 4px; font-size: 13.5px; }
   .framing[hidden] { display: none; }
   .events-list { margin: 12px 0 0; font-size: 13.5px; }
-  .events-list h3 { margin: 0 0 4px; font-size: 13px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.04em; }
+  .ev-key { margin: 6px 0 0; font-size: 12.5px; color: var(--ink-2); line-height: 1.45; }
+  .ev-key[hidden] { display: none; }
+  details.ev-key summary { cursor: pointer; color: var(--ink-2); }
+  .ev-key b { font-weight: 600; color: var(--ink); }
+  .events-list h2 { margin: 0 0 4px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.04em; }
   .events-list ul { margin: 0; padding: 0; list-style: none; columns: 2; column-gap: 24px; }
   @media (max-width: 600px) { .events-list ul { columns: 1; } }
   .events-list li { break-inside: avoid; padding: 2px 0; }
@@ -190,10 +205,12 @@
   .events-list .src { margin-left: 6px; color: var(--muted); font-size: 12.5px; }
 
   .note { margin: 14px 0 0; font-size: 13.5px; color: var(--ink-2); }
-  .source { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+  .source { margin: 4px 0 0; font-size: 13.5px; color: var(--muted); }
   .actions { margin: 14px 0 0; display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 13.5px; }
-  .actions .reuse-short { align-self: center; font-size: 13px; color: var(--muted); }
+  .actions .reuse-short { align-self: center; font-size: 12.5px; color: var(--muted); }
   .actions .reuse-short a { padding: 0; border: 0; background: none; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--hairline); }
+  .copy-fallback { flex-basis: 100%; font: inherit; font-size: 13px; padding: 6px 8px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); color: var(--ink); }
+  .copy-fallback[hidden] { display: none; }
   .actions .img-menu { position: relative; }
   .actions .img-menu > summary { list-style: none; padding: 4px 10px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); cursor: pointer; font-size: 13.5px; }
   .actions .img-menu > summary::-webkit-details-marker { display: none; }
@@ -206,39 +223,41 @@
   .img-list span { display: block; font-size: 12.5px; color: var(--muted); }
   .actions button, .actions > a { padding: 4px 10px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); cursor: pointer; text-decoration: none; font-size: 13.5px; }
 
-  details.table { margin: 14px 0 0; font-size: 13px; }
+  details.table { margin: 14px 0 0; font-size: 13.5px; }
   details.table summary { cursor: pointer; color: var(--ink-2); }
   details.table .scroll { max-height: 360px; overflow: auto; margin-top: 8px; border: 1px solid var(--hairline); border-radius: 4px; }
   details.table table { border-collapse: collapse; width: 100%; }
   details.table th { text-align: left; font-weight: 600; padding: 5px 10px; position: sticky; top: 0; background: var(--surface); border-bottom: 1px solid var(--hairline); }
   details.table th.num, details.table td.num { text-align: right; }
+  details.table td:first-child { white-space: nowrap; }
   details.table td { padding: 3px 10px; border-top: 1px solid var(--hairline); font-variant-numeric: tabular-nums; }
 
   /* Overlays panel */
-  .panel h2 { margin: 0 0 6px; font-size: 16px; font-weight: 700; }
+  .panel h2 { margin: 0 0 6px; font-size: 17px; font-weight: 700; }
   .panel p.lead { margin: 0 0 12px; font-size: 13.5px; color: var(--ink-2); }
   .panel details { border-top: 1px solid var(--hairline); padding: 8px 0; }
   .panel details:last-child { border-bottom: 1px solid var(--hairline); }
-  .panel summary { cursor: pointer; font-weight: 600; font-size: 14.5px; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  .panel summary { cursor: pointer; font-weight: 600; font-size: 15px; list-style: none; display: flex; justify-content: space-between; align-items: center; }
   .panel summary::-webkit-details-marker { display: none; }
   .panel summary::after { content: "+"; color: var(--muted); font-weight: 400; }
   .panel details[open] summary::after { content: "–"; }
   .panel summary .count { font-weight: 400; color: var(--muted); font-size: 12.5px; margin-left: 8px; }
-  .opt { display: grid; grid-template-columns: 18px 1fr; gap: 0 8px; margin: 8px 0 0; font-size: 14px; align-items: start; }
+  .opt { display: grid; grid-template-columns: 18px 1fr; gap: 0 8px; margin: 8px 0 0; font-size: 13.5px; align-items: start; }
   .opt input { margin: 4px 0 0; accent-color: var(--ink); }   /* not the browser's blue, which is a party's color here */
-  .opt > label { grid-column: 2; cursor: pointer; }
+  .opt > label { grid-column: 2; cursor: pointer; display: flex; align-items: flex-start; }   /* a wrapped name lines up after its swatch */
+  .opt > label .sw { flex: none; margin-top: 5px; }
   .opt input:disabled + label { color: var(--muted); cursor: default; }
   .why .more { font: inherit; color: var(--ink-2); background: none; border: 0; padding: 2px 2px; margin: 0 0 0 2px; text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 2px; cursor: pointer; }
   .why .more:hover { text-decoration-color: currentColor; }
   .cap-note { margin: 6px 0 0; font-size: 12.5px; color: var(--ink-2); }
-  .adjust-note { margin: 4px 0 0; font-size: 13px; color: var(--ink-2); }
+  .adjust-note { margin: 4px 0 0; font-size: 13.5px; color: var(--ink-2); }
   .status .retry { font: inherit; font-weight: 600; color: var(--ink); background: var(--surface); border: 1px solid var(--hairline); border-radius: 4px; padding: 4px 10px; cursor: pointer; }
   .opt .why { grid-column: 2; font-size: 12.5px; color: var(--muted); margin: 1px 0 0; line-height: 1.35; }
   .opt .why a { color: var(--muted); }
   .panel .gnote { margin: 6px 0 0; font-size: 12.5px; color: var(--muted); line-height: 1.35; }
   .opt .sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
   .opt .sw.off { visibility: hidden; }   /* an overlay's color is assigned when it is turned on */
-  .panel .clear { margin: 12px 0 0; font-size: 13px; }
+  .panel .clear { margin: 12px 0 0; font-size: 13.5px; }
   .panel .clear button { background: none; border: 0; padding: 0; color: var(--ink-2); text-decoration: underline; cursor: pointer; }
 
   .status { padding: 24px 0; color: var(--ink-2); }
@@ -250,19 +269,19 @@
   body.embed .wrap { padding: 0 10px; max-width: none; }
   body.embed .embed-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 0 0 2px; }
   body.embed .embed-head h2 { margin: 0; font-size: 17px; font-weight: 700; }
-  body.embed .embed-head a { font-size: 13px; color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--hairline); }
+  body.embed .embed-head a { font-size: 13.5px; color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--hairline); }
   body.embed .headline { margin: 0; }
-  body.embed .headline .value { font-size: 24px; }
+  body.embed .headline .value { font-size: 28px; }
   body.embed .context { font-size: 13.5px; color: var(--ink-2); margin: 0; font-weight: 400; }
   body.embed .chart-head { margin: 8px 0 4px; }
   body.embed .chart { border: 0; padding: 0; }
   body.embed .framing { font-size: 12.5px; padding: 6px 10px; margin: 6px 0 0; }
   body.embed .adjust-note { font-size: 12.5px; margin: 2px 0 0; }
   .index { padding: 20px 0 40px; }
-  .index h2 { font-size: 20px; margin: 0 0 10px; }
+  .index h2 { font-size: 22px; margin: 0 0 10px; }
   .index ul { columns: 2; column-gap: 24px; padding-left: 20px; }
   footer { border-top: 1px solid var(--hairline); padding: 20px 0 40px; font-size: 13.5px; color: var(--ink-2); }
-  footer p { max-width: 48em; margin: 0 0 8px; }
+  footer p { max-width: 38em; margin: 0 0 8px; }
   p, li, figcaption, .why { text-wrap: pretty; }
   @media print {
     :root, :root:not(.export-light) { --page: #fff; --surface: #fff; }
@@ -271,13 +290,15 @@
     .layout { display: block; padding: 12px 0; }
     .chart, figure, .events-list li { break-inside: avoid; }
     footer { padding-bottom: 0; }
-    body::after { content: "economyincontext.org"; display: block; padding: 12px 16px 0; font-size: 12px; color: #555; }
+    body::after { content: "economyincontext.org"; display: block; padding: 12px 16px 0; font-size: 12.5px; color: #555; }
     body.embed::after { content: none; }
   }
   h1, h2, h3, .masthead .sub { text-wrap: balance; }
 </style>
 </head>
 <body>
+<div class="sr-only" id="live" aria-live="polite"></div>
+<p class="skips"><a class="skip" href="#chart-top">Skip to the chart</a><a class="skip" href="#overlays">Skip to overlays</a></p>
 
 <header class="masthead">
   <div class="wrap">
@@ -336,7 +357,9 @@
   }
   function fmtDate(s) { return fmtPeriod(s, 'd'); }
   // An event whose source gives only a season or a year carries that wording in `when`; its date only places the marker.
+  function announce(text) { const l = document.getElementById('live'); if (!l) return; l.textContent = ''; setTimeout(() => { l.textContent = text; }, 50); }
   function evDate(e) { return e.when || fmtDate(e.date); }
+  function evDateShort(e) { if (e.when) return e.when; const d = parseDate(e.date); return MONTHS[d.getUTCMonth()] + ' ' + d.getUTCFullYear(); }
   function periodNoun(freq) { return freq === 'a' ? 'years' : freq === 'q' ? 'quarters' : freq === 'w' ? 'weeks' : 'months'; }
   function prevLabel(freq) { return freq === 'a' ? 'Previous year' : freq === 'q' ? 'Previous quarter' : freq === 'w' ? 'Previous week' : 'Previous month'; }
   function yearsBetween(a, b) { return (parseDate(b) - parseDate(a)) / (365.25 * 86400000); }
@@ -431,18 +454,20 @@
       const pos = p => padL + rankFrac(p) * (W - padL - padR);     // by rank: see baselineRank()
       const svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H, width: W, height: H, role: 'img', 'aria-label': stripLabel(t) });
       svg.appendChild(svgEl('line', { class: 'track', x1: padL, x2: W - padR, y1: y, y2: y }));
+      let tick = null;
       if (avg != null && avgRank != null) {
-        const ax = pos(avgRank); svg.appendChild(svgEl('line', { class: 'avg', x1: ax, x2: ax, y1: y - 9, y2: y + 9 }));
+        const ax = pos(avgRank); tick = svgEl('line', { class: 'avg', x1: ax, x2: ax, y1: y - 9, y2: y + 9 }); svg.appendChild(tick);
         const label = '2015–19 avg ' + fmtValue(avg, d), approxW = label.length * 6.4; let anchor = 'middle', lx = ax;
         if (ax - approxW / 2 < 0) { anchor = 'start'; lx = Math.max(ax - 4, 0); } else if (ax + approxW / 2 > W) { anchor = 'end'; lx = Math.min(ax + 4, W); }
         const lab = svgEl('text', { class: 'avg-label', x: lx, y: y + 24, 'text-anchor': anchor }); lab.textContent = label; svg.appendChild(lab);
       }
       if (where === 'below') svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (padL - 4) + ',' + y + ' l10,-7 l0,14 z' }));
       else if (where === 'above') svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (W - padR + 4) + ',' + y + ' l-10,-7 l0,14 z' }));
-      else svg.appendChild(svgEl('circle', { class: 'now', cx: pos(c.percentile_below), cy: y, r: 7 }));
+      else { const cx = pos(c.percentile_below); svg.appendChild(svgEl('circle', { class: 'now', cx, cy: y, r: 7 }));
+        if (tick && Math.abs(+tick.getAttribute('x1') - cx) < 9) svg.appendChild(tick); }   // the reading sits on the tick: keep the tick in view
       const l1 = svgEl('text', { x: padL, y: y - 12, 'text-anchor': 'start' }); l1.textContent = fmtValue(lo, d);
       const l2 = svgEl('text', { x: W - padR, y: y - 12, 'text-anchor': 'end' }); l2.textContent = fmtValue(hi, d);
-      const l3 = svgEl('text', { x: W / 2, y: y - 12, 'text-anchor': 'middle' }); l3.textContent = rangeLabel;
+      const l3 = svgEl('text', { x: W / 2, y: y - 12, 'text-anchor': 'middle', class: adjusted(t) ? 'qual' : '' }); l3.textContent = rangeLabel;
       svg.appendChild(l1); svg.appendChild(l2); svg.appendChild(l3); box.appendChild(svg);
     }
     if ('ResizeObserver' in window) { let w = 0; new ResizeObserver(() => { const nw = box.clientWidth; if (nw && nw !== w) { w = nw; draw(); } }).observe(box); } else requestAnimationFrame(draw);
@@ -516,8 +541,13 @@
     const box = el('div', { class: 'chart' }), tip = el('div', { class: 'tip' }); box.appendChild(tip);
     const obs = t.observations, d = t.display;
     const legend = el('div', { class: 'legend' }), framing = el('div', { class: 'framing', hidden: '' }), evList = el('div', { class: 'events-list' });
+    // the key to numbered markers: always open on the page; in an embed, whose frame may be a fixed height on
+    // another site, it folds behind one line and the frame refits when it opens
+    const evKeyText = el('span', {}), evKeySum = state.embed ? el('summary', {}) : null;
+    const evKey = state.embed ? el('details', { class: 'ev-key', hidden: '' }, [evKeySum, evKeyText]) : el('p', { class: 'ev-key', hidden: '' }, [evKeyText]);
+    if (state.embed) evKey.addEventListener('toggle', () => draw());
     function activeOverlays() { return overlays.filter(o => state.on.has(o.id) && appliesTo(o, t.id) && (!o.requires || state.on.has(o.requires))); }
-    const EMBED_MIN_PLOT = 140; let embedTrim = 0, fitting = false, exportPlotH = null;
+    const EMBED_MIN_PLOT = 120; let embedTrim = 0, fitting = false, exportPlotH = null, exportNumbers = false, unlabeled = 0;
     if (state.embed && document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (box.isConnected) draw(); });   // the key may wrap differently once the font is in
     function colorFor(id) { return COLORS[state.slots.has(id) ? state.slots.get(id) : 0]; }
 
@@ -544,10 +574,11 @@
       box.classList.toggle('has-comps', comps.length + subs.length > 0);
 
       const width = Math.max(300, box.clientWidth - 16 || 700);
-      const narrow = width < 560;
+      const narrow = width < 560, numbered = narrow || exportNumbers;
+      unlabeled = 0;
       // on a narrow chart each lane's name sits above it instead of in the left margin, so the plot keeps its width
       const laneLabelW = eras.length && !narrow ? Math.max(...eras.map(o => textW(o.lane, 11))) + 10 : 0, laneNameH = narrow ? 13 : 0;
-      const mL = Math.max(narrow ? 44 : 52, laneLabelW), mR = 14, mT = evs.length ? (narrow ? 22 : 40) : 12;
+      const mL = Math.max(narrow ? 44 : 52, laneLabelW), mR = 14, mT = evs.length ? (narrow ? 32 : 40) : 12;
       const basePlotH = state.embed ? (narrow ? 200 : 280) : (narrow ? 240 : 380);
       const plotH = exportPlotH || (state.embed ? Math.max(EMBED_MIN_PLOT, basePlotH - embedTrim) : basePlotH), subH = narrow ? 90 : 120, laneH = 18, laneGap = 4;
       const xAxisH = 22;
@@ -569,14 +600,15 @@
       const compPts = comps.map(o => ({ o, pts: o.observations.filter(inWin) }));
       compPts.forEach(c => c.pts.forEach(p => { const v = clampV(p[1]); if (v < lo) lo = v; if (v > hi) hi = v; }));
       // on a price tile the chart is as charged, so its median and 2015–19 lines are too (the tile's range is in today's dollars)
-      const lineVals = lines.map(o => ({ o: o.type === 'stat' && t.display.adjust ? Object.assign({}, o, { label: o.label + ' (as charged)' }) : o,
+      const lineVals = lines.map(o => ({ o: o.type === 'stat' && t.display.adjust ? Object.assign({}, o, { label: o.label + ', as charged' }) : o,
         v: o.type === 'line' ? o.value : o.stat === 'median' ? ctx.median : t.context.baseline_2015_19 })).filter(x => x.v != null);
       lineVals.forEach(x => { if (x.v < lo) lo = x.v; if (x.v > hi) hi = x.v; });
       if (lo === hi) { lo -= 1; hi += 1; }
       const pad = (hi - lo) * 0.08; lo -= pad; hi += pad;
       const ys = v => mT + (hi - v) / (hi - lo) * ih;
 
-      const svg = svgEl('svg', { viewBox: '0 0 ' + width + ' ' + height, width, height, role: 'img', 'aria-label': t.title + ' history' });
+      const svg = svgEl('svg', { viewBox: '0 0 ' + width + ' ' + height, width, height, role: 'img',
+        'aria-label': t.title + ', ' + start.getUTCFullYear() + ' to ' + end.getUTCFullYear() + '. Latest: ' + fmtValue(obs[obs.length - 1][1], d) + ', ' + fmtPeriod(obs[obs.length - 1][0], t.freq) + '. ' + contextSentence(t) + (act.length ? ' Overlays on: ' + act.map(o => o.label).join(', ') + '.' : '') });
 
       // recessions (main plot and sub-panels)
       const recRects = [];
@@ -612,7 +644,7 @@
       const placed = [];
       lineVals.slice().sort((a, b) => b.v - a.v).forEach(x => {
         const y = ys(x.v);
-        svg.appendChild(svgEl('line', { class: 'ref', x1: mL, x2: width - mR, y1: y, y2: y }));
+        svg.appendChild(svgEl('line', { class: 'ref' + (x.o.stat === 'median' ? ' median' : ''), x1: mL, x2: width - mR, y1: y, y2: y }));
         let ly = y - 4;                            // above the line; below it if that collides with a label already placed
         if (placed.some(p => Math.abs(p - ly) < 12)) ly = y + 12;
         if (placed.some(p => Math.abs(p - ly) < 12)) ly = y + 24;
@@ -684,32 +716,42 @@
       evs.forEach(o => o.items.forEach(it => { const tm = parseDate(it.date).getTime(); if (tm >= x0 && tm <= x1) evItems.push({ ...it, tm, group: o.label }); }));
       evItems.sort((a, b) => a.tm - b.tm);
       const rowEnd = [-Infinity, -Infinity];   // right edge of the last label placed on each row
-      // markers closer than 12px (18px on a narrow chart) are drawn as one, with a "+N" badge; every marker names its
-      // events on hover. A narrow chart has no room for names: each marker gets a number, and the list below uses it.
-      const groups = [];
-      evItems.forEach(it => { const x = xs(it.tm); const g = groups[groups.length - 1]; if (g && x - g.x < (narrow ? 18 : 12)) g.items.push(it); else groups.push({ x, items: [it] }); });
-      groups.forEach((g, gi) => {
-        const x = g.x, it = g.items[0], n = g.items.length;
-        g.items.forEach(e => { e.num = narrow ? gi + 1 : null; });
-        svg.appendChild(svgEl('line', { class: 'ev', x1: x, x2: x, y1: mT - 2, y2: mT + ih, 'stroke-dasharray': '2 3' }));
-        const mark = svgEl('path', { class: 'ev-mark', d: 'M' + x + ',' + (mT - 2) + ' l-4,-6 l8,0 z' });
-        mark.appendChild(svgEl('title', {})); mark.querySelector('title').textContent = g.items.map(e => evDate(e) + ': ' + e.label).join('\n');
+      // Every event gets its own hairline and tick at its own date. When names don't fit (a narrow chart, or an image
+      // that asks for it) every event gets its own number, 1 to N by date, and the key under the chart and the list
+      // below use it. Labels, not marks, are shared when events crowd: names within 12px share one label with "+N";
+      // numbers within 18px share one, written "3,4" or "3–5".
+      evItems.forEach((it, i) => { it.x = xs(it.tm); it.num = numbered ? i + 1 : null; });
+      evItems.forEach(it => {
+        svg.appendChild(svgEl('line', { class: 'ev', x1: it.x, x2: it.x, y1: mT - 2, y2: mT + ih, 'stroke-dasharray': '2 3' }));
+        const mark = svgEl('path', { class: 'ev-mark', d: 'M' + it.x + ',' + (mT - 2) + ' l-4,-6 l8,0 z' });
+        mark.appendChild(svgEl('title', {})); mark.querySelector('title').textContent = (it.num ? it.num + '. ' : '') + evDate(it) + ': ' + it.label;
         svg.appendChild(mark);
-        if (narrow) {
-          const nt = svgEl('text', { class: 'ev-num', x: Math.min(Math.max(x, mL + 5), width - mR - 5), y: mT - 11, 'text-anchor': 'middle' });
-          nt.textContent = gi + 1; nt.appendChild(svgEl('title', {})); nt.querySelector('title').textContent = mark.querySelector('title').textContent; svg.appendChild(nt);
+      });
+      const groups = [];
+      // a group grows while each event is close to the last one, but never spans more than 30px, so "3–5" stays local
+      evItems.forEach(it => { const g = groups[groups.length - 1]; if (g && it.x - g.items[g.items.length - 1].x < (numbered ? 18 : 12) && it.x - g.items[0].x <= 30) g.items.push(it); else groups.push({ items: [it] }); });
+      groups.forEach(g => {
+        const it = g.items[0], n = g.items.length, x = it.x, last = g.items[n - 1];
+        const title = g.items.map(e => (e.num ? e.num + '. ' : '') + evDate(e) + ': ' + e.label).join('\n');
+        if (numbered) {
+          const text = n === 1 ? String(it.num) : n === 2 ? it.num + ',' + last.num : it.num + '–' + last.num, w = textW(text, 11), cx = (it.x + last.x) / 2;
+          const nx = Math.min(Math.max(cx, mL + w / 2), width - mR - w / 2);
+          const row = rowEnd[0] < nx - w / 2 - 4 ? 0 : rowEnd[1] < nx - w / 2 - 4 ? 1 : 0;   // two rows; a third crowd overprints row 1 rather than vanish
+          rowEnd[row] = nx + w / 2;
+          const nt = svgEl('text', { class: 'ev-num', x: nx, y: mT - 11 - row * 12, 'text-anchor': 'middle' });
+          nt.textContent = text; nt.appendChild(svgEl('title', {})); nt.querySelector('title').textContent = title; svg.appendChild(nt);
           return;
         }
         // one label per group: the first event's name, plus "+N" when others share the spot; placed by the same
         // two-row collision rule as before, so a crowded stretch shows what fits and the hover title and list name the rest
-        const text = (it.label.length > 30 ? it.label.slice(0, 28) + '…' : it.label) + (n > 1 ? ' +' + (n - 1) : ''), w = textW(text, 10.5);
+        const text = (it.label.length > 30 ? it.label.slice(0, 28) + '…' : it.label) + (n > 1 ? ' +' + (n - 1) : ''), w = textW(text, 11);
         let anchor = 'middle', left = x - w / 2;
         if (left < mL) { anchor = 'start'; left = x; } else if (x + w / 2 > width - mR) { anchor = 'end'; left = x - w; }
         const row = rowEnd[0] < left - 6 ? 0 : rowEnd[1] < left - 6 ? 1 : -1;
-        if (row < 0) return;                       // no room: the hover title and the list below still name it
+        if (row < 0) { unlabeled += n; return; }   // no room: the hover title and the list below still name it
         rowEnd[row] = left + w;
         const lab = svgEl('text', { class: 'ev-label', x, y: mT - 11 - (row ? 13 : 0), 'text-anchor': anchor });
-        lab.textContent = text; lab.appendChild(svgEl('title', {})); lab.querySelector('title').textContent = mark.querySelector('title').textContent; svg.appendChild(lab);
+        lab.textContent = text; lab.appendChild(svgEl('title', {})); lab.querySelector('title').textContent = title; svg.appendChild(lab);
       });
 
       // sub-panels (own scale)
@@ -749,7 +791,7 @@
         last: s => s.party === 'X' ? (s.label ? 'Div.' : '') : s.label && !/^Unified /.test(s.label) ? s.label.split(' ').pop() : s.party,
         letter: s => s.party === 'X' ? '' : s.party,
       };
-      const fits = (text, w) => text.length === 1 ? w > 12 : textW(text, 10.5) + 8 < w;
+      const fits = (text, w) => text.length === 1 ? w > 12 : textW(text, 11) + 8 < w;
       eras.forEach((o, li) => {
         const y = laneTop + li * (laneH + laneGap + laneNameH) + laneNameH;
         const segs = o.id === 'unified' ? unifiedSegments(ctx.ovById) : o.segments;
@@ -784,11 +826,11 @@
             return;
           }
           const text = s.label || '';
-          const tw = textW(text, 10.5), si = segs.indexOf(s), isLast = si === segs.length - 1;
+          const tw = textW(text, 11), si = segs.indexOf(s), isLast = si === segs.length - 1;
           const prev = si > 0 ? segs[si - 1] : null, prevText = prev ? (prev.label || '') : '';
           const prevRoom = prev ? xs(Math.max(parseDate(prev.start).getTime(), x0)) * 0 + (xs(a) - xs(Math.max(parseDate(prev.start).getTime(), x0))) : 0;
           if (text && w > tw + 8) { const tl = svgEl('text', { class: 'seg-label' + (light ? ' light' : ''), x: xs(a) + w / 2, y: y + laneH - 5, 'text-anchor': 'middle' }); tl.textContent = text; svg.appendChild(tl); lastLab = { tl, a: xs(a), si }; }
-          else if (text && isLast && prevRoom >= tw + textW(prevText, 10.5) + 20) {
+          else if (text && isLast && prevRoom >= tw + textW(prevText, 11) + 20) {
             // the current segment is too narrow for its name: write it ending at the segment's right edge, spilling
             // left over the previous segment, when that segment is wide enough to hold both names; the previous name
             // moves to the middle of what is left
@@ -826,7 +868,7 @@
         });
         subTimes.forEach(s => { if (!s.sp.length) return; const j = nearest(s.times, times[i]); if (Math.abs(s.times[j] - times[i]) > 45 * 86400000) return; html += '<br><span class="k" style="background:' + colorFor(s.o.id) + '"></span>' + fmtValue(s.sp[j][1], s.o.display || d) + ' ' + shortLabel(s.o.label); });
         const near = evItems.filter(e => Math.abs(e.tm - times[i]) <= 20 * 86400000);
-        near.forEach(e => { html += '<br>▲ ' + e.label + ' (' + evDate(e) + ')'; });
+        near.forEach(e => { html += '<br>▼ ' + (e.num ? e.num + '. ' : '') + e.label + ' (' + evDate(e) + ')'; });
         tip.innerHTML = html; tip.style.display = 'block';
         placeTip(tip, box, rect, cx * (rect.width / width), cy * (rect.height / height));
       }
@@ -834,7 +876,12 @@
       hit.addEventListener('mousemove', e => show(e.clientX));
       hit.addEventListener('touchstart', e => show(e.touches[0].clientX), { passive: true });
       hit.addEventListener('touchmove', e => show(e.touches[0].clientX), { passive: true });
-      hit.addEventListener('mouseleave', hide); hit.addEventListener('touchend', hide);
+      // a finger lifting leaves the box up for a moment, so a tap shows the reading; the mouseleave a browser sends
+      // right after a tap is ignored
+      let tapTimer = 0, lastTouch = 0;
+      hit.addEventListener('touchstart', () => { clearTimeout(tapTimer); lastTouch = Date.now(); }, { passive: true });
+      hit.addEventListener('mouseleave', () => { if (Date.now() - lastTouch > 1000) hide(); });
+      hit.addEventListener('touchend', () => { lastTouch = Date.now(); clearTimeout(tapTimer); tapTimer = setTimeout(hide, 2500); });
       const credit = svgEl('text', { class: 'credit', x: width - mR, y: height - 3, 'text-anchor': 'end' });
       credit.textContent = creditLine(t);
       svg.appendChild(credit);
@@ -845,7 +892,7 @@
       legend.appendChild(el('span', {}, [el('i', { style: 'background: var(--series)' }), t.title + (adjusted(t) ? ', as charged' : '') + ' (' + d.unit + ')']));
       // the key always gives the full name (it wraps); only the hover box shortens long ones
       compPts.concat(subs.map(o => ({ o }))).forEach(c => legend.appendChild(el('span', {}, [el('i', { style: 'background:' + colorFor(c.o.id) }), c.o.label])));
-      lineVals.forEach(x => legend.appendChild(el('span', {}, [el('i', { class: 'dash' }), x.o.label])));
+      lineVals.forEach(x => legend.appendChild(el('span', {}, [el('i', { class: 'dash' + (x.o.stat === 'median' ? ' dot' : '') }), x.o.label])));
       legend.appendChild(el('span', {}, [el('i', { class: 'rec' }), 'Recessions (NBER)']));
       // lane colors that carry meaning get a key: party, and the Fed's lighter (easing) and darker (tightening) shades
       const laneKey = (fill, text) => legend.appendChild(el('span', {}, [el('i', { class: 'lane', style: 'background:' + fill }), text]));
@@ -853,24 +900,28 @@
       if (eras.some(o => o.political)) { laneKey('var(--dem)', 'Democratic'); laneKey('var(--rep)', 'Republican'); if (onLane('unified')) laneKey('var(--divided)', 'Divided'); }
       const cyc = onLane('fed_cycles'), qe = onLane('fed_balance_sheet');
       if (cyc || qe) { laneKey('var(--qe-up)', 'Fed ' + [cyc && 'cutting rates', qe && 'buying bonds'].filter(Boolean).join(' / ')); laneKey('var(--qe-down)', 'Fed ' + [cyc && 'raising rates', qe && 'shrinking its holdings'].filter(Boolean).join(' / ')); }
-      if (evs.length) legend.appendChild(el('span', { text: '▲ ' + evs.map(o => o.label).join(', ') }));
+      if (evs.length) legend.appendChild(el('span', { text: '▼ ' + evs.map(o => o.label).join(', ') }));
+      // numbered markers get a one-line key right under the chart (the full list, with notes, is further down)
+      evKeyText.textContent = ''; evKey.hidden = !(numbered && evItems.length);
+      if (evKeySum) evKeySum.textContent = 'What the numbers mark (' + evItems.length + (evItems.length === 1 ? ' event)' : ' events)');
+      if (!evKey.hidden) evItems.forEach((e, i) => { if (i) evKeyText.appendChild(document.createTextNode(' · ')); evKeyText.appendChild(el('b', { text: String(e.num) })); evKeyText.appendChild(document.createTextNode('\u00a0' + evDateShort(e) + ' ' + e.label)); });
       // framing
       const pol = act.filter(o => o.political);
       if (pol.length) { framing.textContent = ctx.politicalNote; framing.hidden = false; } else framing.hidden = true;
       // event list for the window
       evList.innerHTML = '';
       if (evItems.length) {
-        evList.appendChild(el('h3', { text: 'Events in view' }));
+        evList.appendChild(el('h2', { text: 'Events in view' }));
         const ul = el('ul');
         // an event may carry its own source (the per-item supply shocks do); it is linked after the note
-        evItems.forEach(e => ul.appendChild(el('li', {}, [e.num ? el('span', { class: 'num', text: String(e.num) }) : '', el('span', { class: 'd', text: evDate(e) }), e.label, e.note ? el('span', { class: 'n', text: ' — ' + e.note }) : '',
+        evItems.forEach(e => ul.appendChild(el('li', {}, [e.num ? el('span', { class: 'num', text: String(e.num) }) : '', el('span', { class: 'd', text: evDate(e) }), ' ', e.label, e.note ? el('span', { class: 'n', text: ' — ' + e.note }) : '',
           e.source ? el('a', { class: 'src', href: e.source, rel: 'noopener', text: 'source' }) : ''])));
         evList.appendChild(ul);
       }
       ctx.onWindow && ctx.onWindow(start, end);
       // An embed fits its frame. An article's frame has one height for every screen, and on a phone the key, lanes and
       // framing line wrap taller. On this site's own pages the frame grows to fit (never shrinks); in a frame on another
-      // site, which can't be resized from inside, the plot gives up the difference, down to 140px.
+      // site, which can't be resized from inside, the plot gives up the difference, down to 120px.
       if (state.embed && !fitting) {
         const need = Math.ceil(document.getElementById('main').getBoundingClientRect().bottom + window.scrollY + 8);
         let fe = null; try { fe = window.frameElement; } catch (e) { fe = null; }
@@ -901,7 +952,7 @@
     RANGES.forEach(r => {
       if (r.years && yearsBetween(obs[0][0], obs[obs.length - 1][0]) < r.years - 0.5) return;
       const b = el('button', { type: 'button', text: r.label, 'aria-pressed': String(r.key === state.range) });
-      b.addEventListener('click', () => { state.range = r.key; state.from = state.to = null; fromI.value = toI.value = ''; syncButtons(); writeUrl(); draw(); });
+      b.addEventListener('click', () => { state.range = r.key; state.from = state.to = null; fromI.value = toI.value = ''; rangeMsg.textContent = ''; syncButtons(); writeUrl(); draw(); });
       buttons.push([r.key, b]); ctl.appendChild(b);
     });
     function syncButtons() { buttons.forEach(([k, b]) => b.setAttribute('aria-pressed', String(k === state.range))); }
@@ -911,10 +962,24 @@
     const toI = el('input', { type: 'month', 'aria-label': 'End month', min: obs[0][0].slice(0, 7), max: obs[obs.length - 1][0].slice(0, 7) });
     if (!state.range) { fromI.value = state.from || ''; toI.value = state.to || ''; }
     const go = el('button', { type: 'button', text: 'Apply' });
-    go.addEventListener('click', () => { if (!fromI.value && !toI.value) return; state.range = null; state.from = fromI.value || null; state.to = toI.value || null; syncButtons(); writeUrl(); draw(); });
+    const rangeMsg = el('span', { class: 'range-msg', role: 'alert', id: 'range-msg' });
+    fromI.setAttribute('aria-describedby', 'range-msg'); toI.setAttribute('aria-describedby', 'range-msg');
+    fromI.addEventListener('change', () => { toI.min = fromI.value || obs[0][0].slice(0, 7); });
+    if (state.from && state.to && state.from >= state.to) rangeMsg.textContent = 'This link’s custom range runs backwards, so the whole history is shown.';
+    go.addEventListener('click', () => {
+      if (!fromI.value && !toI.value) { rangeMsg.textContent = ''; return; }
+      const first = obs[0][0].slice(0, 7), last = obs[obs.length - 1][0].slice(0, 7);
+      const bad = fromI.value && toI.value && fromI.value >= toI.value ? 'The start has to come before the end.'
+        : fromI.value && fromI.value > last ? 'The data ends in ' + fmtPeriod(last + '-01', 'm') + '.'
+        : toI.value && toI.value < first ? 'The data starts in ' + fmtPeriod(first + '-01', 'm') + '.' : '';
+      rangeMsg.textContent = bad;
+      [fromI, toI].forEach(x => x.setAttribute('aria-invalid', String(!!bad)));
+      if (bad) return;
+      state.range = null; state.from = fromI.value || null; state.to = toI.value || null; syncButtons(); writeUrl(); draw();
+    });
     // the month inputs fold behind a button; a URL with from/to opens them
     const fields = el('span', { class: 'fields', id: 'custom-fields' });
-    fields.appendChild(fromI); fields.appendChild(document.createTextNode('to')); fields.appendChild(toI); fields.appendChild(go);
+    fields.appendChild(fromI); fields.appendChild(document.createTextNode('to')); fields.appendChild(toI); fields.appendChild(go); fields.appendChild(rangeMsg);
     const showFields = !!(state.from || state.to);
     const toggle = el('button', { type: 'button', class: 'toggle', text: 'Custom range…', 'aria-expanded': String(showFields), 'aria-controls': 'custom-fields' });
     if (!showFields) fields.hidden = true;
@@ -934,8 +999,8 @@
     syncToPanel(); ctx.syncToPanel = syncToPanel;
     const frag = document.createDocumentFragment();
     head.id = 'chart-top';
-    if (state.embed) { frag.appendChild(framing); frag.appendChild(head); frag.appendChild(box); frag.appendChild(legend); }
-    else { frag.appendChild(head); frag.appendChild(box); frag.appendChild(toPanel); frag.appendChild(legend); frag.appendChild(framing); frag.appendChild(panelSlot); frag.appendChild(evList); }
+    if (state.embed) { frag.appendChild(framing); frag.appendChild(head); frag.appendChild(box); frag.appendChild(legend); frag.appendChild(evKey); }
+    else { frag.appendChild(head); frag.appendChild(box); frag.appendChild(toPanel); frag.appendChild(legend); frag.appendChild(evKey); frag.appendChild(framing); frag.appendChild(panelSlot); frag.appendChild(evList); }
     if ('ResizeObserver' in window) { let w = 0; new ResizeObserver(() => { const nw = box.clientWidth; if (nw && nw !== w) { w = nw; draw(); } }).observe(box); } else requestAnimationFrame(draw);
 
     // For "Download image": draw this view at a fixed width (the desktop layout, whatever the screen), copy the
@@ -943,10 +1008,10 @@
     // All in one task, so nothing is painted in between.
     const STYLE_PROPS = ['fill', 'fill-opacity', 'stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'stroke-linecap',
       'stroke-linejoin', 'opacity', 'font-size', 'font-weight', 'font-variant-numeric', 'paint-order'];
-    function snapshot(cssWidth, plotH) {
+    function snapshot(cssWidth, plotH, numbers) {
       const keep = [box.style.width, box.style.maxWidth];
       box.style.width = cssWidth + 'px'; box.style.maxWidth = 'none';
-      exportPlotH = plotH || null;
+      exportPlotH = plotH || null; exportNumbers = !!numbers;
       try {
         draw();
         const live = box.querySelector('svg'), copy = live.cloneNode(true);
@@ -962,18 +1027,18 @@
         copy.removeAttribute('class'); copy.setAttribute('overflow', 'visible');
         const key = Array.from(legend.children).map(span => {
           const i = span.querySelector('i'), text = span.textContent.trim();
-          if (!i) return { kind: 'events', text: text.replace(/^▲\s*/, ''), color: getComputedStyle(span).color };
+          if (!i) return { kind: 'events', text: text.replace(/^[▲▼]\s*/, ''), color: getComputedStyle(span).color };
           const ci = getComputedStyle(i);
-          if (i.classList.contains('dash')) return { kind: 'dash', text, color: ci.borderTopColor };
+          if (i.classList.contains('dash')) return { kind: i.classList.contains('dot') ? 'dot' : 'dash', text, color: ci.borderTopColor };
           if (i.classList.contains('rec') || i.classList.contains('lane')) return { kind: 'rec', text, color: ci.backgroundColor, edge: ci.borderTopColor };
           return { kind: 'line', text, color: ci.backgroundColor };
         });
         // the events in view, with the numbers a narrow chart gives them
         const events = Array.from(evList.querySelectorAll('li')).map(li => ({ num: (li.querySelector('.num') || {}).textContent || '', date: (li.querySelector('.d') || {}).textContent || '',
-          label: (Array.from(li.childNodes).find(n => n.nodeType === 3) || {}).textContent || '' }));
-        return { svg: copy, width: +live.getAttribute('width'), height: +live.getAttribute('height'), key, events, framing: framing.hidden ? '' : framing.textContent };
+          label: ((Array.from(li.childNodes).find(n => n.nodeType === 3 && n.textContent.trim()) || {}).textContent || '').trim() }));
+        return { svg: copy, width: +live.getAttribute('width'), height: +live.getAttribute('height'), key, events, unlabeled, framing: framing.hidden ? '' : framing.textContent };
       } finally {
-        exportPlotH = null;
+        exportPlotH = null; exportNumbers = false;
         box.style.width = keep[0]; box.style.maxWidth = keep[1];
         draw();
       }
@@ -1018,6 +1083,7 @@
         const g = svgNode('g', {});
         if (k.kind === 'line') g.appendChild(svgNode('rect', { x: kx, y: ky - 5, width: 12, height: 3, rx: 1, fill: k.color }));
         else if (k.kind === 'dash') g.appendChild(svgNode('line', { x1: kx, x2: kx + 12, y1: ky - 4, y2: ky - 4, stroke: k.color, 'stroke-width': 2, 'stroke-dasharray': '3 2' }));
+        else if (k.kind === 'dot') g.appendChild(svgNode('line', { x1: kx + 1, x2: kx + 12, y1: ky - 4, y2: ky - 4, stroke: k.color, 'stroke-width': 2, 'stroke-dasharray': '0.5 3', 'stroke-linecap': 'round' }));
         else if (k.kind === 'rec') g.appendChild(svgNode('rect', { x: kx, y: ky - 9, width: 10, height: 10, fill: k.color, stroke: k.edge, 'stroke-width': 1 }));
         else g.appendChild(svgNode('path', { d: 'M' + kx + ',' + (ky - 9) + ' l8,0 l-4,6 z', fill: k.color }));
         g.appendChild(svgNode('text', { x: kx + sw + 6, y: ky, style: 'font-size:' + o.px + 'px;fill:' + o.ink }, k.text));
@@ -1036,6 +1102,7 @@
     root.classList.add('export-light');
     try {
       snap = chart.snapshot(EXPORT_BOX);
+      if (snap.unlabeled) snap = chart.snapshot(EXPORT_BOX, null, true);   // a picture has no hover: every marker gets named
       const cs = getComputedStyle(root), v = n => cs.getPropertyValue(n).trim();
       tok = { surface: v('--surface'), ink: v('--ink'), ink2: v('--ink-2'), muted: v('--muted'), hairline: v('--hairline'), banner: v('--banner'), bannerInk: v('--banner-ink') };
     } finally { root.classList.remove('export-light'); }
@@ -1066,6 +1133,19 @@
       parts.push(S('rect', { x: PAD, y, width: inner, height: h, rx: 4, fill: tok.banner }));
       lines.forEach((line, i) => parts.push(S('text', { x: PAD + 12, y: y + 20 + i * 18, style: 'font-size:13px;fill:' + tok.bannerInk }, line)));
       y += h;
+    }
+    // numbered events, in two columns
+    const evs = snap.events.filter(e => e.num);
+    if (evs.length) {
+      y += 8;
+      const colW = (inner - 24) / 2, half = Math.ceil(evs.length / 2), lines = evs.map(e => wrap(e.date + '\u2002' + e.label, 12.5, 400, colW - 26));
+      for (let r = 0; r < half; r++) {
+        [[r, PAD], [r + half, PAD + colW + 24]].forEach(([i, x]) => { if (!lines[i]) return;
+          lines[i].forEach((line, j) => { const yy = y + 17 * (j + 1);
+            if (!j) parts.push(S('text', { x, y: yy, style: 'font-size:12.5px;font-weight:600;fill:' + tok.ink2 }, evs[i].num));
+            parts.push(S('text', { x: x + 26, y: yy, style: 'font-size:12.5px;fill:' + tok.ink2 }, line)); }); });
+        y += 17 * Math.max(lines[r].length, lines[r + half] ? lines[r + half].length : 0);
+      }
     }
     // where it came from
     y += 22;
@@ -1128,7 +1208,9 @@
       const adjL = adjusted(t) ? wrap('The sentence is in today’s dollars; the chart’s main line is the price as charged.', 11.5, 400, inner) : [];
       const headH = titleL.length * 22 + subL.length * 17 + (wide ? 34 : 40) + sentL.length * 19 + (adjL.length ? 3 + adjL.length * 15 : 0) + 10;
       // the chart once at a trial height, for its fixed parts (axis, lanes, sub-panels), its key and its events
-      const snap0 = chart.snapshot(inner + 18, 200), fixed = snap0.height - 200;
+      let snap0 = chart.snapshot(inner + 18, 200), numbers = false;
+      if (snap0.unlabeled) { numbers = true; snap0 = chart.snapshot(inner + 18, 200, true); }   // a picture has no hover: every marker gets named
+      const fixed = snap0.height - 200;
       const keyH = drawKey(null, snap0.key, KEY(0)) - KEY(0).y + 17 + 4;
       const framL = snap0.framing ? wrap(snap0.framing, 11.5, 400, inner - 16) : [];
       const framH = framL.length ? framL.length * 15 + 12 + 8 : 0;
@@ -1146,7 +1228,7 @@
       while (cut && plotH < MIN_PLOT && evs.length > 1) { evs = evs.slice(0, -1); more++; plotH = room(); }
       const fits = plotH >= MIN_PLOT;
       plotH = Math.max(MIN_PLOT, Math.min(plotH, Math.round(inner * 0.72)));   // a very tall plot would steepen every slope
-      return { fits, W, H, inner, top, bottom, KEY, titleL, subInline, subL, sentInline, sentL, adjL, framL, evs, more, cols, colW: colW(), evLines, plotH,
+      return { fits, numbers, W, H, inner, top, bottom, KEY, titleL, subInline, subL, sentInline, sentL, adjL, framL, evs, more, cols, colW: colW(), evLines, plotH,
                used: headH + fixed + plotH + keyH + framH + evH() + footH };
     }
     const root = document.documentElement;
@@ -1157,7 +1239,7 @@
       tok = { surface: v('--surface'), ink: v('--ink'), ink2: v('--ink-2'), muted: v('--muted'), hairline: v('--hairline'), banner: v('--banner'), bannerInk: v('--banner-ink') };
       for (const f of [1, 1.15, 1.3, 1.45, 1.6]) { L = plan(f, false); if (L.fits) break; }
       if (!L.fits) L = plan(1.6, true);
-      snap = chart.snapshot(L.inner + 18, L.plotH);
+      snap = chart.snapshot(L.inner + 18, L.plotH, L.numbers);
     } finally { root.classList.remove('export-light'); }
 
     const { W, H, inner } = L, parts = [];
@@ -1330,7 +1412,7 @@
     const { tile: t, overlays } = ctx, d = t.display;
     const det = el('details', { class: 'table' });
     det.appendChild(el('summary', { text: 'Show the readings in view' }));
-    const scroll = el('div', { class: 'scroll' }), tbl = el('table'); scroll.appendChild(tbl); det.appendChild(scroll);
+    const scroll = el('div', { class: 'scroll', tabindex: '0', role: 'region', 'aria-label': 'Readings in view' }), tbl = el('table'); scroll.appendChild(tbl); det.appendChild(scroll);
     function activeSeries() { return overlays.filter(o => o.type === 'series' && state.on.has(o.id) && appliesTo(o, t.id)); }
     // Join a companion to the indicator's dates: weekly on the exact date, monthly on the
     // year-month, quarterly carried forward across the quarter's three months.
@@ -1358,7 +1440,8 @@
       if (!det.open) return;
       const { comps, out } = rows(start, end);
       tbl.innerHTML = '';
-      const thead = el('tr'); thead.appendChild(el('th', { text: 'Period' })); thead.appendChild(el('th', { class: 'num', text: t.title }));
+      tbl.appendChild(el('caption', { class: 'sr-only', text: t.title + ', readings in view' }));
+      const thead = el('tr'); thead.appendChild(el('th', { scope: 'col', text: 'Period' })); thead.appendChild(el('th', { scope: 'col', class: 'num', text: t.title }));
       comps.forEach(o => thead.appendChild(el('th', { class: 'num', text: o.label + (o.freq === 'q' ? ' (quarterly)' : o.freq === 'a' ? ' (annual)' : '') })));
       tbl.appendChild(thead);
       out.slice().reverse().forEach(r => { const tr = el('tr'); tr.appendChild(el('td', { text: fmtPeriod(r[0], t.freq) })); for (let i = 1; i < r.length; i++) tr.appendChild(el('td', { class: 'num', text: r[i] == null ? '' : fmtValue(r[i], i === 1 ? d : (comps[i - 2].display || d)) })); tbl.appendChild(tr); });
@@ -1403,6 +1486,7 @@
     setMeta('link[rel="canonical"]', canon); setMeta('meta[property="og:url"]', canon);
     if (!state.ownPage) {
       document.title = t.title + ' — Economy in Context';
+      document.querySelector('.crumb a').setAttribute('href', '/#i-' + t.id);   // back to this indicator's tile
       setMeta('meta[property="og:title"]', t.title + ' — Economy in Context');
       setMeta('meta[property="og:description"]', t.subtitle + '. ' + contextSentence(t));
       setMeta('meta[name="description"]', t.title + ': ' + t.subtitle + '. ' + contextSentence(t) + ' Full history with optional overlays.');
@@ -1467,10 +1551,17 @@
     left.appendChild(src);
 
     const actions = el('div', { class: 'actions' });
-    const dl = el('button', { type: 'button', text: 'Download CSV' });
+    const dl = el('button', { type: 'button', text: 'Download CSV (all readings)' });
     dl.addEventListener('click', () => { const blob = new Blob([table.csv()], { type: 'text/csv' }); const a = el('a', { href: URL.createObjectURL(blob), download: 'economyincontext-' + t.id + '.csv' }); document.body.appendChild(a); a.click(); a.remove(); });
+    // a browser can refuse the clipboard; then the text is shown, selected, for copying by hand
+    const copyBox = el('input', { class: 'copy-fallback', type: 'text', readonly: '', 'aria-label': 'Text to copy', hidden: '' });
+    function copyText(text, btn, label) {
+      const done = () => { btn.textContent = 'Copied'; announce('Copied'); copyBox.hidden = true; setTimeout(() => btn.textContent = label, 1500); };
+      const fail = () => { announce('Couldn’t copy. The text is selected; press Command C or Control C.'); copyBox.value = text; copyBox.hidden = false; copyBox.focus(); copyBox.select(); btn.textContent = 'Couldn’t copy: press ⌘C or Ctrl+C'; setTimeout(() => btn.textContent = label, 4000); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fail); else fail();
+    }
     const copy = el('button', { type: 'button', text: 'Copy link to this view' });
-    copy.addEventListener('click', () => { navigator.clipboard && navigator.clipboard.writeText(location.href).then(() => { copy.textContent = 'Copied'; setTimeout(() => copy.textContent = 'Copy link to this view', 1500); }); });
+    copy.addEventListener('click', () => copyText(location.href, copy, 'Copy link to this view'));
     // the iframe for this exact view; a sub-panel needs the taller frame, as in articles
     const embedBtn = el('button', { type: 'button', text: 'Copy embed code' });
     function embedCode() {
@@ -1480,11 +1571,11 @@
       const act = Array.from(state.on).map(id => ctx.ovById[id]).filter(o => o && appliesTo(o, t.id) && (!o.requires || state.on.has(o.requires)));
       const subs = act.filter(o => OWN_SCALE[o.id]).length, lanes = act.filter(o => o.type === 'era').length;
       const political = act.some(o => o.political), events = act.some(o => o.type === 'events');
-      const h = 600 + subs * 130 + (lanes ? lanes * 35 + 6 : 0) + (political ? 170 : 0) + (events ? 28 : 0) + (adjusted(t) ? 20 : 0);
+      const h = 600 + subs * 130 + (lanes ? lanes * 35 + 6 : 0) + (political ? 170 : 0) + (events ? 70 : 0) + (adjusted(t) ? 60 : 0);
       const title = (t.title + ' — Economy in Context').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
       return '<iframe src="' + SITE + '/chart.html?' + q.replace(/%2C/g, ',').replace(/&/g, '&amp;') + '" width="100%" height="' + Math.ceil(h / 10) * 10 + '" style="border:0" loading="lazy" title="' + title + '"></iframe>';
     }
-    embedBtn.addEventListener('click', () => { navigator.clipboard && navigator.clipboard.writeText(embedCode()).then(() => { embedBtn.textContent = 'Copied'; setTimeout(() => embedBtn.textContent = 'Copy embed code', 1500); }); });
+    embedBtn.addEventListener('click', () => copyText(embedCode(), embedBtn, 'Copy embed code'));
     ctx.embedCode = embedCode;
     // a PNG of this view, with the title, key and credit built in, for posts and slides where an iframe can't go
     // Download image: the full-width picture for slides and articles, or a shape for a social post
@@ -1502,9 +1593,9 @@
           o.make().then(blob => {
             const a = el('a', { href: URL.createObjectURL(blob), download: 'economyincontext-' + t.id + '-' + (state.range || 'custom') + o.key + '.png' });
             document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 30000);
-            imgSum.textContent = 'Download image';
+            imgSum.textContent = 'Download image'; announce('Image downloaded');
           }).catch(err => {
-            console.error('Download image:', err); imgSum.textContent = 'The image could not be made';
+            console.error('Download image:', err); imgSum.textContent = 'The image could not be made'; announce('The image could not be made');
             setTimeout(() => { imgSum.textContent = 'Download image'; }, 2500);
           }).finally(() => { making = false; });
         });
@@ -1513,8 +1604,7 @@
     imgBtn.appendChild(imgList);
     document.addEventListener('click', e => { if (imgBtn.open && !imgBtn.contains(e.target)) imgBtn.open = false; });
     imgBtn.addEventListener('keydown', e => { if (e.key === 'Escape' && imgBtn.open) { imgBtn.open = false; imgSum.focus(); } });
-    actions.appendChild(dl); actions.appendChild(imgBtn); actions.appendChild(copy); actions.appendChild(embedBtn);
-    actions.appendChild(el('a', { href: '/#i-' + t.id, text: 'Back to the almanac' }));
+    actions.appendChild(dl); actions.appendChild(imgBtn); actions.appendChild(copy); actions.appendChild(embedBtn); actions.appendChild(copyBox);
     actions.appendChild(el('span', { class: 'reuse-short' }, ['Free to reuse with credit · ', el('a', { href: 'https://creativecommons.org/licenses/by/4.0/', rel: 'license noopener', text: 'CC BY 4.0' })]));
     left.appendChild(actions);
     left.appendChild(table.node);
@@ -1549,9 +1639,10 @@
       // plain words for the reader; the technical reason goes to the console
       console.error('Economy in Context: the figures did not load:', err);
       const main = document.getElementById('main'); main.innerHTML = '';
+      document.getElementById('title').textContent = 'The figures didn’t load';
       const retry = el('button', { type: 'button', class: 'retry', text: 'Try again' });
       retry.addEventListener('click', () => location.reload());
-      main.appendChild(el('p', { class: 'status' }, ['The latest figures didn’t load. This is usually temporary. ', retry, ' or go ', el('a', { href: '/', text: 'back to the almanac' }), '.']));
+      main.appendChild(el('p', { class: 'status', role: 'alert' }, ['The latest figures didn’t load. This is usually temporary. ', retry, ' or go ', el('a', { href: '/', text: 'back to the almanac' }), '.']));
     });
 })();
 </script>
