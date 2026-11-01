@@ -97,6 +97,28 @@ a:hover { text-decoration-color: var(--ink); }
 .article .featured a.ftitle:hover { text-decoration: underline; text-decoration-color: var(--ink); text-underline-offset: 3px; }
 .featured .fdek { margin: 4px 0 0; color: var(--ink-2); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 @media (max-width: 760px) { .featured .fdek { -webkit-line-clamp: 3; } }
+/* A featured series: the parts in reading order under the dek, each numbered */
+.featured .fparts { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 2px 20px; }
+.featured .fparts li { margin: 0; }
+.featured .fparts a { display: inline-block; padding: 4px 0; font-weight: 600; text-decoration: none; }
+.featured .fparts a:hover { text-decoration: underline; text-decoration-color: var(--ink); }
+/* Series box under an article's dateline, and the next-part line before See also: a 2px ink rule at the left, no box */
+.series-label { display: block; margin: 0 0 2px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
+.article .series { margin: -14px 0 28px; padding: 8px 0 8px 14px; border-left: 2px solid var(--ink); font-size: 15px; line-height: 1.4; }
+.article .series .series-name { margin: 0; }
+.article .series .series-name a { font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--hairline); }
+.article .series .series-name a:hover { border-color: var(--ink); }
+.article .series .series-parts { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 2px 20px; }
+.article .series .series-parts li { margin: 0; padding: 0; color: var(--ink-2); }
+.article .series .series-parts a { display: inline-block; padding: 4px 0; color: var(--ink-2); text-decoration: none; }
+.article .series .series-parts a:hover { color: var(--ink); text-decoration: underline; text-decoration-color: var(--muted); }
+.article .series .series-parts li[aria-current] { padding: 4px 0; color: var(--ink); font-weight: 600; }
+.n { display: inline-block; min-width: 1.5em; height: 1.5em; line-height: calc(1.5em - 2px); margin-right: 3px; border: 1px solid var(--hairline); border-radius: 50%; text-align: center; font-size: 12.5px; font-weight: 600; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.article .series li[aria-current] .n { border-color: var(--ink); color: var(--ink); }
+.article .series-next { margin: 30px 0 0; padding: 8px 0 8px 14px; border-left: 2px solid var(--ink); font-size: 15px; line-height: 1.4; }
+.article .series-next p { margin: 0; }
+.article .series-next a { font-weight: 600; }
+@media (max-width: 760px) { .article .series .series-parts a, .article .series .series-parts li[aria-current], .featured .fparts a { padding: 8px 0; } }
 /* phones: the type scale's smaller steps for the page title, dek and the featured title (40 → 28, 19 → 17, 22 → 19) */
 @media (max-width: 760px) { .article h1 { font-size: 28px; } .article .dek { font-size: 17px; } .article .featured a.ftitle { font-size: 19px; } }
 .article .lede { margin: 0 0 8px; color: var(--ink-2); font-size: 16px; }
@@ -112,6 +134,9 @@ a:hover { text-decoration-color: var(--ink); }
 .article details.earlier summary { cursor: pointer; color: var(--ink-2); font-size: 15px; padding: 10px 0 4px; }
 .article details.earlier .article-list { margin-top: 6px; }
 .article h3#the-numbers, .article h3#the-ideas { margin-top: 30px; font-size: 19px; font-weight: 700; }
+/* a series inside The ideas: its parts in its own order under the series title */
+.article .num-group.series-group h4 { margin: 20px 0 4px; font-size: 15px; font-weight: 600; color: var(--ink); text-transform: none; letter-spacing: 0; }
+.article > .num-group.series-group { scroll-margin-top: 16px; }
 
 footer.about { border-top: 1px solid var(--hairline); padding: 22px 0 44px; font-size: 13.5px; color: var(--ink-2); }
 footer.about p { max-width: 48em; margin: 0 0 8px; }
@@ -136,7 +161,8 @@ h1, h2, h3, h4, .dek { text-wrap: balance; }
 @media print {
   :root { --page: #fff; --surface: #fff; }
   body { background: #fff; }
-  .crumb, .jump, .featured, .feed-link { display: none !important; }
+  .crumb, .jump, .featured, .feed-link, .series-parts, .series-next { display: none !important; }
+  .article .series { margin-top: 0; }
   .article figure.chart-embed, .article .table-scroll, .map { break-inside: avoid; }
   .article figure.chart-embed { width: 100%; }
   footer.about { padding-bottom: 0; }

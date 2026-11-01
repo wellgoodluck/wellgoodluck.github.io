@@ -1,0 +1,15 @@
+{
+  "note": "Series of articles, read by tools/build_articles.py. Each series lists its parts in reading order (slug = the file name in articles/src without .md, label = the short name shown in the series box). Optional featured: YYYY-MM-DD makes the whole series the Featured line from that date, by the same rule as an article's featured: line (the newest date that has arrived wins; a series wins a tie).",
+  "series": {
+    "health-care": {
+      "title": "Health care: what it costs, who gains, who lobbies",
+      "dek": "Three pages, read in order: what coverage costs and who pays for it, who comes out ahead and behind under each way of changing it, and who lobbies Washington over it.",
+      "featured": "2026-11-01",
+      "parts": [
+        {"slug": "what-health-insurance-costs", "label": "What it costs"},
+        {"slug": "who-gains-and-who-pays-in-health-care", "label": "Who gains and who pays"},
+        {"slug": "who-lobbies-on-health-care", "label": "Who lobbies"}
+      ]
+    }
+  }
+}

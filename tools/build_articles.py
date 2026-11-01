@@ -38,6 +38,14 @@ site's own detail page:
 
 Anything under `## Sources`, up to the next heading, is rendered as a sources list.
 
+Series (articles/series.json, optional): a series lists its parts in reading order by slug, each with a short
+label. Every part gets a series box under its dateline (the series title linking to its group on the index, then
+the parts, the current one unlinked) and a "Next in this series" line before See also; the index groups the parts
+under the series title where the first part would fall. A series with featured: YYYY-MM-DD becomes the Featured
+line by the same rule as an article (the newest date that has arrived wins; a series wins a tie), shown as the
+series title, its dek and the parts. A missing or unreadable file, or a part that isn't an article, only prints a
+line; the build never fails on it.
+
 The build also writes one page per chart (chart/<id>/index.html, from the copy of chart.html already in
 the output folder; see tools/chart_pages.py), the articles feed (articles/feed.xml, Atom), and the sitemap.
 Links in articles to chart.html?id=<id> are pointed at chart/<id>/; embeds stay on chart.html.
@@ -180,17 +188,103 @@ def parse(path):
     return meta
 
 
-def featured_pick(articles, today=None):
-    """(current, next): the article whose featured: date is the newest one on or before today
-    (UTC), and the soonest one still to come. Either can be None; malformed dates are ignored."""
+def featured_pick(articles, today=None, series=None):
+    """(current, next): the article or series whose featured: date is the newest one on or before today
+    (UTC), and the soonest one still to come. Either can be None; malformed dates are ignored. A series
+    (kind "series", from articles/series.json) wins a tie with an article on the same date."""
     from datetime import datetime, timezone
     today = today or datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    dated = [a for a in articles if re.fullmatch(r"\d{4}-\d{2}-\d{2}", a.get("featured", ""))]
+    items = list(articles) + list(SERIES if series is None else series)
+    dated = [a for a in items if re.fullmatch(r"\d{4}-\d{2}-\d{2}", a.get("featured", ""))]
     past = [a for a in dated if a["featured"] <= today]
     future = [a for a in dated if a["featured"] > today]
-    cur = max(past, key=lambda a: (a["featured"], a["date"])) if past else None
+    cur = max(past, key=lambda a: (a["featured"], a.get("kind") == "series", a["date"])) if past else None
     nxt = min(future, key=lambda a: a["featured"]) if future else None
     return cur, nxt
+
+
+SERIES = []        # [{kind, slug, title, dek, featured, date, parts: [{slug, label, title}]}], from load_series()
+SERIES_OF = {}     # article slug -> (series, index of the part)
+
+
+def load_series(articles, path=os.path.join("articles", "series.json")):
+    """Read articles/series.json into SERIES and SERIES_OF. Fail-soft: a missing file means no series;
+    a bad file, or a part that isn't a listed article, prints a line and is skipped."""
+    global SERIES, SERIES_OF
+    SERIES, SERIES_OF = [], {}
+    if not os.path.exists(path):
+        return
+    try:
+        with open(path, encoding="utf-8") as f:
+            raw = json.load(f).get("series", {})
+    except Exception as e:                                  # noqa: BLE001
+        print(f"series: could not read {path} ({e}); no series this build")
+        return
+    by_slug = {a["slug"]: a for a in articles}
+    for sid, d in raw.items():
+        parts = []
+        for p in d.get("parts", []):
+            a = by_slug.get(p.get("slug", ""))
+            if not a or a.get("kind") == "page":
+                print(f"series: {sid}: part {p.get('slug')!r} is not a listed article; left out")
+                continue
+            if a["slug"] in SERIES_OF:
+                print(f"series: {sid}: {a['slug']} is already in another series; left out")
+                continue
+            parts.append({"slug": a["slug"], "label": p.get("label") or a.get("label") or a["title"], "title": a["title"]})
+        if len(parts) < 2 or not d.get("title"):
+            print(f"series: {sid}: needs a title and at least two parts; skipped")
+            continue
+        s = {"kind": "series", "slug": sid, "title": d["title"], "dek": d.get("dek", ""), "featured": d.get("featured", ""),
+             "date": max(by_slug[p["slug"]]["date"] for p in parts), "parts": parts}
+        SERIES.append(s)
+        for i, p in enumerate(parts):
+            SERIES_OF[p["slug"]] = (s, i)
+    print(f"series: {len(SERIES)} ({', '.join(s['slug'] + ' ' + str(len(s['parts'])) + ' parts' for s in SERIES) or 'none'})")
+
+
+def series_box(slug):
+    """The box under an article's dateline: the series title (to its group on the index) and the parts, the current one unlinked."""
+    if slug not in SERIES_OF:
+        return ""
+    s, i = SERIES_OF[slug]
+    items = "".join(
+        (f'<li aria-current="page"><span class="n">{k + 1}</span> {inline(p["label"])}</li>' if k == i else
+         f'<li><a href="{p["slug"]}.html" title="{html.escape(p["title"], quote=True)}"><span class="n">{k + 1}</span> {inline(p["label"])}</a></li>')
+        for k, p in enumerate(s["parts"]))
+    return (f'<nav class="series" aria-label="Series: {html.escape(s["title"], quote=True)}">'
+            f'<p class="series-name"><span class="series-label">Series, part {i + 1} of {len(s["parts"])}</span> '
+            f'<a href="./#series-{s["slug"]}">{inline(s["title"])}</a></p>'
+            f'<ol class="series-parts" role="list">{items}</ol></nav>\n')
+
+
+def series_next(slug):
+    """Before See also: the next part, or, on the last part, links back to the others."""
+    if slug not in SERIES_OF:
+        return ""
+    s, i = SERIES_OF[slug]
+    if i + 1 < len(s["parts"]):
+        p = s["parts"][i + 1]
+        body = (f'<span class="series-label">Next in this series, part {i + 2} of {len(s["parts"])}</span> '
+                f'<a href="{p["slug"]}.html">{inline(p["title"])}</a> →')
+    else:
+        others = " · ".join(f'<a href="{p["slug"]}.html">{k + 1}. {inline(p["label"])}</a>' for k, p in enumerate(s["parts"][:-1]))
+        body = f'<span class="series-label">Earlier in this series</span> {others}'
+    label = "Next in this series" if i + 1 < len(s["parts"]) else "Earlier in this series"
+    return f'<nav class="series-next" aria-label="{label}"><p>{body}</p></nav>\n'
+
+
+def featured_html(feat, link_prefix=""):
+    """The Featured line on the articles index: an article (title, dek), or a series (title to part 1, dek, parts)."""
+    dek = f'<p class="fdek">{inline(feat["dek"])}</p>' if feat.get("dek") else ""   # cut to two lines by site.css
+    if feat.get("kind") == "series":
+        parts = "".join(f'<li><a href="{link_prefix}{p["slug"]}.html" title="{html.escape(p["title"], quote=True)}"><span class="n">{k + 1}</span> {inline(p["label"])}</a></li>'
+                        for k, p in enumerate(feat["parts"]))
+        return (f'<aside class="featured featured-series" aria-label="Featured series"><span class="flabel">Featured series</span>'
+                f'<a class="ftitle" href="{link_prefix}{feat["parts"][0]["slug"]}.html">{inline(feat["title"])}</a> →{dek}'
+                f'<ol class="fparts" role="list">{parts}</ol></aside>\n')
+    return (f'<aside class="featured" aria-label="Featured article"><span class="flabel">Featured</span>'
+            f'<a class="ftitle" href="{link_prefix}{feat["slug"]}.html">{inline(feat["title"])}</a> →{dek}</aside>\n')
 
 
 def fmt_date(s):
@@ -256,7 +350,17 @@ def render_article(a):
     if a.get("updated") and a["updated"] != a["date"]:
         dates += f' <span class="sep">·</span> updated {fmt_date(a["updated"])}'
     page += f'<p class="dateline">{dates}</p>\n'
-    page += md_to_html(a["body"])
+    page += series_box(a["slug"])
+    body = md_to_html(a["body"])
+    nxt = series_next(a["slug"])
+    if nxt:
+        for anchor in ('<h2 id="see-also">', '<h2 id="sources">'):
+            if anchor in body:
+                body = body.replace(anchor, nxt + anchor, 1)
+                break
+        else:
+            body += "\n" + nxt
+    page += body
     page += "\n</article>\n</main>\n" + FOOT
     return clean_chart_links(page, CHART_IDS) if clean_chart_links else page
 
@@ -355,9 +459,7 @@ def render_index(articles):
     page += '<main class="wrap article">\n<h1>Articles</h1>\n<p class="dek">Longer reads on what the figures show, what is settled, and what is argued about.</p>\n'
     feat, _ = featured_pick(articles)
     if feat:
-        dek = f'<p class="fdek">{inline(feat["dek"])}</p>' if feat.get("dek") else ""   # cut to two lines by site.css
-        page += (f'<aside class="featured" aria-label="Featured article"><span class="flabel">Featured</span>'
-                 f'<a class="ftitle" href="{feat["slug"]}.html">{inline(feat["title"])}</a> →{dek}</aside>\n')
+        page += featured_html(feat)
 
     def updated_note(a):
         return (f'<span class="when">Updated {fmt_date(a["updated"])}</span>'
@@ -423,7 +525,23 @@ def render_index(articles):
             page += '<section class="num-group">' + (f"<h4>{html.escape(sec)}</h4>" if sec else "") + compact(items) + "</section>\n"
     if ideas:
         page += '<h3 id="the-ideas">The ideas</h3>\n<p class="lede">The handful of ideas that untangle most arguments about the numbers.</p>\n'
-        page += compact(ideas)
+        by_slug = {a["slug"]: a for a in articles}
+        run, done = [], set()
+        for a in ideas:                          # a series sits, in its own order, where its first part would fall
+            if a["slug"] in done:
+                continue
+            if a["slug"] in SERIES_OF:
+                s, _ = SERIES_OF[a["slug"]]
+                if run:
+                    page += compact(run); run = []
+                parts = [by_slug[p["slug"]] for p in s["parts"]]
+                done.update(p["slug"] for p in s["parts"])
+                page += (f'<section class="num-group series-group" id="series-{s["slug"]}"><h4><span class="series-label">Series</span> '
+                         f'{inline(s["title"])}</h4>' + compact(parts) + "</section>\n")
+            else:
+                run.append(a)
+        if run:
+            page += compact(run)
     page += "</main>\n" + FOOT
     return page
 
@@ -439,14 +557,19 @@ def write_explainers(out_root, articles):
         for tid in tile_ids(a):
             ex[tid] = {"url": f"articles/{a['slug']}.html", "title": a["title"], "hook": a.get("hook", "")}
     feat, nxt = featured_pick(articles)
-    featured = {"url": f"articles/{feat['slug']}.html", "title": feat["title"], "dek": feat.get("dek", "")} if feat else None
+    if feat and feat.get("kind") == "series":
+        featured = {"url": f"articles/{feat['parts'][0]['slug']}.html", "title": feat["title"], "dek": feat.get("dek", ""),
+                    "series": feat["slug"],
+                    "parts": [{"url": f"articles/{p['slug']}.html", "label": p["label"], "title": p["title"]} for p in feat["parts"]]}
+    else:
+        featured = {"url": f"articles/{feat['slug']}.html", "title": feat["title"], "dek": feat.get("dek", "")} if feat else None
     os.makedirs(os.path.join(out_root, "data"), exist_ok=True)
     with open(os.path.join(out_root, "data", "explainers.json"), "w", encoding="utf-8") as f:
         json.dump({"note": "Written by tools/build_articles.py from the tile: line of each Plain words page, "
-                           "and the featured: line of the article featured now.",
+                           "and the featured: line of the article or series (articles/series.json) featured now.",
                    "explainers": ex, "featured": featured}, f, ensure_ascii=False, separators=(",", ":"))
     print(f"built data/explainers.json ({len(ex)} indicators)")
-    print("featured: " + (f"{feat['slug']} (since {feat['featured']})" if feat else "none")
+    print("featured: " + (("series " if feat.get("kind") == "series" else "") + f"{feat['slug']} (since {feat['featured']})" if feat else "none")
           + (f"; next {nxt['slug']} on {nxt['featured']}" if nxt else ""))
 
 
@@ -510,6 +633,7 @@ def main():
                     a["body"] = re.sub(r"\{\{\s*(?:v|fig)\s+.*?\}\}", "", a["body"])
                 articles.append(a)
     articles.sort(key=lambda a: a["date"], reverse=True)
+    load_series(articles)
     for a in articles:
         with open(os.path.join(out_dir, a["slug"] + ".html"), "w", encoding="utf-8") as f:
             f.write(render_article(a))

@@ -150,6 +150,13 @@
   .featured .ftitle:hover { text-decoration: underline; text-decoration-color: var(--ink); text-underline-offset: 3px; }
   .featured .fdek { margin: 4px 0 0; color: var(--ink-2); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
   @media (max-width: 760px) { .featured .fdek { -webkit-line-clamp: 3; } }
+  /* A featured series: the parts in reading order under the dek, each numbered (same as the articles index) */
+  .featured .fparts { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 2px 20px; }
+  .featured .fparts li { margin: 0; }
+  .featured .fparts a { display: inline-block; padding: 4px 0; font-weight: 600; color: var(--ink); text-decoration: none; }
+  .featured .fparts a:hover { text-decoration: underline; text-decoration-color: var(--ink); text-underline-offset: 3px; }
+  .featured .fparts .n { display: inline-block; min-width: 1.5em; height: 1.5em; line-height: calc(1.5em - 2px); margin-right: 3px; border: 1px solid var(--hairline); border-radius: 50%; text-align: center; font-size: 12.5px; font-weight: 600; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  @media (max-width: 760px) { .featured .fparts a { padding: 8px 0; } }
   /* At a glance: every number on one screen (left out with ?view=tiles) ---- */
   .glance { padding: 24px 0 8px; }
   .glance .ghead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px; margin: 0 0 4px; }
@@ -898,11 +905,15 @@
     const sections = [];
     data.tiles.forEach(t => { if (!sections.includes(t.section)) sections.push(t.section); });
     const nav = document.getElementById('nav');
-    // the featured article (from explainers.json, written by the articles build) sits above everything else in main
+    // the featured article or series (from explainers.json, written by the articles build) sits above everything else in main
     const f = data.featured;
-    if (f && f.url && f.title) main.appendChild(el('aside', { class: 'featured', 'aria-label': 'Featured article' },
-      [el('span', { class: 'flabel', text: 'Featured' }), el('a', { class: 'ftitle', href: f.url, text: f.title }), ' →']
-        .concat(f.dek ? [el('p', { class: 'fdek', text: f.dek })] : [])));   // an explainers.json from before Nov 1 has no dek
+    const parts = f && Array.isArray(f.parts) ? f.parts.filter(p => p && p.url && p.label) : [];
+    const isSeries = parts.length > 1;                   // an explainers.json from before Nov 1 (evening) has no parts
+    if (f && f.url && f.title) main.appendChild(el('aside', { class: 'featured', 'aria-label': isSeries ? 'Featured series' : 'Featured article' },
+      [el('span', { class: 'flabel', text: isSeries ? 'Featured series' : 'Featured' }), el('a', { class: 'ftitle', href: f.url, text: f.title }), ' →']
+        .concat(f.dek ? [el('p', { class: 'fdek', text: f.dek })] : [])   // an explainers.json from before Nov 1 has no dek
+        .concat(isSeries ? [el('ol', { class: 'fparts', role: 'list' }, parts.map((p, i) =>
+          el('li', {}, [el('a', { href: p.url, title: p.title || p.label }, [el('span', { class: 'n', text: String(i + 1) }), ' ' + p.label])])))] : [])));
     // ?view=tiles is the page as it was before the overview: the tiles alone, with a way back
     const hasGlance = new URLSearchParams(location.search).get('view') !== 'tiles';
     if (!hasGlance) main.appendChild(el('p', { class: 'view-switch' }, ['Showing the tiles without the overview. ', el('a', { href: './', text: 'Show all the numbers at a glance →' })]));
