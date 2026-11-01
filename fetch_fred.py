@@ -206,9 +206,12 @@ TILES = [
         "series": "FYFSGDA188S",
         "params": {"observation_start": "1929-01-01"},
         "freq": "a",
-        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": True,
-                    "unit": "percent of GDP", "sense": "deficit"},
-        "note": "Fiscal years end September 30. Negative is a deficit; the rare positive readings are surpluses.",
+        # FRED publishes this as surplus (+) or deficit (−). It is shown the way it is reported, a deficit as a
+        # positive number, so "Federal deficit: 5.8%" reads as it sounds; the rare surplus years fall below zero.
+        "flip": True,
+        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": False,
+                    "unit": "percent of GDP", "sense": "deficit-up", "flipped": True},
+        "note": "Fiscal years end September 30. Shown as a positive number, the way deficits are reported (FRED lists them as negative); the rare surplus years fall below zero.",
     },
     {
         "id": "debt",
@@ -227,12 +230,12 @@ TILES = [
         "id": "trade",
         "agency": "Census Bureau and BEA",
         "section": "Government and trade",
-        "title": "Trade deficit",
-        "subtitle": "Goods and services: exports minus imports, monthly",
+        "title": "Trade balance",
+        "subtitle": "Goods and services: exports minus imports, monthly; below zero is a deficit",
         "series": "BOPGSTB",
         "params": {"observation_start": "1992-01-01"},
         "freq": "m",
-        "display": {"scale": 1000, "decimals": 1, "suffix": "B", "signed": True,
+        "display": {"scale": 1000, "decimals": 1, "prefix": "$", "suffix": "B", "signed": True,
                     "unit": "billions of dollars", "clip": [-150000, 20000], "sense": "deficit"},
         "note": "Seasonally adjusted. Negative means the country bought more from abroad than it sold.",
     },
@@ -805,10 +808,12 @@ def household_lines(tiles_out, companions_out, extras):
     try:
         rc, ol = latest("receipts"), latest("outlays")
         d_ = cur("deficit")
-        txt = (f"Of every dollar the government spent, about {round(-d_ / ol * 100)}\u00a2 was borrowed." if ol and d_ < 0
-               else f"The government took in more than it spent, a surplus of {d_:.1f}% of GDP." if d_ >= 0 else "")
+        # the deficit tile is shown positive (see TILES): above zero is a deficit
+        txt = (f"Of every dollar the government spent, about {round(d_ / ol * 100)}\u00a2 was borrowed." if ol and d_ > 0
+               else f"The government took in more than it spent, a surplus of {-d_:.1f}% of GDP." if d_ <= 0 else "")
+        if txt and d_ > 0:
+            txt += f" The deficit was {d_:.1f}% of GDP; the 2015{EN}19 average was {base('deficit'):.1f}%."
         if txt:
-            txt += f" The deficit was {abs(d_):.1f}% of GDP; the 2015{EN}19 average was {abs(base('deficit')):.1f}%."
             srcs = []
             # A newer fiscal year in dollars (FYFSD dates are fiscal-year ends) than the tile's share of GDP
             dd, fy_tile = X.get("deficit_dollars"), int(T["deficit"]["context"]["current"]["date"][:4])
@@ -1096,6 +1101,10 @@ def context_for(obs, freq):
     ranked = sorted(values)
     p5 = ranked[int(0.05 * (len(ranked) - 1))]
     p95 = ranked[int(0.95 * (len(ranked) - 1))]
+    # the median of the whole history: the range strip ranks readings, so the median is always at its center,
+    # and labeling it shows the bar is a ranking, not a ruler (the chart's median line uses the same history)
+    n = len(ranked)
+    med = ranked[n // 2] if n % 2 else (ranked[n // 2 - 1] + ranked[n // 2]) / 2
 
     # "Highest since …" / "lowest since …": the most recent earlier date whose
     # value was at least (at most) the current one.
@@ -1121,6 +1130,7 @@ def context_for(obs, freq):
         "max": {"date": obs[hi_i][0], "value": obs[hi_i][1]},
         "typical_low": round(p5, 4),
         "typical_high": round(p95, 4),
+        "median": round(med, 4),
         "highest_since": highest_since,   # None means this is the highest on record
         "lowest_since": lowest_since,     # None means this is the lowest on record
     }
@@ -1357,6 +1367,8 @@ def main():
     for t in TILES:
         print(f"{t['id']:16s} {t['series']}", flush=True)
         obs = get_observations(t["series"], t["params"])
+        if t.get("flip"):                       # shown with the sign people use (see the deficit tile)
+            obs = [(d, -v) for d, v in obs]
         time.sleep(0.4)
         info = get_series_info(t["series"])
         time.sleep(0.4)

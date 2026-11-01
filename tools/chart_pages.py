@@ -78,9 +78,15 @@ def _adjusted(t):
 def context_sentence(t):
     c = t["context_real"] if _adjusted(t) else t["context"]
     noun, since = _period_noun(t["freq"]), _d(c["since"]).year
-    pct, deficit = c["percentile_below"], t["display"].get("sense") == "deficit"
-    hi_word = "A smaller deficit than " if deficit else "Higher than "
-    lo_word = "A larger deficit than " if deficit else "Lower than "
+    pct, sense = c["percentile_below"], t["display"].get("sense")
+    # "deficit": a balance, below zero is a deficit (trade). "deficit-up": the deficit shown positive (federal).
+    words = {"deficit": ("A smaller deficit than ", "A larger deficit than ", "The smallest deficit on record.",
+                         "Smallest deficit since ", "The largest deficit on record.", "Largest deficit since "),
+             "deficit-up": ("A larger deficit than ", "A smaller deficit than ", "The largest deficit on record.",
+                            "Largest deficit since ", "The smallest deficit on record.", "Smallest deficit since ")
+             }.get(sense, ("Higher than ", "Lower than ", "The highest on record.", "Highest since ",
+                           "The lowest on record.", "Lowest since "))
+    hi_word, lo_word, hi_rec, hi_since, lo_rec, lo_since = words
     share = lambda v: min(99, max(1, int(Decimal(repr(v)).quantize(Decimal(1), rounding=ROUND_HALF_UP))))
     is_record = c.get("highest_since") is None if pct >= 50 else c.get("lowest_since") is None
     parts = []
@@ -91,14 +97,14 @@ def context_sentence(t):
     since_ok = not _adjusted(t)
     if cur > prev:
         if c.get("highest_since") is None:
-            parts.append("The smallest deficit on record." if deficit else "The highest on record.")
+            parts.append(hi_rec)
         elif since_ok and _years_between(c["highest_since"], c["current"]["date"]) >= 1:
-            parts.append(("Smallest deficit since " if deficit else "Highest since ") + fmt_period(c["highest_since"], t["freq"]) + ".")
+            parts.append(hi_since + fmt_period(c["highest_since"], t["freq"]) + ".")
     elif cur < prev:
         if c.get("lowest_since") is None:
-            parts.append("The largest deficit on record." if deficit else "The lowest on record.")
+            parts.append(lo_rec)
         elif since_ok and _years_between(c["lowest_since"], c["current"]["date"]) >= 1:
-            parts.append(("Largest deficit since " if deficit else "Lowest since ") + fmt_period(c["lowest_since"], t["freq"]) + ".")
+            parts.append(lo_since + fmt_period(c["lowest_since"], t["freq"]) + ".")
     if _adjusted(t) and parts:
         parts[0] = "Adjusted for inflation, " + parts[0][0].lower() + parts[0][1:]
     return " ".join(parts)
@@ -189,9 +195,14 @@ def write_chart_pages(out_root, series_path=os.path.join("data", "series.json"))
                    "og_description": "", "status": "Loading the figures…"}
         page = _set_head(base_ids, url, txt["title"], txt["og_title"], txt["description"], txt["og_description"], warn)
         page = _sub(page, '<h1 id="title">Loading…</h1>', f'<h1 id="title">{html.escape(t["title"])}</h1>', "h1", warn)
+        page = _sub(page, '<p class="crumb"><a href="/">', f'<p class="crumb"><a href="/#i-{t["id"]}">', "crumb", warn)   # back to its tile
         page = _sub(page, '<p class="sub" id="subtitle"></p>', f'<p class="sub" id="subtitle">{html.escape(t["subtitle"])}</p>', "subtitle", warn)
-        page = _sub(page, '<p class="status" id="status">Loading the figures…</p>',
-                    f'<p class="status" id="status">{html.escape(txt["status"])}</p>', "status", warn)
+        # the status line carries the reading before the script runs (its attributes may change: match on the id)
+        m = re.findall(r'<p class="status" id="status"[^>]*>Loading the figures…</p>', page)
+        if len(m) == 1:
+            page = page.replace(m[0], m[0].replace("Loading the figures…", html.escape(txt["status"])))
+        else:
+            warn.append(f"status: expected one match in chart.html, found {len(m)}")
         os.makedirs(os.path.join(out_root, "chart", t["id"]), exist_ok=True)
         with open(os.path.join(out_root, "chart", t["id"], "index.html"), "w", encoding="utf-8") as f:
             f.write(page)
