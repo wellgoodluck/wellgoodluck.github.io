@@ -257,6 +257,7 @@ Gently squared. Three radii: 2px for small swatches and focus outlines, 4px for 
 - **Full chart and context:** the one tinted button. Teal-ink text on a 10% teal wash with a 45% teal border, 600 weight, 3px 11px padding; hover inverts to teal fill with sheet-colored text.
 - **Range buttons:** a segmented group in one hairline frame, 13px Ink Secondary labels, hairline dividers; the pressed state fills with ink. About 36px tall on phones. Tiles carry two (25 yrs, All); chart pages carry the full set and a custom range.
 - **Action buttons** (Download CSV, Download image, Copy link, Copy embed code): sheet background, hairline border, 13.5px ink text, 4px 10px padding.
+- **Download image menu:** the button opens a list (a disclosure, so it works by keyboard; Escape or a click elsewhere closes it): Full width, Wide 16:9, Square, Portrait 4:5, Story 9:16, each a 600-weight name over a 12.5px Muted line with its pixel size and platforms. Sheet background, hairline border, 4px radius, no shadow; under the button on desktop, opening in place on phones.
 - **Focus:** 2px teal outline with 2px offset on everything focusable.
 
 ### Cards / Containers
@@ -283,6 +284,11 @@ Ink background, sheet-colored 12px text, 4px radius; the value in 600, then each
 
 ### Lanes and events on narrow charts
 Below 560px of chart width, lane names sit above their lanes, left-aligned with the plot, so the plot keeps its width. Party lanes name every full term the same way: full names if all fit, else last names, else letters; a term shorter than the office's own (four years for a president, two for Congress), still running or cut off by the window may drop to its letter. Event markers carry numbers instead of names, and the "Events in view" list repeats them.
+
+### Images for social posts
+Each shape is laid out for its own frame, never cropped from the wide image: title (19px bold) and subtitle, the reading (32px, 28px in Wide) and its date, the percentile sentence (14px semibold; beside the reading in Wide), the today's-dollars note on price pages, the chart with its plot stretched to fill but no taller than about 3:4 of its width (a taller plot steepens every slope), the key, the framing banner when a party lane is on, numbered events listed (two columns if needed), and a hairline footer with the chart's address and CC BY 4.0. Drawn at 480 CSS px across (720 for Wide) and scaled to the platform's pixels, so type reads in a phone feed; a crowded view is drawn up to 1.6× smaller rather than cut, and only then does a long events list end "…and N more on the chart page". Story keeps the top and bottom 14% empty. Always the light colors.
+
+Clipped-value labels ("Apr 2020: −20,469K, off the chart") take the longest form that fits, beside the mark or else within the plot's width; a companion's name is kept before "off the chart" is.
 
 ### Embeds
 An article's frame has one height for every screen. On this site's own pages the embedded chart grows its frame to fit its content (never shrinks it); in a frame on another site it gives up plot height instead, down to 140px. The embed code still sizes the frame from sub-panels, lanes, framing and events.

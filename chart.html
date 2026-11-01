@@ -194,6 +194,16 @@
   .actions { margin: 14px 0 0; display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 13.5px; }
   .actions .reuse-short { align-self: center; font-size: 13px; color: var(--muted); }
   .actions .reuse-short a { padding: 0; border: 0; background: none; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--hairline); }
+  .actions .img-menu { position: relative; }
+  .actions .img-menu > summary { list-style: none; padding: 4px 10px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); cursor: pointer; font-size: 13.5px; }
+  .actions .img-menu > summary::-webkit-details-marker { display: none; }
+  .actions .img-menu > summary::after { content: " ▾"; color: var(--muted); }
+  .img-list { position: absolute; left: 0; top: calc(100% + 4px); z-index: 6; width: 300px; background: var(--surface); border: 1px solid var(--hairline); border-radius: 4px; padding: 4px 0; }
+  @media (max-width: 600px) { .actions .img-menu[open] { flex-basis: 100%; } .img-list { position: static; width: auto; margin: 6px 0 0; } }
+  .actions .img-list button { display: block; width: 100%; text-align: left; border: 0; border-radius: 0; background: none; padding: 7px 12px; cursor: pointer; }
+  .actions .img-list button:hover, .actions .img-list button:focus-visible { background: var(--page); }
+  .img-list b { display: block; font-weight: 600; font-size: 13.5px; color: var(--ink); }
+  .img-list span { display: block; font-size: 12.5px; color: var(--muted); }
   .actions button, .actions > a { padding: 4px 10px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); cursor: pointer; text-decoration: none; font-size: 13.5px; }
 
   details.table { margin: 14px 0 0; font-size: 13px; }
@@ -507,7 +517,7 @@
     const obs = t.observations, d = t.display;
     const legend = el('div', { class: 'legend' }), framing = el('div', { class: 'framing', hidden: '' }), evList = el('div', { class: 'events-list' });
     function activeOverlays() { return overlays.filter(o => state.on.has(o.id) && appliesTo(o, t.id) && (!o.requires || state.on.has(o.requires))); }
-    const EMBED_MIN_PLOT = 140; let embedTrim = 0, fitting = false;
+    const EMBED_MIN_PLOT = 140; let embedTrim = 0, fitting = false, exportPlotH = null;
     if (state.embed && document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (box.isConnected) draw(); });   // the key may wrap differently once the font is in
     function colorFor(id) { return COLORS[state.slots.has(id) ? state.slots.get(id) : 0]; }
 
@@ -539,7 +549,7 @@
       const laneLabelW = eras.length && !narrow ? Math.max(...eras.map(o => textW(o.lane, 11))) + 10 : 0, laneNameH = narrow ? 13 : 0;
       const mL = Math.max(narrow ? 44 : 52, laneLabelW), mR = 14, mT = evs.length ? (narrow ? 22 : 40) : 12;
       const basePlotH = state.embed ? (narrow ? 200 : 280) : (narrow ? 240 : 380);
-      const plotH = state.embed ? Math.max(EMBED_MIN_PLOT, basePlotH - embedTrim) : basePlotH, subH = narrow ? 90 : 120, laneH = 18, laneGap = 4;
+      const plotH = exportPlotH || (state.embed ? Math.max(EMBED_MIN_PLOT, basePlotH - embedTrim) : basePlotH), subH = narrow ? 90 : 120, laneH = 18, laneGap = 4;
       const xAxisH = 22;
       const subsH = subs.length * (subH + 10);
       const lanesH = eras.length ? eras.length * (laneH + laneGap + laneNameH) + 6 : 0;
@@ -649,10 +659,20 @@
           if (!p) return;
           const cx = xs(parseDate(p[0]).getTime()), cy = ys(clampV(p[1]));
           svg.appendChild(svgEl('path', { class: 'clipmark', fill: color, d: 'M' + cx + ',' + (cy + dir * 6) + ' l-5,' + (-dir * 7) + ' l10,0 z' }));
-          const label = (who ? who + ', ' : '') + fmtPeriod(p[0], freq) + ': ' + fmtValue(p[1], d) + ', off the chart';
+          // The longest form that fits: beside the mark on whichever side has room, or else (on a narrow chart) anywhere
+          // in the plot's width, moved as close to the mark as it can go. A companion's name goes before "off the
+          // chart", so two clipped series stay told apart. Never past the plot's edges.
+          const when = fmtPeriod(p[0], freq) + ': ' + fmtValue(p[1], d), pre = who ? who + ', ' : '';
+          const forms = [pre + when + ', off the chart', pre + when, when + ', off the chart', when], lw = f => f.length * 6.2;
+          const right = width - mR - (cx + 8), left = (cx - 8) - mL;
+          let label = when, anchor = 'start', x = Math.max(mL + 2, Math.min(cx + 8, width - mR - lw(when)));
+          for (const f of forms) {
+            if (lw(f) <= right) { label = f; x = cx + 8; break; }
+            if (lw(f) <= left) { label = f; anchor = 'end'; x = cx - 8; break; }
+            if (lw(f) <= iw - 4) { label = f; x = Math.max(mL + 2, Math.min(cx + 8, width - mR - lw(f))); break; }
+          }
           const row = clipRows[String(dir)]++;
-          const tx = svgEl('text', { class: 'cliplabel', y: cy + (dir > 0 ? 14 + row * 13 : -10 - row * 13) });
-          if (width - mR - cx > label.length * 6.2) { tx.setAttribute('x', cx + 8); tx.setAttribute('text-anchor', 'start'); } else { tx.setAttribute('x', cx - 8); tx.setAttribute('text-anchor', 'end'); }
+          const tx = svgEl('text', { class: 'cliplabel', x, y: cy + (dir > 0 ? 14 + row * 13 : -10 - row * 13), 'text-anchor': anchor });
           tx.textContent = label; svg.appendChild(tx);
         });
       }
@@ -923,9 +943,10 @@
     // All in one task, so nothing is painted in between.
     const STYLE_PROPS = ['fill', 'fill-opacity', 'stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'stroke-linecap',
       'stroke-linejoin', 'opacity', 'font-size', 'font-weight', 'font-variant-numeric', 'paint-order'];
-    function snapshot(cssWidth) {
+    function snapshot(cssWidth, plotH) {
       const keep = [box.style.width, box.style.maxWidth];
       box.style.width = cssWidth + 'px'; box.style.maxWidth = 'none';
+      exportPlotH = plotH || null;
       try {
         draw();
         const live = box.querySelector('svg'), copy = live.cloneNode(true);
@@ -947,8 +968,12 @@
           if (i.classList.contains('rec') || i.classList.contains('lane')) return { kind: 'rec', text, color: ci.backgroundColor, edge: ci.borderTopColor };
           return { kind: 'line', text, color: ci.backgroundColor };
         });
-        return { svg: copy, width: +live.getAttribute('width'), height: +live.getAttribute('height'), key, framing: framing.hidden ? '' : framing.textContent };
+        // the events in view, with the numbers a narrow chart gives them
+        const events = Array.from(evList.querySelectorAll('li')).map(li => ({ num: (li.querySelector('.num') || {}).textContent || '', date: (li.querySelector('.d') || {}).textContent || '',
+          label: (Array.from(li.childNodes).find(n => n.nodeType === 3) || {}).textContent || '' }));
+        return { svg: copy, width: +live.getAttribute('width'), height: +live.getAttribute('height'), key, events, framing: framing.hidden ? '' : framing.textContent };
       } finally {
+        exportPlotH = null;
         box.style.width = keep[0]; box.style.maxWidth = keep[1];
         draw();
       }
@@ -972,6 +997,36 @@
       .catch(err => { console.warn('Download image: fonts not embedded', err); fontFaces = null; return ''; });   // system fonts instead
     return fontFaces;
   }
+  // Shared by both image makers: text measured and wrapped in the embedded font, SVG nodes, and the key in rows.
+  const EXPORT_FAMILY = '"Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
+  let exportMeas = null;
+  function textWidth(s, px, wt) { exportMeas = exportMeas || document.createElement('canvas').getContext('2d'); exportMeas.font = (wt || 400) + ' ' + px + 'px ' + EXPORT_FAMILY; return exportMeas.measureText(s).width; }
+  function wrapText(s, px, wt, max) {
+    const lines = []; let line = '';
+    s.split(/\s+/).forEach(word => { const next = line ? line + ' ' + word : word; if (line && textWidth(next, px, wt) > max) { lines.push(line); line = word; } else line = next; });
+    if (line) lines.push(line);
+    return lines;
+  }
+  function svgNode(tag, attrs, text) { const n = document.createElementNS(SVG, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); if (text != null) n.textContent = text; return n; }
+  // the key from snapshot(), wrapped into rows between x0 and xMax; with parts null it only counts. Returns the last row's baseline.
+  function drawKey(parts, key, o) {
+    let kx = o.x0, ky = o.y;
+    key.forEach(k => {
+      const sw = k.kind === 'events' ? 10 : 12, w = sw + 6 + textWidth(k.text, o.px);
+      if (kx > o.x0 && kx + w > o.xMax) { kx = o.x0; ky += o.row; }
+      if (parts) {
+        const g = svgNode('g', {});
+        if (k.kind === 'line') g.appendChild(svgNode('rect', { x: kx, y: ky - 5, width: 12, height: 3, rx: 1, fill: k.color }));
+        else if (k.kind === 'dash') g.appendChild(svgNode('line', { x1: kx, x2: kx + 12, y1: ky - 4, y2: ky - 4, stroke: k.color, 'stroke-width': 2, 'stroke-dasharray': '3 2' }));
+        else if (k.kind === 'rec') g.appendChild(svgNode('rect', { x: kx, y: ky - 9, width: 10, height: 10, fill: k.color, stroke: k.edge, 'stroke-width': 1 }));
+        else g.appendChild(svgNode('path', { d: 'M' + kx + ',' + (ky - 9) + ' l8,0 l-4,6 z', fill: k.color }));
+        g.appendChild(svgNode('text', { x: kx + sw + 6, y: ky, style: 'font-size:' + o.px + 'px;fill:' + o.ink }, k.text));
+        parts.push(g);
+      }
+      kx += w + o.gap;
+    });
+    return ky;
+  }
   async function chartImage(ctx, chart) {
     const t = ctx.tile, d = t.display, c = t.context;
     if (document.fonts && document.fonts.ready) await document.fonts.ready;
@@ -985,16 +1040,7 @@
       tok = { surface: v('--surface'), ink: v('--ink'), ink2: v('--ink-2'), muted: v('--muted'), hairline: v('--hairline'), banner: v('--banner'), bannerInk: v('--banner-ink') };
     } finally { root.classList.remove('export-light'); }
 
-    const FAMILY = '"Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
-    const meas = document.createElement('canvas').getContext('2d');
-    const width = (s, px, wt) => { meas.font = (wt || 400) + ' ' + px + 'px ' + FAMILY; return meas.measureText(s).width; };
-    function wrap(s, px, wt, max) {
-      const lines = []; let line = '';
-      s.split(/\s+/).forEach(word => { const next = line ? line + ' ' + word : word; if (line && width(next, px, wt) > max) { lines.push(line); line = word; } else line = next; });
-      if (line) lines.push(line);
-      return lines;
-    }
-    const S = (tag, attrs, text) => { const n = document.createElementNS(SVG, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); if (text != null) n.textContent = text; return n; };
+    const FAMILY = EXPORT_FAMILY, width = textWidth, wrap = wrapText, S = svgNode;
 
     const PAD = 28, W = Math.round(snap.width + PAD * 2), inner = W - PAD * 2;
     const parts = [];
@@ -1012,21 +1058,7 @@
     parts.push(snap.svg);
     y += snap.height + 12;
     // the key, wrapped into rows
-    const KPX = 12.5, ROW = 19;
-    let kx = PAD, ky = y + 13;
-    snap.key.forEach(k => {
-      const sw = k.kind === 'events' ? 10 : 12, w = sw + 6 + width(k.text, KPX);
-      if (kx > PAD && kx + w > W - PAD) { kx = PAD; ky += ROW; }
-      const g = S('g', {});
-      if (k.kind === 'line') g.appendChild(S('rect', { x: kx, y: ky - 5, width: 12, height: 3, rx: 1, fill: k.color }));
-      else if (k.kind === 'dash') g.appendChild(S('line', { x1: kx, x2: kx + 12, y1: ky - 4, y2: ky - 4, stroke: k.color, 'stroke-width': 2, 'stroke-dasharray': '3 2' }));
-      else if (k.kind === 'rec') g.appendChild(S('rect', { x: kx, y: ky - 9, width: 10, height: 10, fill: k.color, stroke: k.edge, 'stroke-width': 1 }));
-      else g.appendChild(S('path', { d: 'M' + kx + ',' + (ky - 9) + ' l8,0 l-4,6 z', fill: k.color }));
-      g.appendChild(S('text', { x: kx + sw + 6, y: ky, style: 'font-size:' + KPX + 'px;fill:' + tok.ink2 }, k.text));
-      parts.push(g);
-      kx += w + 18;
-    });
-    y = ky + 8;
+    y = drawKey(parts, snap.key, { x0: PAD, xMax: W - PAD, y: y + 13, px: 12.5, row: 19, gap: 18, ink: tok.ink2 }) + 8;
     // the framing line that political overlays carry on the page goes with the picture
     if (snap.framing) {
       const lines = wrap(snap.framing, 13, 400, inner - 24), h = lines.length * 18 + 14;
@@ -1056,6 +1088,132 @@
     canvas.width = W * scale; canvas.height = H * scale;
     const g = canvas.getContext('2d');
     g.drawImage(img, 0, 0, canvas.width, canvas.height);
+    return new Promise((ok, no) => canvas.toBlob(b => b ? ok(b) : no(new Error('the browser would not make a PNG')), 'image/png'));
+  }
+
+  // ---- "Download image" for social posts -------------------------------------
+  // Each shape is laid out for its own frame, not cropped from the wide image: title, latest reading, the sentence,
+  // the chart with its plot stretched to fill, key, framing line, numbered events and the address. It is drawn at a
+  // small CSS width so the type stays readable in a phone feed, then scaled to the platform's pixels; a crowded view
+  // (many lanes, a long key) is drawn a little smaller rather than cut. Always in the light colors, fonts embedded.
+  // Story leaves the top and bottom 14% empty, where the apps put their controls.
+  const SHAPES = [
+    { key: 'wide', label: 'Wide 16:9', where: 'Nextdoor, X, LinkedIn, Facebook', w: 1600, h: 900, css: 720 },
+    { key: 'square', label: 'Square', where: 'Instagram, Facebook, LinkedIn, Threads, Bluesky', w: 1080, h: 1080, css: 480 },
+    { key: 'portrait', label: 'Portrait 4:5', where: 'Instagram, Facebook, Threads, Bluesky', w: 1080, h: 1350, css: 480 },
+    { key: 'story', label: 'Story 9:16', where: 'Instagram and Facebook stories', w: 1080, h: 1920, css: 480, safe: 0.14 },
+  ];
+  async function socialImage(ctx, chart, shape) {
+    const t = ctx.tile, d = t.display, c = t.context;
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    const fonts = await embeddedFonts();
+    const FAMILY = EXPORT_FAMILY, width = textWidth, wrap = wrapText, S = svgNode;
+    const PAD = 20, MIN_PLOT = 110, wide = shape.w / shape.h > 1.5;
+    const hv = t.headline ? t.headline.value : c.current.value;
+    const hdate = t.headline ? fmtPeriod(t.headline.date, 'd', true) : fmtPeriod(c.current.date, t.freq, true);
+    const vtxt = fmtValue(hv, d), sent = contextSentence(t), vpx = wide ? 28 : 32;
+    // Lay the picture out at a CSS width of shape.css × f. Everything is measured first, then the plot takes what is
+    // left. If the plot would fall under MIN_PLOT, the next f draws the whole picture a little smaller; only at the
+    // last size does a long events list give way to "…and N more".
+    function plan(f, cut) {
+      const W = shape.css * f, H = shape.h / (shape.w / W), inner = W - PAD * 2;
+      const top = shape.safe ? H * shape.safe : PAD - 2, bottom = H - (shape.safe ? H * shape.safe : PAD - 4);
+      const KEY = y => ({ x0: PAD, xMax: W - PAD, y: y + 12, px: 11.5, row: 17, gap: 14 });
+      // a wide frame is short: the subtitle rides on the title's line if it fits, and the sentence beside the reading
+      const titleL = wrap(t.title, 19, 700, inner);
+      const subInline = wide && titleL.length === 1 && width(t.title, 19, 700) + 12 + width(t.subtitle, 12.5) <= inner;
+      const subL = wide ? [] : wrap(t.subtitle, 12.5, 400, inner);
+      const sentInline = wide && width(vtxt, vpx, 700) + 10 + width(hdate, 12.5) + 16 + width(sent, 14, 600) <= inner;
+      const sentL = sentInline ? [] : wrap(sent, 14, 600, inner);
+      const adjL = adjusted(t) ? wrap('The sentence is in today’s dollars; the chart’s main line is the price as charged.', 11.5, 400, inner) : [];
+      const headH = titleL.length * 22 + subL.length * 17 + (wide ? 34 : 40) + sentL.length * 19 + (adjL.length ? 3 + adjL.length * 15 : 0) + 10;
+      // the chart once at a trial height, for its fixed parts (axis, lanes, sub-panels), its key and its events
+      const snap0 = chart.snapshot(inner + 18, 200), fixed = snap0.height - 200;
+      const keyH = drawKey(null, snap0.key, KEY(0)) - KEY(0).y + 17 + 4;
+      const framL = snap0.framing ? wrap(snap0.framing, 11.5, 400, inner - 16) : [];
+      const framH = framL.length ? framL.length * 15 + 12 + 8 : 0;
+      // a narrow chart numbers its events; the list goes in the picture so every marker is named
+      let evs = snap0.events.filter(e => e.num), more = 0, cols = 1;
+      const colW = () => cols === 1 ? inner : (inner - 14) / 2;
+      const evLines = list => list.map(e => wrap(e.date + ' ' + e.label, 11, 400, colW() - 22));
+      // in two columns each row is as tall as the taller of its pair
+      const evH = () => { if (!evs.length) return 0; const ls = evLines(evs).map(l => l.length); let h = 0;
+        if (cols === 1) h = ls.reduce((a, n) => a + n, 0); else { const half = Math.ceil(ls.length / 2); for (let i = 0; i < half; i++) h += Math.max(ls[i], ls[i + half] || 0); }
+        return 8 + h * 14 + (more ? 14 : 0); };
+      const footH = 34, room = () => (bottom - top) - headH - fixed - keyH - framH - evH() - footH;
+      let plotH = room();
+      if (plotH < MIN_PLOT && evs.length > 3) { cols = 2; plotH = room(); }
+      while (cut && plotH < MIN_PLOT && evs.length > 1) { evs = evs.slice(0, -1); more++; plotH = room(); }
+      const fits = plotH >= MIN_PLOT;
+      plotH = Math.max(MIN_PLOT, Math.min(plotH, Math.round(inner * 0.72)));   // a very tall plot would steepen every slope
+      return { fits, W, H, inner, top, bottom, KEY, titleL, subInline, subL, sentInline, sentL, adjL, framL, evs, more, cols, colW: colW(), evLines, plotH,
+               used: headH + fixed + plotH + keyH + framH + evH() + footH };
+    }
+    const root = document.documentElement;
+    let L, snap, tok;
+    root.classList.add('export-light');
+    try {
+      const cs = getComputedStyle(root), v = n => cs.getPropertyValue(n).trim();
+      tok = { surface: v('--surface'), ink: v('--ink'), ink2: v('--ink-2'), muted: v('--muted'), hairline: v('--hairline'), banner: v('--banner'), bannerInk: v('--banner-ink') };
+      for (const f of [1, 1.15, 1.3, 1.45, 1.6]) { L = plan(f, false); if (L.fits) break; }
+      if (!L.fits) L = plan(1.6, true);
+      snap = chart.snapshot(L.inner + 18, L.plotH);
+    } finally { root.classList.remove('export-light'); }
+
+    const { W, H, inner } = L, parts = [];
+    let y = L.top + Math.max(0, ((L.bottom - L.top) - L.used) / 2);
+    L.titleL.forEach(line => { y += 22; parts.push(S('text', { x: PAD, y, style: 'font-size:19px;font-weight:700;fill:' + tok.ink }, line)); });
+    if (L.subInline) parts.push(S('text', { x: PAD + width(t.title, 19, 700) + 12, y, style: 'font-size:12.5px;fill:' + tok.ink2 }, t.subtitle));
+    L.subL.forEach(line => { y += 17; parts.push(S('text', { x: PAD, y, style: 'font-size:12.5px;fill:' + tok.ink2 }, line)); });
+    y += wide ? 32 : 38;
+    parts.push(S('text', { x: PAD, y, style: 'font-size:' + vpx + 'px;font-weight:700;fill:' + tok.ink }, vtxt));
+    const dx = PAD + width(vtxt, vpx, 700) + 10;
+    parts.push(S('text', { x: dx, y, style: 'font-size:12.5px;fill:' + tok.muted }, hdate));
+    if (L.sentInline) parts.push(S('text', { x: dx + width(hdate, 12.5) + 16, y, style: 'font-size:14px;font-weight:600;fill:' + tok.ink }, sent));
+    y += 2;
+    L.sentL.forEach(line => { y += 19; parts.push(S('text', { x: PAD, y, style: 'font-size:14px;font-weight:600;fill:' + tok.ink }, line)); });
+    if (L.adjL.length) { y += 3; L.adjL.forEach(line => { y += 15; parts.push(S('text', { x: PAD, y, style: 'font-size:11.5px;fill:' + tok.ink2 }, line)); }); }
+    y += 10;
+    snap.svg.setAttribute('x', PAD - (snap.width - inner) / 2); snap.svg.setAttribute('y', y);
+    parts.push(snap.svg);
+    y += snap.height + 4;
+    y = drawKey(parts, snap.key, Object.assign(L.KEY(y), { ink: tok.ink2 })) + 6;
+    if (L.framL.length) {
+      const h = L.framL.length * 15 + 12; y += 8;
+      parts.push(S('rect', { x: PAD, y, width: inner, height: h, rx: 4, fill: tok.banner }));
+      L.framL.forEach((line, i) => parts.push(S('text', { x: PAD + 8, y: y + 17 + i * 15, style: 'font-size:11.5px;fill:' + tok.bannerInk }, line)));
+      y += h;
+    }
+    if (L.evs.length) {
+      y += 8;
+      const all = L.evLines(L.evs), half = L.cols === 2 ? Math.ceil(all.length / 2) : all.length;
+      const item = (lines, i, x, y0) => lines.forEach((line, j) => { const yy = y0 + 14 * (j + 1);
+        if (!j) parts.push(S('text', { x, y: yy, style: 'font-size:11px;font-weight:600;fill:' + tok.ink2 }, L.evs[i].num));
+        parts.push(S('text', { x: x + 22, y: yy, style: 'font-size:11px;fill:' + tok.ink2 }, line)); });
+      for (let r = 0; r < half; r++) {
+        const pair = L.cols === 2 ? all[r + half] : null;
+        item(all[r], r, PAD, y);
+        if (pair) item(pair, r + half, PAD + L.colW + 14, y);
+        y += 14 * Math.max(all[r].length, pair ? pair.length : 0);
+      }
+      if (L.more) { y += 14; parts.push(S('text', { x: PAD + 22, y, style: 'font-size:11px;fill:' + tok.muted }, '…and ' + L.more + ' more on the chart page')); }
+    }
+    // where it came from, along the bottom of the safe area
+    const footY = L.bottom - 6;
+    parts.push(S('line', { x1: PAD, x2: W - PAD, y1: footY - 15, y2: footY - 15, stroke: tok.hairline, 'stroke-width': 1 }));
+    parts.push(S('text', { x: PAD, y: footY, style: 'font-size:11.5px;fill:' + tok.muted }, 'economyincontext.org' + chartPath(t.id)));
+    parts.push(S('text', { x: W - PAD, y: footY, 'text-anchor': 'end', style: 'font-size:11.5px;fill:' + tok.muted }, 'CC BY 4.0'));
+
+    const out = S('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H });
+    out.appendChild(S('style', {}, fonts + 'text{font-family:' + FAMILY + '}'));
+    out.appendChild(S('rect', { x: 0, y: 0, width: W, height: H, fill: tok.surface }));
+    parts.forEach(p => out.appendChild(p));
+    const img = new Image();
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(out));
+    await img.decode();
+    await new Promise(r => setTimeout(r, 80));     // give the embedded fonts a beat, as the full-width image does
+    const canvas = document.createElement('canvas'); canvas.width = shape.w; canvas.height = shape.h;
+    canvas.getContext('2d').drawImage(img, 0, 0, shape.w, shape.h);
     return new Promise((ok, no) => canvas.toBlob(b => b ? ok(b) : no(new Error('the browser would not make a PNG')), 'image/png'));
   }
 
@@ -1329,19 +1487,32 @@
     embedBtn.addEventListener('click', () => { navigator.clipboard && navigator.clipboard.writeText(embedCode()).then(() => { embedBtn.textContent = 'Copied'; setTimeout(() => embedBtn.textContent = 'Copy embed code', 1500); }); });
     ctx.embedCode = embedCode;
     // a PNG of this view, with the title, key and credit built in, for posts and slides where an iframe can't go
-    const imgBtn = el('button', { type: 'button', text: 'Download image' });
-    imgBtn.addEventListener('click', () => {
-      if (imgBtn.disabled) return;
-      imgBtn.disabled = true; imgBtn.textContent = 'Making the image…';
-      chartImage(ctx, chart).then(blob => {
-        const a = el('a', { href: URL.createObjectURL(blob), download: 'economyincontext-' + t.id + '-' + (state.range || 'custom') + '.png' });
-        document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 30000);
-        imgBtn.textContent = 'Download image';
-      }).catch(err => {
-        console.error('Download image:', err); imgBtn.textContent = 'The image could not be made';
-        setTimeout(() => { imgBtn.textContent = 'Download image'; }, 2500);
-      }).finally(() => { imgBtn.disabled = false; });
-    });
+    // Download image: the full-width picture for slides and articles, or a shape for a social post
+    const imgBtn = el('details', { class: 'img-menu' }), imgSum = el('summary', { text: 'Download image' });
+    imgBtn.appendChild(imgSum);
+    const imgList = el('div', { class: 'img-list' });
+    let making = false;
+    [{ key: '', label: 'Full width', where: 'slides, articles, print', make: () => chartImage(ctx, chart) }]
+      .concat(SHAPES.map(sh => ({ key: '-' + sh.key, label: sh.label, where: sh.w + '×' + sh.h + ' · ' + sh.where, make: () => socialImage(ctx, chart, sh) })))
+      .forEach(o => {
+        const b = el('button', { type: 'button' }, [el('b', { text: o.label }), el('span', { text: o.where })]);
+        b.addEventListener('click', () => {
+          if (making) return;
+          making = true; imgBtn.open = false; imgSum.focus(); imgSum.textContent = 'Making the image…';
+          o.make().then(blob => {
+            const a = el('a', { href: URL.createObjectURL(blob), download: 'economyincontext-' + t.id + '-' + (state.range || 'custom') + o.key + '.png' });
+            document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 30000);
+            imgSum.textContent = 'Download image';
+          }).catch(err => {
+            console.error('Download image:', err); imgSum.textContent = 'The image could not be made';
+            setTimeout(() => { imgSum.textContent = 'Download image'; }, 2500);
+          }).finally(() => { making = false; });
+        });
+        imgList.appendChild(b);
+      });
+    imgBtn.appendChild(imgList);
+    document.addEventListener('click', e => { if (imgBtn.open && !imgBtn.contains(e.target)) imgBtn.open = false; });
+    imgBtn.addEventListener('keydown', e => { if (e.key === 'Escape' && imgBtn.open) { imgBtn.open = false; imgSum.focus(); } });
     actions.appendChild(dl); actions.appendChild(imgBtn); actions.appendChild(copy); actions.appendChild(embedBtn);
     actions.appendChild(el('a', { href: '/#i-' + t.id, text: 'Back to the almanac' }));
     actions.appendChild(el('span', { class: 'reuse-short' }, ['Free to reuse with credit · ', el('a', { href: 'https://creativecommons.org/licenses/by/4.0/', rel: 'license noopener', text: 'CC BY 4.0' })]));
