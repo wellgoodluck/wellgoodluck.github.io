@@ -101,6 +101,19 @@ TILES = [
                     "unit": "percent, year over year"},
         "note": "Production and nonsupervisory workers, about four-fifths of private employment; seasonally adjusted. An average, so it jumps when low-paid jobs disappear, as in 2020.",
     },
+    {
+        "id": "health_jobs",
+        "agency": "BLS",
+        "section": "Jobs",
+        "title": "Health care jobs",
+        "subtitle": "Jobs added in health care over the past 12 months",
+        "series": "CES6562000101",
+        "params": {"units": "ch1", "observation_start": "1990-01-01"},
+        "freq": "m",
+        "display": {"scale": 1, "decimals": 0, "suffix": "K", "signed": True,
+                    "unit": "thousands of jobs, change from a year earlier", "clip": [-600, 800]},
+        "note": "Hospitals, doctors' and dentists' offices, outpatient centers, home health care, and nursing and residential care; seasonally adjusted. Social assistance, such as child care, is not included. Revised with the rest of the payroll numbers.",
+    },
     # ---- Prices -----------------------------------------------------------
     {
         "id": "cpi",
@@ -613,6 +626,16 @@ COMPANIONS = [
         "panel": "own", "display": {"scale": 1, "decimals": 1, "suffix": " wks"},
     },
     {
+        "id": "health_jobs_ie",
+        "label": "Riverside–San Bernardino area: health care and social assistance jobs, change from a year earlier",
+        "for": ["health_jobs"],
+        "series": "SMU06401406562000001",
+        "params": {"units": "ch1", "observation_start": "1990-01-01"},
+        "freq": "m",
+        "why": "Riverside and San Bernardino counties (the Inland Empire), one of the metro areas BLS covers. BLS doesn't publish health care alone for the area, so this line also counts social assistance, such as child care and home care aides. Not seasonally adjusted; monthly area figures arrive about two weeks after the national ones. Different scale: thousands of jobs.",
+        "panel": "own", "display": {"scale": 1, "decimals": 1, "suffix": "K", "signed": True},
+    },
+    {
         "id": "wti",
         "label": "Crude oil (WTI), dollars per barrel",
         "for": [],
@@ -764,6 +787,45 @@ def household_lines(tiles_out, companions_out, extras):
         lines["pay"] = (lead + (f", so an hour of work bought about {abs(real):.1f}% {'more' if real > 0 else 'less'} than a year before."
                                 if abs(real) >= 0.05 else ", so an hour of work bought about what it did a year before."),
                         [{"series": "CPIAUCSL", "url": "https://fred.stlouisfed.org/series/CPIAUCSL"}])
+    except Exception: pass
+    try:
+        # Health care's share of all jobs added over the same 12 months. The payrolls tile holds
+        # monthly changes, so twelve of them, ending in the same month, sum to the 12-month change.
+        h, hd = cur("health_jobs"), T["health_jobs"]["context"]["current"]["date"]
+        pay_m = {month_key(d): v for d, v in T["payrolls"]["observations"]}
+        def months_back(d, n):
+            y, m = int(d[:4]), int(d[5:7])
+            out = []
+            for _ in range(n):
+                out.append(f"{y:04d}-{m:02d}"); m -= 1
+                if m == 0: y, m = y - 1, 12
+            return out
+        def total_12m(d):
+            ks = months_back(d, 12)
+            return sum(pay_m[k] for k in ks) if all(k in pay_m for k in ks) else None
+        p = total_12m(hd)
+        jobs = lambda v: f"{abs(round(v * 1000, -2)):,.0f}"
+        mon = datetime.strptime(hd, "%Y-%m-%d").strftime("%B")
+        if p is not None:
+            if h > 0 and p > 0 and h <= p:
+                txt = (f"Of the {jobs(p)} jobs the country added in the 12 months to {mon}, "
+                       f"health care added {jobs(h)}, or {round(100 * h / p)}%.")
+            elif h > 0 and p > 0:
+                txt = (f"In the 12 months to {mon}, health care added {jobs(h)} jobs, more than the {jobs(p)} "
+                       f"the whole country added, so every other industry together lost {jobs(h - p)}.")
+            elif h > 0:
+                txt = (f"In the 12 months to {mon}, health care added {jobs(h)} jobs while the country as a whole "
+                       + (f"lost {jobs(p)}." if p < 0 else "added none."))
+            else:
+                txt = (f"In the 12 months to {mon}, health care " + (f"lost {jobs(h)} jobs" if h < 0 else "added no jobs")
+                       + (f"; the country as a whole {'added' if p > 0 else 'lost'} {jobs(p)}." if p != 0
+                          else "; the country's total was unchanged."))
+            # The same share in 2015-19, from the averages of both 12-month changes.
+            hb = [v for d, v in T["health_jobs"]["observations"] if "2015-01" <= d[:7] <= "2019-12"]
+            pb = [total_12m(d) for d, _ in T["health_jobs"]["observations"] if "2015-01" <= d[:7] <= "2019-12"]
+            if hb and pb and None not in pb and mean(pb) > 0:
+                txt += f" In 2015{EN}19 its share was about {round(100 * mean(hb) / mean(pb))}%."
+            lines["health_jobs"] = (txt, [{"series": "PAYEMS", "url": "https://fred.stlouisfed.org/series/PAYEMS"}])
     except Exception: pass
     try:
         pl = latest("price_level")
