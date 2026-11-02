@@ -404,6 +404,18 @@
   }
   function svgEl(tag, attrs) { const n = document.createElementNS(SVG, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); return n; }
   function textW(s, px) { return s.length * (px || 11) * 0.56; }
+  // measured width of chart text in the page's own font (falls back to the estimate), and a name split into lines that fit
+  let pageMeas = null;
+  function textPx(s, px) {
+    try { pageMeas = pageMeas || document.createElement('canvas').getContext('2d'); pageMeas.font = px + 'px ' + getComputedStyle(document.body).fontFamily; return pageMeas.measureText(s).width; }
+    catch (e) { return textW(s, px); }
+  }
+  function splitLines(s, px, max) {
+    const out = []; let line = '';
+    s.split(/\s+/).forEach(w => { const next = line ? line + ' ' + w : w; if (line && textPx(next, px) > max) { out.push(line); line = w; } else line = next; });
+    if (line) out.push(line);
+    return out;
+  }
   function median(vals) { const s = vals.slice().sort((a, b) => a - b); const m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; }
   function niceTicks(lo, hi, count) {
     const span = hi - lo || 1, rough = span / count, mag = Math.pow(10, Math.floor(Math.log10(rough))), norm = rough / mag;
@@ -631,7 +643,9 @@
       const basePlotH = state.embed ? (narrow ? 200 : 280) : (narrow ? 240 : 380);
       const plotH = exportPlotH || (state.embed ? Math.max(EMBED_MIN_PLOT, basePlotH - embedTrim) : basePlotH), subH = narrow ? 90 : 120, laneH = 18, laneGap = 4;
       const xAxisH = 22;
-      const subsH = subs.length * (subH + 10);
+      // a sub-panel's name wraps to the plot's width instead of running off the chart; each extra line adds subTitleH
+      const subTitleH = 13, subLines = subs.map(o => splitLines(o.label, 11, Math.max(80, width - mL - mR)));
+      const subsH = subs.reduce((a, o, i) => a + subH + 10 + (subLines[i].length - 1) * subTitleH, 0);
       const lanesH = eras.length ? eras.length * (laneH + laneGap + laneNameH) + 6 : 0;
       const creditH = 16;   // the credit line, inside the frame, so a cropped screenshot keeps it
       const height = mT + plotH + xAxisH + subsH + lanesH + 4 + creditH;
@@ -806,18 +820,19 @@
       // sub-panels (own scale)
       let cursorY = mT + ih + xAxisH + 4;
       let lastSubBottom = 0;
-      subs.forEach(o => {
-        const sp = o.observations.filter(inWin); if (!sp.length) { cursorY += subH + 10; return; }
+      subs.forEach((o, si) => {
+        const extra = (subLines[si].length - 1) * subTitleH;
+        const sp = o.observations.filter(inWin); if (!sp.length) { cursorY += subH + 10 + extra; return; }
         const sclip = o.display && o.display.clip ? o.display.clip : null, sclamp = v => sclip ? Math.min(sclip[1], Math.max(sclip[0], v)) : v;
         const vals = sp.map(p => sclamp(p[1])); let slo = Math.min(...vals), shi = Math.max(...vals); if (slo === shi) { slo -= 1; shi += 1; }
         const spad = (shi - slo) * 0.1; slo -= spad; shi += spad;
-        const top = cursorY + 12, sys_ = v => top + (shi - v) / (shi - slo) * (subH - 12);
+        const top = cursorY + 12 + extra, sys_ = v => top + (shi - v) / (shi - slo) * (subH - 12);
         const sdisp = o.display || d;
         recRects.forEach(r => svg.appendChild(svgEl('rect', { class: 'rec', x: r[0], y: top, width: r[1], height: subH - 12 })));
         const st = niceTicks(slo, shi, 3), sdec = axisDecimals(st.step, sdisp), sax = svgEl('g', { class: 'axis' });
         st.ticks.forEach(v => { svg.appendChild(svgEl('line', { class: v === 0 ? 'zero' : 'grid-line', x1: mL, x2: width - mR, y1: sys_(v), y2: sys_(v) })); const tx = svgEl('text', { x: mL - 6, y: sys_(v) + 4, 'text-anchor': 'end' }); tx.textContent = fmtValue(v, sdisp, { decimals: sdec, nosign: true }); sax.appendChild(tx); });
         svg.appendChild(sax);
-        const title = svgEl('text', { class: 'sub-title', x: mL, y: cursorY + 6 }); title.textContent = o.label; svg.appendChild(title);
+        subLines[si].forEach((ln, li) => { const title = svgEl('text', { class: 'sub-title', x: mL, y: cursorY + 6 + li * subTitleH }); title.textContent = ln; svg.appendChild(title); });
         let p = ''; sp.forEach((q, i) => { p += (i ? 'L' : 'M') + xs(parseDate(q[0]).getTime()).toFixed(1) + ',' + sys_(sclamp(q[1])).toFixed(1); });
         if (sclip) {                                            // mark the clipped peak, as the main chart does
           let peak = null; sp.forEach(q => { if (q[1] > sclip[1] && (!peak || q[1] > peak[1])) peak = q; });
@@ -826,7 +841,7 @@
         }
         svg.appendChild(svgEl('path', { class: 'cline', d: p, stroke: colorFor(o.id) }));
         lastSubBottom = top + subH - 12;
-        cursorY += subH + 10;
+        cursorY += subH + 10 + extra;
       });
 
       // era lanes
@@ -1147,8 +1162,9 @@
   function drawKey(parts, key, o) {
     let kx = o.x0, ky = o.y;
     key.forEach(k => {
-      const sw = k.kind === 'events' ? 10 : 12, w = sw + 6 + textWidth(k.text, o.px);
-      if (kx > o.x0 && kx + w > o.xMax) { kx = o.x0; ky += o.row; }
+      const sw = k.kind === 'events' ? 10 : 12, room = o.xMax - o.x0 - sw - 6, full = textWidth(k.text, o.px);
+      const lines = full > room ? wrapText(k.text, o.px, 400, room) : [k.text], w = sw + 6 + (lines.length > 1 ? room : full);
+      if (kx > o.x0 && (kx + w > o.xMax || lines.length > 1)) { kx = o.x0; ky += o.row; }
       if (parts) {
         const g = svgNode('g', {});
         if (k.kind === 'line') g.appendChild(svgNode('rect', { x: kx, y: ky - 5, width: 12, height: 3, rx: 1, fill: k.color }));
@@ -1163,10 +1179,11 @@
           g.appendChild(svgNode('rect', { x: x0, y: y0, width: 10, height: 10, fill: 'none', stroke: k.edge, 'stroke-width': 1 }));
         }
         else g.appendChild(svgNode('path', { d: 'M' + kx + ',' + (ky - 9) + ' l8,0 l-4,6 z', fill: k.color }));
-        g.appendChild(svgNode('text', { x: kx + sw + 6, y: ky, style: 'font-size:' + o.px + 'px;fill:' + o.ink }, k.text));
+        lines.forEach((ln, li) => g.appendChild(svgNode('text', { x: kx + sw + 6, y: ky + li * o.row, style: 'font-size:' + o.px + 'px;fill:' + o.ink }, ln)));
         parts.push(g);
       }
-      kx += w + o.gap;
+      if (lines.length > 1) { ky += (lines.length - 1) * o.row; kx = o.xMax; }   // the next name starts a new row
+      else kx += w + o.gap;
     });
     return ky;
   }

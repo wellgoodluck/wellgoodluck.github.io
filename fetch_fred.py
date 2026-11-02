@@ -627,12 +627,12 @@ COMPANIONS = [
     },
     {
         "id": "health_jobs_ie",
-        "label": "Riverside–San Bernardino area: health care and social assistance jobs, change from a year earlier",
+        "label": "Inland Empire: health care and social assistance",
         "for": ["health_jobs"],
         "series": "SMU06401406562000001",
         "params": {"units": "ch1", "observation_start": "1990-01-01"},
         "freq": "m",
-        "why": "Riverside and San Bernardino counties (the Inland Empire), one of the metro areas BLS covers. BLS doesn't publish health care alone for the area, so this line also counts social assistance, such as child care and home care aides. Not seasonally adjusted; monthly area figures arrive about two weeks after the national ones. Different scale: thousands of jobs.",
+        "why": "Jobs added over the past 12 months in Riverside and San Bernardino counties (the Inland Empire), one of the metro areas BLS covers. BLS doesn't publish health care alone for the area, so this line also counts social assistance, such as child care and home care aides. Not seasonally adjusted; monthly area figures arrive about two weeks after the national ones. Different scale: thousands of jobs.",
         "panel": "own", "display": {"scale": 1, "decimals": 1, "suffix": "K", "signed": True},
     },
     {
