@@ -951,6 +951,81 @@ def fig_eci_real(D):
     return f"{'up' if real > 0 else 'down'} {abs(real):.1f}% after inflation", []
 
 
+# --- Nov 2: restaurant prices and restaurant jobs (The Five-Cent Business) ---
+def _month_shift(iso, n):
+    d = _d(iso)
+    k = d.year * 12 + d.month - 1 + n
+    return date(k // 12, k % 12 + 1, 1).isoformat()
+
+
+def _fafh_prices(D):
+    """Restaurant prices (CPI food away from home) and prices overall since the 2019 average,
+    on the latest month both have."""
+    d, (f, pl) = _aligned(D, "fafh_level", "price_level")
+    return d, f, f / _avg_year(D.get("fafh_level")["obs"], 2019) - 1, pl / 100 - 1    # price_level is 2019 = 100
+
+
+def fig_fafh_month(D):
+    return month_year(_fafh_prices(D)[0]), []
+
+
+def fig_fafh_since_2019(D):
+    return _pct_round(_fafh_prices(D)[2]), ["https://fred.stlouisfed.org/series/CUSR0000SEFV"]
+
+
+def fig_fafh_prices_since_2019(D):
+    return _pct_round(_fafh_prices(D)[3]), ["https://fred.stlouisfed.org/series/CPIAUCSL"]
+
+
+def val_fafh_gap(D):
+    """Points by which restaurant prices have outrun prices overall since 2019, from the two figures as printed."""
+    d, f, fr, pr = _fafh_prices(D)
+    return round(fr * 100) - round(pr * 100)
+
+
+def val_fafh_since_2019_pct(D):
+    """Restaurant prices since the 2019 average, in whole percent as printed (for checks)."""
+    return round(_fafh_prices(D)[2] * 100)
+
+
+def fig_fafh_since_feb2020(D):
+    d, f, fr, pr = _fafh_prices(D)
+    base = dict(D.get("fafh_level")["obs"])["2020-02-01"]
+    return _pct_round(f / base - 1), ["https://fred.stlouisfed.org/series/CUSR0000SEFV"]
+
+
+def fig_fafh_year(D):
+    """Change from a year earlier, to one decimal. October 2025 was never published, so a missing
+    year-ago month uses the average of the months on either side, as fetch_fred.deflate() does."""
+    d, f, fr, pr = _fafh_prices(D)
+    obs = dict(D.get("fafh_level")["obs"])
+    ya = _month_shift(d, -12)
+    if ya in obs:
+        base = obs[ya]
+    else:
+        lo, hi = obs.get(_month_shift(ya, -1)), obs.get(_month_shift(ya, 1))
+        if lo is None or hi is None:
+            raise KeyError(f"no year-ago month for {d}")
+        base = (lo + hi) / 2
+    return f"{(f / base - 1) * 100:.1f}%", ["https://fred.stlouisfed.org/series/CUSR0000SEFV"]
+
+
+def fig_restaurant_jobs(D):
+    return fmt(D.get("restaurant_jobs")["obs"][-1][1], "k_millions1"), ["https://fred.stlouisfed.org/series/CES7072200001"]
+
+
+def fig_restaurant_jobs_month(D):
+    return month_year(D.get("restaurant_jobs")["obs"][-1][0]), []
+
+
+def fig_restaurant_jobs_vs_feb2020(D):
+    obs = D.get("restaurant_jobs")["obs"]
+    r = obs[-1][1] / dict(obs)["2020-02-01"] - 1
+    if abs(r) < 0.005:
+        return "about as many as in February 2020, just before the pandemic", []
+    return f"about {round(abs(r) * 100)}% {'more' if r > 0 else 'fewer'} than in February 2020, just before the pandemic", []
+
+
 FIGS = {
     "claims_low": fig_claims_low,
     "continuing_claims": fig_continuing_claims,
@@ -983,6 +1058,10 @@ FIGS = {
     "unemployed_aligned": fig_unemployed_aligned, "unemployed_2019": fig_unemployed_2019, "ratio_sentence": fig_ratio_sentence,
     "unemployed_count": fig_unemployed_count,
     "eci_month": fig_eci_month, "eci_now": fig_eci_now, "eci_vs_prev": fig_eci_vs_prev, "eci_real": fig_eci_real,
+    "fafh_month": fig_fafh_month, "fafh_since_2019": fig_fafh_since_2019, "fafh_prices_since_2019": fig_fafh_prices_since_2019,
+    "fafh_since_feb2020": fig_fafh_since_feb2020, "fafh_year": fig_fafh_year,
+    "restaurant_jobs": fig_restaurant_jobs, "restaurant_jobs_month": fig_restaurant_jobs_month,
+    "restaurant_jobs_vs_feb2020": fig_restaurant_jobs_vs_feb2020,
 }
 VALUES = {      # usable on the left of a check as fig:<name>
     "claims_rule_last": val_claims_rule_last,
@@ -990,6 +1069,7 @@ VALUES = {      # usable on the left of a check as fig:<name>
     "gas_vs_2022_real": val_gas_vs_2022_real, "gas_real_max_year": val_gas_real_max_year,
     "rent_minus_prices": val_rent_minus_prices, "unemployed_vs_2019": val_unemployed_vs_2019,
     "real_raise_sep2019": val_real_raise_sep2019, "openings_vs_2019": val_openings_vs_2019,
+    "fafh_gap": val_fafh_gap, "fafh_since_2019_pct": val_fafh_since_2019_pct,
 }
 
 

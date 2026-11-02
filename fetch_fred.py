@@ -627,12 +627,12 @@ COMPANIONS = [
     },
     {
         "id": "health_jobs_ie",
-        "label": "Inland Empire: health care and social assistance",
+        "label": "Riverside–San Bernardino area: health care and social assistance jobs, change from a year earlier",
         "for": ["health_jobs"],
         "series": "SMU06401406562000001",
         "params": {"units": "ch1", "observation_start": "1990-01-01"},
         "freq": "m",
-        "why": "Jobs added over the past 12 months in Riverside and San Bernardino counties (the Inland Empire), one of the metro areas BLS covers. BLS doesn't publish health care alone for the area, so this line also counts social assistance, such as child care and home care aides. Not seasonally adjusted; monthly area figures arrive about two weeks after the national ones. Different scale: thousands of jobs.",
+        "why": "Riverside and San Bernardino counties (the Inland Empire), one of the metro areas BLS covers. BLS doesn't publish health care alone for the area, so this line also counts social assistance, such as child care and home care aides. Not seasonally adjusted; monthly area figures arrive about two weeks after the national ones. Different scale: thousands of jobs.",
         "panel": "own", "display": {"scale": 1, "decimals": 1, "suffix": "K", "signed": True},
     },
     {
@@ -691,6 +691,11 @@ COMPANIONS = [
     {"id": "eci_wages", "label": "Employment Cost Index, private wages and salaries, change from a year ago (not seasonally adjusted)",
      "for": [], "series": "CIU2020000000000I", "params": {"units": "pc1", "observation_start": "2002-01-01"}, "freq": "q",
      "why": "Used for the ECI line on the hourly pay page; not seasonally adjusted, as BLS headlines it."},
+    {"id": "fafh_level", "label": "CPI, food away from home, index", "for": [], "series": "CUSR0000SEFV",
+     "params": {"observation_start": "2018-01-01"}, "freq": "m", "why": "Used for restaurant prices in article text (Nov 2)."},
+    {"id": "restaurant_jobs", "label": "All employees, food services and drinking places, thousands", "for": [],
+     "series": "CES7072200001", "params": {"observation_start": "2018-01-01"}, "freq": "m",
+     "why": "Used for restaurant employment in article text (Nov 2)."},
 ]
 
 # Derived series, computed here from the fetched data so the page never has to
