@@ -315,7 +315,8 @@ An article's frame has one height for every screen. On this site's own pages the
 - **Do** give every number its period and source, including in downloads, embeds and printed pages.
 - **Do** label every color: legends for series, text in every lane segment wide enough to hold it, a legend key for lane colors that carry meaning, hover titles for the rest.
 - **Do** check every change in both color schemes at 1280px and 375px, with contrast computed: text ≥4.5:1, meaningful marks ≥3:1 or backed by labels.
-- **Do** put different scales in a stacked sub-panel under the main chart.
+- **Do** put different scales in a stacked sub-panel under the main chart. Lines measured the same way (the metro areas on the health care chart, each a percent change) share one sub-panel and one scale, named for the measure, and get their own heading in the overlay panel.
+- **Do** let a sub-panel's name wrap to the plot's width, and a long name in a downloaded image's key wrap under itself; nothing runs off the chart.
 - **Do** place anything on a range strip by rank, never by value, so the picture and the sentence agree.
 - **Do** say "as charged" wherever a price is drawn as charged beside a range or sentence in today's dollars.
 - **Do** give the median and the 2015–19 average different line patterns (dotted and dashed), keyed in the legend.
