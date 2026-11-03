@@ -495,6 +495,21 @@ def fmt_date(s):
     return date(y, mo, d).strftime("%B %-d, %Y")
 
 
+_STAMPS = {}
+def asset_stamp(path):
+    """A cache stamp for a stylesheet or script link: ?v= plus eight hex characters of the file's hash, so a
+    changed file is fetched fresh while an unchanged one stays cached (GitHub Pages caches every file for ten
+    minutes under its fixed name). An unreadable file gets no stamp."""
+    if path not in _STAMPS:
+        try:
+            import hashlib
+            with open(path, "rb") as f:
+                _STAMPS[path] = "?v=" + hashlib.sha256(f.read()).hexdigest()[:8]
+        except OSError:
+            _STAMPS[path] = ""
+    return _STAMPS[path]
+
+
 HEAD = """<!doctype html>
 <html lang="en">
 <head>
@@ -518,7 +533,7 @@ HEAD = """<!doctype html>
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Economy in Context: the main numbers on the U.S. economy, each shown against its own history.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/site.css{css_v}">
 </head>
 <body>
 <header class="masthead">
@@ -545,7 +560,7 @@ FOOT = """
 
 def render_article(a):
     desc = html.escape(a.get("dek", a["title"]), quote=True)
-    page = HEAD.format(title=html.escape(a["title"]), desc=desc, canonical=f"{SITE}/articles/{a['slug']}.html")
+    page = HEAD.format(title=html.escape(a["title"]), desc=desc, canonical=f"{SITE}/articles/{a['slug']}.html", css_v=asset_stamp("assets/site.css"))
     page += '<main class="wrap article">\n<article>\n'
     page += f'<h1>{inline(a["title"])}</h1>\n'
     if a.get("dek"):
@@ -658,7 +673,7 @@ def load_tiles():
 
 def render_index(articles):
     page = HEAD.format(title="Articles", desc="Longer reads on the U.S. economy: what the figures show, what is settled and what is argued about.",
-                       canonical=f"{SITE}/articles/")
+                       canonical=f"{SITE}/articles/", css_v=asset_stamp("assets/site.css"))
     page = page.replace('<a href="./">Articles</a>', "Articles")
     page += '<div class="wrap article article-head">\n<h1>Articles</h1>\n<p class="dek">Longer reads on what the figures show, what is settled, and what is argued about.</p>\n</div>\n'
     # the section bar sits between the title and the lead items, as the almanac's does, and the rest is main
@@ -767,7 +782,7 @@ def render_index(articles):
                 run.append(a)
         if run:
             page += compact(run)
-    page += '</main>\n<script src="../assets/secnav.js"></script>\n' + FOOT
+    page += '</main>\n<script src="../assets/secnav.js' + asset_stamp("assets/secnav.js") + '"></script>\n' + FOOT
     return page
 
 
