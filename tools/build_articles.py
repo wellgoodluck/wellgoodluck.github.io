@@ -331,6 +331,7 @@ FOOT = """
     <p>Articles on this site aim to lay out what the figures show, what is settled, what is argued about and by whom. Every number links to its source where one exists, and corrections are noted on the article. The charts are live from the almanac and update as agencies publish.</p>
     <p class="reuse">Free to reuse with credit: Economy in Context (economyincontext.org). The charts and writing here are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Credit the data to its source, named on each chart.</p>
     <p>This site has no ads and no agenda beyond putting the numbers in context. It sets no cookies and keeps nothing that identifies you; it does count page views. It is paid for by one reader; <a href="how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+    <p class="about-link"><a href="about.html">About this site, how it works, and every correction →</a></p>
   </div>
 </footer>
 <script data-goatcounter="https://economyincontext.goatcounter.com/count" async src="/assets/count.js"></script>
@@ -426,7 +427,7 @@ def render_map():
             'loop\u2019s output.</figcaption></figure>')
 
 
-LATEST_SHOWN = 6     # timely pieces listed in full; older ones fold under "Earlier"
+LATEST_SHOWN = 6     # newest pieces listed in full; older ones fold under "Earlier"
 
 
 def tile_ids(a):
@@ -486,22 +487,37 @@ def render_index(articles):
         return out + "</ul>\n"
 
     timely = [a for a in articles if a.get("kind") not in ("concept", "path", "page")]    # newest first (main() sorts)
+    # Latest is everything new that isn't a reference page: timely pieces and the idea pages (Plain words with
+    # no tile: line). A series shows once, as its first part. Indicator pages and paths stay in their sections.
+    latest = [a for a in articles if a.get("kind") not in ("concept", "path", "page") or (a.get("kind") == "concept" and not tile_ids(a))]
+    shown, merged = set(), []
+    for a in latest:
+        if a["slug"] in SERIES_OF:                  # one entry per series, dated by its newest part, linking to part 1
+            sr = SERIES_OF[a["slug"]][0]
+            if sr["slug"] in shown:
+                continue
+            shown.add(sr["slug"])
+            a = {"slug": sr["parts"][0]["slug"], "title": sr["title"], "date": sr["date"],
+                 "dek": sr.get("dek") or f"A series in {len(sr['parts'])} parts."}
+        merged.append(a)
+    latest = merged
+    latest.sort(key=lambda a: (a["date"], a["title"]), reverse=True)
     paths = sorted((a for a in articles if a.get("kind") == "path"), key=lambda a: (sort_order(a, 9), a["title"]))
     concepts = [a for a in articles if a.get("kind") == "concept"]
     numbers = [a for a in concepts if tile_ids(a)]
     ideas = sorted((a for a in concepts if not tile_ids(a)), key=lambda a: (sort_order(a), a["title"]))
 
-    jump = [("#latest", "Latest", timely), ("#household-paths", "Your situation", paths),
+    jump = [("#latest", "Latest", latest), ("#household-paths", "Your situation", paths),
             ("#the-numbers", "The numbers", numbers), ("#the-ideas", "The ideas", ideas)]
     page += ('<nav class="jump" aria-label="On this page">'
              + "".join(f'<a href="{h}">{t}</a>' for h, t, items in jump if items) + "</nav>\n")
     page += '<p class="feed-link">New and updated articles by feed reader: <a href="feed.xml">the Atom feed</a>.</p>\n'
 
-    if timely:
-        page += '<h2 id="latest">Latest</h2>\n' + listing(timely[:LATEST_SHOWN], dated=True)
-        if len(timely) > LATEST_SHOWN:
-            page += (f'<details class="earlier"><summary>Earlier pieces ({len(timely) - LATEST_SHOWN})</summary>\n'
-                     + listing(timely[LATEST_SHOWN:], dated=True) + "</details>\n")
+    if latest:
+        page += '<h2 id="latest">Latest</h2>\n' + listing(latest[:LATEST_SHOWN], dated=True)
+        if len(latest) > LATEST_SHOWN:
+            page += (f'<details class="earlier"><summary>Earlier pieces ({len(latest) - LATEST_SHOWN})</summary>\n'
+                     + listing(latest[LATEST_SHOWN:], dated=True) + "</details>\n")
     if paths:
         page += '<h2 id="household-paths">Start from your situation</h2>\n<p class="dek">Which of the numbers reach you, in what order, and how long they take. One page per kind of household.</p>\n'
         page += listing(paths, dated=False)
@@ -546,13 +562,42 @@ def render_index(articles):
     return page
 
 
+CORRECTION = re.compile(r"^(?:[-*]\s+)?((?:January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}):\s*(.+)$", re.S)
+
+
+def collect_corrections(articles):
+    """Every dated line under an article's ## Corrections heading, newest first: [(iso date, article, text)].
+    Each entry is a paragraph or a list item that opens "Month D, YYYY:"; anything else in the section is skipped."""
+    from datetime import datetime
+    out = []
+    for a in articles:
+        m = re.search(r"^## Corrections[ \t]*\n(.*?)(?=^## |\Z)", a["body"], re.S | re.M)
+        if not m:
+            continue
+        for block in re.split(r"\n\s*\n|\n(?=[-*]\s)", m.group(1).strip()):
+            e = CORRECTION.match(" ".join(x.strip() for x in block.strip().split("\n")))
+            if e:
+                out.append((datetime.strptime(e.group(1), "%B %d, %Y").date().isoformat(), a, e.group(2).strip()))
+    out.sort(key=lambda x: (x[0], x[1]["title"]), reverse=True)
+    return out
+
+
+def corrections_html(entries):
+    """One line of HTML (raw HTML passes through md_to_html only line by line)."""
+    if not entries:
+        return '<p class="corrections-none">No corrections so far.</p>'
+    items = "".join(f'<li><span class="when">{fmt_date(d)}</span> <a href="{a["slug"]}.html">{inline(a["title"])}</a>'
+                    f'<span class="d">{inline(t)}</span></li>' for d, a, t in entries)
+    return f'<ul class="article-list corrections-log">{items}</ul>'
+
+
 def write_explainers(out_root, articles):
     """data/explainers.json: indicator id -> its Plain words page, from each page's tile: line.
     The almanac and the chart pages read it to link every number to its explainer."""
     import json
     ex = {}
     for a in articles:
-        if a.get("kind") != "concept":
+        if a.get("kind") not in ("concept", "path"):       # a path with a tile: line (You Rent) explains that tile
             continue
         for tid in tile_ids(a):
             ex[tid] = {"url": f"articles/{a['slug']}.html", "title": a["title"], "hook": a.get("hook", "")}
@@ -615,6 +660,10 @@ def main():
     if cp:                                                  # before the articles, which link to these pages
         CHART_IDS = cp.write_chart_pages(out_root)
         clean_chart_links = cp.clean_chart_links if CHART_IDS else None
+        try:                                                # the almanac's readings as plain HTML, for crawlers and no-script readers
+            cp.write_home_static(out_root)
+        except Exception as e:                              # noqa: BLE001
+            print(f"home: WARNING static figures not written ({e})")
     figures, data = load_figures()
     report = figures.new_report() if figures else None
     articles = []
@@ -634,6 +683,11 @@ def main():
                 articles.append(a)
     articles.sort(key=lambda a: a["date"], reverse=True)
     load_series(articles)
+    fixes = collect_corrections(articles)                   # the About page's log: <!--corrections--> on a line of its own
+    for a in articles:
+        if "<!--corrections-->" in a["body"]:
+            a["body"] = a["body"].replace("<!--corrections-->", corrections_html(fixes))
+    print(f"corrections: {len(fixes)} across {len({a['slug'] for _, a, _ in fixes})} articles")
     for a in articles:
         with open(os.path.join(out_dir, a["slug"] + ".html"), "w", encoding="utf-8") as f:
             f.write(render_article(a))

@@ -5,6 +5,8 @@ date: 2026-10-28
 updated: 2026-10-30
 kind: path
 order: 1
+tile: rent
+hook: how the numbers reach a renter
 ---
 
 ## What reaches you, in order

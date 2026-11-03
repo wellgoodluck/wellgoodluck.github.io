@@ -92,6 +92,13 @@
   .masthead .title-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px 20px; margin: 0 0 10px; }
   .masthead .site-link { font-size: 15px; font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--hairline); padding-bottom: 1px; white-space: nowrap; }
   .masthead .site-link:hover { border-color: var(--ink); }
+  .masthead .site-links { display: flex; gap: 16px; }
+  /* the latest readings as plain HTML, written at build time; the script replaces them with the tiles */
+  .static-figures { padding: 0 0 24px; max-width: 46em; }
+  .static-figures .asof { color: var(--ink-2); margin: 0 0 4px; }
+  .static-figures h2 { font-size: 19px; margin: 22px 0 6px; }
+  .static-figures ul { margin: 0; padding: 0 0 0 1.1em; }
+  .static-figures li { margin: 0 0 6px; line-height: 1.45; }
   .masthead h1 {
     margin: 0;
     font-size: 40px;
@@ -331,7 +338,7 @@
 
 <header class="masthead">
   <div class="wrap">
-    <div class="title-row"><h1>Economy in Context</h1><a class="site-link" href="articles/">Articles</a></div>
+    <div class="title-row"><h1>Economy in Context</h1><span class="site-links"><a class="site-link" href="articles/">Articles</a><a class="site-link" href="articles/about.html">About</a></span></div>
     <p class="tagline">The main numbers on the U.S. economy, each shown against its own history, so you can see what is high, what is low and what is normal.</p>
     <p class="updated" id="updated"></p>
   </div>
@@ -358,6 +365,7 @@
     <p id="attribution"></p>
     <p class="reuse">Free to reuse with credit: Economy in Context (economyincontext.org). The charts and writing here are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Credit the data to its source, named on each chart.</p>
     <p>This site has no ads and no agenda beyond putting the numbers in context. It sets no cookies and keeps nothing that identifies you; it does count page views. It is paid for by one reader; <a href="articles/how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+    <p><a href="articles/about.html">About this site, where the numbers come from, and every correction →</a></p>
   </div>
 </footer>
 
@@ -977,12 +985,14 @@
   ]).then(([data, ex]) => { data.explainers = (ex && ex.explainers) || {}; data.featured = (ex && ex.featured) || null; render(data); })
     .catch(err => {
       const main = document.getElementById('main');
-      main.innerHTML = '';
+      // keep the readings written at build time, if any; drop only the loading line
+      Array.from(main.children).forEach(x => { if (x.id !== 'static-figures') x.remove(); });
       console.error('Economy in Context: the figures did not load:', err);
       // plain words for the reader; the technical reason goes to the console
       const retry = el('button', { type: 'button', class: 'retry', text: 'Try again' });
       retry.addEventListener('click', () => location.reload());
-      main.appendChild(el('p', { class: 'status' }, ['The latest figures didn’t load. This is usually temporary. ', retry, ' or read the ', el('a', { href: 'articles/', text: 'articles' }), ' in the meantime.']));
+      main.insertBefore(el('p', { class: 'status' }, ['The charts didn’t load. This is usually temporary. ', retry, ' or read the ', el('a', { href: 'articles/', text: 'articles' }), ' in the meantime.']
+        .concat(document.getElementById('static-figures') ? [' The latest readings are listed below.'] : [])), main.firstChild);
     });
 })();
 </script>

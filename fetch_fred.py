@@ -125,7 +125,7 @@ TILES = [
         "params": {"units": "pc1", "observation_start": "1948-01-01"},
         "freq": "m",
         "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": False,
-                    "unit": "percent, year over year"},
+                    "unit": "percent, year over year", "wide": True},
         "note": "All items, all urban consumers (CPI-U), seasonally adjusted.",
     },
     {
@@ -140,6 +140,19 @@ TILES = [
         "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": False,
                     "unit": "percent, year over year"},
         "note": "Strips out the two most volatile groups to show the underlying trend.",
+    },
+    {
+        "id": "rent",
+        "agency": "BLS",
+        "section": "Prices",
+        "title": "Rent",
+        "subtitle": "Rent of primary residence (CPI), change from a year ago",
+        "series": "CUSR0000SEHA",
+        "params": {"units": "pc1", "observation_start": "1948-01-01"},
+        "freq": "m",
+        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": False,
+                    "unit": "percent, year over year"},
+        "note": "What renters pay across all leases, not just new ones, so it trails asking rents by about a year. Seasonally adjusted.",
     },
     # ---- Growth & rates ---------------------------------------------------
     {
@@ -448,7 +461,7 @@ COMPANIONS = [
     {
         "id": "cpi_shelter",
         "label": "Shelter (CPI), change from a year ago",
-        "for": ["cpi", "core_cpi"],
+        "for": ["cpi", "core_cpi", "rent"],
         "series": "CUSR0000SAH1",
         "params": {"units": "pc1", "observation_start": "1954-01-01"},
         "freq": "m",
@@ -979,6 +992,19 @@ def household_lines(tiles_out, companions_out, extras):
     except Exception: pass
     try:
         lines["core_cpi"] = (f"Leaving out food and energy, what cost $100 a year ago costs {cents(100 * (1 + cur('core_cpi') / 100))} now.", [])
+    except Exception: pass
+    try:
+        # A round $1,000 rent, as electricity prices 1,000 kWh: a reference, not a typical rent.
+        txt = f"Across all leases, a rent that was $1,000 a month a year ago is about {money(1000 * (1 + cur('rent') / 100))} now."
+        rl, pl_ = C.get("rent_level") or [], C.get("pay_level") or []
+        r19 = [v for d, v in rl if d.startswith("2019-")]
+        p19 = [v for d, v in pl_ if d.startswith("2019-")]
+        srcs = []
+        if len(r19) == 12 and len(p19) == 12:
+            r_up, p_up = (rl[-1][1] / mean(r19) - 1) * 100, (pl_[-1][1] / mean(p19) - 1) * 100
+            txt += f" Since 2019 rents are up {r_up:.0f}% and hourly pay {p_up:.0f}%."
+            srcs = [{"series": "AHETPI", "url": "https://fred.stlouisfed.org/series/AHETPI"}]
+        lines["rent"] = (txt, srcs)
     except Exception: pass
     try:
         g = cur("gdp"); q = ((1 + g / 100) ** 0.25 - 1) * 100

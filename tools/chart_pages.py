@@ -218,6 +218,60 @@ def write_chart_pages(out_root, series_path=os.path.join("data", "series.json"))
     return ids
 
 
+def write_home_static(out_root, series_path=os.path.join("data", "series.json")):
+    """Fill <out>/index.html with the latest readings as plain HTML, so search engines, link previews and
+    readers without scripts get the numbers. The page's script clears <main> when it draws the tiles, and keeps
+    this list if the figures fail to load. Returns True when written; the build goes on either way."""
+    src = os.path.join(out_root, "index.html")
+    if not os.path.exists(src):
+        print(f"home: no {src}; skipped")
+        return False
+    try:
+        data = json.load(open(series_path, encoding="utf-8"))
+        tiles = data.get("tiles", [])
+    except Exception as e:                                   # a bad data file must not break the build
+        print(f"home: skipped ({e})")
+        return False
+    page = open(src, encoding="utf-8").read()
+    status = '<p class="status" id="status" role="status">Loading the latest figures…</p>'
+    if page.count(status) != 1:
+        print("home: WARNING no loading line in index.html; static figures not written")
+        return False
+    sections, out = [], []
+    for t in tiles:
+        if t["section"] not in sections:
+            sections.append(t["section"])
+    for sec in sections:
+        items = []
+        for t in (x for x in tiles if x["section"] == sec):
+            try:
+                value, when = headline(t)
+                sentence = context_sentence(t)
+            except Exception as e:                           # no reading: leave the tile out of the static list
+                print(f"home: WARNING {t.get('id')}: {e}")
+                continue
+            hh = (t.get("household") or {}).get("text", "")
+            items.append(f'<li><a href="{chart_url(t["id"])}">{html.escape(t["title"])}</a>: <strong>{html.escape(value)}</strong> '
+                         f'({html.escape(when)}). {html.escape(sentence)}' + (f' {html.escape(hh)}' if hh else "") + "</li>")
+        if items:
+            out.append(f'<h2>{html.escape(sec)}</h2><ul>' + "".join(items) + "</ul>")
+    gen = (data.get("generated") or "")[:10]
+    asof = f"{MONTHS_LONG[int(gen[5:7]) - 1]} {int(gen[8:10])}, {gen[:4]}" if len(gen) == 10 else ""
+    block = ('<p class="status" id="status" role="status">Loading the charts…</p>\n'
+             '  <noscript><p class="status">The charts need JavaScript. The latest readings are listed below.</p></noscript>\n'
+             '  <div class="static-figures" id="static-figures">'
+             + (f'<p class="asof">Latest readings, as of {asof}. Each links to its full chart.</p>' if asof else "")
+             + "".join(out) + "</div>")
+    page = page.replace(status, block, 1)
+    if asof:
+        page = page.replace('<p class="updated" id="updated"></p>',
+                            f'<p class="updated" id="updated">New figures last checked {asof} · data from FRED</p>', 1)
+    with open(src, "w", encoding="utf-8") as f:
+        f.write(page)
+    print(f"built index.html static figures ({sum(len(o.split('<li>')) - 1 for o in out)} readings)")
+    return True
+
+
 def clean_chart_links(page, ids, prefix="../"):
     """In built article HTML, point links to chart.html?id=<id>… at /chart/<id>/…; iframes (embeds) stay."""
     known = set(ids)
