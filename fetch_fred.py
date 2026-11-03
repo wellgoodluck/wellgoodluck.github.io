@@ -282,6 +282,22 @@ TILES = [
         "note": "Not seasonally adjusted. BLS average price across U.S. cities, collected for the CPI. The chart shows the price as charged; the range and the comparison above it are adjusted for inflation.",
     },
     {
+        # A computed tile (Nov 2): built from the two tiles above after they are fetched, not from a FRED
+        # series of its own. "series" names the FRED page its source line links to; "computed" says how.
+        "id": "drive_cost",
+        "agency": "EIA and BLS",
+        "section": "What things cost",
+        "title": "Electric mile vs. gas mile",
+        "subtitle": "What a mile costs on electricity as a share of what it costs on gasoline, at 3.5 miles per kWh and 27.1 mpg, monthly",
+        "series": "APU000072610",
+        "params": {},
+        "freq": "m",
+        "computed": {"op": "per_mile_ratio", "gas": "gas", "electricity": "electricity", "mpg": 27.1, "mi_per_kwh": 3.5},
+        "display": {"scale": 1, "decimals": 0, "suffix": "%", "signed": False,
+                    "unit": "percent of the cost of a mile on gasoline"},
+        "note": "Computed from the almanac's two fuel prices: the BLS average electricity price (APU000072610) divided by 3.5 miles per kilowatt-hour, against the EIA average gasoline price (GASREGW, averaged over each month) divided by 27.1 miles per gallon, the efficiency figures the Electric Vehicles article uses for a typical EV and a typical gas car. A reading of 35% means a mile on electricity at home costs about a third of a mile on gasoline; public fast charging costs two to three times the home rate. A ratio of two prices needs no inflation adjustment. Both lines are on the chart page, in cents per mile.",
+    },
+    {
         "id": "natural_gas",
         "agency": "BLS",
         "section": "What things cost",
@@ -1093,6 +1109,21 @@ def household_lines(tiles_out, companions_out, extras):
                           sources + [{"series": series, "url": f"https://fred.stlouisfed.org/series/{series}"}])
         except Exception: pass
 
+    # Electric mile vs. gas mile (Nov 2): the year's fuel bill three ways, at the two tiles' latest prices.
+    # Rounded to $10 as the Electric Vehicles article's worked example is; the hybrid is a round 50-mpg reference.
+    try:
+        g, e = T["gas"]["context"]["current"], T["electricity"]["context"]["current"]
+        miles, mpg, mi_per_kwh, hybrid_mpg = 15000, 27.1, 3.5, 50
+        gd, ed = to_date(g["date"]), to_date(e["date"])
+        ten = lambda v: money(round(v / 10) * 10)
+        lines["drive_cost"] = (
+            f"At gasoline's {cents(g['value'])} a gallon (the week ending {gd.strftime('%B')} {gd.day}) and {e['value'] * 100:.1f}¢ "
+            f"per kilowatt-hour ({ed.strftime('%B')}), driving 15,000 miles a year costs about {ten(miles / mpg * g['value'])} on gasoline "
+            f"at 27.1 mpg, about {ten(miles / hybrid_mpg * g['value'])} in a 50-mpg hybrid, and about {ten(miles / mi_per_kwh * e['value'])} "
+            f"on electricity at home at 3.5 miles per kilowatt-hour.",
+            [{"series": "GASREGW", "url": "https://fred.stlouisfed.org/series/GASREGW"}])
+    except Exception: pass
+
     for t in tiles_out:
         if t["id"] in lines:
             text, sources = lines[t["id"]]
@@ -1165,6 +1196,30 @@ DERIVED = [
         "op": "ratio", "a": "customs_duties", "b": "goods_imports", "freq": "q",
         "why": "What tariffs collected per dollar of goods imported: the average rate actually paid, after exemptions and shifts in what is bought. Quarterly; different scale: percent.",
         "panel": "own", "display": {"scale": 1, "decimals": 1, "suffix": "%"},
+    },
+    # The two sides of the Electric mile vs. gas mile tile, in cents per mile, in one shared sub-panel (Nov 2).
+    {
+        "id": "gas_monthly",
+        "label": "Gasoline, monthly average",
+        "for": [],
+        "op": "monthly_avg", "a": "gas", "freq": "m",
+        "why": "The weekly pump price averaged over each calendar month; an input to the per-mile lines.",
+    },
+    {
+        "id": "gas_per_mile",
+        "label": "Gasoline, cents per mile at 27.1 mpg",
+        "for": ["drive_cost"],
+        "op": "scale", "a": "gas_monthly", "k": 100 / 27.1, "freq": "m",
+        "why": "The monthly average pump price divided by 27.1 miles per gallon, the gas-car efficiency the Electric Vehicles article assumes. Different scale: cents per mile.",
+        "panel": "group:per_mile", "panel_title": "Cents per mile", "display": {"scale": 1, "decimals": 1, "suffix": "¢"},
+    },
+    {
+        "id": "elec_per_mile",
+        "label": "Electricity at home, cents per mile at 3.5 miles per kWh",
+        "for": ["drive_cost"],
+        "op": "scale", "a": "electricity", "k": 100 / 3.5, "freq": "m",
+        "why": "The BLS average residential electricity price divided by 3.5 miles per kilowatt-hour, a typical EV's efficiency. Public fast charging costs two to three times this. Different scale: cents per mile.",
+        "panel": "group:per_mile", "panel_title": "Cents per mile", "display": {"scale": 1, "decimals": 1, "suffix": "¢"},
     },
 ]
 # Each price tile also gets its inflation-adjusted line on the detail page: the same
@@ -1519,6 +1574,32 @@ def derive(spec, by_id):
         if len(out) < 3:
             raise RuntimeError("inputs do not overlap")
         return out
+    if spec["op"] == "monthly_avg":
+        return monthly_average(a)
+    if spec["op"] == "scale":
+        return [(d, v * spec["k"]) for d, v in a]
+    raise RuntimeError(f"unknown op {spec['op']}")
+
+
+def monthly_average(obs):
+    """Weekly or daily readings averaged by calendar month, dated the first of the month."""
+    by_month = {}
+    for d, v in obs:
+        by_month.setdefault(month_key(d), []).append(v)
+    return [(m + "-01", mean(vs)) for m, vs in sorted(by_month.items())]
+
+
+def compute_tile(spec, by_id):
+    """A tile's history computed from other tiles' histories (see the drive_cost tile). Returns [(date, value)]."""
+    if spec["op"] == "per_mile_ratio":
+        gas, elec = by_id.get(spec["gas"]), by_id.get(spec["electricity"])
+        if not gas or not elec:
+            raise RuntimeError("missing input")
+        g = dict(monthly_average(gas))
+        out = [(d, 100.0 * (v / spec["mi_per_kwh"]) / (g[d] / spec["mpg"])) for d, v in elec if g.get(d)]
+        if len(out) < 3:
+            raise RuntimeError("inputs do not overlap")
+        return out
     raise RuntimeError(f"unknown op {spec['op']}")
 
 
@@ -1575,6 +1656,9 @@ def main():
 
     tiles_out = []
     for t in TILES:
+        if "computed" in t:                     # built from other tiles once they are all fetched (below)
+            tiles_out.append({"id": t["id"], "_spec": t})
+            continue
         print(f"{t['id']:16s} {t['series']}", flush=True)
         obs = get_observations(t["series"], t["params"])
         if t.get("flip"):                       # shown with the sign people use (see the deficit tile)
@@ -1617,9 +1701,42 @@ def main():
             "observations": [[d, round(v, 3)] for d, v in obs],
         })
 
+    # Computed tiles (Nov 2): their history comes from other tiles' histories. Fail soft: a computed tile
+    # that can't be built is dropped with a message; its inputs would already have failed the run.
+    by_id = {t["id"]: t["observations"] for t in tiles_out if "observations" in t}
+    for i, t in enumerate(tiles_out):
+        spec = t.get("_spec")
+        if not spec:
+            continue
+        try:
+            obs = compute_tile(spec["computed"], by_id)
+            print(f"{spec['id']:16s} computed from {', '.join(v for k, v in spec['computed'].items() if isinstance(v, str) and k != 'op')} ({len(obs)} obs)", flush=True)
+            info = get_series_info(spec["series"])
+            time.sleep(0.4)
+        except Exception as e:
+            print(f"{spec['id']:16s} computed tile skipped: {e}", file=sys.stderr, flush=True)
+            tiles_out[i] = None
+            continue
+        by_id[spec["id"]] = obs
+        tiles_out[i] = {
+            "id": spec["id"], "section": spec["section"], "agency": spec.get("agency", ""),
+            "title": spec["title"], "subtitle": spec["subtitle"], "note": spec["note"],
+            "freq": spec["freq"], "display": spec["display"], "computed": spec["computed"],
+            "source": {
+                "series": spec["series"],
+                "url": f"https://fred.stlouisfed.org/series/{spec['series']}",
+                "fred_title": info["title"], "fred_units": info["units"], "frequency": info["frequency"],
+                "seasonal_adjustment": info["seasonal_adjustment"], "last_updated": info["last_updated"],
+                "transform": "computed",
+            },
+            "headline": None,
+            "context": context_for(obs, spec["freq"]),
+            "observations": [[d, round(v, 3)] for d, v in obs],
+        }
+    tiles_out = [t for t in tiles_out if t]
+
     # Companion series for the detail page. Tolerant: one bad series is skipped.
     today = date.today().isoformat()
-    by_id = {t["id"]: t["observations"] for t in tiles_out}
     companions_out = []
     for c in COMPANIONS:
         print(f"{c['id']:16s} {c['series']} (companion)", flush=True)
@@ -1667,10 +1784,11 @@ def main():
             print(f"{dv['id']:16s} skipped: {e}", file=sys.stderr, flush=True)
             continue
         print(f"{dv['id']:16s} derived ({len(obs)} obs)", flush=True)
+        by_id[dv["id"]] = obs                   # so a later derived series can build on this one (Nov 2)
         companions_out.append({
             "id": dv["id"], "label": dv["label"], "for": dv["for"], "why": dv["why"], "freq": dv["freq"],
-            "derived": {k: dv[k] for k in ("op", "a", "b") if k in dv},
-            **{k: dv[k] for k in ("panel", "display") if k in dv},
+            "derived": {k: dv[k] for k in ("op", "a", "b", "k") if k in dv},
+            **{k: dv[k] for k in ("panel", "display", "panel_title", "group", "group_note") if k in dv},
             "observations": [[d, round(v, 3)] for d, v in obs],
         })
 

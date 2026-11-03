@@ -1667,7 +1667,9 @@
     const c = t.context, d = t.display;
     if (state.embed) {
       document.body.classList.add('embed');
-      left.appendChild(el('div', { class: 'embed-head' }, [el('h2', { text: t.title + ': ' + t.subtitle.charAt(0).toLowerCase() + t.subtitle.slice(1) }),
+      // The subtitle follows a colon, so its first letter drops to lower case, unless it opens an abbreviation ("U.S.", "GDP").
+      const sub = /^[A-Z](\.|[A-Z])/.test(t.subtitle) ? t.subtitle : t.subtitle.charAt(0).toLowerCase() + t.subtitle.slice(1);
+      left.appendChild(el('div', { class: 'embed-head' }, [el('h2', { text: t.title + ': ' + sub }),
         el('a', { href: chartPath(t.id, viewQuery()), target: '_top', rel: 'noopener', text: 'Full chart and context →' })]));
     }
     const hv = t.headline ? t.headline.value : c.current.value;

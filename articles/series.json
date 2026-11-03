@@ -6,9 +6,32 @@
       "dek": "Three pages, read in order: what coverage costs and who pays for it, who comes out ahead and behind under each way of changing it, and who lobbies Washington over it.",
       "featured": "2026-11-01",
       "parts": [
-        {"slug": "what-health-insurance-costs", "label": "What it costs"},
-        {"slug": "who-gains-and-who-pays-in-health-care", "label": "Who gains and who pays"},
-        {"slug": "who-lobbies-on-health-care", "label": "Who lobbies"}
+        {
+          "slug": "what-health-insurance-costs",
+          "label": "What it costs"
+        },
+        {
+          "slug": "who-gains-and-who-pays-in-health-care",
+          "label": "Who gains and who pays"
+        },
+        {
+          "slug": "who-lobbies-on-health-care",
+          "label": "Who lobbies"
+        }
+      ]
+    },
+    "electric-vehicles": {
+      "title": "Electric vehicles: the case, and the claims",
+      "dek": "Two pages, read in order: what an electric car costs to buy, fuel and own against a gas car, and where charging stands; then fifteen repeated claims about EVs, from both directions, checked against the evidence.",
+      "parts": [
+        {
+          "slug": "electric-vehicles-case-for-and-against",
+          "label": "The case for and against"
+        },
+        {
+          "slug": "electric-vehicle-claims-checked",
+          "label": "Fifteen claims checked"
+        }
       ]
     }
   }
