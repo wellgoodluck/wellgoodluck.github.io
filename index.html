@@ -165,9 +165,11 @@
   .featured .fparts .n { display: inline-block; min-width: 1.5em; height: 1.5em; line-height: calc(1.5em - 2px); margin-right: 3px; border: 1px solid var(--hairline); border-radius: 50%; text-align: center; font-size: 12.5px; font-weight: 600; color: var(--ink-2); font-variant-numeric: tabular-nums; }
   @media (max-width: 760px) { .featured .fparts a { padding: 8px 0; } }
   /* Chart to try: one line under the Featured line, linking to a ready-made chart view (articles/chart-prompts.json) */
-  .chart-try { margin: 0; padding: 10px 0 12px; border-bottom: 1px solid var(--hairline); font-size: 15px; line-height: 1.45; color: var(--ink-2); max-width: 46em; text-wrap: pretty; }
-  .chart-try .flabel { display: block; margin: 0 0 2px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
-  .chart-try a { font-weight: 600; color: var(--ink); }
+  .chart-try { margin: 0; padding: 12px 0 14px; border-bottom: 1px solid var(--hairline); font-size: 15px; line-height: 1.45; color: var(--ink); text-wrap: pretty; }
+  .chart-try .flabel { display: block; margin: 0 0 4px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
+  .chart-try .ftitle { font-size: 19px; font-weight: 700; line-height: 1.3; color: var(--ink); text-decoration: none; }
+  .chart-try .ftitle:hover { text-decoration: underline; text-decoration-color: var(--ink); text-underline-offset: 3px; }
+  .chart-try .fdek { margin: 4px 0 0; color: var(--ink-2); }
   @media print { .chart-try { display: none; } }
   /* At a glance: every number on one screen (left out with ?view=tiles) ---- */
   .glance { padding: 24px 0 8px; }
@@ -929,8 +931,9 @@
           el('li', {}, [el('a', { href: p.url, title: p.title || p.label }, [el('span', { class: 'n', text: String(i + 1) }), ' ' + p.label])])))] : [])));
     // Chart to try (explainers.json chart_prompt): a sentence and a link to a ready-made chart view
     const cp = data.chartPrompt;
-    if (cp && cp.text && cp.url) main.appendChild(el('p', { class: 'chart-try' },
-      [el('span', { class: 'flabel', text: 'Chart to try' }), cp.text + ' ', el('a', { href: cp.url, text: cp.link || 'See the chart' }), ' →']));
+    if (cp && cp.text && cp.url) main.appendChild(el('aside', { class: 'chart-try', 'aria-label': 'Chart to try' },
+      [el('span', { class: 'flabel', text: 'Chart to try' }), el('a', { class: 'ftitle', href: cp.url, text: cp.title || cp.link || 'See the chart' }), ' →',
+       el('p', { class: 'fdek', text: cp.text })]));
     // ?view=tiles is the page as it was before the overview: the tiles alone, with a way back
     const hasGlance = new URLSearchParams(location.search).get('view') !== 'tiles';
     if (!hasGlance) main.appendChild(el('p', { class: 'view-switch' }, ['Showing the tiles without the overview. ', el('a', { href: './', text: 'Show all the numbers at a glance →' })]));

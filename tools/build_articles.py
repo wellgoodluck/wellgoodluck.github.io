@@ -312,14 +312,15 @@ def chart_prompt_pick(path=os.path.join("articles", "chart-prompts.json"), today
         return None
     url = f"chart/{p['chart']}/" + (f"?{p['query']}" if p.get("query") else "")
     print(f"chart prompt: {p['chart']} (since {p['date']})")
-    return {"text": p["text"], "link": p.get("link") or "See the chart", "url": url}
+    return {"title": p.get("title") or p.get("link") or "See the chart", "text": p["text"], "url": url}
 
 
 def chart_prompt_html(cp, link_prefix=""):
     if not cp:
         return ""
-    return (f'<p class="chart-try"><span class="flabel">Chart to try</span>{inline(cp["text"])} '
-            f'<a href="{link_prefix}{html.escape(cp["url"], quote=True)}">{inline(cp["link"])}</a> →</p>\n')
+    return (f'<aside class="chart-try" aria-label="Chart to try"><span class="flabel">Chart to try</span>'
+            f'<a class="ftitle" href="{link_prefix}{html.escape(cp["url"], quote=True)}">{inline(cp["title"])}</a> →'
+            f'<p class="fdek">{inline(cp["text"])}</p></aside>\n')
 
 
 def fmt_date(s):

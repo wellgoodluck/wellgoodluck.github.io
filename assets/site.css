@@ -98,10 +98,13 @@ a:hover { text-decoration-color: var(--ink); }
 .featured .fdek { margin: 4px 0 0; color: var(--ink-2); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 @media (max-width: 760px) { .featured .fdek { -webkit-line-clamp: 3; } }
 /* Chart to try: one line under the Featured line (articles/chart-prompts.json), as on the almanac */
-.chart-try { margin: 0; padding: 10px 0 12px; border-bottom: 1px solid var(--hairline); font-size: 15px; line-height: 1.45; color: var(--ink-2); text-wrap: pretty; }
+.chart-try { margin: 0; padding: 12px 0 14px; border-bottom: 1px solid var(--hairline); font-size: 15px; line-height: 1.45; text-wrap: pretty; }
 .article > .chart-try { max-width: calc(var(--measure) * 17 / 15); }
-.chart-try .flabel { display: block; margin: 0 0 2px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
-.chart-try a { font-weight: 600; color: var(--ink); }
+.chart-try .flabel { display: block; margin: 0 0 4px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
+.article .chart-try a.ftitle { font-size: 22px; font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; color: var(--ink); text-decoration: none; border: 0; }
+.article .chart-try a.ftitle:hover { text-decoration: underline; text-decoration-color: var(--ink); text-underline-offset: 3px; }
+.chart-try .fdek { margin: 4px 0 0; color: var(--ink-2); }
+@media (max-width: 760px) { .article .chart-try a.ftitle { font-size: 19px; } }
 /* A featured series: the parts in reading order under the dek, each numbered */
 .featured .fparts { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 2px 20px; }
 .featured .fparts li { margin: 0; }
