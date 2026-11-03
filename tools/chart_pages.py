@@ -20,7 +20,7 @@ import html
 import json
 import os
 import re
-from datetime import date
+from datetime import date, datetime, timezone
 from decimal import Decimal, ROUND_HALF_UP
 
 SITE = "https://economyincontext.org"
@@ -28,6 +28,23 @@ MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", 
 MONTHS_LONG = ["January", "February", "March", "April", "May", "June", "July", "August",
                "September", "October", "November", "December"]
 IDS_PLACEHOLDER = "null /*CHART_IDS*/"
+DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]          # date.weekday(): Monday is 0
+
+# The headline releases worth a date on the masthead, by FRED release id (the same table as RELEASES in index.html,
+# which draws the line for readers with scripts; keep the two in step). Daily and weekly releases and the derived
+# Debt to GDP Ratios stay out, as does Average Price Data (454), which always comes out with the CPI. Order breaks ties on a day.
+RELEASES = [
+    (50, "Jobs report", "https://www.bls.gov/news.release/empsit.toc.htm"),
+    (10, "Consumer prices", "https://www.bls.gov/news.release/cpi.toc.htm"),
+    (53, "GDP", "https://www.bea.gov/data/gdp/gross-domestic-product"),
+    (54, "PCE inflation and spending", "https://www.bea.gov/data/income-saving/personal-income"),
+    (192, "Job openings", "https://www.bls.gov/news.release/jolts.toc.htm"),
+    (27, "Housing starts", "https://www.census.gov/construction/nrc/index.html"),
+    (46, "Producer prices", "https://www.bls.gov/news.release/ppi.toc.htm"),
+    (51, "Trade balance", "https://www.bea.gov/data/intl-trade-investment/international-trade-goods-and-services"),
+]
+COMING_MAX = 4        # releases shown
+COMING_GAP = 10       # days: a date this close to the release's previous date is a revision or supplement, not a release
 
 
 # ---------------------------------------------------------------------------
@@ -218,6 +235,54 @@ def write_chart_pages(out_root, series_path=os.path.join("data", "series.json"))
     return ids
 
 
+def coming_up(calendar, today):
+    """The next date of each headline release on or after `today` (a date), soonest first: [(label, url, date)].
+    Port of comingUp() in index.html. Housing starts, for one, lists a 9 am supplement a week after each 8:30
+    release; a date within COMING_GAP days of the date before it is skipped. Anything missing or malformed
+    leaves that release out."""
+    by_id = {}
+    for r in (calendar or {}).get("releases") or []:
+        if isinstance(r, dict) and r.get("id") is not None:
+            by_id[r["id"]] = r
+    out = []
+    for rank, (rid, label, url) in enumerate(RELEASES):
+        r = by_id.get(rid)
+        if not r or not isinstance(r.get("next"), list):
+            continue
+        prev = r.get("last") if isinstance(r.get("last"), str) else None
+        for d in r["next"]:
+            if not isinstance(d, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", d):
+                continue
+            try:
+                gap = (_d(d) - _d(prev)).days if prev else None
+                when = _d(d)
+            except ValueError:
+                continue
+            prev = d
+            if gap is not None and gap < COMING_GAP:
+                continue
+            if when < today:
+                continue
+            out.append((when, rank, label, url))
+            break
+    out.sort()
+    return [(label, url, when) for when, rank, label, url in out[:COMING_MAX]]
+
+
+def fmt_day(x):
+    return f"{DAYS[x.weekday()]}, {MONTHS[x.month - 1]} {x.day}"
+
+
+def coming_html(calendar, today):
+    """The Coming up line's inner HTML, or "" when there is nothing upcoming."""
+    items = coming_up(calendar, today)
+    if not items:
+        return ""
+    return "Next releases: " + " · ".join(
+        f'<span class="rel"><a href="{html.escape(url)}">{html.escape(label)}</a> {fmt_day(when)}</span>'
+        for label, url, when in items)
+
+
 def write_home_static(out_root, series_path=os.path.join("data", "series.json")):
     """Fill <out>/index.html with the latest readings as plain HTML, so search engines, link previews and
     readers without scripts get the numbers. The page's script clears <main> when it draws the tiles, and keeps
@@ -266,6 +331,14 @@ def write_home_static(out_root, series_path=os.path.join("data", "series.json"))
     if asof:
         page = page.replace('<p class="updated" id="updated"></p>',
                             f'<p class="updated" id="updated">New figures last checked {asof} · data from FRED</p>', 1)
+    # the Coming up line, as of the build's UTC date; the script redraws it for the reader's own date
+    try:
+        coming = coming_html(data.get("calendar"), datetime.now(timezone.utc).date())
+    except Exception as e:                                   # never the build's problem
+        print(f"home: WARNING coming up: {e}")
+        coming = ""
+    if coming:
+        page = page.replace('<p class="coming" id="coming" hidden></p>', f'<p class="coming" id="coming">{coming}</p>', 1)
     with open(src, "w", encoding="utf-8") as f:
         f.write(page)
     print(f"built index.html static figures ({sum(len(o.split('<li>')) - 1 for o in out)} readings)")

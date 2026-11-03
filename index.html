@@ -115,6 +115,10 @@
     color: var(--ink-2);
   }
   .masthead .updated { margin: 14px 0 0; color: var(--muted); font-size: 13.5px; }
+  /* Coming up: the next scheduled releases, one quiet line under the Updated line (data/series.json calendar; nothing
+     upcoming means no line). Each release is a link to its agency's release page; a release and its date stay on one line. */
+  .masthead .coming { margin: 4px 0 0; color: var(--ink-2); font-size: 13.5px; }
+  .masthead .coming .rel { white-space: nowrap; }
   /* Section nav: a bar below the masthead (sheet surface between two hairlines, with an "On this page" label), so it
      reads as a menu and not as a line of links; it stays at the top while you scroll. The section in view carries a
      2px ink rule along the bar's bottom edge. On phones: one sideways-scrolling row, no label. Same rules in site.css. */
@@ -349,7 +353,7 @@
     body { background: #fff; }
     .secnav, .masthead .site-link, .ranges, .chart-head .full, details.table, .tip, .banner, .view-switch, .featured, .tile-more > summary { display: none !important; }
     .glance { break-inside: avoid; }
-    .masthead .updated .htr, .to-glance, .skip { display: none !important; }
+    .masthead .updated .htr, .masthead .coming, .to-glance, .skip { display: none !important; }
     .tile { break-inside: avoid; }
     .about { padding-bottom: 0; }
     body::after { content: "economyincontext.org"; display: block; padding: 12px 16px 0; font-size: 12.5px; color: #555; }
@@ -366,6 +370,7 @@
     <div class="title-row"><h1>Economy in Context</h1><span class="site-links"><a class="site-link" href="articles/">Articles</a><a class="site-link" href="articles/about.html">About</a></span></div>
     <p class="tagline">The main numbers on the U.S. economy, each shown against its own history, so you can see what is high, what is low and what is normal.</p>
     <p class="updated" id="updated"></p>
+    <p class="coming" id="coming" hidden></p>
   </div>
 </header>
 <nav class="secnav" aria-label="On this page"><div class="wrap"><span class="secnav-label" aria-hidden="true">On this page</span><ul class="sections-nav" id="nav"></ul></div></nav>
@@ -927,6 +932,67 @@
     return tile;
   }
 
+  // ---- coming up ----------------------------------------------------------
+  // The headline releases worth a date on the masthead, by FRED release id: a reader-facing label and the agency's own
+  // release page. FRED lists every release behind the site's series, daily and weekly ones included (H.15, claims,
+  // the mortgage survey, gasoline), the derived Debt to GDP Ratios, and Average Price Data (454), which always comes out with
+  // the CPI and would only repeat its date; those stay out. Order breaks ties on a day.
+  // The same table is in tools/chart_pages.py (comingUp there), which writes the line for readers without scripts.
+  const RELEASES = [
+    { id: 50, label: 'Jobs report', url: 'https://www.bls.gov/news.release/empsit.toc.htm' },
+    { id: 10, label: 'Consumer prices', url: 'https://www.bls.gov/news.release/cpi.toc.htm' },
+    { id: 53, label: 'GDP', url: 'https://www.bea.gov/data/gdp/gross-domestic-product' },
+    { id: 54, label: 'PCE inflation and spending', url: 'https://www.bea.gov/data/income-saving/personal-income' },
+    { id: 192, label: 'Job openings', url: 'https://www.bls.gov/news.release/jolts.toc.htm' },
+    { id: 27, label: 'Housing starts', url: 'https://www.census.gov/construction/nrc/index.html' },
+    { id: 46, label: 'Producer prices', url: 'https://www.bls.gov/news.release/ppi.toc.htm' },
+    { id: 51, label: 'Trade balance', url: 'https://www.bea.gov/data/intl-trade-investment/international-trade-goods-and-services' },
+  ];
+  const COMING_MAX = 4;        // releases shown
+  const COMING_GAP = 10;       // days: a date this close to the release's previous date is a revision or supplement, not a release
+  const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  // The next date of each headline release on or after `today` (YYYY-MM-DD), soonest first: [{label, url, date}].
+  // Housing starts, for one, lists a 9 am supplement a week after each 8:30 release; a date within COMING_GAP days
+  // of the date before it is skipped. Anything missing or malformed just leaves the release out.
+  function comingUp(calendar, today) {
+    const byId = {};
+    ((calendar && calendar.releases) || []).forEach(r => { if (r && r.id != null) byId[r.id] = r; });
+    const out = [];
+    RELEASES.forEach((m, rank) => {
+      const r = byId[m.id];
+      if (!r || !Array.isArray(r.next)) return;
+      let prev = typeof r.last === 'string' ? r.last : null;
+      for (const d of r.next) {
+        if (typeof d !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(d)) continue;
+        const gap = prev ? (parseDate(d) - parseDate(prev)) / 86400000 : Infinity;
+        prev = d;
+        if (gap < COMING_GAP) continue;
+        if (d < today) continue;
+        out.push({ label: m.label, url: m.url, date: d, rank });
+        break;
+      }
+    });
+    out.sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : a.rank - b.rank);
+    return out.slice(0, COMING_MAX);
+  }
+  function fmtDay(s) { const dt = parseDate(s); return DAYS[dt.getUTCDay()] + ', ' + MONTHS[dt.getUTCMonth()] + ' ' + dt.getUTCDate(); }
+  // Fill the masthead's Coming up line, or hide it when there is nothing to say. `today` is the reader's own date.
+  function renderComing(calendar) {
+    const p = document.getElementById('coming');
+    if (!p) return;
+    const now = new Date();
+    const today = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+    const items = comingUp(calendar, today);
+    p.innerHTML = '';
+    if (!items.length) { p.hidden = true; return; }
+    p.appendChild(document.createTextNode('Next releases: '));
+    items.forEach((it, i) => {
+      if (i) p.appendChild(document.createTextNode(' · '));
+      p.appendChild(el('span', { class: 'rel' }, [el('a', { href: it.url, text: it.label }), ' ' + fmtDay(it.date)]));
+    });
+    p.hidden = false;
+  }
+
   // ---- page ---------------------------------------------------------------
   function render(data) {
     const main = document.getElementById('main');
@@ -935,6 +1001,7 @@
     const upd = document.getElementById('updated');
     upd.textContent = 'New figures last checked ' + MONTHS_LONG[gen.getMonth()] + ' ' + gen.getDate() + ', ' + gen.getFullYear() + ' · data from FRED';
     upd.appendChild(el('span', { class: 'htr' }, [' · ', el('a', { href: '#how-to-read', text: 'How to read this page ↓' })]));
+    renderComing(data.calendar);                           // the Coming up line under it (fail-soft: no calendar, no line)
     // the provenance sentence lives in the footer; the masthead keeps a short Updated line
     document.getElementById('attribution').textContent = data.attribution + ' Figures refresh automatically as agencies publish.';
     if (data.sample) {
