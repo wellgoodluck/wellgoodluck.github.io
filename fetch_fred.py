@@ -587,7 +587,7 @@ COMPANIONS = [
     {
         "id": "wages",
         "label": "Average hourly earnings, change from a year ago",
-        "for": ["cpi", "core_cpi"],
+        "for": ["cpi", "core_cpi", "rent"],
         "series": "AHETPI",
         "params": {"units": "pc1", "observation_start": "1965-01-01"},
         "freq": "m",

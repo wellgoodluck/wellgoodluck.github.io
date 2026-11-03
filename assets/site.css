@@ -97,6 +97,11 @@ a:hover { text-decoration-color: var(--ink); }
 .article .featured a.ftitle:hover { text-decoration: underline; text-decoration-color: var(--ink); text-underline-offset: 3px; }
 .featured .fdek { margin: 4px 0 0; color: var(--ink-2); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 @media (max-width: 760px) { .featured .fdek { -webkit-line-clamp: 3; } }
+/* Chart to try: one line under the Featured line (articles/chart-prompts.json), as on the almanac */
+.chart-try { margin: 0; padding: 10px 0 12px; border-bottom: 1px solid var(--hairline); font-size: 15px; line-height: 1.45; color: var(--ink-2); text-wrap: pretty; }
+.article > .chart-try { max-width: calc(var(--measure) * 17 / 15); }
+.chart-try .flabel { display: block; margin: 0 0 2px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
+.chart-try a { font-weight: 600; color: var(--ink); }
 /* A featured series: the parts in reading order under the dek, each numbered */
 .featured .fparts { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 2px 20px; }
 .featured .fparts li { margin: 0; }
@@ -161,7 +166,7 @@ h1, h2, h3, h4, .dek { text-wrap: balance; }
 @media print {
   :root { --page: #fff; --surface: #fff; }
   body { background: #fff; }
-  .crumb, .jump, .featured, .feed-link, .series-parts, .series-next { display: none !important; }
+  .crumb, .jump, .featured, .chart-try, .feed-link, .series-parts, .series-next { display: none !important; }
   .article .series { margin-top: 0; }
   .article figure.chart-embed, .article .table-scroll, .map { break-inside: avoid; }
   .article figure.chart-embed { width: 100%; }

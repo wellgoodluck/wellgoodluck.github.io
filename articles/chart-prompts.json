@@ -1,0 +1,12 @@
+{
+ "note": "Chart to try: one line under the Featured line on the almanac and the articles index, linking to a ready-made chart view. Read by tools/build_articles.py; the entry with the newest date on or before the build's date is shown (a future date schedules one; nothing expires it). chart = a tile id with a page; query = the view (range, ov), as in the chart page's address. text is a dated claim: write the month the figures describe into it.",
+ "prompts": [
+  {
+   "date": "2026-11-03",
+   "chart": "rent",
+   "query": "range=10y&ov=wages",
+   "text": "From August 2022 to January 2025, rents rose faster than pay. Since February 2025, pay has been rising faster again (in September 2026, pay was up 3.3% from a year earlier and rent 2.8%).",
+   "link": "See rent and pay on one chart"
+  }
+ ]
+}

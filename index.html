@@ -164,6 +164,11 @@
   .featured .fparts a:hover { text-decoration: underline; text-decoration-color: var(--ink); text-underline-offset: 3px; }
   .featured .fparts .n { display: inline-block; min-width: 1.5em; height: 1.5em; line-height: calc(1.5em - 2px); margin-right: 3px; border: 1px solid var(--hairline); border-radius: 50%; text-align: center; font-size: 12.5px; font-weight: 600; color: var(--ink-2); font-variant-numeric: tabular-nums; }
   @media (max-width: 760px) { .featured .fparts a { padding: 8px 0; } }
+  /* Chart to try: one line under the Featured line, linking to a ready-made chart view (articles/chart-prompts.json) */
+  .chart-try { margin: 0; padding: 10px 0 12px; border-bottom: 1px solid var(--hairline); font-size: 15px; line-height: 1.45; color: var(--ink-2); max-width: 46em; text-wrap: pretty; }
+  .chart-try .flabel { display: block; margin: 0 0 2px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
+  .chart-try a { font-weight: 600; color: var(--ink); }
+  @media print { .chart-try { display: none; } }
   /* At a glance: every number on one screen (left out with ?view=tiles) ---- */
   .glance { padding: 24px 0 8px; }
   .glance .ghead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px; margin: 0 0 4px; }
@@ -922,6 +927,10 @@
         .concat(f.dek ? [el('p', { class: 'fdek', text: f.dek })] : [])   // an explainers.json from before Nov 1 has no dek
         .concat(isSeries ? [el('ol', { class: 'fparts', role: 'list' }, parts.map((p, i) =>
           el('li', {}, [el('a', { href: p.url, title: p.title || p.label }, [el('span', { class: 'n', text: String(i + 1) }), ' ' + p.label])])))] : [])));
+    // Chart to try (explainers.json chart_prompt): a sentence and a link to a ready-made chart view
+    const cp = data.chartPrompt;
+    if (cp && cp.text && cp.url) main.appendChild(el('p', { class: 'chart-try' },
+      [el('span', { class: 'flabel', text: 'Chart to try' }), cp.text + ' ', el('a', { href: cp.url, text: cp.link || 'See the chart' }), ' →']));
     // ?view=tiles is the page as it was before the overview: the tiles alone, with a way back
     const hasGlance = new URLSearchParams(location.search).get('view') !== 'tiles';
     if (!hasGlance) main.appendChild(el('p', { class: 'view-switch' }, ['Showing the tiles without the overview. ', el('a', { href: './', text: 'Show all the numbers at a glance →' })]));
@@ -982,7 +991,7 @@
   Promise.all([
     fetch('data/series.json', { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }),
     fetch('data/explainers.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : {}).catch(() => ({})),
-  ]).then(([data, ex]) => { data.explainers = (ex && ex.explainers) || {}; data.featured = (ex && ex.featured) || null; render(data); })
+  ]).then(([data, ex]) => { data.explainers = (ex && ex.explainers) || {}; data.featured = (ex && ex.featured) || null; data.chartPrompt = (ex && ex.chart_prompt) || null; render(data); })
     .catch(err => {
       const main = document.getElementById('main');
       // keep the readings written at build time, if any; drop only the loading line

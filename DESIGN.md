@@ -291,6 +291,9 @@ The site's most original element, and a ranking rather than a ruler. The track (
 ### At-a-glance Row
 One line per indicator: title, latest value with its period in Muted, and a compact range strip with the median notch (keyed "median, always the middle"); rows grouped under small uppercase section labels, separated by hairlines, each at least 44px tall and linking to its tile.
 
+### Chart to try
+One line directly under the Featured line on the almanac and the articles index: the Featured label style ("CHART TO TRY", 12.5px uppercase, Ink Secondary), then one or two sentences in Ink Secondary at 15px and a 600-weight Ink link to a ready-made chart view, with a hairline below. Set by a dated entry in `articles/chart-prompts.json`. Hidden in print.
+
 ### Static readings (before the script)
 The almanac's HTML carries every reading as a plain list, written at build time: a Muted "as of" line, then each section as a 19px heading over a bulleted list (title linking to the chart page, the value in bold, period, context sentence, household line), max 46em wide. The script replaces it with the tiles; if the figures fail to load it stays, under the retry line. No styling beyond the type scale: it is a fallback, not a second design.
 

@@ -287,6 +287,41 @@ def featured_html(feat, link_prefix=""):
             f'<a class="ftitle" href="{link_prefix}{feat["slug"]}.html">{inline(feat["title"])}</a> →{dek}</aside>\n')
 
 
+def chart_prompt_pick(path=os.path.join("articles", "chart-prompts.json"), today=None):
+    """The Chart to try line: the prompt with the newest date on or before today (UTC), as
+    {text, link, url} with url relative to the site root, or None. Fail-soft: a missing or bad file, or a
+    prompt whose chart has no page this build, means no line (with a log line)."""
+    from datetime import datetime, timezone
+    today = today or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path, encoding="utf-8") as f:
+            prompts = json.load(f).get("prompts", [])
+    except Exception as e:                                  # noqa: BLE001
+        print(f"chart prompt: could not read {path} ({e}); none this build")
+        return None
+    live = sorted((p for p in prompts if isinstance(p, dict) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(p.get("date", "")))
+                   and p["date"] <= today and p.get("text") and p.get("chart")), key=lambda p: p["date"])
+    if not live:
+        print("chart prompt: none")
+        return None
+    p = live[-1]
+    if CHART_IDS and p["chart"] not in CHART_IDS:
+        print(f"chart prompt: WARNING {p['chart']!r} has no chart page; none this build")
+        return None
+    url = f"chart/{p['chart']}/" + (f"?{p['query']}" if p.get("query") else "")
+    print(f"chart prompt: {p['chart']} (since {p['date']})")
+    return {"text": p["text"], "link": p.get("link") or "See the chart", "url": url}
+
+
+def chart_prompt_html(cp, link_prefix=""):
+    if not cp:
+        return ""
+    return (f'<p class="chart-try"><span class="flabel">Chart to try</span>{inline(cp["text"])} '
+            f'<a href="{link_prefix}{html.escape(cp["url"], quote=True)}">{inline(cp["link"])}</a> →</p>\n')
+
+
 def fmt_date(s):
     y, mo, d = (int(x) for x in s.split("-"))
     return date(y, mo, d).strftime("%B %-d, %Y")
@@ -461,6 +496,7 @@ def render_index(articles):
     feat, _ = featured_pick(articles)
     if feat:
         page += featured_html(feat)
+    page += chart_prompt_html(CHART_PROMPT, "../")
 
     def updated_note(a):
         return (f'<span class="when">Updated {fmt_date(a["updated"])}</span>'
@@ -612,7 +648,7 @@ def write_explainers(out_root, articles):
     with open(os.path.join(out_root, "data", "explainers.json"), "w", encoding="utf-8") as f:
         json.dump({"note": "Written by tools/build_articles.py from the tile: line of each Plain words page, "
                            "and the featured: line of the article or series (articles/series.json) featured now.",
-                   "explainers": ex, "featured": featured}, f, ensure_ascii=False, separators=(",", ":"))
+                   "explainers": ex, "featured": featured, "chart_prompt": CHART_PROMPT}, f, ensure_ascii=False, separators=(",", ":"))
     print(f"built data/explainers.json ({len(ex)} indicators)")
     print("featured: " + (("series " if feat.get("kind") == "series" else "") + f"{feat['slug']} (since {feat['featured']})" if feat else "none")
           + (f"; next {nxt['slug']} on {nxt['featured']}" if nxt else ""))
@@ -637,6 +673,7 @@ def load_figures():
 
 
 CHART_IDS = []
+CHART_PROMPT = None
 clean_chart_links = None
 
 
@@ -652,7 +689,7 @@ def load_chart_pages():
 
 
 def main():
-    global CHART_IDS, clean_chart_links
+    global CHART_IDS, CHART_PROMPT, clean_chart_links
     out_root = sys.argv[1] if len(sys.argv) > 1 else "public"
     out_dir = os.path.join(out_root, "articles")
     os.makedirs(out_dir, exist_ok=True)
@@ -664,6 +701,7 @@ def main():
             cp.write_home_static(out_root)
         except Exception as e:                              # noqa: BLE001
             print(f"home: WARNING static figures not written ({e})")
+    CHART_PROMPT = chart_prompt_pick()                      # after the chart pages, so its chart is checked against them
     figures, data = load_figures()
     report = figures.new_report() if figures else None
     articles = []
