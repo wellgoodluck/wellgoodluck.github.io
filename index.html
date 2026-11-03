@@ -119,7 +119,7 @@
      reads as a menu and not as a line of links; it stays at the top while you scroll. The section in view carries a
      2px ink rule along the bar's bottom edge. On phones: one sideways-scrolling row, no label. Same rules in site.css. */
   .secnav { position: sticky; top: 0; z-index: 5; margin: 14px 0 0; background: var(--surface); border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
-  .secnav .wrap { display: flex; align-items: center; gap: 0 20px; }
+  .secnav .wrap { display: flex; align-items: baseline; gap: 0 20px; }   /* baseline, not center: the label is smaller type and sits on the links' baseline */
   .secnav-label { flex: none; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
   .sections-nav { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 0 22px; font-size: 15px; }
   .sections-nav a { display: inline-block; padding: 11px 0 9px; margin-bottom: -1px; color: var(--ink-2); font-weight: 600; text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; }
