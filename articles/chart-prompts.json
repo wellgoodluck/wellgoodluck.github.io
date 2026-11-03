@@ -7,6 +7,13 @@
    "query": "range=10y&ov=wages",
    "text": "From August 2022 to January 2025, rents rose faster than pay. Since February 2025, pay has been rising faster again (in September 2026, pay was up 3.3% from a year earlier and rent 2.8%).",
    "link": "See rent and pay on one chart"
+  },
+  {
+   "date": "2026-11-15",
+   "chart": "cpi",
+   "query": "range=10y&ov=restaurant_prices",
+   "text": "Restaurant prices rose faster than prices overall from fall 2022 through early 2026, which is how a meal out came to cost about 40% more than in 2019, against about 32% for everything else. By September 2026 the two were rising at about the same pace, 3.5% and 3.7% a year.",
+   "link": "See restaurant prices against all prices"
   }
  ]
 }

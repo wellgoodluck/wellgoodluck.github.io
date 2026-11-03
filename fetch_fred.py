@@ -477,6 +477,15 @@ COMPANIONS = [
         "why": "What renters actually pay, averaged over all leases, not just new ones. The renter's own inflation line.",
     },
     {
+        "id": "restaurant_prices",
+        "label": "Restaurant meals (CPI, food away from home), change from a year ago",
+        "for": ["cpi", "core_cpi"],
+        "series": "CUSR0000SEFV",
+        "params": {"units": "pc1", "observation_start": "1953-01-01"},
+        "freq": "m",
+        "why": "Meals and snacks bought away from home: full-service and fast-food restaurants, plus food at work, school and vending machines. Seasonally adjusted. By the restaurant industry's own estimate food is only about a third of a restaurant's costs and labor another third, so menu prices follow wages more than grocery prices.",
+    },
+    {
         "id": "hires_rate",
         "label": "Hires rate (JOLTS)",
         "for": ["unemployment"],
