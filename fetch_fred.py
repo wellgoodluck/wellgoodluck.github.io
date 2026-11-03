@@ -357,20 +357,20 @@ TILES = [
         "freq": "m",
         "display": {"scale": 1, "decimals": 2, "prefix": "$", "signed": False,
                     "unit": "dollars per pound", "adjust": "cpi"},
-        "note": "Not seasonally adjusted. BLS average price across U.S. cities, collected for the CPI. The chart shows the price as charged; the range and the comparison above it are adjusted for inflation.",
+        "note": "Not seasonally adjusted. BLS average price across U.S. cities, collected for the CPI. Sirloin steak is on the chart page. The chart shows the price as charged; the range and the comparison above it are adjusted for inflation.",
     },
     {
         "id": "chicken",
         "agency": "BLS",
         "section": "What things cost",
-        "title": "Chicken breast",
-        "subtitle": "Boneless, U.S. average price per pound, monthly",
-        "series": "APU0000FF1101",
-        "params": {"observation_start": "2006-01-01"},
+        "title": "Whole chicken",
+        "subtitle": "Fresh, U.S. average price per pound, monthly",
+        "series": "APU0000706111",
+        "params": {"observation_start": "1980-01-01"},
         "freq": "m",
         "display": {"scale": 1, "decimals": 2, "prefix": "$", "signed": False,
                     "unit": "dollars per pound", "adjust": "cpi"},
-        "note": "Not seasonally adjusted. BLS average price across U.S. cities, collected for the CPI; boneless, skinless breasts, fresh or frozen, since January 2006. The chart shows the price as charged; the range and the comparison above it are adjusted for inflation.",
+        "note": "Not seasonally adjusted. BLS average price across U.S. cities, collected for the CPI; fresh whole broiler-fryers, priced per pound with bone and skin. Boneless breast is on the chart page. The chart shows the price as charged; the range and the comparison above it are adjusted for inflation.",
     },
 ]
 
@@ -813,6 +813,13 @@ COMPANIONS = [
     {"id": "restaurant_jobs", "label": "All employees, food services and drinking places, thousands", "for": [],
      "series": "CES7072200001", "params": {"observation_start": "2018-01-01"}, "freq": "m",
      "why": "Used for restaurant employment in article text (Nov 2)."},
+    # A second cut of the same item, priced in the same unit, drawn on the tile's own axis (Nov 2).
+    {"id": "chicken_breast", "label": "Boneless chicken breast, as charged", "for": ["chicken"],
+     "series": "APU0000FF1101", "params": {"observation_start": "2006-01-01"}, "freq": "m",
+     "why": "The pricier cut: boneless and skinless, so none of the pound is bone. BLS has priced it since 2006."},
+    {"id": "sirloin", "label": "Sirloin steak, as charged", "for": ["ground_beef"],
+     "series": "APU0000703613", "params": {"observation_start": "1989-01-01"}, "freq": "m",
+     "why": "The upscale cut: boneless USDA Choice sirloin steak. BLS has priced it since 1989."},
 ]
 
 # Derived series, computed here from the fetched data so the page never has to
@@ -1068,6 +1075,22 @@ def household_lines(tiles_out, companions_out, extras):
                 pl = price_level_for(T[tid]["context"]["current"]["date"])
                 txt += f" In 2019 {noun} averaged {price(y19)}" + (f", about {price(y19 * pl / 100)} in today's dollars." if pl else ".")
             lines[tid] = (txt, cpi_src)
+        except Exception: pass
+    # A second cut, from its companion, when it is priced for the same month as the tile (Nov 2).
+    other_cut = {   # tile id: (companion id, series, how the line names it)
+        "chicken": ("chicken_breast", "APU0000FF1101", "Boneless breast runs"),
+        "ground_beef": ("sirloin", "APU0000703613", "Sirloin steak runs"),
+    }
+    for tid, (cid, series, words) in other_cut.items():
+        if tid not in lines or not C.get(cid):
+            continue
+        try:
+            d, v = C[cid][-1]
+            if month_key(d) != month_key(T[tid]["context"]["current"]["date"]):
+                continue
+            text, sources = lines[tid]
+            lines[tid] = (text + f" {words} {price(v)} a pound.",
+                          sources + [{"series": series, "url": f"https://fred.stlouisfed.org/series/{series}"}])
         except Exception: pass
 
     for t in tiles_out:
