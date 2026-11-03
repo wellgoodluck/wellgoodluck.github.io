@@ -121,7 +121,7 @@ spacing:
   grid-gap: "16px"
   tile-padding: "18px 18px 14px"
   page-max: "1120px"
-  measure: "42em"
+  measure: "39em"
 components:
   tile:
     backgroundColor: "{colors.sheet}"
@@ -227,7 +227,7 @@ The almanac and chart pages use one scale: **11 · 12.5 · 13.5 · 15 · 16 (bas
 - **Headline** (700, clamp 28–40px, 1.12): article titles.
 - **Title** (700, 22px, 1.2): section and article h2 headings; the "At a glance" heading.
 - **Tile title** (700, 19px, 1.25): indicator names on tiles.
-- **Body** (400, 17px, 1.55, 42em measure): article text. The almanac runs at 16px/1.5.
+- **Body** (400, 17px, 1.55, 39em measure): article text. The almanac runs at 16px/1.5.
 - **Context** (600, 15px): the one-sentence verdict under a range strip ("Higher than 67% of months since 1948").
 - **Meta** (400, 13.5px, Ink Secondary or Muted): subtitles, periods, notes, sources, controls (range buttons, custom range, actions), tables.
 - **Caption** (400, 12.5px): legends, the hover box, overlay notes, counts, print footers.
@@ -241,7 +241,7 @@ The almanac and chart pages use one scale: **11 · 12.5 · 13.5 · 15 · 16 (bas
 
 A single centered column, max 1120px, with a 16px side gutter at every width. The almanac opens with the masthead, a section nav, the "At a glance" overview (three columns of compact rows on desktop, one on phones), then indicator tiles two to a row with a 16px gap. In a section with an odd number of tiles, the designated wide tile spans the row at ≥761px: reading and notes on the left (5/12), a taller 300px chart on the right (7/12).
 
-Articles hold text to a 42em measure; embedded charts break out to 860px. Chart pages place the chart and its controls left and a sticky overlay panel right at ≥861px; below that the panel sits right under the chart's key and framing line (the events list, notes and actions follow it), with jump links about 44px tall between chart and panel and a bar at the bottom of the screen that leads back to the chart while the panel is in view and the chart isn't.
+Articles hold text to a 39em measure (about 76 characters at 17px); embedded charts break out to 860px. Chart pages place the chart and its controls left and a sticky overlay panel right at ≥861px; below that the panel sits right under the chart's key and framing line (the events list, notes and actions follow it), with jump links about 44px tall between chart and panel and a bar at the bottom of the screen that leads back to the chart while the panel is in view and the chart isn't.
 
 The section nav, a labeled bar on the almanac and the articles index alike, sticks to the top at every width; at ≤760px it becomes one sideways-scrolling row with 46px targets. Anchor targets carry a scroll margin of the nav's measured height so jumps land below it, and range buttons grow to about 36px tall. Strips and charts reserve their height before drawing so the page doesn't jump.
 
@@ -271,6 +271,7 @@ Gently squared. Three radii: 2px for small swatches and focus outlines, 4px for 
 ### Cards / Containers
 - **Tiles:** sheet background, 1px hairline border, 6px radius, 18px 18px 14px padding, no shadow. Parts in order: title (links to the chart page), subtitle, reading and period, previous and year-ago, range strip, context sentence, household line, plain-words link, chart head with the button and range control, chart, then one disclosure holding the note, sources and recent readings: open with no summary on desktop, closed on phones behind "Notes, source and recent readings", opened for printing.
 - **Chart frame:** sheet background, hairline border, 6px radius; the source credit sits inside the frame along the bottom edge so a cropped screenshot keeps it.
+- **Static figure (articles):** every article carries at least one figure; where no live chart fits, a `{{figure}}` built from numbers in the text, in plain HTML so it follows both themes and reads at phone width. Three kinds: ranked bars (one hue, Neutral Ground Teal, the value at each tip in text tokens, 14px bars with 4px rounded ends and a square baseline), paired bars (teal and the first companion color, 11px bars, a legend), and a split whole (a 28px segmented bar in teal, c1, c3 and ink with 2px gaps, each part's value printed on it; a part under 8% prints none and carries its value on its legend entry). A title line (15px/600), a caption with the source in Muted, and an accessible name listing every value, so nothing is color-only.
 
 ### Navigation
 - **Featured line:** the lead item above the overview (almanac) and the article list (articles index), shown only while an article's `featured:` date is current. A 2px ink rule above it, as a newspaper marks its lead story, and a hairline below; the "FEATURED" label (12.5px uppercase, Ink Secondary) on its own line; the title in 700 (19px on the almanac, the list's 22px on the articles index, 19px there on phones) with an arrow; then the article's dek in Ink Secondary, cut at two lines (three on phones). No box, no color, no badge. A featured series (articles/series.json, whose `featured:` date wins a tie with an article's) reads "FEATURED SERIES"; the series title links to part 1, the dek is the series', and under it one row of the parts in reading order, each a numbered circle (1.5em, hairline border, 12.5px Ink Secondary) and the part's short label in 600 ink, 30px tall (38px on phones), wrapping as a whole.

@@ -59,7 +59,7 @@ TILES = [
         "params": {"units": "chg", "observation_start": "1939-02-01"},
         "freq": "m",
         "display": {"scale": 1, "decimals": 0, "suffix": "K", "signed": True,
-                    "unit": "thousands of jobs", "clip": [-1500, 1500]},
+                    "unit": "thousands of jobs", "clip": [-1500, 1500], "wide": True},
         "note": "Seasonally adjusted. The first two prints for any month are revised.",
     },
     {

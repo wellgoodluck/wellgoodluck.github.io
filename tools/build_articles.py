@@ -36,6 +36,18 @@ site's own detail page:
 
     {{chart id=cpi range=10y ov=fed_target,pce caption="Inflation and the Fed's target."}}
 
+and one for a small static figure drawn from numbers in the article (plain HTML, styled by
+assets/site.css, so it follows the light and dark themes and reads at phone width):
+
+    {{figure kind=bars title="Lobbying by group, 2025" rows="Drugmakers=168.0;Insurers=76.4" fmt="${v} million" caption="…" source="…"}}
+    {{figure kind=stack title="Where a restaurant dollar goes" rows="Food=33;Labor=33;Everything else=29;Left over=5" fmt="{v}¢" caption="…"}}
+    {{figure kind=pairs title="Fires per 10,000 vehicles" series="EVs;Other cars" rows="Sweden=0.45,7.5;Norway=0.55,3.9" caption="…"}}
+
+kind=bars: one bar per row, one color, the value printed at each bar's tip. kind=stack: one
+whole split into its parts, up to six, each part's value printed on it, a legend of names.
+kind=pairs: two values per row, two colors, with a legend. fmt writes each value ({v} is the
+number as given). The figure's accessible name lists every value, so nothing is color-only.
+
 Anything under `## Sources`, up to the next heading, is rendered as a sources list.
 
 Series (articles/series.json, optional): a series lists its parts in reading order by slug, each with a short
@@ -107,6 +119,81 @@ def chart_directive(line):
             f'<a href="../chart/{html.escape(attrs["id"], quote=True)}/{"?" + html.escape(view, quote=True) if view else ""}">Full chart and context →</a></figcaption></figure>')
 
 
+def figure_directive(line):
+    """{{figure kind=bars|stack|pairs title=… rows="a=1;b=2" [series="x;y"] [fmt="{v}"] [caption=…] [source=…]}}
+    → a <figure class="figure fig-<kind>"> in plain HTML. Numbers are the author's; nothing is fetched."""
+    m = re.match(r"^\{\{\s*figure\s+(.*?)\s*\}\}$", line.strip())
+    if not m:
+        return None
+    attrs = {}
+    for tok in shlex.split(m.group(1)):
+        if "=" in tok:
+            k, v = tok.split("=", 1)
+            attrs[k] = v
+    kind = attrs.get("kind", "bars")
+    if kind not in ("bars", "stack", "pairs") or not attrs.get("rows"):
+        print(f"figure: WARNING skipped a {kind!r} figure without rows")
+        return None
+    fmt = attrs.get("fmt", "{v}")
+    def num(x):
+        return float(x.replace(",", "").replace("$", ""))
+    shown = {}                                              # each value is printed as the author wrote it
+    def show(v):
+        return fmt.replace("{v}", shown.get(v, ("%g" % v)))
+    rows = []
+    for item in attrs["rows"].split(";"):
+        if "=" not in item:
+            continue
+        name, vals = item.split("=", 1)
+        nums = []
+        for x in vals.split(","):
+            if x.strip():
+                nums.append(num(x)); shown.setdefault(nums[-1], x.strip().lstrip("$"))
+        rows.append((name.strip(), nums))
+    if not rows or any(not v for _, v in rows):
+        print("figure: WARNING skipped a figure with an empty row")
+        return None
+    series = [x.strip() for x in attrs.get("series", "").split(";") if x.strip()]
+    title = attrs.get("title", "")
+    parts = []
+    if kind == "stack":
+        total = sum(v[0] for _, v in rows) or 1
+        rows = rows[:6]
+        said = "; ".join(f"{n} {show(v[0])}" for n, v in rows)
+        # a block too narrow for its value (under 8% of the bar) prints none; that value goes on its legend entry
+        narrow = {i for i, (n, v) in enumerate(rows) if v[0] / total < 0.08}
+        blocks = "".join(
+            f'<span class="seg s{i + 1}" style="width:{v[0] / total * 100:.2f}%">'
+            + ("" if i in narrow else f'<span class="v">{html.escape(show(v[0]))}</span>') + "</span>"
+            for i, (n, v) in enumerate(rows) if v[0] > 0)
+        legend = "".join(f'<li><i class="s{i + 1}"></i>{html.escape(n)}' + (f' <span class="v">{html.escape(show(v[0]))}</span>' if i in narrow else "") + "</li>"
+                         for i, (n, v) in enumerate(rows))
+        parts.append(f'<div class="stack" role="img" aria-label="{html.escape(title + ": " + said, quote=True)}">{blocks}</div>')
+        parts.append(f'<ul class="legend" aria-hidden="true">{legend}</ul>')
+    else:
+        n_series = 2 if kind == "pairs" else 1
+        top = max(x for _, v in rows for x in v[:n_series]) or 1
+        said = []
+        body = []
+        for n, v in rows:
+            vals = v[:n_series] + [0.0] * (n_series - len(v[:n_series]))
+            said.append(n + " " + (", ".join(f"{series[i] if i < len(series) else ''} {show(x)}".strip() for i, x in enumerate(vals)) if n_series > 1 else show(vals[0])))
+            bars = "".join(
+                f'<span class="bar"><i class="s{i + 1}" style="width:{x / top * 100:.2f}%"></i><span class="v">{html.escape(show(x))}</span></span>'
+                for i, x in enumerate(vals))
+            body.append(f'<div class="row"><span class="lab">{html.escape(n)}</span><span class="bars">{bars}</span></div>')
+        parts.append(f'<div class="rows" role="img" aria-label="{html.escape(title + ": " + "; ".join(said), quote=True)}">{"".join(body)}</div>')
+        if n_series > 1 and series:
+            parts.append('<ul class="legend" aria-hidden="true">' + "".join(f'<li><i class="s{i + 1}"></i>{html.escape(x)}</li>' for i, x in enumerate(series[:2])) + "</ul>")
+    cap = inline(attrs["caption"]) if attrs.get("caption") else ""
+    src = attrs.get("source", "")
+    if src:
+        cap += (" " if cap else "") + f'<span class="src">Source: {inline(src)}</span>'
+    head = f'<p class="ftitle">{inline(title)}</p>' if title else ""
+    return (f'<figure class="figure fig-{kind}">{head}{"".join(parts)}'
+            + (f"<figcaption>{cap}</figcaption>" if cap else "") + "</figure>")
+
+
 def md_to_html(text):
     out, para, lst, in_sources = [], [], None, False
 
@@ -126,7 +213,7 @@ def md_to_html(text):
         line = raw.rstrip()
         if not line.strip():
             flush_para(); close_list(); continue
-        d = chart_directive(line)
+        d = chart_directive(line) or figure_directive(line)
         if d:
             flush_para(); close_list(); out.append(d); continue
         if line.startswith("<") and not line.startswith("<a "):     # raw HTML block line

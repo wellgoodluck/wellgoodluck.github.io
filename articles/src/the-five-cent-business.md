@@ -28,6 +28,8 @@ Before the pandemic, the National Restaurant Association, the industry's trade g
 - **Everything else:** 29 cents. That is rent and other occupancy costs, utilities, supplies, repairs, administration and the fees on every card swipe.
 - **Left over, before income taxes:** 5 cents
 
+{{figure kind=stack title="Where a restaurant dollar goes" rows="Food and beverages=33;Labor=33;Everything else=29;Left over, before income taxes=5" fmt="{v}¢" caption="A typical independent restaurant, by the industry's own model from before the pandemic. Cents of each dollar of sales." source="National Restaurant Association"}}
+
 On $1.5 million a year in sales, that nickel is $75,000 ([National Restaurant Association](https://www.restaurant.org/research-and-media/research/restaurant-economic-insights/analysis-commentary/elevated-costs-continue-to-pressure-restaurant-profitability/)). It is a model, not a census: fast-food counters, full-service dining rooms and bars split the dollar differently, and any one restaurant can sit far from the average.
 
 ## What happened to each slice
