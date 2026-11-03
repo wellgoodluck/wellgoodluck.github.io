@@ -9,7 +9,7 @@
 :root {
   color-scheme: light;
   --page: #f6f6f3; --surface: #ffffff; --ink: #1b1b1a; --ink-2: #5a5955; --muted: #72716b;
-  --hairline: #e3e2dc; --grid: #ebeae4; --series: #0b7a75; --focus: #0b7a75;
+  --hairline: #e3e2dc; --grid: #ebeae4; --series: #0b7a75; --focus: #0b7a75; --c1: #903a03;
   --banner: #fff4d6; --banner-ink: #5a4300; --max: 1120px; --measure: 42em;
 }
 /* dark colors on screen only: printing from a browser in dark mode stays on the light tokens */
@@ -17,7 +17,7 @@
   :root {
     color-scheme: dark;
     --page: #121211; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
-    --hairline: #2c2c2a; --grid: #262624; --series: #2bb3a8; --focus: #2bb3a8; --banner: #3a2f10; --banner-ink: #f3dfa0;
+    --hairline: #2c2c2a; --grid: #262624; --series: #2bb3a8; --focus: #2bb3a8; --c1: #fb8304; --banner: #3a2f10; --banner-ink: #f3dfa0;
   }
 }
 
@@ -104,7 +104,17 @@ a:hover { text-decoration-color: var(--ink); }
 .article .chart-try a.ftitle { font-size: 22px; font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; color: var(--ink); text-decoration: none; border: 0; }
 .article .chart-try a.ftitle:hover { text-decoration: underline; text-decoration-color: var(--ink); text-underline-offset: 3px; }
 .chart-try .fdek { margin: 4px 0 0; color: var(--ink-2); }
-@media (max-width: 760px) { .article .chart-try a.ftitle { font-size: 19px; } }
+/* the picture: the view's lines, no axes, beside the text (under it on phones); it repeats the title's link */
+.chart-try { display: flex; align-items: center; justify-content: space-between; gap: 8px 24px; flex-wrap: wrap; }
+.chart-try .ctext { flex: 1 1 320px; min-width: 0; }
+.chart-try .cthumb { flex: 0 0 220px; display: block; border: 0; }
+.chart-try .thumb { display: block; width: 220px; height: 64px; overflow: visible; }
+.thumb .main, .thumb .comp { fill: none; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.thumb .main { stroke: var(--series); stroke-width: 2; }
+.thumb .comp { stroke: var(--c1); stroke-width: 1.5; }
+.thumb .zero { stroke: var(--grid); stroke-width: 1; }
+.thumb .end { fill: var(--series); stroke: var(--surface); stroke-width: 1.5; }
+@media (max-width: 760px) { .article .chart-try a.ftitle { font-size: 19px; } .chart-try .cthumb { flex: 1 1 100%; } .chart-try .thumb { width: 100%; height: 56px; } }
 /* A featured series: the parts in reading order under the dek, each numbered */
 .featured .fparts { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 2px 20px; }
 .featured .fparts li { margin: 0; }

@@ -122,13 +122,13 @@
   .compare { margin: 6px 0 0; color: var(--ink-2); font-size: 13.5px; }
   .compare span + span::before { content: "\00a0\00a0|\00a0\00a0"; content: "\00a0\00a0|\00a0\00a0" / ""; color: var(--hairline); }   /* "/ """: a divider, not read aloud */
 
-  .strip { margin: 16px 0 2px; max-width: 560px; }
-  .strip svg { display: block; width: 100%; height: 44px; overflow: visible; }
+  .strip { margin: 12px 0 2px; max-width: 560px; }
+  .strip svg { display: block; width: 100%; height: 50px; overflow: visible; }
   .strip .track { stroke: var(--range); stroke-width: 6; stroke-linecap: round; }
   .strip .now { fill: var(--series); stroke: var(--surface); stroke-width: 2; }
   .strip .avg { stroke: var(--ink-2); stroke-width: 2; }
   .strip .mid { stroke: var(--muted); stroke-width: 1.5; }   /* the median: the bar's center, since it ranks readings */
-  .strip text { font-size: 11px; fill: var(--muted); }
+  .strip text { font-size: 12.5px; fill: var(--muted); }   /* the labels are the context: never smaller than this */
   .strip .qual { fill: var(--ink-2); font-weight: 600; }   /* "in today's dollars" changes how the bar reads */
   .strip text.avg-label { fill: var(--ink-2); }
   .strip .beyond { fill: var(--series); }
@@ -265,8 +265,8 @@
   .opt .sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
   .opt .sw.off { visibility: hidden; }   /* an overlay's color is assigned when it is turned on */
   .on-now { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 12px; font-size: 12.5px; }
-  .on-now[hidden] { display: none; }
-  .on-now-h { font-size: 12.5px; font-weight: 600; color: var(--ink-2); margin-right: 2px; }
+  .on-now .none { display: inline-flex; align-items: center; min-height: 30px; color: var(--muted); }   /* a chip's height, so the first tick never moves the list */
+  .on-now-h { flex: 0 0 100%; font-size: 12.5px; font-weight: 600; color: var(--ink-2); }   /* its own line: a chip then starts a fresh row and fits, so it never wraps the header */
   .chip { display: inline-flex; align-items: stretch; max-width: 100%; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); }
   .chip button { font: inherit; color: var(--ink); background: none; border: 0; min-height: 28px; cursor: pointer; }
   .chip .go { padding: 4px 6px 4px 8px; text-align: left; display: inline-flex; align-items: center; min-width: 0; }
@@ -274,7 +274,7 @@
   .chip .x { padding: 0 9px; color: var(--muted); font-size: 16px; line-height: 1; border-left: 1px solid var(--hairline); }
   .chip .go:hover { text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; }
   .chip .x:hover { color: var(--ink); }
-  @media (max-width: 860px) { .chip button { min-height: 40px; } }
+  @media (max-width: 860px) { .chip button { min-height: 40px; } .on-now .none { min-height: 42px; } }
   .panel .clear { margin: 12px 0 0; font-size: 13.5px; }
   .panel .clear button { background: none; border: 0; padding: 0; color: var(--ink-2); text-decoration: underline; cursor: pointer; }
 
@@ -510,7 +510,7 @@
     const box = el('div', { class: 'strip' });
     function draw() {
       const old = box.querySelector('svg'); if (old) old.remove();
-      const W = Math.max(200, box.clientWidth || 480), H = 44, padL = 8, padR = 8, y = 16;
+      const W = Math.max(200, box.clientWidth || 480), H = 50, padL = 8, padR = 8, y = 22;   // y leaves room above for the 12.5px labels
       const pos = p => padL + rankFrac(p) * (W - padL - padR);     // by rank: see baselineRank()
       const svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H, width: W, height: H, role: 'img', 'aria-label': stripLabel(t) });
       svg.appendChild(svgEl('line', { class: 'track', x1: padL, x2: W - padR, y1: y, y2: y }));
@@ -519,12 +519,15 @@
       let tick = null;
       if (avg != null && avgRank != null) {
         const ax = pos(avgRank); tick = svgEl('line', { class: 'avg', x1: ax, x2: ax, y1: y - 9, y2: y + 9 }); svg.appendChild(tick);
-        const label = '2015–19 avg ' + fmtValue(avg, d), approxW = label.length * 6.4; let anchor = 'middle', lx = ax;
+        const label = '2015–19 avg ' + fmtValue(avg, d), approxW = label.length * 7.2; let anchor = 'middle', lx = ax;
         if (ax - approxW / 2 < 0) { anchor = 'start'; lx = Math.max(ax - 4, 0); } else if (ax + approxW / 2 > W) { anchor = 'end'; lx = Math.min(ax + 4, W); }
         const lab = svgEl('text', { class: 'avg-label', x: lx, y: y + 24, 'text-anchor': anchor }); lab.textContent = label; svg.appendChild(lab);
       }
-      if (where === 'below') svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (padL - 4) + ',' + y + ' l10,-7 l0,14 z' }));
-      else if (where === 'above') svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (W - padR + 4) + ',' + y + ' l-10,-7 l0,14 z' }));
+      // outside the range: the dot pinned at that end of the track, with an arrow pointing outward (as on the almanac)
+      if (where === 'below') { svg.appendChild(svgEl('circle', { class: 'now', cx: padL, cy: y, r: 7 }));
+        svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (padL - 19) + ',' + y + ' l10,-7 l0,14 z' })); }
+      else if (where === 'above') { svg.appendChild(svgEl('circle', { class: 'now', cx: W - padR, cy: y, r: 7 }));
+        svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (W - padR + 19) + ',' + y + ' l-10,-7 l0,14 z' })); }
       else { const cx = pos(c.percentile_below); svg.appendChild(svgEl('circle', { class: 'now', cx, cy: y, r: 7 }));
         if (tick && Math.abs(+tick.getAttribute('x1') - cx) < 9) svg.appendChild(tick); }   // the reading sits on the tick: keep the tick in view
       const l1 = svgEl('text', { x: padL, y: y - 12, 'text-anchor': 'start' }); l1.textContent = fmtValue(lo, d);
@@ -1447,17 +1450,20 @@
     const h2 = el('h2', { text: 'Overlays', tabindex: '-1' });
     panel.appendChild(h2);
     panel.appendChild(el('p', { class: 'lead', text: 'Add context to the chart. Each overlay says where it comes from and what it can and cannot tell you. The link in your address bar keeps whatever you turn on.' }));
-    // "On now": every overlay that is on, in list order. The name finds it in the list; × turns it off.
-    const onNow = el('div', { class: 'on-now', role: 'group', 'aria-labelledby': 'on-now-h', hidden: '' });
+    // "On now": every overlay that is on, in list order. The name finds it in the list; × turns it off. The row is
+    // always there, with a placeholder when nothing is on, so turning the first overlay on doesn't shift the list
+    // under the reader's pointer.
+    const onNow = el('div', { class: 'on-now', role: 'group', 'aria-labelledby': 'on-now-h' });
     panel.appendChild(onNow);
     const groups = ['Reference lines', 'Companion series', 'Metro areas', 'Eras', 'Events'];
     const capNotes = [];   // one in each group that holds series, so the reason shows where the reader is
-    // open a group only when one of its overlays is on; with nothing on, open Reference lines only
+    // open a group when one of its overlays is on, and Companion series always (the comparisons are the page's best
+    // reason to exist, and a closed group hid them); with nothing on, Reference lines opens too
     const anyOn = overlays.some(o => state.on.has(o.id) && appliesTo(o, t.id) && !o.hiddenInPanel);
     groups.forEach(g => {
       const items = overlays.filter(o => o.group === g && appliesTo(o, t.id) && !o.hiddenInPanel);
       if (!items.length) return;
-      const open = anyOn ? items.some(o => state.on.has(o.id)) : g === 'Reference lines';
+      const open = g === 'Companion series' || (anyOn ? items.some(o => state.on.has(o.id)) : g === 'Reference lines');
       const det = el('details', open ? { open: '' } : {});
       // a group's note covers the overlays group_note_for names; with none of them on this page, it isn't shown
       const gfor = ctx.groupNoteFor && ctx.groupNoteFor[g];
@@ -1525,9 +1531,8 @@
     function syncOnNow(focusAt) {
       onNow.textContent = '';
       const on = Array.from(panel.querySelectorAll('details input[type=checkbox]')).filter(x => x.checked);
-      onNow.hidden = !on.length;
-      if (!on.length) { if (focusAt != null) h2.focus(); return; }
       onNow.appendChild(el('span', { class: 'on-now-h', id: 'on-now-h', text: 'On now' }));
+      if (!on.length) { onNow.appendChild(el('span', { class: 'none', text: 'nothing yet. Tick a box below.' })); if (focusAt != null) h2.focus(); return; }
       on.forEach((x, i) => {
         const o = ctx.ovById[x.id.slice(3)], name = o ? o.label : x.id.slice(3), chip = el('span', { class: 'chip' });
         const go = el('button', { type: 'button', class: 'go', title: name, 'aria-label': name + ', find it in the list' });

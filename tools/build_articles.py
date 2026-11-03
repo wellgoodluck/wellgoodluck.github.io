@@ -312,15 +312,95 @@ def chart_prompt_pick(path=os.path.join("articles", "chart-prompts.json"), today
         return None
     url = f"chart/{p['chart']}/" + (f"?{p['query']}" if p.get("query") else "")
     print(f"chart prompt: {p['chart']} (since {p['date']})")
-    return {"title": p.get("title") or p.get("link") or "See the chart", "text": p["text"], "url": url}
+    cp = {"title": p.get("title") or p.get("link") or "See the chart", "text": p["text"], "url": url}
+    svg = chart_prompt_thumb(p["chart"], p.get("query", ""))
+    if svg:
+        cp["svg"] = svg
+    return cp
+
+
+def chart_prompt_thumb(tile_id, query, series_path=os.path.join("data", "series.json"),
+                       companions_path=os.path.join("data", "companions.json")):
+    """A small picture of the Chart to try view, as inline SVG (220x64 viewBox, colors from CSS tokens, no
+    axes): the indicator over the view's range, with the first companion series the view turns on that shares its
+    scale. Fail-soft: anything missing means no picture (with a log line), and the line still shows."""
+    from datetime import date as _date
+    try:
+        with open(series_path, encoding="utf-8") as f:
+            tiles = json.load(f).get("tiles", [])
+        tile = next((t for t in tiles if t.get("id") == tile_id), None)
+        if not tile or not tile.get("observations"):
+            print(f"chart prompt: no thumbnail (no data for {tile_id!r})")
+            return ""
+        q = dict(x.split("=", 1) for x in query.split("&") if "=" in x)
+        years = {"1y": 1, "5y": 5, "10y": 10, "25y": 25, "50y": 50, "all": None}.get(q.get("range", "25y"), 25)
+        last = tile["observations"][-1][0]
+        ly, lm = int(last[:4]), int(last[5:7])
+        start = f"{ly - years:04d}-{lm:02d}" if years else "0000-00"
+        if re.fullmatch(r"\d{4}-\d{2}", q.get("from", "")):
+            start = q["from"]
+        end = q["to"] + "-99" if re.fullmatch(r"\d{4}-\d{2}", q.get("to", "")) else "9999"
+        def window(obs):
+            pts = [(d, v) for d, v in obs if v is not None and start <= d[:7] and d <= end]
+            step = max(1, len(pts) // 260)                   # weekly series over long ranges: thin to about 260 points
+            return pts[::step] if step > 1 else pts
+        main = window(tile["observations"])
+        if len(main) < 2:
+            return ""
+        comp = None
+        wanted = [x for x in q.get("ov", "").split(",") if x]
+        if wanted and os.path.exists(companions_path):
+            with open(companions_path, encoding="utf-8") as f:
+                comps = {c["id"]: c for c in json.load(f).get("companions", []) if c.get("id")}
+            for cid in wanted:
+                c = comps.get(cid)
+                if c and tile_id in (c.get("for") or []) and not c.get("panel") and c.get("observations"):
+                    w = window(c["observations"])
+                    if len(w) >= 2:
+                        comp = w
+                        break
+        W, H, pad = 220, 64, 3
+        xs = [d for d, _ in main] + ([d for d, _ in comp] if comp else [])
+        x0, x1 = min(xs), max(xs)
+        def days(d):
+            return _date(int(d[:4]), int(d[5:7]), int(d[8:10])).toordinal()
+        d0, d1 = days(x0), max(days(x1), days(x0) + 1)
+        vs = [v for _, v in main] + ([v for _, v in comp] if comp else [])
+        lo, hi = min(vs), max(vs)
+        if hi - lo < 1e-9:
+            lo, hi = lo - 1, hi + 1
+        span = hi - lo
+        lo, hi = lo - span * 0.04, hi + span * 0.04
+        def X(d):
+            return pad + (days(d) - d0) / (d1 - d0) * (W - 2 * pad)
+        def Y(v):
+            return pad + (hi - v) / (hi - lo) * (H - 2 * pad)
+        def path(pts):
+            return "M" + " L".join(f"{X(d):.1f},{Y(v):.1f}" for d, v in pts)
+        parts = []
+        if lo < 0 < hi:
+            parts.append(f'<line class="zero" x1="{pad}" x2="{W - pad}" y1="{Y(0):.1f}" y2="{Y(0):.1f}"/>')
+        if comp:
+            parts.append(f'<path class="comp" d="{path(comp)}"/>')
+        parts.append(f'<path class="main" d="{path(main)}"/>')
+        ld, lv = main[-1]
+        parts.append(f'<circle class="end" cx="{X(ld):.1f}" cy="{Y(lv):.1f}" r="3"/>')
+        return (f'<svg class="thumb" viewBox="0 0 {W} {H}" preserveAspectRatio="none" aria-hidden="true" focusable="false">'
+                + "".join(parts) + "</svg>")
+    except Exception as e:                                  # noqa: BLE001
+        print(f"chart prompt: no thumbnail ({e})")
+        return ""
 
 
 def chart_prompt_html(cp, link_prefix=""):
     if not cp:
         return ""
-    return (f'<aside class="chart-try" aria-label="Chart to try"><span class="flabel">Chart to try</span>'
-            f'<a class="ftitle" href="{link_prefix}{html.escape(cp["url"], quote=True)}">{inline(cp["title"])}</a> →'
-            f'<p class="fdek">{inline(cp["text"])}</p></aside>\n')
+    href = f'{link_prefix}{html.escape(cp["url"], quote=True)}'
+    thumb = (f'<a class="cthumb" href="{href}" aria-hidden="true" tabindex="-1">{cp["svg"]}</a>'
+             if cp.get("svg") else "")                      # the picture repeats the title's link, so it is skipped by assistive tech
+    return (f'<aside class="chart-try" aria-label="Chart to try"><div class="ctext"><span class="flabel">Chart to try</span>'
+            f'<a class="ftitle" href="{href}">{inline(cp["title"])}</a> →'
+            f'<p class="fdek">{inline(cp["text"])}</p></div>{thumb}</aside>\n')
 
 
 def fmt_date(s):

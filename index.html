@@ -37,6 +37,7 @@
     --hairline: #e3e2dc;
     --grid: #ebeae4;
     --series: #0b7a75;   /* deep teal: no party's color (the Democratic lane is blue) */
+    --c1: #903a03;       /* the first companion series, as on the chart page (the Chart to try picture) */
     --series-wash: rgba(11, 122, 117, 0.10);
     --recession: rgba(27, 27, 26, 0.07);
     --focus: #0b7a75;
@@ -59,6 +60,7 @@
       --hairline: #2c2c2a;
       --grid: #262624;
       --series: #2bb3a8;
+      --c1: #fb8304;
       --series-wash: rgba(43, 179, 168, 0.14);
       --focus: #2bb3a8;
       --recession: rgba(240, 239, 236, 0.08);
@@ -170,6 +172,17 @@
   .chart-try .ftitle { font-size: 19px; font-weight: 700; line-height: 1.3; color: var(--ink); text-decoration: none; }
   .chart-try .ftitle:hover { text-decoration: underline; text-decoration-color: var(--ink); text-underline-offset: 3px; }
   .chart-try .fdek { margin: 4px 0 0; color: var(--ink-2); }
+  /* the picture: the view's lines, no axes, beside the text (under it on phones); it repeats the title's link */
+  .chart-try { display: flex; align-items: center; justify-content: space-between; gap: 8px 24px; flex-wrap: wrap; }
+  .chart-try .ctext { flex: 1 1 320px; min-width: 0; }
+  .chart-try .cthumb { flex: 0 0 220px; display: block; }
+  .chart-try .thumb { display: block; width: 220px; height: 64px; overflow: visible; }
+  .thumb .main, .thumb .comp { fill: none; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .thumb .main { stroke: var(--series); stroke-width: 2; }
+  .thumb .comp { stroke: var(--c1); stroke-width: 1.5; }
+  .thumb .zero { stroke: var(--grid); stroke-width: 1; }
+  .thumb .end { fill: var(--series); stroke: var(--surface); stroke-width: 1.5; }
+  @media (max-width: 760px) { .chart-try .cthumb { flex: 1 1 100%; } .chart-try .thumb { width: 100%; height: 56px; } }
   @media print { .chart-try { display: none; } }
   /* At a glance: every number on one screen (left out with ?view=tiles) ---- */
   .glance { padding: 24px 0 8px; }
@@ -244,17 +257,17 @@
   .compare span + span::before { content: "\00a0\00a0|\00a0\00a0"; content: "\00a0\00a0|\00a0\00a0" / ""; color: var(--hairline); }   /* "/ """: a divider, not read aloud */
 
   /* Range strip: where the current reading sits in its typical range ------ */
-  .strip { margin: 18px 0 4px; min-height: 44px; }   /* heights reserved before the first draw, so links to a tile land on it */
-  .strip svg { display: block; width: 100%; height: 44px; overflow: visible; }
+  .strip { margin: 14px 0 4px; min-height: 50px; }   /* heights reserved before the first draw, so links to a tile land on it */
+  .strip svg { display: block; width: 100%; height: 50px; overflow: visible; }
   .strip .track { stroke: var(--range); stroke-width: 6; stroke-linecap: round; }
   .strip .now { fill: var(--series); stroke: var(--surface); stroke-width: 2; }
   .strip .avg { stroke: var(--ink-2); stroke-width: 2; }
   .strip .mid { stroke: var(--muted); stroke-width: 1.5; }   /* the median: the bar's center, since it ranks readings */
-  .strip text { font-size: 11px; fill: var(--muted); }
+  .strip text { font-size: 12.5px; fill: var(--muted); }   /* the labels are the context: never smaller than this */
   .strip text.avg-label { fill: var(--ink-2); }
   .strip .beyond { fill: var(--series); }
   .strip .qual { fill: var(--ink-2); font-weight: 600; }   /* "in today's dollars" changes how the bar reads */
-  .strip .beyond-label { font-size: 11px; fill: var(--series); font-weight: 600; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
+  .strip .beyond-label { font-size: 12.5px; fill: var(--series); font-weight: 600; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
   .context { margin: 6px 0 0; font-size: 15px; font-weight: 600; }
   .household { margin: 6px 0 0; font-size: 13.5px; color: var(--ink-2); }
   .explainer { margin: 8px 0 0; font-size: 13.5px; }
@@ -360,13 +373,13 @@
   <div class="wrap">
     <h2 id="how-to-read">How to read this page</h2>
     <p><strong>The big number</strong> is the latest official reading. The date beside it is the period it describes, which is usually a few weeks behind today, because that is how long the agencies take to count.</p>
-    <p><strong>The bar underneath</strong> ranks that reading against everything the indicator has done since records began. It spans the typical range, the middle 90 percent of that history, and the dot sits at the reading's rank: halfway along, at the small notch, means half of all past readings were lower, which is what the sentence under it says in words. That middle reading is the median, and the label above the notch gives it. A dot near either end means today is unusual; a dot in the middle means it is not, whatever the headlines say. A small arrow at either end means the reading is outside the typical range altogether, which is rarer still. The numbers at the ends are the readings at the edges of that middle 90 percent. Because the bar shows rank rather than amount, the same distance along it can stand for a small change in one place and a large one in another.</p>
+    <p><strong>The bar underneath</strong> ranks that reading against everything the indicator has done since records began. It spans the typical range, the middle 90 percent of that history, and the dot sits at the reading's rank: halfway along, at the small notch, means half of all past readings were lower, which is what the sentence under it says in words. That middle reading is the median, and the label above the notch gives it. A dot near either end means today is unusual; a dot in the middle means it is not, whatever the headlines say. A dot pinned at either end, with an arrow pointing outward, means the reading is outside the typical range altogether, which is rarer still. The numbers at the ends are the readings at the edges of that middle 90 percent. Because the bar shows rank rather than amount, the same distance along it can stand for a small change in one place and a large one in another.</p>
     <p><strong>At a glance</strong>, at the top, puts every number's bar in one list so you can scan them all before reading any one in full. Each row links to its tile. Prefer the tiles alone? <a href="?view=tiles">Hide the overview</a> to leave the list out.</p>
     <p><strong>The line in plain terms</strong> restates the reading as something a household would feel: what last year's $100 buys, the payment on the median home at this rate, how many people the unemployment rate represents. It is computed from the same data each time the figures refresh.</p>
     <p><strong>The 2015–19 average</strong> is the last five full years before the pandemic. It is not a target, just a reasonable stand-in for what "normal" felt like recently. Its tick on the bar sits at that average's own rank in the history.</p>
     <p><strong>What things cost</strong> shows prices as charged at the store and the pump, but compares them with the past after taking out inflation, because a raw price almost always sets a record eventually. Their typical range and 2015–19 average are in today's dollars; the chart and the year-ago figure are the prices people actually paid.</p>
     <p><strong>The chart</strong> shows the full history, with recessions shaded as dated by the National Bureau of Economic Research. Use the buttons to zoom in.</p>
-    <p><strong>Full chart and context</strong> opens one indicator at full size, with context you can turn on: reference lines such as the Fed's target, companion series such as PCE inflation or the U-6 rate, and bands showing who held the presidency and Congress, who chaired the Fed, and when major events happened. The main page stays plain on purpose; the context is there for readers who want it, each piece with its source and selection rule.</p>
+    <p><strong>Add context</strong> opens one indicator at full size, with context you can turn on: reference lines such as the Fed's target, companion series such as PCE inflation or the U-6 rate, and bands showing who held the presidency and Congress, who chaired the Fed, and when major events happened. The main page stays plain on purpose; the context is there for readers who want it, each piece with its source and selection rule.</p>
     <p><strong>Revisions.</strong> Agencies revise their numbers as more data comes in, sometimes substantially. This page always shows the current figures, so a month's reading here can differ from the headline that was reported at the time.</p>
     <p><strong>Articles</strong> explain each number in plain words, follow the numbers to five kinds of household, and take up what is argued about. Each number links to its own explainer, and all of them are linked from the top of the page.</p>
     <p id="attribution"></p>
@@ -529,7 +542,7 @@
     const box = el('div', { class: 'strip' });
     function draw() {
       const old = box.querySelector('svg'); if (old) old.remove();
-      const W = Math.max(200, box.clientWidth || 480), H = 44, padL = 8, padR = 8, y = 16;
+      const W = Math.max(200, box.clientWidth || 480), H = 50, padL = 8, padR = 8, y = 22;   // y leaves room above for the 12.5px labels
       const pos = p => padL + rankFrac(p) * (W - padL - padR);     // by rank: see baselineRank()
       const svg = svgEl('svg', { viewBox: '0 0 ' + W + ' ' + H, width: W, height: H, role: 'img', 'aria-label': stripLabel(t) });
       svg.appendChild(svgEl('line', { class: 'track', x1: padL, x2: W - padR, y1: y, y2: y }));
@@ -542,7 +555,7 @@
         ax = pos(avgRank);
         tick = svgEl('line', { class: 'avg', x1: ax, x2: ax, y1: y - 9, y2: y + 9 }); svg.appendChild(tick);
         const label = '2015–19 avg ' + fmtValue(avg, d);
-        const approxW = label.length * 6.4;
+        const approxW = label.length * 7.2;   // about the width of a character at 12.5px
         let anchor = 'middle', lx = ax;
         if (ax - approxW / 2 < 0) { anchor = 'start'; lx = Math.max(ax - 4, 0); }
         else if (ax + approxW / 2 > W) { anchor = 'end'; lx = Math.min(ax + 4, W); }
@@ -550,13 +563,16 @@
         lab.textContent = label;
         svg.appendChild(lab);
       }
-      // current reading; outside the range, an arrow and a label that steps past the 2015–19 tick rather than over it
-      const beyondW = 92;
-      if (where === 'below') { svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (padL - 4) + ',' + y + ' l10,-7 l0,14 z' }));
-        let bx = padL + 10; if (ax != null && ax > bx - 6 && ax < bx + beyondW + 6) bx = ax + 8;
+      // current reading; outside the range, the dot pinned at that end of the track with an arrow pointing outward,
+      // and a label that steps past the 2015–19 tick rather than over it
+      const beyondW = 105;
+      if (where === 'below') { svg.appendChild(svgEl('circle', { class: 'now', cx: padL, cy: y, r: 7 }));
+        svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (padL - 19) + ',' + y + ' l10,-7 l0,14 z' }));
+        let bx = padL + 12; if (ax != null && ax > bx - 6 && ax < bx + beyondW + 6) bx = ax + 8;
         const bl = svgEl('text', { class: 'beyond-label', x: bx, y: y + 4, 'text-anchor': 'start' }); bl.textContent = 'below the range'; svg.appendChild(bl); }
-      else if (where === 'above') { svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (W - padR + 4) + ',' + y + ' l-10,-7 l0,14 z' }));
-        let bx = W - padR - 10; if (ax != null && ax < bx + 6 && ax > bx - beyondW - 6) bx = ax - 8;
+      else if (where === 'above') { svg.appendChild(svgEl('circle', { class: 'now', cx: W - padR, cy: y, r: 7 }));
+        svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (W - padR + 19) + ',' + y + ' l-10,-7 l0,14 z' }));
+        let bx = W - padR - 12; if (ax != null && ax < bx + 6 && ax > bx - beyondW - 6) bx = ax - 8;
         const bl = svgEl('text', { class: 'beyond-label', x: bx, y: y + 4, 'text-anchor': 'end' }); bl.textContent = 'above the range'; svg.appendChild(bl); }
       else { const cx = pos(c.percentile_below); svg.appendChild(svgEl('circle', { class: 'now', cx, cy: y, r: 7 }));
         if (tick && Math.abs(ax - cx) < 9) svg.appendChild(tick); }   // the reading sits on the tick: keep the tick in view
@@ -602,8 +618,11 @@
       if (c.median != null) svg.appendChild(svgEl('line', { class: 'mid', x1: pos(50), x2: pos(50), y1: y - 3.5, y2: y + 3.5 }));
       let tick = null;
       if (c.baseline_2015_19 != null && avgRank != null) { const ax = pos(avgRank); tick = svgEl('line', { class: 'avg', x1: ax, x2: ax, y1: y - 6, y2: y + 6 }); svg.appendChild(tick); }
-      if (where === 'below') svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (pad - 5) + ',' + y + ' l9,-6 l0,12 z' }));
-      else if (where === 'above') svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (W - pad + 5) + ',' + y + ' l-9,-6 l0,12 z' }));
+      // outside the range: the dot pinned at that end, with an arrow pointing outward (the key shows the same pair)
+      if (where === 'below') { svg.appendChild(svgEl('circle', { class: 'now', cx: pad, cy: y, r: 5.5 }));
+        svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (pad - 16) + ',' + y + ' l9,-6 l0,12 z' })); }
+      else if (where === 'above') { svg.appendChild(svgEl('circle', { class: 'now', cx: W - pad, cy: y, r: 5.5 }));
+        svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (W - pad + 16) + ',' + y + ' l-9,-6 l0,12 z' })); }
       else { const cx = pos(c.percentile_below); svg.appendChild(svgEl('circle', { class: 'now', cx, cy: y, r: 5.5 }));
         if (tick && Math.abs(+tick.getAttribute('x1') - cx) < 7) svg.appendChild(tick); }
       box.appendChild(svg);
@@ -623,7 +642,7 @@
     key.appendChild(el('span', { html: keySvg('<line x1="3" x2="27" y1="7" y2="7" stroke="var(--range)" stroke-width="5" stroke-linecap="round"/>') + 'typical range (the middle 90% of its history)' }));
     key.appendChild(el('span', { html: keySvg('<line x1="3" x2="27" y1="7" y2="7" stroke="var(--range)" stroke-width="5" stroke-linecap="round"/><line x1="15" x2="15" y1="3.5" y2="10.5" stroke="var(--muted)" stroke-width="1.5"/>') + 'median, always the middle' }));
     key.appendChild(el('span', { html: keySvg('<line x1="15" x2="15" y1="1" y2="13" stroke="var(--ink-2)" stroke-width="2"/>') + '2015–19 average' }));
-    key.appendChild(el('span', { html: keySvg('<path d="M24,7 l-9,-6 l0,12 z" fill="var(--series)"/>') + 'outside the range' }));
+    key.appendChild(el('span', { html: keySvg('<circle cx="11" cy="7" r="5.5" fill="var(--series)"/><path d="M29,7 l-9,-6 l0,12 z" fill="var(--series)"/>') + 'outside the range' }));
     key.appendChild(el('a', { href: '#how-to-read', text: 'How to read this ↓' }));
     g.appendChild(key);
     const cols = el('div', { class: 'cols' });
@@ -811,7 +830,8 @@
     }
 
     const head = el('div', { class: 'chart-head' });
-    head.appendChild(el('span', { class: 'range-title' }, [el('a', { class: 'full', href: 'chart/' + t.id + '/', text: 'Full chart and context →', 'aria-label': 'Full chart and context: ' + t.title })]));
+    // the button names what the chart page adds that the tile does not (the tile already has the chart itself)
+    head.appendChild(el('span', { class: 'range-title' }, [el('a', { class: 'full', href: 'chart/' + t.id + '/', text: 'Add context: presidents, the Fed, events →', 'aria-label': 'Add context to ' + t.title + ': presidents, the Fed, events' })]));
     const ctl = el('div', { class: 'ranges', role: 'group', 'aria-label': 'Chart range' });
     // a series shorter than 25 years has one view, so no buttons
     if (yearsBetween(obs[0][0], obs[obs.length - 1][0]) < 24.5) range = 'all';
@@ -931,9 +951,14 @@
           el('li', {}, [el('a', { href: p.url, title: p.title || p.label }, [el('span', { class: 'n', text: String(i + 1) }), ' ' + p.label])])))] : [])));
     // Chart to try (explainers.json chart_prompt): a sentence and a link to a ready-made chart view
     const cp = data.chartPrompt;
-    if (cp && cp.text && cp.url) main.appendChild(el('aside', { class: 'chart-try', 'aria-label': 'Chart to try' },
-      [el('span', { class: 'flabel', text: 'Chart to try' }), el('a', { class: 'ftitle', href: cp.url, text: cp.title || cp.link || 'See the chart' }), ' →',
-       el('p', { class: 'fdek', text: cp.text })]));
+    if (cp && cp.text && cp.url) {
+      const text = el('div', { class: 'ctext' },
+        [el('span', { class: 'flabel', text: 'Chart to try' }), el('a', { class: 'ftitle', href: cp.url, text: cp.title || cp.link || 'See the chart' }), ' →',
+         el('p', { class: 'fdek', text: cp.text })]);
+      // the picture (inline SVG written by the articles build from the site's own data); it repeats the title's link
+      const thumb = typeof cp.svg === 'string' && cp.svg.startsWith('<svg class="thumb"') ? el('a', { class: 'cthumb', href: cp.url, 'aria-hidden': 'true', tabindex: '-1', html: cp.svg }) : null;
+      main.appendChild(el('aside', { class: 'chart-try', 'aria-label': 'Chart to try' }, thumb ? [text, thumb] : [text]));
+    }
     // ?view=tiles is the page as it was before the overview: the tiles alone, with a way back
     const hasGlance = new URLSearchParams(location.search).get('view') !== 'tiles';
     if (!hasGlance) main.appendChild(el('p', { class: 'view-switch' }, ['Showing the tiles without the overview. ', el('a', { href: './', text: 'Show all the numbers at a glance →' })]));
