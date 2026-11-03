@@ -9,9 +9,9 @@ order: 11
 featured: 2026-11-01
 ---
 
-## In one sentence
+## The short version
 
-Every way of paying for health care is also a way of dividing nearly a fifth of the economy, so the question to ask of any option is not only what it costs in total but who pays more, who pays less, and who gets paid less.
+Every way of paying for health care is also a way of dividing nearly a fifth of the economy, so the question to ask of any option is who pays more, who pays less, and who gets paid less. The country spent $5.3 trillion on care in 2024. It pays more than other rich countries mostly because of prices, not because it uses more care. Under current law coverage is shrinking: the extra marketplace credits ended in 2025, Medicaid work requirements start by January 2027, and CBO expects about 14 million more people uninsured by 2034 as a result. Single payer would cover everyone with no premiums or deductibles and move most spending onto the federal budget. Estimates of the total range from about 20% lower to 21% higher than today, depending mostly on what it would pay hospitals, doctors and drugmakers. The options between change less: restoring the credits, a public option, capping private prices, or sending subsidy money to people instead of insurers. The evidence settles more about who gains under each than about which trade is worth it.
 
 ## The analogy
 

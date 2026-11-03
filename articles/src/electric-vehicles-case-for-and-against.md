@@ -8,9 +8,9 @@ hook: the case for, the case against, and what the arithmetic turns on
 order: 14
 ---
 
-## In one sentence
+## The short version
 
-Whether an electric car pays off for a household turns mostly on two things the data keep pointing at: a place to plug in at night, which is where the fuel saving lives, and how long the car is kept, which is what lets the fuel and maintenance savings outrun the steeper loss of value.
+Whether an electric car pays off for a household turns mostly on two things the data keep pointing at: a place to plug in at night, and how long the car is kept. At current prices, charging at home costs {{fig ev_ratio_words else="about a third of what gasoline costs"}} per mile. At mid-2026 rates, a public fast charger cost about what gasoline did in late October 2026. On AAA's 2026 figures, an EV saves about $2,150 a year on energy and maintenance and gives back about $1,700 of it in steeper depreciation. That leaves EVs within about 2% of gas cars over five years in compact and mid-size SUVs and well behind in sedans, with a conventional hybrid cheapest in every segment. Over its life an EV emits 40–60% less than a comparable gas car on the U.S.-average grid. The real drawbacks are resale value, charging without a driveway, road-trip time and higher insurance.
 
 ## The analogy
 

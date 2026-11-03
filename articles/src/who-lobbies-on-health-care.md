@@ -8,9 +8,9 @@ hook: disclosed federal lobbying by industry, doctors, unions and patient groups
 order: 12
 ---
 
-## In one sentence
+## The short version
 
-Federal lobbying reports show who paid to press their case on health care with Congress and federal agencies, how much, and which bills and rules they named, but not which side they took, whether anyone listened, or much of what is spent to change minds.
+Federal lobbying reports show who paid to press their case on health care, how much, and which bills they named, but not which side they took or whether it worked. Health care reported about $878 million in 2025, more than any other part of the economy. That is roughly its share of the economy and under 2 cents for every $100 spent on care. Drugmakers, insurers and hospitals spent the most, but doctors, AARP and patient groups lobby on the same bills. Many patient groups take money from companies with a stake in those bills. And the industries often oppose each other: hospitals against insurers on site-neutral payment, drugmakers against PBMs, drugmakers against hospitals on 340B. The reports leave out advertising, grants to allied groups, state lobbying and campaign money. Research finds lobbying changes outcomes less than the totals suggest, but the stakes are large enough that small shifts in the odds pay off.
 
 ## The analogy
 
