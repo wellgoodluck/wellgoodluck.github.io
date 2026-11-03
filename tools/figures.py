@@ -1026,6 +1026,132 @@ def fig_restaurant_jobs_vs_feb2020(D):
     return f"about {round(abs(r) * 100)}% {'more' if r > 0 else 'fewer'} than in February 2020, just before the pandemic", []
 
 
+# --- Nov 3: electric vehicles (the worked example in "Electric Vehicles: The Case For, the Case Against…") ---
+# The example's assumptions, stated in the article: 15,000 miles a year, an EV at 3.5 miles per kWh,
+# a gas car at 27.1 mpg. Inputs are the almanac's gasoline (GASREGW, weekly, $/gal) and electricity
+# (APU000072610, monthly, $/kWh) tiles, each with its own period, so every sentence prints both.
+EV_MILES, EV_MI_PER_KWH, EV_GAS_MPG = 15000, 3.5, 27.1
+
+
+def _ev_prices(D, field="value"):
+    """((gas date, $/gal), (electricity date, $/kWh)) for the latest reading, or the year-ago one."""
+    g = D.context("gas")[field]
+    e = D.context("electricity")[field]
+    if not g or not e:
+        raise KeyError(f"no {field} for gas or electricity")
+    return g, e
+
+
+def _ev_costs(gas, elec):
+    """(home charging $/yr, gasoline $/yr) for the example, each rounded to $10 as printed."""
+    home = round(EV_MILES / EV_MI_PER_KWH * elec / 10) * 10
+    pump = round(EV_MILES / EV_GAS_MPG * gas / 10) * 10
+    return home, pump
+
+
+def _usd50(x):
+    return f"${round(x / 50) * 50:,.0f}"
+
+
+def _ev_saving_words(home, pump, subject="the EV"):
+    """'so the EV saves about $1,500' / 'so the EV costs about $200 more' / 'so the two cost about the same',
+    from the two yearly figures as printed."""
+    diff = pump - home
+    if diff >= 100:
+        return f"so {subject} saves about {_usd50(diff)}"
+    if diff <= -100:
+        return f"so {subject} costs about {_usd50(-diff)} more"
+    return "so the two cost about the same"
+
+
+def fig_ev_elec_price(D):
+    return f"{_ev_prices(D)[1][1] * 100:.1f}¢", ["https://fred.stlouisfed.org/series/APU000072610"]
+
+
+def fig_ev_elec_month(D):
+    return month_year(_ev_prices(D)[1][0]), []
+
+
+def fig_ev_per_mile_home(D):
+    return f"{_ev_prices(D)[1][1] / EV_MI_PER_KWH * 100:.1f}¢", ["https://fred.stlouisfed.org/series/APU000072610"]
+
+
+def fig_ev_per_mile_gas(D):
+    return f"{_ev_prices(D)[0][1] / EV_GAS_MPG * 100:.1f}¢", ["https://fred.stlouisfed.org/series/GASREGW"]
+
+
+def fig_ev_home_cost(D):
+    (gd, g), (ed, e) = _ev_prices(D)
+    return fmt(_ev_costs(g, e)[0], "usd0"), []
+
+
+def fig_ev_gas_cost(D):
+    (gd, g), (ed, e) = _ev_prices(D)
+    return fmt(_ev_costs(g, e)[1], "usd0"), []
+
+
+def fig_ev_saving_sentence(D):
+    """The clause that closes the worked example: 'so the EV saves about $1,500'."""
+    (gd, g), (ed, e) = _ev_prices(D)
+    return _ev_saving_words(*_ev_costs(g, e)), []
+
+
+def fig_ev_saving_clause(D):
+    """The case-for bullet: 'saves about $1,500 on fuel' / 'costs about $200 more in fuel' / 'comes out about even on fuel'."""
+    (gd, g), (ed, e) = _ev_prices(D)
+    home, pump = _ev_costs(g, e)
+    diff = pump - home
+    if diff >= 100:
+        return f"saves about {_usd50(diff)} on fuel", []
+    if diff <= -100:
+        return f"costs about {_usd50(-diff)} more in fuel", []
+    return "comes out about even on fuel", []
+
+
+def val_ev_saving(D):
+    """The yearly fuel saving in dollars, from the figures as printed (negative when the EV costs more)."""
+    (gd, g), (ed, e) = _ev_prices(D)
+    home, pump = _ev_costs(g, e)
+    return float(pump - home)
+
+
+def val_ev_ratio(D):
+    """Home charging cost per mile as a share of gasoline's (0.35 = about a third), for checks."""
+    (gd, g), (ed, e) = _ev_prices(D)
+    return round((e / EV_MI_PER_KWH) / (g / EV_GAS_MPG), 3)
+
+
+def fig_ev_ratio_words(D):
+    """Home charging against gasoline per mile: 'about a third of what gasoline costs' and its other forms."""
+    r = val_ev_ratio(D)
+    if r < 0.28:
+        return "less than a third of what gasoline costs", []
+    if r < 0.40:
+        return "about a third of what gasoline costs", []
+    if r < 0.60:
+        return "about half of what gasoline costs", []
+    if r < 0.80:
+        return "about two-thirds of what gasoline costs", []
+    if r <= 1.2:
+        return "about what gasoline costs", []
+    return "more than gasoline costs", []
+
+
+def fig_ev_year_ago_sentence(D):
+    """'A year earlier, with gasoline at $3.04 (the week ending October 27, 2025) and electricity at 18.8¢
+    (September 2025), the saving was about $850.' and its other forms."""
+    (gd, g), (ed, e) = _ev_prices(D, "year_ago")
+    home, pump = _ev_costs(g, e)
+    diff = pump - home
+    lead = (f"A year earlier, with gasoline at {fmt(g, 'usd2')} ({period(gd, 'w')}) and electricity at "
+            f"{e * 100:.1f}¢ ({month_year(ed)}), ")
+    if diff >= 100:
+        return lead + f"the saving was about {_usd50(diff)}.", []
+    if diff <= -100:
+        return lead + f"the EV cost about {_usd50(-diff)} more.", []
+    return lead + "the two cost about the same.", []
+
+
 FIGS = {
     "claims_low": fig_claims_low,
     "continuing_claims": fig_continuing_claims,
@@ -1062,6 +1188,11 @@ FIGS = {
     "fafh_since_feb2020": fig_fafh_since_feb2020, "fafh_year": fig_fafh_year,
     "restaurant_jobs": fig_restaurant_jobs, "restaurant_jobs_month": fig_restaurant_jobs_month,
     "restaurant_jobs_vs_feb2020": fig_restaurant_jobs_vs_feb2020,
+    "ev_elec_price": fig_ev_elec_price, "ev_elec_month": fig_ev_elec_month,
+    "ev_per_mile_home": fig_ev_per_mile_home, "ev_per_mile_gas": fig_ev_per_mile_gas,
+    "ev_home_cost": fig_ev_home_cost, "ev_gas_cost": fig_ev_gas_cost,
+    "ev_saving_sentence": fig_ev_saving_sentence, "ev_saving_clause": fig_ev_saving_clause,
+    "ev_ratio_words": fig_ev_ratio_words, "ev_year_ago_sentence": fig_ev_year_ago_sentence,
 }
 VALUES = {      # usable on the left of a check as fig:<name>
     "claims_rule_last": val_claims_rule_last,
@@ -1070,6 +1201,7 @@ VALUES = {      # usable on the left of a check as fig:<name>
     "rent_minus_prices": val_rent_minus_prices, "unemployed_vs_2019": val_unemployed_vs_2019,
     "real_raise_sep2019": val_real_raise_sep2019, "openings_vs_2019": val_openings_vs_2019,
     "fafh_gap": val_fafh_gap, "fafh_since_2019_pct": val_fafh_since_2019_pct,
+    "ev_saving": val_ev_saving, "ev_ratio": val_ev_ratio,
 }
 
 
