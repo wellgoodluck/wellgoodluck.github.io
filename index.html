@@ -115,12 +115,16 @@
     color: var(--ink-2);
   }
   .masthead .updated { margin: 14px 0 0; color: var(--muted); font-size: 13.5px; }
-  /* Section nav: below the masthead; on phones one sideways-scrolling row that stays at the top */
-  .secnav { position: sticky; top: 0; z-index: 5; margin: 14px 0 0; background: var(--page); border-bottom: 1px solid var(--hairline); }
-  .sections-nav { margin: 0; padding: 2px 0; list-style: none; display: flex; flex-wrap: wrap; gap: 0 22px; font-size: 15px; }
-  .sections-nav a { display: inline-block; padding: 9px 0; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 6px; white-space: nowrap; }
-  .sections-nav a:hover { color: var(--ink); text-decoration-color: var(--ink); }
-  .sections-nav a[aria-current] { color: var(--ink); text-decoration-color: var(--ink); text-decoration-thickness: 2px; }
+  /* Section nav: a bar below the masthead (sheet surface between two hairlines, with an "On this page" label), so it
+     reads as a menu and not as a line of links; it stays at the top while you scroll. The section in view carries a
+     2px ink rule along the bar's bottom edge. On phones: one sideways-scrolling row, no label. Same rules in site.css. */
+  .secnav { position: sticky; top: 0; z-index: 5; margin: 14px 0 0; background: var(--surface); border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
+  .secnav .wrap { display: flex; align-items: center; gap: 0 20px; }
+  .secnav-label { flex: none; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
+  .sections-nav { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 0 22px; font-size: 15px; }
+  .sections-nav a { display: inline-block; padding: 11px 0 9px; margin-bottom: -1px; color: var(--ink-2); font-weight: 600; text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; }
+  .sections-nav a:hover { color: var(--ink); border-bottom-color: var(--muted); }
+  .sections-nav a[aria-current] { color: var(--ink); border-bottom-color: var(--ink); }
   /* jumps land below the sticky nav; --nav-h is its measured height */
   main, section.group, .tile, .glance, #how-to-read { scroll-margin-top: calc(var(--nav-h, 48px) + 8px); }
   .skip { position: absolute; left: 8px; top: -60px; z-index: 10; padding: 10px 14px; background: var(--ink); color: var(--surface); font-size: 13.5px; font-weight: 600; text-decoration: none; border-radius: 4px; }
@@ -139,7 +143,8 @@
     .sections-nav { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 0 16px; margin: 0 -16px; gap: 0 20px; }
     .sections-nav::-webkit-scrollbar { display: none; }
     .sections-nav li:last-child { padding-right: 16px; }
-    .sections-nav a { padding: 12px 0; }   /* about 46px: a thumb-sized target */
+    .secnav-label { display: none; }
+    .sections-nav a { padding: 14px 0 12px; }   /* about 46px: a thumb-sized target */
     /* the row fades at an edge with more to scroll to (classes set from the scroll position) */
     .sections-nav.fade-r { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
     .sections-nav.fade-l { -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to left, #000 calc(100% - 36px), transparent); }
@@ -363,7 +368,7 @@
     <p class="updated" id="updated"></p>
   </div>
 </header>
-<nav class="secnav" aria-label="Sections"><div class="wrap"><ul class="sections-nav" id="nav"></ul></div></nav>
+<nav class="secnav" aria-label="On this page"><div class="wrap"><span class="secnav-label" aria-hidden="true">On this page</span><ul class="sections-nav" id="nav"></ul></div></nav>
 
 <main class="wrap" id="main">
   <p class="status" id="status" role="status">Loading the latest figures…</p>

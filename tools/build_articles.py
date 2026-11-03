@@ -573,7 +573,10 @@ def render_index(articles):
     page = HEAD.format(title="Articles", desc="Longer reads on the U.S. economy: what the figures show, what is settled and what is argued about.",
                        canonical=f"{SITE}/articles/")
     page = page.replace('<a href="./">Articles</a>', "Articles")
-    page += '<main class="wrap article">\n<h1>Articles</h1>\n<p class="dek">Longer reads on what the figures show, what is settled, and what is argued about.</p>\n'
+    page += '<div class="wrap article article-head">\n<h1>Articles</h1>\n<p class="dek">Longer reads on what the figures show, what is settled, and what is argued about.</p>\n</div>\n'
+    # the section bar sits between the title and the lead items, as the almanac's does, and the rest is main
+    page += "{SECNAV}"
+    page += '<main class="wrap article" id="main">\n'
     feat, _ = featured_pick(articles)
     if feat:
         page += featured_html(feat)
@@ -626,8 +629,10 @@ def render_index(articles):
 
     jump = [("#latest", "Latest", latest), ("#household-paths", "Your situation", paths),
             ("#the-numbers", "The numbers", numbers), ("#the-ideas", "The ideas", ideas)]
-    page += ('<nav class="jump" aria-label="On this page">'
-             + "".join(f'<a href="{h}">{t}</a>' for h, t, items in jump if items) + "</nav>\n")
+    secnav = ('<nav class="secnav" aria-label="On this page"><div class="wrap"><span class="secnav-label" aria-hidden="true">On this page</span>'
+              '<ul class="sections-nav" id="nav">' + "".join(f'<li><a href="{h}">{t}</a></li>' for h, t, items in jump if items)
+              + '</ul></div></nav>\n')
+    page = page.replace("{SECNAV}", secnav, 1)
     page += '<p class="feed-link">New and updated articles by feed reader: <a href="feed.xml">the Atom feed</a>.</p>\n'
 
     if latest:
@@ -675,7 +680,7 @@ def render_index(articles):
                 run.append(a)
         if run:
             page += compact(run)
-    page += "</main>\n" + FOOT
+    page += '</main>\n<script src="../assets/secnav.js"></script>\n' + FOOT
     return page
 
 

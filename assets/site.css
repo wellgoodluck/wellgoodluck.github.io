@@ -82,13 +82,35 @@ a:hover { text-decoration-color: var(--ink); }
 
 /* Index layout: jump links, Latest with its folded earlier pieces, Plain words split into
    The numbers (grouped as on the almanac) and The ideas, in one-line entries */
-.article > .jump, .article > h2, .article > h3, .article > .lede, .article > .num-group,
+.article > h2, .article > h3, .article > .lede, .article > .num-group,
 .article > .compact-list, .article > details.earlier { max-width: var(--measure); }
-.jump { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 16px 0 0; font-size: 15px; }
-.jump a { text-decoration: none; border-bottom: 1px solid var(--hairline); padding-bottom: 1px; }
-.jump a:hover { border-color: var(--ink); }
-/* the feed, under the jump links on the articles index */
-.article > .feed-link { max-width: var(--measure); margin: 10px 0 0; font-size: 13.5px; color: var(--ink-2); }
+/* The index's title and dek sit above the section bar, outside main; the bar is the almanac's (index.html has the same
+   rules): a sheet-colored strip between two hairlines with an "On this page" label, sticky, the section in view marked
+   by a 2px ink rule on the bar's bottom edge; on phones one sideways-scrolling row with edge fades and no label */
+.article-head { padding-bottom: 0; }
+.article-head h1, .article-head .dek { max-width: var(--measure); }
+.secnav { position: sticky; top: 0; z-index: 5; margin: 14px 0 0; background: var(--surface); border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
+.secnav .wrap { display: flex; align-items: center; gap: 0 20px; }
+.secnav-label { flex: none; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
+.sections-nav { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 0 22px; font-size: 15px; }
+.sections-nav a { display: inline-block; padding: 11px 0 9px; margin-bottom: -1px; color: var(--ink-2); font-weight: 600; text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; }
+.sections-nav a:hover { color: var(--ink); border-bottom-color: var(--muted); }
+.sections-nav a[aria-current] { color: var(--ink); border-bottom-color: var(--ink); }
+.secnav + main.article { padding-top: 0; }
+#latest, #household-paths, #the-numbers, #the-ideas { scroll-margin-top: calc(var(--nav-h, 48px) + 8px); }   /* jumps land below the bar */
+@media (max-width: 760px) {
+  .secnav { margin-top: 10px; }
+  .secnav-label { display: none; }
+  .sections-nav { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 0 16px; margin: 0 -16px; gap: 0 20px; }
+  .sections-nav::-webkit-scrollbar { display: none; }
+  .sections-nav li:last-child { padding-right: 16px; }
+  .sections-nav a { padding: 14px 0 12px; }   /* about 46px: a thumb-sized target */
+  .sections-nav.fade-r { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
+  .sections-nav.fade-l { -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to left, #000 calc(100% - 36px), transparent); }
+  .sections-nav.fade-l.fade-r { -webkit-mask-image: linear-gradient(to right, transparent, #000 36px, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, transparent, #000 36px, #000 calc(100% - 36px), transparent); }
+}
+/* the feed, under the lead items on the articles index */
+.article > .feed-link { max-width: var(--measure); margin: 14px 0 0; font-size: 13.5px; color: var(--ink-2); }
 /* Featured line on the articles index (same look as the almanac's; set by a featured: date in front matter) */
 .featured { margin: 22px 0 0; padding: 12px 0 14px; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--hairline); font-size: 15px; line-height: 1.45; text-wrap: pretty; }   /* the lead item: a 2px ink rule above, as a newspaper marks it */
 .article > .featured { max-width: calc(var(--measure) * 17 / 15); }   /* the list's width: 42em at the body's 17px */
@@ -179,7 +201,7 @@ h1, h2, h3, h4, .dek { text-wrap: balance; }
 @media print {
   :root { --page: #fff; --surface: #fff; }
   body { background: #fff; }
-  .crumb, .jump, .featured, .chart-try, .feed-link, .series-parts, .series-next { display: none !important; }
+  .crumb, .secnav, .featured, .chart-try, .feed-link, .series-parts, .series-next { display: none !important; }
   .article .series { margin-top: 0; }
   .article figure.chart-embed, .article .table-scroll, .map { break-inside: avoid; }
   .article figure.chart-embed { width: 100%; }
