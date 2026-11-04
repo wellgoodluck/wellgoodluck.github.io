@@ -40,6 +40,8 @@ API_KEY = os.environ.get("FRED_API_KEY", "").strip()
 #            "higher than" sentence on the inflation-adjusted history, in dollars
 #            of the latest reading's month, because a raw price only trends up.
 #            The headline, comparisons and chart stay as charged.
+#            year "calendar": a yearly (freq a) tile whose years are calendar
+#            years, labeled "2025"; without it yearly readings read "FY 2025".
 #            wide True: when the tile's section has an odd number of tiles, this
 #            tile spans both columns at the top of the section on desktop
 #            (index.html). Ignored when the count is even. An odd section with
@@ -129,6 +131,19 @@ TILES = [
         "display": {"scale": 1, "decimals": 0, "suffix": "K", "signed": True,
                     "unit": "thousands of jobs, change from a year earlier", "clip": [-600, 800]},
         "note": "Hospitals, doctors' and dentists' offices, outpatient centers, home health care, and nursing and residential care; seasonally adjusted. Social assistance, such as child care, is not included. Revised with the rest of the payroll numbers.",
+    },
+    {
+        "id": "newspaper_jobs",
+        "agency": "BLS",
+        "section": "Jobs",
+        "title": "Newspaper jobs",
+        "subtitle": "People employed by newspaper publishers, yearly",
+        "series": "IPUJN511110W200000000",
+        "params": {"observation_start": "1987-01-01"},
+        "freq": "a",
+        "display": {"scale": 1, "decimals": 0, "suffix": "K", "signed": False,
+                    "unit": "thousands of jobs", "year": "calendar"},
+        "note": "Everyone working for newspaper publishers, from reporters to printing, ad sales and delivery, including the self-employed; a person with jobs at two papers counts twice. Online-only outlets were counted in a separate industry until the 2022 industry codes grouped them with publishers of the same kind. From the BLS productivity program; each year posts the following spring. Magazine and broadcasting jobs are on the chart page.",
     },
     # ---- Prices -----------------------------------------------------------
     {
@@ -874,6 +889,14 @@ COMPANIONS = [
     {"id": "sirloin", "label": "Sirloin steak, as charged", "for": ["ground_beef"],
      "series": "APU0000703613", "params": {"observation_start": "1989-01-01"}, "freq": "m",
      "why": "The upscale cut: boneless USDA Choice sirloin steak. BLS has priced it since 1989."},
+    # Other news employers, counted the same way as the newspaper tile (BLS productivity program, yearly,
+    # thousands of jobs, self-employed included), so they share its axis.
+    {"id": "periodical_jobs", "label": "Magazine and periodical publishers", "for": ["newspaper_jobs"],
+     "series": "IPUJN51112W200000000", "params": {"observation_start": "1987-01-01"}, "freq": "a",
+     "why": "Everyone employed by magazine, journal and newsletter publishers, counted the same way as the newspaper line. Most periodicals are not news publications."},
+    {"id": "broadcast_jobs", "label": "Radio and TV broadcasting", "for": ["newspaper_jobs"],
+     "series": "IPUJN5151W200000000", "params": {"observation_start": "1987-01-01"}, "freq": "a",
+     "why": "Everyone employed by radio and TV stations and networks, counted the same way as the newspaper line: newsrooms, but also entertainment programming, ad sales and engineering. Cable networks such as CNN are not included."},
 ]
 
 # Derived series, computed here from the fetched data so the page never has to
@@ -1009,6 +1032,23 @@ def household_lines(tiles_out, companions_out, extras):
             if hb and pb and None not in pb and mean(pb) > 0:
                 txt += f" In 2015{EN}19 its share was about {round(100 * mean(hb) / mean(pb))}%."
             lines["health_jobs"] = (txt, [{"series": "PAYEMS", "url": "https://fred.stlouisfed.org/series/PAYEMS"}])
+    except Exception: pass
+    try:
+        # Newspaper jobs (yearly, thousands): the latest year against 2019 and against the series' peak.
+        ob = [(d[:4], v) for d, v in T["newspaper_jobs"]["observations"]]
+        yr, v = ob[-1]
+        k = lambda x: f"{round(x) * 1000:,}"
+        txt = f"In {yr} newspaper publishers employed about {k(v)} people"
+        v19 = dict(ob).get("2019")
+        if v19 is not None and yr > "2019":
+            txt += (", about the same as in 2019." if round(v) == round(v19)
+                    else f", {'down' if v < v19 else 'up'} from about {k(v19)} in 2019.")
+        else:
+            txt += "."
+        py, pv = max(ob, key=lambda p: p[1])
+        txt += (f" That is the most since {ob[0][0]}." if py == yr
+                else f" The most since {ob[0][0]} was about {k(pv)}, in {py}.")
+        lines["newspaper_jobs"] = (txt, [])
     except Exception: pass
     try:
         pl = latest("price_level")

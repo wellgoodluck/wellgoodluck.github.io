@@ -381,6 +381,7 @@
   function fmtPeriod(s, freq, long) {
     const dt = parseDate(s), y = dt.getUTCFullYear(), m = dt.getUTCMonth(), day = dt.getUTCDate();
     if (freq === 'a') return 'FY ' + y;
+    if (freq === 'y') return String(y);
     if (freq === 'q') return 'Q' + (Math.floor(m / 3) + 1) + ' ' + y;
     if (freq === 'm') return (long ? MONTHS_LONG[m] : MONTHS[m]) + ' ' + y;
     return (long ? MONTHS_LONG[m] : MONTHS[m]) + ' ' + day + ', ' + y;
@@ -390,6 +391,8 @@
   function announce(text) { const l = document.getElementById('live'); if (!l) return; l.textContent = ''; setTimeout(() => { l.textContent = text; }, 50); }
   function evDate(e) { return e.when || fmtDate(e.date); }
   function evDateShort(e) { if (e.when) return e.when; const d = parseDate(e.date); return MONTHS[d.getUTCMonth()] + ' ' + d.getUTCFullYear(); }
+  // A yearly tile labels its readings "FY 2025" (fiscal years, the deficit) unless display.year is "calendar".
+  function pf(t) { return t.freq === 'a' && t.display && t.display.year === 'calendar' ? 'y' : t.freq; }
   function periodNoun(freq) { return freq === 'a' ? 'years' : freq === 'q' ? 'quarters' : freq === 'w' ? 'weeks' : 'months'; }
   function prevLabel(freq) { return freq === 'a' ? 'Previous year' : freq === 'q' ? 'Previous quarter' : freq === 'w' ? 'Previous week' : 'Previous month'; }
   function yearsBetween(a, b) { return (parseDate(b) - parseDate(a)) / (365.25 * 86400000); }
@@ -488,8 +491,8 @@
     const cur = c.current.value, prev = c.previous.value;
     // on a price tile a "since" date is in today's dollars and can contradict the price as charged, so only records are stated
     const sinceOK = !adjusted(t);
-    if (cur > prev) { if (c.highest_since == null) parts.push(hiRec); else if (sinceOK && yearsBetween(c.highest_since, c.current.date) >= 1) parts.push(hiSince + fmtPeriod(c.highest_since, t.freq) + '.'); }
-    else if (cur < prev) { if (c.lowest_since == null) parts.push(loRec); else if (sinceOK && yearsBetween(c.lowest_since, c.current.date) >= 1) parts.push(loSince + fmtPeriod(c.lowest_since, t.freq) + '.'); }
+    if (cur > prev) { if (c.highest_since == null) parts.push(hiRec); else if (sinceOK && yearsBetween(c.highest_since, c.current.date) >= 1) parts.push(hiSince + fmtPeriod(c.highest_since, pf(t)) + '.'); }
+    else if (cur < prev) { if (c.lowest_since == null) parts.push(loRec); else if (sinceOK && yearsBetween(c.lowest_since, c.current.date) >= 1) parts.push(loSince + fmtPeriod(c.lowest_since, pf(t)) + '.'); }
     if (adjusted(t) && parts.length) parts[0] = 'Adjusted for inflation, ' + parts[0].charAt(0).toLowerCase() + parts[0].slice(1);
     return parts.join(' ');
   }
@@ -694,7 +697,7 @@
       const ys = v => mT + (hi - v) / (hi - lo) * ih;
 
       const svg = svgEl('svg', { viewBox: '0 0 ' + width + ' ' + height, width, height, role: 'img',
-        'aria-label': t.title + ', ' + start.getUTCFullYear() + ' to ' + end.getUTCFullYear() + '. Latest: ' + fmtValue(obs[obs.length - 1][1], d) + ', ' + fmtPeriod(obs[obs.length - 1][0], t.freq) + '. ' + contextSentence(t) + (act.length ? ' Overlays on: ' + act.map(o => o.label).join(', ') + '.' : '') });
+        'aria-label': t.title + ', ' + start.getUTCFullYear() + ' to ' + end.getUTCFullYear() + '. Latest: ' + fmtValue(obs[obs.length - 1][1], d) + ', ' + fmtPeriod(obs[obs.length - 1][0], pf(t)) + '. ' + contextSentence(t) + (act.length ? ' Overlays on: ' + act.map(o => o.label).join(', ') + '.' : '') });
 
       // recessions (main plot and sub-panels)
       const recRects = [];
@@ -965,7 +968,7 @@
         const i = nearest(times, tv), p = pts[i], cx = xs(times[i]), cy = ys(clampV(p[1]));
         xhair.setAttribute('x1', cx); xhair.setAttribute('x2', cx); xhair.setAttribute('visibility', 'visible');
         dots[0].setAttribute('cx', cx); dots[0].setAttribute('cy', cy); dots[0].setAttribute('visibility', 'visible');
-        let html = '<b>' + fmtValue(p[1], d) + '</b> ' + fmtPeriod(p[0], t.freq);
+        let html = '<b>' + fmtValue(p[1], d) + '</b> ' + fmtPeriod(p[0], pf(t));
         compPts.forEach((c, k) => {
           if (!c.pts.length) { dots[k + 1].setAttribute('visibility', 'hidden'); return; }
           const q_ = c.o.freq === 'q' || c.o.freq === 'a', j = nearest(compTimes[k], times[i], q_); if (Math.abs(compTimes[k][j] - times[i]) > (c.o.freq === 'a' ? 370 : q_ ? 100 : 45) * 86400000) { dots[k + 1].setAttribute('visibility', 'hidden'); return; }
@@ -1235,7 +1238,7 @@
     // title, then what it measures and the latest reading
     wrap(t.title, 22, 700, inner).forEach(line => { y += 24; parts.push(S('text', { x: PAD, y, style: 'font-size:22px;font-weight:700;fill:' + tok.ink }, line)); });
     const hv = t.headline ? t.headline.value : c.current.value;
-    const hdate = t.headline ? fmtPeriod(t.headline.date, 'd', true) : fmtPeriod(c.current.date, t.freq, true);
+    const hdate = t.headline ? fmtPeriod(t.headline.date, 'd', true) : fmtPeriod(c.current.date, pf(t), true);
     const sub = t.subtitle + ' (' + d.unit + '). Latest: ' + fmtValue(hv, d) + ', ' + hdate + '.';
     y += 4;
     wrap(sub, 13.5, 400, inner).forEach(line => { y += 19; parts.push(S('text', { x: PAD, y, style: 'font-size:13.5px;fill:' + tok.ink2 }, line)); });
@@ -1310,7 +1313,7 @@
     const FAMILY = EXPORT_FAMILY, width = textWidth, wrap = wrapText, S = svgNode;
     const PAD = 20, MIN_PLOT = 110, wide = shape.w / shape.h > 1.5;
     const hv = t.headline ? t.headline.value : c.current.value;
-    const hdate = t.headline ? fmtPeriod(t.headline.date, 'd', true) : fmtPeriod(c.current.date, t.freq, true);
+    const hdate = t.headline ? fmtPeriod(t.headline.date, 'd', true) : fmtPeriod(c.current.date, pf(t), true);
     const vtxt = fmtValue(hv, d), sent = contextSentence(t), vpx = wide ? 28 : 32;
     // Lay the picture out at a CSS width of shape.css × f. Everything is measured first, then the plot takes what is
     // left. If the plot would fall under MIN_PLOT, the next f draws the whole picture a little smaller; only at the
@@ -1596,7 +1599,7 @@
       const thead = el('tr'); thead.appendChild(el('th', { scope: 'col', text: 'Period' })); thead.appendChild(el('th', { scope: 'col', class: 'num', text: t.title }));
       comps.forEach(o => thead.appendChild(el('th', { class: 'num', text: o.label + (o.freq === 'q' ? ' (quarterly)' : o.freq === 'a' ? ' (annual)' : '') })));
       tbl.appendChild(thead);
-      out.slice().reverse().forEach(r => { const tr = el('tr'); tr.appendChild(el('td', { text: fmtPeriod(r[0], t.freq) })); for (let i = 1; i < r.length; i++) tr.appendChild(el('td', { class: 'num', text: r[i] == null ? '' : fmtValue(r[i], i === 1 ? d : (comps[i - 2].display || d)) })); tbl.appendChild(tr); });
+      out.slice().reverse().forEach(r => { const tr = el('tr'); tr.appendChild(el('td', { text: fmtPeriod(r[0], pf(t)) })); for (let i = 1; i < r.length; i++) tr.appendChild(el('td', { class: 'num', text: r[i] == null ? '' : fmtValue(r[i], i === 1 ? d : (comps[i - 2].display || d)) })); tbl.appendChild(tr); });
     }
     det.addEventListener('toggle', () => { if (det.open && cur) refresh(cur[0], cur[1]); });
     function csv() {
@@ -1688,7 +1691,7 @@
         el('a', { href: chartPath(t.id, viewQuery()), target: '_top', rel: 'noopener', text: 'Full chart and context →' })]));
     }
     const hv = t.headline ? t.headline.value : c.current.value;
-    const hdate = t.headline ? fmtPeriod(t.headline.date, 'd', true) : fmtPeriod(c.current.date, t.freq, true);
+    const hdate = t.headline ? fmtPeriod(t.headline.date, 'd', true) : fmtPeriod(c.current.date, pf(t), true);
     left.appendChild(el('div', { class: 'headline' }, [el('span', { class: 'value', text: fmtValue(hv, d) }), el('span', { class: 'when', text: hdate })]));
     const cmp = el('p', { class: 'compare' });
     if (t.headline) cmp.appendChild(el('span', { text: 'Monthly average ' + fmtPeriod(c.current.date, 'm') + ': ' + fmtValue(c.current.value, d) }));

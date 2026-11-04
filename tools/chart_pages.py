@@ -72,6 +72,8 @@ def fmt_period(s, freq, long=False):
     x = _d(s)
     if freq == "a":
         return f"FY {x.year}"
+    if freq == "y":
+        return str(x.year)
     if freq == "q":
         return f"Q{(x.month - 1) // 3 + 1} {x.year}"
     names = MONTHS_LONG if long else MONTHS
@@ -82,6 +84,11 @@ def fmt_period(s, freq, long=False):
 
 def _years_between(a, b):
     return (_d(b) - _d(a)).days / 365.25
+
+
+def _pf(t):
+    """A yearly tile reads "FY 2025" (fiscal years) unless display.year is "calendar"; as pf() in the pages."""
+    return "y" if t.get("freq") == "a" and (t.get("display") or {}).get("year") == "calendar" else t["freq"]
 
 
 def _period_noun(freq):
@@ -116,12 +123,12 @@ def context_sentence(t):
         if c.get("highest_since") is None:
             parts.append(hi_rec)
         elif since_ok and _years_between(c["highest_since"], c["current"]["date"]) >= 1:
-            parts.append(hi_since + fmt_period(c["highest_since"], t["freq"]) + ".")
+            parts.append(hi_since + fmt_period(c["highest_since"], _pf(t)) + ".")
     elif cur < prev:
         if c.get("lowest_since") is None:
             parts.append(lo_rec)
         elif since_ok and _years_between(c["lowest_since"], c["current"]["date"]) >= 1:
-            parts.append(lo_since + fmt_period(c["lowest_since"], t["freq"]) + ".")
+            parts.append(lo_since + fmt_period(c["lowest_since"], _pf(t)) + ".")
     if _adjusted(t) and parts:
         parts[0] = "Adjusted for inflation, " + parts[0][0].lower() + parts[0][1:]
     return " ".join(parts)
@@ -132,7 +139,7 @@ def headline(t):
     d, c = t["display"], t["context"]
     if t.get("headline"):
         return fmt_value(t["headline"]["value"], d), fmt_period(t["headline"]["date"], "d", True)
-    return fmt_value(c["current"]["value"], d), fmt_period(c["current"]["date"], t["freq"], True)
+    return fmt_value(c["current"]["value"], d), fmt_period(c["current"]["date"], _pf(t), True)
 
 
 def page_text(t):

@@ -34,6 +34,20 @@
           "label": "Fifteen claims checked"
         }
       ]
+    },
+    "news-ownership": {
+      "title": "Who owns the news: a century, and this year",
+      "dek": "Two pages, read in order: how ownership of American news and the money that paid for it changed from 1919 to the 2020s, and what changed in 2026, from the end of the national ownership cap to CNN and CBS News under one owner and the rules on foreign money.",
+      "parts": [
+        {
+          "slug": "who-owned-the-news",
+          "label": "A century of who owned it"
+        },
+        {
+          "slug": "who-owns-the-news-in-2026",
+          "label": "2026: mergers, the cap, foreign money"
+        }
+      ]
     }
   }
 }

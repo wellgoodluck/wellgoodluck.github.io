@@ -18,7 +18,8 @@ Series ids are the almanac's tile ids, companion ids (data/companions.json) and 
 (series.json "extras"). Fields: value (default), previous, year_ago, baseline, percentile,
 lowest_since, highest_since, min, max, since. Add "period" to get the period of a value field
 instead of the value. Formats (fmt=): int, num0, num1, num2, pct0, pct1, pct2, thousands,
-millions1, millions2, usd0, usd2, usd10. Any directive can carry else="..." (the text to print
+millions1, millions2, usd0, usd2, usd10, and for series in thousands k_millions1, k_millions2,
+k_round10k, k_round1k. Any directive can carry else="..." (the text to print
 if the figure can't be computed; default is the empty string plus a build warning).
 
 Rules that keep live text honest (see claude/automation-plan.md in the project):
@@ -190,6 +191,8 @@ def fmt(v, how):
         return f"{v / 1000:.2f} million"
     if how == "k_millions1":                       # a series in thousands, as millions to one decimal
         return f"{v / 1000:.1f} million"
+    if how == "k_round1k":                         # a series in thousands, to the nearest 1,000
+        return f"{round(v) * 1000:,.0f}"
     if how == "k_round10k":                        # a series in thousands, to the nearest 10,000
         return f"{round(v / 10) * 10000:,.0f}"
     raise ValueError(f"unknown format '{how}'")

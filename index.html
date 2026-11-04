@@ -491,10 +491,13 @@
   function fmtPeriod(s, freq, long) {
     const dt = parseDate(s), y = dt.getUTCFullYear(), m = dt.getUTCMonth(), day = dt.getUTCDate();
     if (freq === 'a') return 'FY ' + y;
+    if (freq === 'y') return String(y);
     if (freq === 'q') return 'Q' + (Math.floor(m / 3) + 1) + ' ' + y;
     if (freq === 'm') return (long ? MONTHS_LONG[m] : MONTHS[m]) + ' ' + y;
     return (long ? MONTHS_LONG[m] : MONTHS[m]) + ' ' + day + ', ' + y;
   }
+  // A yearly tile labels its readings "FY 2025" (fiscal years, the deficit) unless display.year is "calendar".
+  function pf(t) { return t.freq === 'a' && t.display && t.display.year === 'calendar' ? 'y' : t.freq; }
   function periodNoun(freq) { return freq === 'a' ? 'years' : freq === 'q' ? 'quarters' : freq === 'w' ? 'weeks' : freq === 'd' ? 'days' : 'months'; }
   function prevLabel(freq) { return freq === 'a' ? 'Previous year' : freq === 'q' ? 'Previous quarter' : freq === 'w' ? 'Previous week' : 'Previous month'; }
   function yearsBetween(a, b) { return (parseDate(b) - parseDate(a)) / (365.25 * 86400000); }
@@ -579,10 +582,10 @@
     const sinceOK = !adjusted(t);
     if (cur > prev) {
       if (c.highest_since == null) parts.push(hiRec);
-      else if (sinceOK && yearsBetween(c.highest_since, c.current.date) >= 1) parts.push(hiSince + fmtPeriod(c.highest_since, t.freq) + '.');
+      else if (sinceOK && yearsBetween(c.highest_since, c.current.date) >= 1) parts.push(hiSince + fmtPeriod(c.highest_since, pf(t)) + '.');
     } else if (cur < prev) {
       if (c.lowest_since == null) parts.push(loRec);
-      else if (sinceOK && yearsBetween(c.lowest_since, c.current.date) >= 1) parts.push(loSince + fmtPeriod(c.lowest_since, t.freq) + '.');
+      else if (sinceOK && yearsBetween(c.lowest_since, c.current.date) >= 1) parts.push(loSince + fmtPeriod(c.lowest_since, pf(t)) + '.');
     }
     if (adjusted(t) && parts.length) parts[0] = 'Adjusted for inflation, ' + parts[0].charAt(0).toLowerCase() + parts[0].slice(1);
     return parts.join(' ');
@@ -728,7 +731,7 @@
       tiles.forEach(t => {
         const c = t.context, d = t.display;
         const hv = t.headline ? t.headline.value : c.current.value;
-        const per = t.headline ? fmtPeriod(t.headline.date, 'd') : fmtPeriod(c.current.date, t.freq);
+        const per = t.headline ? fmtPeriod(t.headline.date, 'd') : fmtPeriod(c.current.date, pf(t));
         const a = el('a', { class: 'row', href: '#i-' + t.id, 'aria-label': t.title + ': ' + fmtValue(hv, d) + ', ' + per + '. ' + contextSentence(t) });
         a.appendChild(el('span', { class: 't', text: t.title }));
         a.appendChild(el('span', { class: 'v' }, [fmtValue(hv, d), el('span', { class: 'p', text: per })]));
@@ -859,7 +862,7 @@
         const cx = xs(parseDate(p[0]).getTime()), cy = ys(clampV(p[1]));
         svg.appendChild(svgEl('path', { class: 'clipmark', d: 'M' + cx + ',' + (cy + dir * 6) + ' l-5,' + (-dir * 7) + ' l10,0 z' }));
         // the longest form that fits beside the mark, or else within the plot's width, as close to the mark as it goes
-        const when = fmtPeriod(p[0], t.freq) + ': ' + fmtValue(p[1], d), forms = [when + ', off the chart', when], lw = f => f.length * 6.2;
+        const when = fmtPeriod(p[0], pf(t)) + ': ' + fmtValue(p[1], d), forms = [when + ', off the chart', when], lw = f => f.length * 6.2;
         const right = width - mR - (cx + 8), left = (cx - 8) - mL;
         let label = when, anchor = 'start', x = Math.max(mL + 2, Math.min(cx + 8, width - mR - lw(when)));
         for (const f of forms) {
@@ -888,7 +891,7 @@
         const p = pts[i], cx = xs(times[i]), cy = ys(clampV(p[1]));
         xhair.setAttribute('x1', cx); xhair.setAttribute('x2', cx); xhair.setAttribute('visibility', 'visible');
         hdot.setAttribute('cx', cx); hdot.setAttribute('cy', cy); hdot.setAttribute('visibility', 'visible');
-        tip.innerHTML = '<b>' + fmtValue(p[1], d) + '</b><br>' + fmtPeriod(p[0], t.freq);
+        tip.innerHTML = '<b>' + fmtValue(p[1], d) + '</b><br>' + fmtPeriod(p[0], pf(t));
         tip.style.display = 'block';
         placeTip(tip, box, rect, cx * (rect.width / width), cy * (rect.height / height));
       }
@@ -948,7 +951,7 @@
     top.appendChild(el('p', { class: 'sub', text: t.subtitle }));
 
     const hv = t.headline ? t.headline.value : c.current.value;
-    const hdate = t.headline ? fmtPeriod(t.headline.date, 'd', true) : fmtPeriod(c.current.date, t.freq, true);
+    const hdate = t.headline ? fmtPeriod(t.headline.date, 'd', true) : fmtPeriod(c.current.date, pf(t), true);
     const head = el('div', { class: 'headline' });
     head.appendChild(el('span', { class: 'value', text: fmtValue(hv, d) }));
     head.appendChild(el('span', { class: 'when', text: hdate }));
@@ -988,7 +991,7 @@
     tbl.appendChild(el('thead', {}, [el('tr', {}, [el('th', { scope: 'col', text: 'Period' }), el('th', { scope: 'col', text: d.unit.charAt(0).toUpperCase() + d.unit.slice(1) })])]));
     const n = { m: 24, q: 12, w: 26, d: 24, a: 10 }[t.freq] || 24;
     t.observations.slice(-n).reverse().forEach(o => {
-      const tr = el('tr'); tr.appendChild(el('td', { text: fmtPeriod(o[0], t.freq) })); tr.appendChild(el('td', { text: fmtValue(o[1], d) })); tbl.appendChild(tr);
+      const tr = el('tr'); tr.appendChild(el('td', { text: fmtPeriod(o[0], pf(t)) })); tr.appendChild(el('td', { text: fmtValue(o[1], d) })); tbl.appendChild(tr);
     });
     det.appendChild(tbl);
     more.appendChild(det);
