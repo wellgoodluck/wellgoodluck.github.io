@@ -40,6 +40,7 @@ import re
 import shlex
 import sys
 from datetime import date, datetime, timezone
+from decimal import Decimal, ROUND_HALF_UP
 
 MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August",
           "September", "October", "November", "December"]
@@ -1151,6 +1152,58 @@ def fig_ev_year_ago_sentence(D):
         return lead + f"the EV cost about {_usd50(-diff)} more.", []
     return lead + "the two cost about the same.", []
 
+# --- Nov 3: grocery prices (What Sets the Price of Groceries) ---
+def _grocery_rank(D, tid):
+    """Where an item's latest price sits in its own history in today's dollars, in the tile's own words: 'lower than
+    59% of months since 1980', 'higher than 90% of months since 1980', or, when no earlier month was higher (lower),
+    'the highest (lowest) on record'. A normal build reads the tile's context_real (written at refresh), so text and
+    tile agree; a backtest, or a tile without context_real, ranks the <id>_real companion's history instead (ranks
+    don't depend on which month's dollars the history is stated in)."""
+    s = D.get(tid)
+    c = s.get("ctx_real") if (s["kind"] == "tile" and not D.asof) else None
+    if c and c.get("percentile_below") is not None and c.get("since"):
+        p, first = c["percentile_below"], _d(c["since"]).year
+        record_high = c.get("highest_since") is None
+        record_low = c.get("lowest_since") is None
+    else:
+        obs = [o for o in D.get(f"{tid}_real")["obs"] if o[1] is not None]
+        cur = obs[-1][1]
+        p, first = _pct_of_history(obs), _d(obs[0][0]).year
+        record_high = all(v < cur for _, v in obs[:-1])
+        record_low = all(v > cur for _, v in obs[:-1])
+    if p >= 50 and record_high:
+        return "the highest on record", []
+    if p < 50 and record_low:
+        return "the lowest on record", []
+    half_up = lambda x: min(99, max(1, int(Decimal(repr(float(x))).quantize(Decimal(1), rounding=ROUND_HALF_UP))))
+    if p < 50:
+        return f"lower than {half_up(100 - p)}% of months since {first}", []
+    return f"higher than {half_up(p)}% of months since {first}", []
+
+
+def fig_eggs_rank(D):
+    return _grocery_rank(D, "eggs")
+
+
+def fig_milk_rank(D):
+    return _grocery_rank(D, "milk")
+
+
+def fig_bread_rank(D):
+    return _grocery_rank(D, "bread")
+
+
+def fig_coffee_rank(D):
+    return _grocery_rank(D, "coffee")
+
+
+def fig_ground_beef_rank(D):
+    return _grocery_rank(D, "ground_beef")
+
+
+def fig_chicken_rank(D):
+    return _grocery_rank(D, "chicken")
+
 
 FIGS = {
     "claims_low": fig_claims_low,
@@ -1193,6 +1246,8 @@ FIGS = {
     "ev_home_cost": fig_ev_home_cost, "ev_gas_cost": fig_ev_gas_cost,
     "ev_saving_sentence": fig_ev_saving_sentence, "ev_saving_clause": fig_ev_saving_clause,
     "ev_ratio_words": fig_ev_ratio_words, "ev_year_ago_sentence": fig_ev_year_ago_sentence,
+    "eggs_rank": fig_eggs_rank, "milk_rank": fig_milk_rank, "bread_rank": fig_bread_rank, "coffee_rank": fig_coffee_rank,
+    "ground_beef_rank": fig_ground_beef_rank, "chicken_rank": fig_chicken_rank,
 }
 VALUES = {      # usable on the left of a check as fig:<name>
     "claims_rule_last": val_claims_rule_last,
