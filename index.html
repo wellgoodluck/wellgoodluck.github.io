@@ -197,6 +197,20 @@
   .thumb .end { stroke: var(--series); stroke-width: 6; }
   .thumb .end-halo { stroke: var(--surface); stroke-width: 9; }
   @media (max-width: 760px) { .lead { grid-template-columns: minmax(0, 1fr); gap: 10px; } }
+  /* The summary zone (the lead and At a glance) sits on a full-width Sheet band; the band is drawn with a spread shadow
+     clipped to the zone's height, so it reaches the window's edges without widening the page. Inside it, Chart to try
+     takes the page color so the white card doesn't vanish into the white band. */
+  .summary-zone { padding: 22px 0 26px; background: var(--surface); box-shadow: 0 0 0 100vmax var(--surface); clip-path: inset(0 -100vmax); }
+  .summary-zone .lead { margin-top: 0; }
+  .summary-zone .chart-try { background: var(--page); }
+  .summary-zone .glance { padding-bottom: 0; }
+  /* The labeled break between the summary and the detail: a 3px ink rule, a 28px heading, one sentence */
+  .detail-break { margin: 36px 0 4px; padding: 22px 0 0; border-top: 3px solid var(--ink); scroll-margin-top: calc(var(--nav-h, 48px) + 8px); }
+  .detail-break h2 { margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.15; }
+  .detail-break p { margin: 6px 0 0; max-width: 46em; font-size: 15px; color: var(--ink-2); }
+  .detail-break + section.group { padding-top: 18px; }
+  @media (max-width: 760px) { .detail-break { margin-top: 28px; } .detail-break h2 { font-size: 24px; } }
+  @media print { .summary-zone { background: none; box-shadow: none; clip-path: none; padding-top: 0; } .detail-break { break-before: page; } }
   @media print { .lead { display: none; } }
   /* At a glance: every number on one screen (left out with ?view=tiles) ---- */
   .glance { padding: 24px 0 8px; }
@@ -1046,11 +1060,17 @@
       const thumb = pic(cp.svg, cp.url);
       lead.push(el('aside', { class: 'chart-try', 'aria-label': 'Chart to try' }, thumb ? [text, thumb] : [text]));
     }
-    if (lead.length) main.appendChild(el('div', { class: 'lead' }, lead));
+    // The summary zone: the lead and the overview on a full-width Sheet band; the detail sections follow on the page
+    // background, after a labeled break, so the page reads as a summary, then the numbers in detail
+    const zone = el('div', { class: 'summary-zone' });
+    if (lead.length) zone.appendChild(el('div', { class: 'lead' }, lead));
     // ?view=tiles is the page as it was before the overview: the tiles alone, with a way back
     const hasGlance = new URLSearchParams(location.search).get('view') !== 'tiles';
     if (!hasGlance) main.appendChild(el('p', { class: 'view-switch' }, ['Showing the tiles without the overview. ', el('a', { href: './', text: 'Show all the numbers at a glance →' })]));
-    else { main.appendChild(buildGlance(data, sections)); nav.appendChild(el('li', {}, [el('a', { href: '#at-a-glance', text: 'At a glance' })])); }
+    else { zone.appendChild(buildGlance(data, sections)); nav.appendChild(el('li', {}, [el('a', { href: '#at-a-glance', text: 'At a glance' })])); }
+    if (zone.children.length) main.insertBefore(zone, main.firstChild);
+    if (hasGlance) main.appendChild(el('div', { class: 'detail-break', id: 'in-detail' }, [el('h2', { text: 'The numbers in detail' }),
+      el('p', { text: 'Each indicator with its full chart, its history and what it means for a household. Pick a section above, or read on.' })]));
     sections.forEach(s => {
       const id = 's-' + s.toLowerCase().replace(/[^a-z]+/g, '-');
       nav.appendChild(el('li', {}, [el('a', { href: '#' + id, text: s })]));
