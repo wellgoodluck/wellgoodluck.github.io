@@ -1187,6 +1187,31 @@
     return lines;
   }
   function svgNode(tag, attrs, text) { const n = document.createElementNS(SVG, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); if (text != null) n.textContent = text; return n; }
+  // The footer of a downloaded image: the site's mark (the brackets around the series dot, as in assets/icon.svg,
+  // without its tile), the name, and the chart's address, the longest form that fits beside the right-hand text.
+  // y is the text baseline; px the footer's type size. Pushes onto parts; returns nothing.
+  function brandFooter(parts, tok, x, y, px, maxW, url) {
+    const S = svgNode, m = Math.round(px * 1.55), k = m / 64, gap = Math.round(px * 0.45);
+    const g = S('g', { transform: 'translate(' + x + ',' + (y - m + Math.round(px * 0.3)) + ') scale(' + k + ')' });
+    g.appendChild(S('path', { d: 'M25 14H15V50H25', fill: 'none', stroke: tok.ink, 'stroke-width': 6.5 }));
+    g.appendChild(S('path', { d: 'M39 14H49V50H39', fill: 'none', stroke: tok.ink, 'stroke-width': 6.5 }));
+    g.appendChild(S('circle', { cx: 32, cy: 32, r: 8.5, fill: tok.series || '#0b7a75' }));
+    parts.push(g);
+    // The name as the masthead sets it: "Economy" in 700 Ink, "in Context" in 400 Ink Secondary, an ink period.
+    const tx = x + m + gap, room = maxW - (m + gap), sepW = Math.round(px * 0.9) + textWidth(' ', px);
+    const nameW = textWidth('Economy', px, 700) + textWidth(' in Context', px) + textWidth('.', px);
+    const forms = [[true, url], [true, 'economyincontext.org'], [false, url], [false, 'economyincontext.org']];
+    const f = forms.find(([n, u]) => (n ? nameW + sepW : 0) + textWidth(u, px) <= room) || forms[3];
+    const t = S('text', { x: tx, y, style: 'font-size:' + px + 'px;fill:' + tok.muted });
+    const span = (txt, st) => { const n = S('tspan', { style: st }); n.textContent = txt; t.appendChild(n); };
+    if (f[0]) {
+      span('Economy', 'font-weight:700;fill:' + tok.ink);
+      span(' in Context', 'font-weight:400;fill:' + tok.ink2);
+      span('.', 'font-weight:400;fill:' + tok.ink);
+      const u = S('tspan', { dx: Math.round(px * 0.9) }); u.textContent = f[1]; t.appendChild(u);   // the period ends the name, so a gap, not a dot
+    } else span(f[1], 'font-weight:600;fill:' + tok.ink);
+    parts.push(t);
+  }
   // the key from snapshot(), wrapped into rows between x0 and xMax; with parts null it only counts. Returns the last row's baseline.
   function drawKey(parts, key, o) {
     let kx = o.x0, ky = o.y;
@@ -1227,7 +1252,7 @@
       snap = chart.snapshot(EXPORT_BOX);
       if (snap.unlabeled) snap = chart.snapshot(EXPORT_BOX, null, true);   // a picture has no hover: every marker gets named
       const cs = getComputedStyle(root), v = n => cs.getPropertyValue(n).trim();
-      tok = { surface: v('--surface'), ink: v('--ink'), ink2: v('--ink-2'), muted: v('--muted'), hairline: v('--hairline'), banner: v('--banner'), bannerInk: v('--banner-ink') };
+      tok = { surface: v('--surface'), ink: v('--ink'), ink2: v('--ink-2'), muted: v('--muted'), hairline: v('--hairline'), banner: v('--banner'), bannerInk: v('--banner-ink'), series: v('--series') };
     } finally { root.classList.remove('export-light'); }
 
     const FAMILY = EXPORT_FAMILY, width = textWidth, wrap = wrapText, S = svgNode;
@@ -1273,8 +1298,9 @@
     // where it came from
     y += 22;
     parts.push(S('line', { x1: PAD, x2: W - PAD, y1: y - 15, y2: y - 15, stroke: tok.hairline, 'stroke-width': 1 }));
-    parts.push(S('text', { x: PAD, y, style: 'font-size:12px;fill:' + tok.muted }, 'economyincontext.org' + chartPath(t.id)));
-    parts.push(S('text', { x: W - PAD, y, 'text-anchor': 'end', style: 'font-size:12px;fill:' + tok.muted }, 'Free to reuse with credit · CC BY 4.0'));
+    const reuse1 = 'Free to reuse with credit · CC BY 4.0';
+    brandFooter(parts, tok, PAD, y, 12, W - PAD * 2 - textWidth(reuse1, 12) - 24, 'economyincontext.org' + chartPath(t.id));
+    parts.push(S('text', { x: W - PAD, y, 'text-anchor': 'end', style: 'font-size:12px;fill:' + tok.muted }, reuse1));
     const H = Math.round(y + PAD - 6);
 
     const out = S('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H });
@@ -1359,7 +1385,7 @@
     root.classList.add('export-light');
     try {
       const cs = getComputedStyle(root), v = n => cs.getPropertyValue(n).trim();
-      tok = { surface: v('--surface'), ink: v('--ink'), ink2: v('--ink-2'), muted: v('--muted'), hairline: v('--hairline'), banner: v('--banner'), bannerInk: v('--banner-ink') };
+      tok = { surface: v('--surface'), ink: v('--ink'), ink2: v('--ink-2'), muted: v('--muted'), hairline: v('--hairline'), banner: v('--banner'), bannerInk: v('--banner-ink'), series: v('--series') };
       for (const f of [1, 1.15, 1.3, 1.45, 1.6]) { L = plan(f, false); if (L.fits) break; }
       if (!L.fits) L = plan(1.6, true);
       snap = chart.snapshot(L.inner + 18, L.plotH, L.numbers);
@@ -1406,7 +1432,7 @@
     // where it came from, along the bottom of the safe area
     const footY = L.bottom - 6;
     parts.push(S('line', { x1: PAD, x2: W - PAD, y1: footY - 15, y2: footY - 15, stroke: tok.hairline, 'stroke-width': 1 }));
-    parts.push(S('text', { x: PAD, y: footY, style: 'font-size:11.5px;fill:' + tok.muted }, 'economyincontext.org' + chartPath(t.id)));
+    brandFooter(parts, tok, PAD, footY, 11.5, W - PAD * 2 - textWidth('CC BY 4.0', 11.5) - 16, 'economyincontext.org' + chartPath(t.id));
     parts.push(S('text', { x: W - PAD, y: footY, 'text-anchor': 'end', style: 'font-size:11.5px;fill:' + tok.muted }, 'CC BY 4.0'));
 
     const out = S('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H });
