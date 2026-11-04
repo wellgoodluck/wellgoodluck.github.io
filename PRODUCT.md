@@ -40,11 +40,12 @@ Success is a reader who leaves able to place the number they came with, and who 
 - Changes reach the site through manual uploads to the repository; there is no automated deploy from an assistant.
 - The site is published without a byline under its own identity. Nothing on it may identify the person who runs it: no personal accounts, no career or local detail, no links to personal profiles.
 - Page views are counted without cookies (GoatCounter); the privacy wording on the site must change if counting changes.
+- The weekly email (Nov 4) is opt-in and sent through Buttondown (newsletter EconomyInContext), which keeps the addresses; no open or click tracking, no UTM tags on links. The footers and How This Site Is Paid For say so; change them if any of that changes.
 
 ## Brand Commitments
 
 - Name: Economy in Context; domain economyincontext.org.
-- The mark: two brackets around a dot (`assets/icon.svg`), with the favicon set and social card in `assets/`.
+- The mark: two brackets around a dot (`assets/icon.svg`), with the favicon set and social card in `assets/`. Since Nov 4 it sits beside the name as one lockup ("Economy" bold, "in Context" regular, an ink period) on the almanac, the social card and the weekly email.
 - Voice: plain words, short sentences, numbers with their period and source. No advice, no villains, no mascots, no sports analogies; every analogy says where it breaks.
 - Restraint is the brand: no value-judgment colors (good/bad, red/green) on readings, and nothing that reads as a thumb on the scale.
 - License line: charts and writing are CC BY 4.0; data is credited to its agency.

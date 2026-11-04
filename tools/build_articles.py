@@ -556,17 +556,29 @@ HEAD = """<!doctype html>
 <body>
 <header class="masthead">
   <div class="wrap">
-    <p class="crumb"><a href="../">Economy in Context</a> <span class="sep">/</span> <a href="./">Articles</a></p>
+    <p class="crumb"><a class="home" href="../"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M25 14H15V50H25"/><path d="M39 14H49V50H39"/><circle cx="32" cy="32" r="8.5"/></svg><span class="name"><b>Economy</b> in Context</span></a> <span class="sep">/</span> <a href="./">Articles</a></p>
   </div>
 </header>
 """
 
 FOOT = """
+<div class="wrap signup-wrap">
+  <section class="signup" id="weekly" aria-labelledby="weekly-h">
+    <h2 id="weekly-h">The weekly digest</h2>
+    <p class="stext">One email on Monday mornings: the week's new articles and charts, the numbers that moved most, and what comes out in the week ahead. No ads, and no tracking of opens or clicks.</p>
+    <form action="https://buttondown.com/api/emails/embed-subscribe/EconomyInContext" method="post">
+      <label for="weekly-email">Email address</label>
+      <div class="srow"><input type="email" id="weekly-email" name="email" autocomplete="email" required><button type="submit">Subscribe</button></div>
+      <input type="hidden" name="embed" value="1">
+    </form>
+    <p class="smeta"><a href="https://buttondown.com/EconomyInContext/archive/">Past issues</a><span class="sep" aria-hidden="true">·</span><a href="how-this-site-is-paid-for.html#the-weekly-email">How addresses are kept</a></p>
+  </section>
+</div>
 <footer class="about">
   <div class="wrap">
     <p>Articles on this site aim to lay out what the figures show, what is settled, what is argued about and by whom. Every number links to its source where one exists, and corrections are noted on the article. The charts are live from the almanac and update as agencies publish.</p>
     <p class="reuse">Free to reuse with credit: Economy in Context (economyincontext.org). The charts and writing here are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Credit the data to its source, named on each chart.</p>
-    <p>This site has no ads and no agenda beyond putting the numbers in context. It sets no cookies and keeps nothing that identifies you; it does count page views. It is paid for by one reader; <a href="how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+    <p>This site has no ads and no agenda beyond putting the numbers in context. It sets no cookies and keeps nothing that identifies you; it does count page views. The optional weekly email is sent through Buttondown, which keeps the addresses for that and nothing else. It is paid for by one reader; <a href="how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
     <p class="about-link"><a href="about.html">About this site, how it works, and every correction →</a></p>
   </div>
 </footer>

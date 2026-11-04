@@ -42,7 +42,7 @@ Every correction so far, newest first:
 
 ## Reuse
 
-The site's charts and writing are licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/): free to reuse, including commercially, with credit to Economy in Context (economyincontext.org). The data belongs to the agencies that publish it; credit them too, as each chart does. New articles are listed in [the Atom feed](feed.xml).
+The site's charts and writing are licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/): free to reuse, including commercially, with credit to Economy in Context (economyincontext.org). The data belongs to the agencies that publish it; credit them too, as each chart does. New articles are listed in [the Atom feed](feed.xml) and in [the weekly email](how-this-site-is-paid-for.html#the-weekly-email).
 
 ## Contact
 

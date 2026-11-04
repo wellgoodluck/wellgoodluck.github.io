@@ -91,7 +91,7 @@
 
   /* Masthead ------------------------------------------------------------- */
   .masthead { padding: 40px 0 0; }
-  .masthead .title-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px 20px; margin: 0 0 10px; }
+  .masthead .title-row { display: flex; align-items: center; justify-content: space-between; gap: 8px 20px; margin: 0 0 10px; }   /* center, since the lockup has no text baseline of its own */
   .masthead .site-link { font-size: 15px; font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--hairline); padding-bottom: 1px; white-space: nowrap; }
   .masthead .site-link:hover { border-color: var(--ink); }
   .masthead .site-links { display: flex; gap: 16px; }
@@ -119,6 +119,29 @@
      upcoming means no line). Each release is a link to its agency's release page; a release and its date stay on one line. */
   .masthead .coming { margin: 4px 0 0; color: var(--ink-2); font-size: 13.5px; }
   .masthead .coming .rel { white-space: nowrap; }
+  /* The lockup (Nov 4): the bracket mark beside the name, "Economy" in 700 and "in Context" in 400 Ink Secondary, then an
+     ink period. The h1's accessible name stays "Economy in Context": the mark and the period are aria-hidden. The mark's
+     left bracket lines up with the text edge below it. Same mark rules in site.css and chart.html (the crumbs). */
+  .masthead h1.brand { display: flex; align-items: center; }   /* on phones the name wraps to two lines beside the mark */
+  .brand .mark { flex: none; width: 1.4em; height: 1.4em; margin: 0 0.1em 0 -0.26em; }
+  .mark path { fill: none; stroke: var(--ink); stroke-width: 6.5; }
+  .mark circle { fill: var(--series); }
+  .brand .bl { font-weight: 400; color: var(--ink-2); white-space: nowrap; }   /* "in Context" never splits */
+  @media (max-width: 340px) { .masthead h1.brand { font-size: 23px; } }   /* 320px phones: still one line */
+  /* The weekly digest signup (Nov 4): a card like Chart to try between the tiles and the footer; a plain HTML form that
+     posts to Buttondown (no script). The field's border is Muted, not a hairline, so it passes 3:1. Same rules in site.css. */
+  .signup-wrap { padding-top: 8px; padding-bottom: 28px; }
+  .signup { max-width: 39em; padding: 14px 18px 16px; border: 1px solid var(--hairline); border-top: 2px solid var(--ink); border-radius: 6px; background: var(--surface); font-size: 15px; line-height: 1.45; scroll-margin-top: calc(var(--nav-h, 48px) + 8px); }
+  .signup h2 { margin: 0 0 4px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
+  .signup .stext { margin: 0 0 12px; text-wrap: pretty; }
+  .signup label { display: block; margin: 0 0 4px; font-size: 13.5px; color: var(--ink-2); }
+  .signup .srow { display: flex; flex-wrap: wrap; gap: 8px; }
+  .signup input[type="email"] { flex: 1 1 10em; min-width: 0; height: 44px; padding: 0 12px; border: 1px solid var(--muted); border-radius: 4px; background: var(--page); color: var(--ink); font: inherit; font-size: 16px; }
+  .signup button { height: 44px; padding: 0 18px; border: 1px solid var(--full-ink); border-radius: 4px; background: var(--full-ink); color: var(--surface); font: inherit; font-weight: 600; cursor: pointer; }
+  .signup button:hover { background: var(--ink); border-color: var(--ink); }
+  .signup .smeta { margin: 10px 0 0; font-size: 13.5px; color: var(--ink-2); }
+  .signup .smeta .sep { margin: 0 4px; color: var(--muted); }
+  @media print { .signup-wrap { display: none !important; } }
   /* Section nav: a bar below the masthead (sheet surface between two hairlines, with an "On this page" label), so it
      reads as a menu and not as a line of links; it stays at the top while you scroll. The section in view carries a
      2px ink rule along the bar's bottom edge. On phones: one sideways-scrolling row, no label. Same rules in site.css. */
@@ -143,7 +166,11 @@
   @media (max-width: 760px) {
     .masthead { padding-top: 22px; }
     .masthead .title-row { gap: 4px 12px; }
-    .masthead h1 { font-size: 28px; letter-spacing: -0.02em; }   /* stays on one line beside Articles at 375 */
+    .masthead h1 { font-size: 28px; letter-spacing: -0.02em; }
+    /* phones: Articles and About move to a small row at the top right; the lockup stays on one line below it */
+    .masthead .title-row { flex-wrap: wrap; row-gap: 8px; }
+    .masthead .site-links { order: -1; width: 100%; justify-content: flex-end; }
+    .masthead h1.brand { font-size: 26px; white-space: nowrap; }
     .masthead .site-link { font-size: 13.5px; }
     .masthead .updated { margin-top: 10px; }
     .secnav { margin-top: 10px; }
@@ -391,7 +418,7 @@
 
 <header class="masthead">
   <div class="wrap">
-    <div class="title-row"><h1>Economy in Context</h1><span class="site-links"><a class="site-link" href="articles/">Articles</a><a class="site-link" href="articles/about.html">About</a></span></div>
+    <div class="title-row"><h1 class="brand"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M25 14H15V50H25"/><path d="M39 14H49V50H39"/><circle cx="32" cy="32" r="8.5"/></svg><span>Economy <span class="bl">in Context</span><span aria-hidden="true">.</span></span></h1><span class="site-links"><a class="site-link" href="articles/">Articles</a><a class="site-link" href="articles/about.html">About</a></span></div>
     <p class="tagline">The main numbers on the U.S. economy, each shown against its own history, so you can see what is high, what is low and what is normal.</p>
     <p class="updated" id="updated"></p>
     <p class="coming" id="coming" hidden></p>
@@ -402,6 +429,19 @@
 <main class="wrap" id="main">
   <p class="status" id="status" role="status">Loading the latest figures…</p>
 </main>
+
+<div class="wrap signup-wrap">
+  <section class="signup" id="weekly" aria-labelledby="weekly-h">
+    <h2 id="weekly-h">The weekly digest</h2>
+    <p class="stext">One email on Monday mornings: the week's new articles and charts, the numbers that moved most, and what comes out in the week ahead. No ads, and no tracking of opens or clicks.</p>
+    <form action="https://buttondown.com/api/emails/embed-subscribe/EconomyInContext" method="post">
+      <label for="weekly-email">Email address</label>
+      <div class="srow"><input type="email" id="weekly-email" name="email" autocomplete="email" required><button type="submit">Subscribe</button></div>
+      <input type="hidden" name="embed" value="1">
+    </form>
+    <p class="smeta"><a href="https://buttondown.com/EconomyInContext/archive/">Past issues</a><span class="sep" aria-hidden="true">·</span><a href="articles/how-this-site-is-paid-for.html#the-weekly-email">How addresses are kept</a></p>
+  </section>
+</div>
 
 <footer class="about">
   <div class="wrap">
@@ -419,7 +459,7 @@
     <p><strong>Articles</strong> explain each number in plain words, follow the numbers to five kinds of household, and take up what is argued about. Each number links to its own explainer, and all of them are linked from the top of the page.</p>
     <p id="attribution"></p>
     <p class="reuse">Free to reuse with credit: Economy in Context (economyincontext.org). The charts and writing here are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Credit the data to its source, named on each chart.</p>
-    <p>This site has no ads and no agenda beyond putting the numbers in context. It sets no cookies and keeps nothing that identifies you; it does count page views. It is paid for by one reader; <a href="articles/how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+    <p>This site has no ads and no agenda beyond putting the numbers in context. It sets no cookies and keeps nothing that identifies you; it does count page views. The optional weekly email is sent through Buttondown, which keeps the addresses for that and nothing else. It is paid for by one reader; <a href="articles/how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
     <p><a href="articles/about.html">About this site, where the numbers come from, and every correction →</a></p>
   </div>
 </footer>

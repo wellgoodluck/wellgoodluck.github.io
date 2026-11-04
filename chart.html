@@ -86,7 +86,15 @@
   body.embed .skips { display: none; }
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
   .crumb { font-size: 13.5px; color: var(--ink-2); margin: 0 0 10px; }
-  .crumb a { text-decoration: none; border-bottom: 1px solid var(--hairline); }
+  .crumb a { text-decoration: none; }
+  /* the crumb carries the small mark and the two-weight name (Nov 4); the underline sits under the name only. Same mark
+     rules in index.html and site.css. */
+  .crumb .name { border-bottom: 1px solid var(--hairline); }
+  .crumb a:hover .name { border-bottom-color: var(--ink); }
+  .crumb b { font-weight: 700; color: var(--ink); }
+  .crumb .mark { display: inline-block; width: 1.55em; height: 1.55em; margin: 0 0.12em 0 0; vertical-align: -0.42em; }
+  .mark path { fill: none; stroke: var(--ink); stroke-width: 6.5; }
+  .mark circle { fill: var(--series); }
   .masthead h1 { margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.15; }
   .masthead .sub { margin: 4px 0 0; color: var(--ink-2); font-size: 17px; }
   .masthead .explainer { margin: 6px 0 0; font-size: 15px; color: var(--ink-2); }
@@ -321,7 +329,7 @@
 
 <header class="masthead">
   <div class="wrap">
-    <p class="crumb"><a href="/">← Economy in Context</a></p>
+    <p class="crumb"><a href="/">← <svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M25 14H15V50H25"/><path d="M39 14H49V50H39"/><circle cx="32" cy="32" r="8.5"/></svg><span class="name"><b>Economy</b> in Context</span></a></p>
     <h1 id="title">Loading…</h1>
     <p class="sub" id="subtitle"></p>
     <p class="explainer" id="explainer" hidden></p>
@@ -337,7 +345,7 @@
     <p><strong>About overlays.</strong> Reference lines and companion series come from the same sources as the main figures. Eras and events are compiled by hand from the primary records linked beside each one, and each overlay states its selection rule. Nothing here is a claim about cause: the overlays show when things happened, and the reader decides what to make of it.</p>
     <p id="attribution"></p>
     <p class="reuse">Free to reuse with credit: Economy in Context (economyincontext.org). The charts and writing here are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Credit the data to its source, named on each chart.</p>
-    <p>This site has no ads and no agenda beyond putting the numbers in context. It sets no cookies and keeps nothing that identifies you; it does count page views. It is paid for by one reader; <a href="/articles/how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+    <p>This site has no ads and no agenda beyond putting the numbers in context. It sets no cookies and keeps nothing that identifies you; it does count page views. The optional weekly email is sent through Buttondown, which keeps the addresses for that and nothing else. It is paid for by one reader; <a href="/articles/how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
     <p><a href="/articles/about.html">About this site, where the numbers come from, and every correction →</a></p>
   </div>
 </footer>

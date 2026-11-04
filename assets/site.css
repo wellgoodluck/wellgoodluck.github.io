@@ -210,6 +210,30 @@ a:hover { text-decoration-color: var(--ink); }
 footer.about { border-top: 1px solid var(--hairline); padding: 22px 0 44px; font-size: 13.5px; color: var(--ink-2); }
 footer.about p { max-width: 48em; margin: 0 0 8px; }
 
+/* The crumb's home link (Nov 4): the small mark and the two-weight name, underlined under the name only.
+   Same mark rules in index.html (the masthead lockup) and chart.html (its crumb). */
+.crumb a.home { border-bottom: 0; }
+.crumb a.home .name { border-bottom: 1px solid var(--hairline); }
+.crumb a.home:hover .name { border-bottom-color: var(--ink); }
+.crumb b { font-weight: 700; color: var(--ink); }
+.crumb .mark { display: inline-block; width: 1.55em; height: 1.55em; margin: 0 0.12em 0 -0.28em; vertical-align: -0.42em; }
+.mark path { fill: none; stroke: var(--ink); stroke-width: 6.5; }
+.mark circle { fill: var(--series); }
+
+/* The weekly digest signup (Nov 4): a card like Chart to try before the footer of every article page and the index;
+   a plain HTML form that posts to Buttondown (no script). Same rules in index.html. */
+.signup-wrap { padding-top: 8px; padding-bottom: 28px; }
+.signup { max-width: var(--measure); padding: 14px 18px 16px; border: 1px solid var(--hairline); border-top: 2px solid var(--ink); border-radius: 6px; background: var(--surface); font-size: 15px; line-height: 1.45; }
+.signup h2 { margin: 0 0 4px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
+.signup .stext { margin: 0 0 12px; }
+.signup label { display: block; margin: 0 0 4px; font-size: 13.5px; color: var(--ink-2); }
+.signup .srow { display: flex; flex-wrap: wrap; gap: 8px; }
+.signup input[type="email"] { flex: 1 1 10em; min-width: 0; height: 44px; padding: 0 12px; border: 1px solid var(--muted); border-radius: 4px; background: var(--page); color: var(--ink); font: inherit; font-size: 16px; }
+.signup button { height: 44px; padding: 0 18px; border: 1px solid var(--full-ink); border-radius: 4px; background: var(--full-ink); color: var(--surface); font: inherit; font-weight: 600; cursor: pointer; }
+.signup button:hover { background: var(--ink); border-color: var(--ink); }
+.signup .smeta { margin: 10px 0 0; font-size: 13.5px; color: var(--ink-2); }
+.signup .smeta .sep { margin: 0 4px; color: var(--muted); }
+
 /* The map on the Plain words index (built by tools/build_articles.py) */
 .article > figure.map { max-width: 480px; margin: 22px 0 8px; }
 .map svg { display: block; width: 100%; height: auto; font-family: inherit; }
@@ -230,7 +254,7 @@ h1, h2, h3, h4, .dek { text-wrap: balance; }
 @media print {
   :root { --page: #fff; --surface: #fff; }
   body { background: #fff; }
-  .crumb, .secnav, .lead, .feed-link, .series-parts, .series-next { display: none !important; }
+  .crumb, .secnav, .lead, .feed-link, .series-parts, .series-next, .signup-wrap { display: none !important; }
   .article .series { margin-top: 0; }
   .article figure.chart-embed, .article .figure, .article .table-scroll, .map { break-inside: avoid; }
   .article figure.chart-embed { width: 100%; }
