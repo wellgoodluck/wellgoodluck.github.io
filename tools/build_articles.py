@@ -27,6 +27,9 @@ Each source file starts with a front-matter block:
                                   the Featured line at the top of the almanac and the articles index.
                                   The newest date that has arrived wins, so featuring another article
                                   needs only a later date on it; a future date schedules it.)
+    picture: health_jobs range=10y   (optional: the picture on the Featured card while this article is featured:
+                                  a tile id and, optionally, the view's range and ov, as in a chart page's address;
+                                  drawn like the Chart to try picture. For a series, picture in series.json.)
     ---
 
 then Markdown. Supported: # ## ### headings, paragraphs, **bold**, *italic*,
@@ -323,7 +326,7 @@ def load_series(articles, path=os.path.join("articles", "series.json")):
             print(f"series: {sid}: needs a title and at least two parts; skipped")
             continue
         s = {"kind": "series", "slug": sid, "title": d["title"], "dek": d.get("dek", ""), "featured": d.get("featured", ""),
-             "date": max(by_slug[p["slug"]]["date"] for p in parts), "parts": parts}
+             "picture": d.get("picture", ""), "date": max(by_slug[p["slug"]]["date"] for p in parts), "parts": parts}
         SERIES.append(s)
         for i, p in enumerate(parts):
             SERIES_OF[p["slug"]] = (s, i)
@@ -361,17 +364,31 @@ def series_next(slug):
     return f'<nav class="series-next" aria-label="{label}"><p>{body}</p></nav>\n'
 
 
+def featured_picture(feat):
+    """The Featured card's picture: the item's `picture` field ("<tile id> [range=…] [ov=…]") drawn like the Chart to try
+    picture, as inline SVG, or "" (no field, or no data)."""
+    spec = (feat.get("picture") or "").split()
+    if not spec:
+        return ""
+    query = "&".join(x for x in spec[1:] if "=" in x)
+    return chart_prompt_thumb(spec[0], query)
+
+
 def featured_html(feat, link_prefix=""):
-    """The Featured line on the articles index: an article (title, dek), or a series (title to part 1, dek, parts)."""
+    """The Featured card on the articles index: an article (title, dek), or a series (title to part 1, dek, parts),
+    with its picture at the foot when it has one."""
     dek = f'<p class="fdek">{inline(feat["dek"])}</p>' if feat.get("dek") else ""   # cut to two lines by site.css
+    url = f'{link_prefix}{feat["parts"][0]["slug"] if feat.get("kind") == "series" else feat["slug"]}.html'
+    svg = featured_picture(feat)
+    pic = f'<a class="cthumb" href="{url}" aria-hidden="true" tabindex="-1">{svg}</a>' if svg else ""
     if feat.get("kind") == "series":
         parts = "".join(f'<li><a href="{link_prefix}{p["slug"]}.html" title="{html.escape(p["title"], quote=True)}"><span class="n">{k + 1}</span> {inline(p["label"])}</a></li>'
                         for k, p in enumerate(feat["parts"]))
-        return (f'<aside class="featured featured-series" aria-label="Featured series"><span class="flabel">Featured series</span>'
-                f'<a class="ftitle" href="{link_prefix}{feat["parts"][0]["slug"]}.html">{inline(feat["title"])}</a> →{dek}'
-                f'<ol class="fparts" role="list">{parts}</ol></aside>\n')
-    return (f'<aside class="featured" aria-label="Featured article"><span class="flabel">Featured</span>'
-            f'<a class="ftitle" href="{link_prefix}{feat["slug"]}.html">{inline(feat["title"])}</a> →{dek}</aside>\n')
+        return (f'<aside class="featured featured-series" aria-label="Featured series"><div class="ctext"><span class="flabel">Featured series</span>'
+                f'<a class="ftitle" href="{url}">{inline(feat["title"])}</a> →{dek}'
+                f'<ol class="fparts" role="list">{parts}</ol></div>{pic}</aside>\n')
+    return (f'<aside class="featured" aria-label="Featured article"><div class="ctext"><span class="flabel">Featured</span>'
+            f'<a class="ftitle" href="{url}">{inline(feat["title"])}</a> →{dek}</div>{pic}</aside>\n')
 
 
 def chart_prompt_pick(path=os.path.join("articles", "chart-prompts.json"), today=None):
@@ -471,7 +488,8 @@ def chart_prompt_thumb(tile_id, query, series_path=os.path.join("data", "series.
             parts.append(f'<path class="comp" d="{path(comp)}"/>')
         parts.append(f'<path class="main" d="{path(main)}"/>')
         ld, lv = main[-1]
-        parts.append(f'<circle class="end" cx="{X(ld):.1f}" cy="{Y(lv):.1f}" r="3"/>')
+        # the end dot is a zero-length round-capped stroke, so it stays round however the picture is stretched
+        parts.append(f'<path class="end-halo" d="M{X(ld):.1f},{Y(lv):.1f} h0.01"/><path class="end" d="M{X(ld):.1f},{Y(lv):.1f} h0.01"/>')
         return (f'<svg class="thumb" viewBox="0 0 {W} {H}" preserveAspectRatio="none" aria-hidden="true" focusable="false">'
                 + "".join(parts) + "</svg>")
     except Exception as e:                                  # noqa: BLE001
@@ -680,9 +698,9 @@ def render_index(articles):
     page += "{SECNAV}"
     page += '<main class="wrap article" id="main">\n'
     feat, _ = featured_pick(articles)
-    if feat:
-        page += featured_html(feat)
-    page += chart_prompt_html(CHART_PROMPT, "../")
+    lead = (featured_html(feat) if feat else "") + chart_prompt_html(CHART_PROMPT, "../")
+    if lead:                                                # the two lead cards side by side (stacked on phones)
+        page += '<div class="lead">\n' + lead + '</div>\n'
 
     def updated_note(a):
         return (f'<span class="when">Updated {fmt_date(a["updated"])}</span>'
@@ -832,6 +850,10 @@ def write_explainers(out_root, articles):
                     "parts": [{"url": f"articles/{p['slug']}.html", "label": p["label"], "title": p["title"]} for p in feat["parts"]]}
     else:
         featured = {"url": f"articles/{feat['slug']}.html", "title": feat["title"], "dek": feat.get("dek", "")} if feat else None
+    if featured:
+        svg = featured_picture(feat)
+        if svg:
+            featured["svg"] = svg
     os.makedirs(os.path.join(out_root, "data"), exist_ok=True)
     with open(os.path.join(out_root, "data", "explainers.json"), "w", encoding="utf-8") as f:
         json.dump({"note": "Written by tools/build_articles.py from the tile: line of each Plain words page, "

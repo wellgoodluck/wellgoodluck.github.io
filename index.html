@@ -135,6 +135,9 @@
   .skip:focus { top: 8px; }
   .sec-head { display: flex; justify-content: space-between; align-items: baseline; gap: 4px 16px; flex-wrap: wrap; margin: 0 0 14px; }
   section.group .sec-head h2 { margin: 0; }
+  /* In short: one plain paragraph under each section heading, computed from the tiles' own figures at every refresh */
+  .in-short { margin: -4px 0 16px; max-width: 46em; font-size: 15px; line-height: 1.5; color: var(--ink-2); text-wrap: pretty; }
+  .in-short strong { color: var(--ink); font-weight: 600; }
   .to-glance { font-size: 13.5px; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; padding: 8px 0; white-space: nowrap; }
   .to-glance:hover { color: var(--ink); text-decoration-color: var(--ink); }
   @media (max-width: 760px) {
@@ -160,39 +163,41 @@
     padding: 10px 16px; font-size: 13.5px; text-align: center;
   }
 
-  /* Featured article: the lead item above the overview, only while an article's featured: date is current. A 2px ink
-     rule above it, as a newspaper marks its lead; the title, then the first lines of its dek */
-  .featured { margin: 22px 0 0; padding: 12px 0 14px; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--hairline); font-size: 15px; line-height: 1.45; color: var(--ink); text-wrap: pretty; }
-  .featured .flabel { display: block; margin: 0 0 4px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
-  .featured .ftitle { font-size: 19px; font-weight: 700; line-height: 1.3; color: var(--ink); text-decoration: none; }
-  .featured .ftitle:hover { text-decoration: underline; text-decoration-color: var(--ink); text-underline-offset: 3px; }
-  .featured .fdek { margin: 4px 0 0; color: var(--ink-2); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
-  @media (max-width: 760px) { .featured .fdek { -webkit-line-clamp: 3; } }
-  /* A featured series: the parts in reading order under the dek, each numbered (same as the articles index) */
-  .featured .fparts { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 2px 20px; }
+  /* The lead: two cards side by side above the overview, stacked on phones. Left, the featured article or series on a
+     teal-washed card (the one tinted block on the page: it marks the lead the way a newspaper's rule does, and readers
+     said the plain rule was too easy to miss); right, Chart to try on the sheet. Both carry a 2px ink rule along the top,
+     and both end with a picture drawn from the site's data, kept at the foot so the two line up. Same rules in site.css. */
+  .lead { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 16px; margin: 22px 0 0; align-items: stretch; }
+  .lead:has(> :only-child) { grid-template-columns: minmax(0, 1fr); }
+  .featured, .chart-try { display: flex; flex-direction: column; margin: 0; padding: 14px 18px 14px; border: 1px solid var(--hairline); border-top: 2px solid var(--ink); border-radius: 6px; background: var(--surface); font-size: 15px; line-height: 1.45; color: var(--ink); text-wrap: pretty; }
+  .featured { border-color: var(--full-line); border-top-color: var(--ink); background: var(--series-wash); }
+  .featured .ctext, .chart-try .ctext { flex: none; min-width: 0; }
+  .featured .flabel, .chart-try .flabel { display: block; margin: 0 0 4px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
+  .featured .flabel { color: var(--full-ink); }
+  .featured .ftitle, .chart-try .ftitle { font-size: 19px; font-weight: 700; line-height: 1.3; color: var(--ink); text-decoration: none; }
+  .featured .ftitle:hover, .chart-try .ftitle:hover { text-decoration: underline; text-decoration-color: var(--ink); text-underline-offset: 3px; }
+  .featured .fdek, .chart-try .fdek { margin: 4px 0 0; color: var(--ink-2); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+  .chart-try .fdek { -webkit-line-clamp: 3; }
+  @media (max-width: 760px) { .featured .fdek, .chart-try .fdek { -webkit-line-clamp: 3; } }
+  /* A featured series: the parts in reading order under the dek, as numbered pill buttons */
+  .featured .fparts { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 10px; }
   .featured .fparts li { margin: 0; }
-  .featured .fparts a { display: inline-block; padding: 4px 0; font-weight: 600; color: var(--ink); text-decoration: none; }
-  .featured .fparts a:hover { text-decoration: underline; text-decoration-color: var(--ink); text-underline-offset: 3px; }
-  .featured .fparts .n { display: inline-block; min-width: 1.5em; height: 1.5em; line-height: calc(1.5em - 2px); margin-right: 3px; border: 1px solid var(--hairline); border-radius: 50%; text-align: center; font-size: 12.5px; font-weight: 600; color: var(--ink-2); font-variant-numeric: tabular-nums; }
-  @media (max-width: 760px) { .featured .fparts a { padding: 8px 0; } }
-  /* Chart to try: one line under the Featured line, linking to a ready-made chart view (articles/chart-prompts.json) */
-  .chart-try { margin: 0; padding: 12px 0 14px; border-bottom: 1px solid var(--hairline); font-size: 15px; line-height: 1.45; color: var(--ink); text-wrap: pretty; }
-  .chart-try .flabel { display: block; margin: 0 0 4px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
-  .chart-try .ftitle { font-size: 19px; font-weight: 700; line-height: 1.3; color: var(--ink); text-decoration: none; }
-  .chart-try .ftitle:hover { text-decoration: underline; text-decoration-color: var(--ink); text-underline-offset: 3px; }
-  .chart-try .fdek { margin: 4px 0 0; color: var(--ink-2); }
-  /* the picture: the view's lines, no axes, beside the text (under it on phones); it repeats the title's link */
-  .chart-try { display: flex; align-items: center; justify-content: space-between; gap: 8px 24px; flex-wrap: wrap; }
-  .chart-try .ctext { flex: 1 1 320px; min-width: 0; }
-  .chart-try .cthumb { flex: 0 0 220px; display: block; }
-  .chart-try .thumb { display: block; width: 220px; height: 64px; overflow: visible; }
+  .featured .fparts a { display: inline-flex; align-items: center; padding: 5px 12px 5px 7px; border: 1px solid var(--full-line); border-radius: 999px; background: var(--surface); font-weight: 600; color: var(--full-ink); text-decoration: none; }
+  .featured .fparts a:hover { border-color: var(--full-ink); color: var(--ink); }
+  .featured .fparts .n { display: inline-block; min-width: 1.5em; height: 1.5em; line-height: calc(1.5em - 2px); margin-right: 6px; border: 1px solid var(--full-line); border-radius: 50%; text-align: center; font-size: 12.5px; font-weight: 600; color: var(--full-ink); font-variant-numeric: tabular-nums; }
+  @media (max-width: 760px) { .featured .fparts a { padding: 8px 14px 8px 9px; } }
+  /* the pictures: the view's lines, no axes, at the foot of each card; each repeats its title's link */
+  .featured .cthumb, .chart-try .cthumb { display: block; flex: none; margin-top: auto; padding-top: 12px; }
+  .featured .thumb, .chart-try .thumb { display: block; width: 100%; height: 56px; overflow: visible; }
   .thumb .main, .thumb .comp { fill: none; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
   .thumb .main { stroke: var(--series); stroke-width: 2; }
   .thumb .comp { stroke: var(--c1); stroke-width: 1.5; }
   .thumb .zero { stroke: var(--grid); stroke-width: 1; }
-  .thumb .end { fill: var(--series); stroke: var(--surface); stroke-width: 1.5; }
-  @media (max-width: 760px) { .chart-try .cthumb { flex: 1 1 100%; } .chart-try .thumb { width: 100%; height: 56px; } }
-  @media print { .chart-try { display: none; } }
+  .thumb .end, .thumb .end-halo { fill: none; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .thumb .end { stroke: var(--series); stroke-width: 6; }
+  .thumb .end-halo { stroke: var(--surface); stroke-width: 9; }
+  @media (max-width: 760px) { .lead { grid-template-columns: minmax(0, 1fr); gap: 10px; } }
+  @media print { .lead { display: none; } }
   /* At a glance: every number on one screen (left out with ?view=tiles) ---- */
   .glance { padding: 24px 0 8px; }
   .glance .ghead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px; margin: 0 0 4px; }
@@ -387,6 +392,7 @@
     <p><strong>The big number</strong> is the latest official reading. The date beside it is the period it describes, which is usually a few weeks behind today, because that is how long the agencies take to count.</p>
     <p><strong>The bar underneath</strong> ranks that reading against everything the indicator has done since records began. It spans the typical range, the middle 90 percent of that history, and the dot sits at the reading's rank: halfway along, at the small notch, means half of all past readings were lower, which is what the sentence under it says in words. That middle reading is the median, and the label above the notch gives it. A dot near either end means today is unusual; a dot in the middle means it is not, whatever the headlines say. A hollow dot pinned at either end, with a gray arrow pointing outward, means the reading is outside the typical range altogether, which is rarer still. The numbers at the ends are the readings at the edges of that middle 90 percent. Because the bar shows rank rather than amount, the same distance along it can stand for a small change in one place and a large one in another.</p>
     <p><strong>At a glance</strong>, at the top, puts every number's bar in one list so you can scan them all before reading any one in full. Each row links to its tile. Prefer the tiles alone? <a href="?view=tiles">Hide the overview</a> to leave the list out.</p>
+    <p><strong>In short</strong>, under each section heading, says what that section's numbers show in a few plain sentences. It is written by the same code that fetches the figures, from the readings and their ranks you see on the tiles, so it changes when they do and never says more than they show.</p>
     <p><strong>The line in plain terms</strong> restates the reading as something a household would feel: what last year's $100 buys, the payment on the median home at this rate, how many people the unemployment rate represents. It is computed from the same data each time the figures refresh.</p>
     <p><strong>The 2015–19 average</strong> is the last five full years before the pandemic. It is not a target, just a reasonable stand-in for what "normal" felt like recently. Its tick on the bar sits at that average's own rank in the history.</p>
     <p><strong>What things cost</strong> shows prices as charged at the store and the pump, but compares them with the past after taking out inflation, because a raw price almost always sets a record eventually. Their typical range and 2015–19 average are in today's dollars; the chart and the year-ago figure are the prices people actually paid.</p>
@@ -1014,25 +1020,33 @@
     const sections = [];
     data.tiles.forEach(t => { if (!sections.includes(t.section)) sections.push(t.section); });
     const nav = document.getElementById('nav');
-    // the featured article or series (from explainers.json, written by the articles build) sits above everything else in main
+    // The lead: two cards side by side (stacked on phones), above everything else in main. Left, the featured article or
+    // series (explainers.json, written by the articles build) on a teal card; right, Chart to try on the sheet. Each ends
+    // with a picture (inline SVG the build draws from the site's own data) that repeats the title's link.
+    const pic = (svg, url) => typeof svg === 'string' && svg.startsWith('<svg class="thumb"') ? el('a', { class: 'cthumb', href: url, 'aria-hidden': 'true', tabindex: '-1', html: svg }) : null;
+    const lead = [];
     const f = data.featured;
     const parts = f && Array.isArray(f.parts) ? f.parts.filter(p => p && p.url && p.label) : [];
     const isSeries = parts.length > 1;                   // an explainers.json from before Nov 1 (evening) has no parts
-    if (f && f.url && f.title) main.appendChild(el('aside', { class: 'featured', 'aria-label': isSeries ? 'Featured series' : 'Featured article' },
-      [el('span', { class: 'flabel', text: isSeries ? 'Featured series' : 'Featured' }), el('a', { class: 'ftitle', href: f.url, text: f.title }), ' →']
-        .concat(f.dek ? [el('p', { class: 'fdek', text: f.dek })] : [])   // an explainers.json from before Nov 1 has no dek
-        .concat(isSeries ? [el('ol', { class: 'fparts', role: 'list' }, parts.map((p, i) =>
-          el('li', {}, [el('a', { href: p.url, title: p.title || p.label }, [el('span', { class: 'n', text: String(i + 1) }), ' ' + p.label])])))] : [])));
+    if (f && f.url && f.title) {
+      const text = el('div', { class: 'ctext' },
+        [el('span', { class: 'flabel', text: isSeries ? 'Featured series' : 'Featured' }), el('a', { class: 'ftitle', href: f.url, text: f.title }), ' →']
+          .concat(f.dek ? [el('p', { class: 'fdek', text: f.dek })] : [])   // an explainers.json from before Nov 1 has no dek
+          .concat(isSeries ? [el('ol', { class: 'fparts', role: 'list' }, parts.map((p, i) =>
+            el('li', {}, [el('a', { href: p.url, title: p.title || p.label }, [el('span', { class: 'n', text: String(i + 1) }), ' ' + p.label])])))] : []));
+      const thumb = pic(f.svg, f.url);
+      lead.push(el('aside', { class: 'featured', 'aria-label': isSeries ? 'Featured series' : 'Featured article' }, thumb ? [text, thumb] : [text]));
+    }
     // Chart to try (explainers.json chart_prompt): a sentence and a link to a ready-made chart view
     const cp = data.chartPrompt;
     if (cp && cp.text && cp.url) {
       const text = el('div', { class: 'ctext' },
         [el('span', { class: 'flabel', text: 'Chart to try' }), el('a', { class: 'ftitle', href: cp.url, text: cp.title || cp.link || 'See the chart' }), ' →',
          el('p', { class: 'fdek', text: cp.text })]);
-      // the picture (inline SVG written by the articles build from the site's own data); it repeats the title's link
-      const thumb = typeof cp.svg === 'string' && cp.svg.startsWith('<svg class="thumb"') ? el('a', { class: 'cthumb', href: cp.url, 'aria-hidden': 'true', tabindex: '-1', html: cp.svg }) : null;
-      main.appendChild(el('aside', { class: 'chart-try', 'aria-label': 'Chart to try' }, thumb ? [text, thumb] : [text]));
+      const thumb = pic(cp.svg, cp.url);
+      lead.push(el('aside', { class: 'chart-try', 'aria-label': 'Chart to try' }, thumb ? [text, thumb] : [text]));
     }
+    if (lead.length) main.appendChild(el('div', { class: 'lead' }, lead));
     // ?view=tiles is the page as it was before the overview: the tiles alone, with a way back
     const hasGlance = new URLSearchParams(location.search).get('view') !== 'tiles';
     if (!hasGlance) main.appendChild(el('p', { class: 'view-switch' }, ['Showing the tiles without the overview. ', el('a', { href: './', text: 'Show all the numbers at a glance →' })]));
@@ -1044,6 +1058,9 @@
       const head = el('div', { class: 'sec-head' }, [el('h2', { text: s })]);
       if (hasGlance) head.appendChild(el('a', { class: 'to-glance', href: '#at-a-glance', text: '↑ At a glance' }));
       sec.appendChild(head);
+      // In short: the section in one plain paragraph, written by fetch_fred.py from the same figures the tiles show
+      const sum = data.summaries && typeof data.summaries[s] === 'string' ? data.summaries[s] : '';
+      if (sum) sec.appendChild(el('p', { class: 'in-short' }, [el('strong', { text: 'In short: ' }), sum]));
       const grid = el('div', { class: 'grid' });
       const { tiles, wideId } = sectionTiles(data, s);
       tiles.forEach(t => grid.appendChild(buildTile(t, data, t.id === wideId)));

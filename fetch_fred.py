@@ -1213,6 +1213,159 @@ def household_lines(tiles_out, companions_out, extras):
             t["household"] = {"text": text, "sources": sources}
 
 
+# ---- "In short": one plain paragraph per section, from the same figures the tiles show -------------------------
+# Templates, not prose: every number is a tile's current reading or its rank in its own history, and the only words
+# that are not numbers are the connectives ("but", "and well above"). No adjectives of judgment ("soaring", "healthy").
+# A missing input drops its clause; a section with nothing to say gets no paragraph. Shown under each section heading
+# on the almanac (data/series.json "summaries").
+
+def rank_words(pct_below, higher_word="higher", lower_word="lower"):
+    """"higher than in three-quarters of months", from a percentile, in the fractions people say; None near the middle."""
+    p = pct_below
+    if p is None: return None
+    if 40 <= p <= 60: return "near the middle of its history"
+    hi = p >= 50
+    share = p if hi else 100 - p
+    frac = ("nearly all" if share >= 97 else "nine-tenths" if share >= 88 else "seven-eighths" if share >= 85 else
+            "four-fifths" if share >= 78 else "three-quarters" if share >= 70 else "two-thirds" if share >= 63 else "most")
+    return f"{higher_word if hi else lower_word} than in {frac}" + ("" if frac == "nearly all" else " of")
+
+
+def section_summaries(tiles_out):
+    T = {t["id"]: t for t in tiles_out}
+    EN = "\u2013"
+    def ctx(tid):
+        t = T[tid]; return t.get("context_real") if t["display"].get("adjust") and t.get("context_real") else t["context"]
+    def cur(tid): return ctx(tid)["current"]["value"]
+    def since(tid): return str(ctx(tid)["since"])[:4]
+    def noun(tid): return {"a": "years", "q": "quarters", "w": "weeks", "d": "days"}.get(T[tid]["freq"], "months")
+    def rank(tid, hi="higher", lo="lower"):
+        r = rank_words(ctx(tid)["percentile_below"], hi, lo)
+        if r is None or r.startswith("near"): return r
+        return f"{r} {noun(tid)}" if r.endswith("nearly all") else f"{r} {noun(tid)} since {since(tid)}"
+    def record(tid):
+        c = ctx(tid); return "the highest on record" if c.get("highest_since") is None else "the lowest on record" if c.get("lowest_since") is None else None
+    def lowest_since_year(tid):
+        c = ctx(tid); v = c.get("lowest_since"); return (str(v)[:4] if v and int(str(v)[:4]) < int(since(tid)) + 200 and int(str(v)[:4]) <= int(c["current"]["date"][:4]) - 1 else None)
+    def highest_since_year(tid):
+        c = ctx(tid); v = c.get("highest_since"); return (str(v)[:4] if v and int(str(v)[:4]) <= int(c["current"]["date"][:4]) - 1 else None)
+    def month(tid):
+        d = ctx(tid)["current"]["date"]; return datetime.strptime(d[:7], "%Y-%m").strftime("%B")
+    def pct(v, nd=1): return f"{v:.{nd}f}%"
+    out = {}
+
+    # Jobs
+    try:
+        cl = []
+        p = cur("payrolls"); r = rank("payrolls", "more", "fewer")
+        hiring = f"{abs(p) * 1000:,.0f} jobs {'added' if p >= 0 else 'lost'} in {month('payrolls')}" + (f", {r}" if r else "")
+        slow = ctx("payrolls")["percentile_below"] < 40
+        cl.append(("Hiring is slow (" if slow else "Hiring is steady (" if ctx("payrolls")["percentile_below"] <= 60 else "Hiring is strong (") + hiring + ")")
+        losing = []
+        ls = lowest_since_year("claims"); rc = record("claims")
+        if rc: losing.append(f"new jobless claims are {rc}")
+        elif ls: losing.append(f"new jobless claims are the lowest since {ls}")
+        else:
+            r = rank("claims"); losing.append(f"new jobless claims are {r}" if r else f"new jobless claims are {cur('claims') / 1000:,.0f},000 a week")
+        r = rank("unemployment")
+        losing.append(f"unemployment, at {pct(cur('unemployment'))}, is {r}" if r else f"unemployment is {pct(cur('unemployment'))}")
+        few = ctx("claims")["percentile_below"] < 40 and ctx("unemployment")["percentile_below"] < 40
+        text = cl[0] + (" but few people are losing work: " if slow and few else "; " if few else " and ") + losing[0] + ", and " + losing[1] + "."
+        if "openings_ratio" in T:
+            o = cur("openings_ratio"); text += f" There are about {round(o * 10)} openings for every 10 people looking."
+        if "pay" in T and "cpi" in T:
+            pay, cpi = cur("pay"), cur("cpi"); gap = pay - cpi
+            text += f" Pay is up {pct(pay)} from a year ago, " + ("a little behind prices." if -1 <= gap < -0.2 else "well behind prices." if gap < -1 else "about even with prices." if gap <= 0.2 else "a little ahead of prices." if gap <= 1 else "well ahead of prices.")
+        if "health_jobs" in T and T["health_jobs"].get("household"):
+            import re as _re
+            m = _re.search(r"health care added [\d,]+, or (\d+)%", T["health_jobs"]["household"]["text"])
+            if m:
+                sh = int(m.group(1)); words = "three-quarters" if sh >= 72 else "two-thirds" if sh >= 62 else "half" if sh >= 45 else "a third" if sh >= 28 else None
+                if words: text += f" {words.capitalize()} of the year's new jobs were in health care."
+        out["Jobs"] = text
+    except Exception as e:
+        print(f"summary Jobs skipped: {e}", file=sys.stderr, flush=True)
+
+    # Prices
+    try:
+        c, b = cur("cpi"), ctx("cpi")["baseline_2015_19"]; r = rank("cpi")
+        ratio = c / b if b else None
+        mult = ("more than double" if ratio and ratio >= 2 else "about double" if ratio and ratio >= 1.8 else "well above" if ratio and ratio >= 1.3 else "about" if ratio and 0.8 <= ratio <= 1.2 else "below" if ratio else None)
+        text = f"Inflation is {pct(c)}" + (f", {r}" if r else "") + (f" and {mult} the 2015{EN}19 average" if mult else "") + "; "
+        r2 = rank("core_cpi"); text += f"leaving out food and energy it is {pct(cur('core_cpi'))}" + (f", {r2}" if r2 else "") + "."
+        if "rent" in T:
+            rr = rank("rent"); prev = T["rent"]["context"].get("year_ago"); rv = cur("rent")
+            slower = prev and rv < prev["value"] - 0.5
+            text += f" Rent is rising {'more slowly than it was, ' if slower else ''}{pct(rv)} a year" + (f", {rr}" if rr else "") + "."
+        out["Prices"] = text
+    except Exception as e:
+        print(f"summary Prices skipped: {e}", file=sys.stderr, flush=True)
+
+    # Growth & rates
+    try:
+        g = cur("gdp"); r = rank("gdp", "faster", "slower")
+        text = f"The economy grew at a {pct(g)} annual pace last quarter" + (f", {r}" if r else "") + "."
+        ff = cur("fed_funds"); rf = rank("fed_funds"); ty = cur("ten_year"); hs = highest_since_year("ten_year"); rt = record("ten_year") or (f"the highest since {hs}" if hs else rank("ten_year"))
+        if rf and r and rf == r: rf = "near the middle too" if rf.startswith("near") else rf
+        text += f" The Fed's rate, {pct(ff, 2)}, is " + (rf if rf else "unchanged") + (", but" if rt and ("highest" in rt or "lowest" in rt) else ", and") + f" the 10-year Treasury yield, {pct(ty, 2)}, is {rt}, which is what sets mortgage rates."
+        out["Growth & rates"] = text
+    except Exception as e:
+        print(f"summary Growth skipped: {e}", file=sys.stderr, flush=True)
+
+    # Housing
+    try:
+        hs_ = cur("housing_starts"); r = rank("housing_starts")
+        text = f"Builders started homes at a {hs_ / 1000:.2f} million-a-year pace in {month('housing_starts')}" + (f", {r}" if r else "") + "."
+        m = cur("mortgage"); rm = rank("mortgage"); b = ctx("mortgage")["baseline_2015_19"]
+        text += f" The 30-year mortgage rate, {pct(m, 2)}, " + (f"is {rm}" if rm else "") + (f" and well above the {pct(b)} of 2015{EN}19" if b and m - b >= 1.5 else f" and above the {pct(b)} of 2015{EN}19" if b and m - b >= 0.5 else "")
+        hh = T["mortgage"].get("household", {}).get("text", "")
+        import re as _re
+        mm = _re.search(r"costs (\$[\d,]+) a month at this rate.*?(\$[\d,]+) at the 2015", hh)
+        if mm: text += f": the payment on the median home is about {mm.group(1)} a month, against {mm.group(2)} at the 2015{EN}19 rate"
+        out["Housing"] = text + "."
+    except Exception as e:
+        print(f"summary Housing skipped: {e}", file=sys.stderr, flush=True)
+
+    # Government and trade
+    try:
+        d = cur("deficit"); rd = rank("deficit", "larger", "smaller"); fy = ctx("deficit")["current"]["date"][:4]
+        text = f"The federal deficit was {pct(d)} of GDP in fiscal {fy}" + (f", {rd}" if rd else "") + "; "
+        dv = cur("debt"); rec_d = record("debt"); near = ctx("debt")["percentile_below"] >= 95
+        text += f"the debt, at {dv:.0f}% of GDP, is " + ("at its record" if rec_d == "the highest on record" else "near its record" if near else (rank("debt") or "")) + "; "
+        tv = cur("trade"); rec_t = record("trade"); tm = month("trade")
+        text += f"the trade deficit, ${abs(tv) / 1000:.1f} billion in {tm}, is " + ("the widest on record" if rec_t == "the lowest on record" else (rank("trade", "narrower", "wider") or "")) + "."
+        out["Government and trade"] = text
+    except Exception as e:
+        print(f"summary Government skipped: {e}", file=sys.stderr, flush=True)
+
+    # What things cost
+    try:
+        goods = [("ground_beef", "ground beef"), ("coffee", "coffee"), ("eggs", "eggs"), ("milk", "milk"), ("bread", "bread"), ("chicken", "chicken"), ("natural_gas", "natural gas"), ("electricity", "electricity")]
+        high, low, ordinary = [], [], []
+        for tid, name in goods:
+            if tid not in T: continue
+            pb = ctx(tid)["percentile_below"]
+            (high if pb >= 85 else low if pb <= 15 else ordinary).append(name)
+        def lst(xs): return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
+        parts = []
+        if high: parts.append(f"{lst(high)} {'are' if len(high) > 1 else 'is'} near the highest {'they have' if len(high) > 1 else 'it has'} ever been")
+        if "gas" in T:
+            gp = cur("gas"); ya = T["gas"]["context"].get("year_ago"); pb = ctx("gas")["percentile_below"]
+            word = "high" if pb >= 70 else "low" if pb <= 30 else "ordinary"
+            parts.append(f"gasoline is {word} (${gp:.2f}" + (f", {'up' if ya and gp > ya['value'] else 'down'} from ${ya['value']:.2f} a year ago" if ya and abs(gp - ya['value']) >= 0.05 else "") + ")")
+        if low: parts.append(f"{lst(low)} {'are' if len(low) > 1 else 'is'} near the lowest {'they have' if len(low) > 1 else 'it has'} been")
+        if ordinary: parts.append(f"{lst(ordinary)} {'are' if len(ordinary) > 1 else 'is'} ordinary")
+        text = "After inflation, " + lst(parts) + "." if parts else ""
+        if "drive_cost" in T:
+            share = cur("drive_cost")
+            frac = "about a quarter" if share < 30 else "about a third" if share < 40 else "about half" if share < 60 else "about two-thirds" if share < 75 else "about as much as"
+            text += f" Driving a mile on home electricity costs {frac} {'of ' if frac != 'about as much as' else ''}driving it on gasoline."
+        if text: out["What things cost"] = text
+    except Exception as e:
+        print(f"summary What things cost skipped: {e}", file=sys.stderr, flush=True)
+    return out
+
+
 DERIVED = [
     {
         "id": "payrolls_3mo",
@@ -1941,6 +2094,11 @@ def main():
         household_lines(tiles_out, companions_out, extras)
     except Exception as e:
         print(f"household lines skipped: {e}", file=sys.stderr, flush=True)
+    summaries = {}
+    try:
+        summaries = section_summaries(tiles_out)      # after the household lines, which two of them read
+    except Exception as e:
+        print(f"summaries skipped: {e}", file=sys.stderr, flush=True)
 
     print("recessions      USREC", flush=True)
     rec = get_observations(RECESSIONS_SERIES, {"observation_start": RECESSIONS_START})
@@ -1965,6 +2123,7 @@ def main():
         "recessions": recession_spans(rec),
         "extras": extras,
         "calendar": calendar,
+        "summaries": summaries,
         "tiles": tiles_out,
     }
 
