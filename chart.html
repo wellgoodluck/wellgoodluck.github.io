@@ -131,7 +131,8 @@
   .strip text { font-size: 12.5px; fill: var(--muted); }   /* the labels are the context: never smaller than this */
   .strip .qual { fill: var(--ink-2); font-weight: 600; }   /* "in today's dollars" changes how the bar reads */
   .strip text.avg-label { fill: var(--ink-2); }
-  .strip .beyond { fill: var(--series); }
+  .strip .now.off { fill: var(--surface); stroke: var(--series); stroke-width: 3; }   /* outside the range: a hollow dot pinned at the end */
+  .strip .beyond { fill: var(--ink-2); }   /* the arrow is an annotation, in the tick's gray */
   .context { margin: 4px 0 0; font-size: 15px; font-weight: 600; }
 
   .chart-head { display: flex; align-items: center; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; margin: 22px 0 6px; }
@@ -524,9 +525,9 @@
         const lab = svgEl('text', { class: 'avg-label', x: lx, y: y + 24, 'text-anchor': anchor }); lab.textContent = label; svg.appendChild(lab);
       }
       // outside the range: the dot pinned at that end of the track, with an arrow pointing outward (as on the almanac)
-      if (where === 'below') { svg.appendChild(svgEl('circle', { class: 'now', cx: padL, cy: y, r: 7 }));
+      if (where === 'below') { svg.appendChild(svgEl('circle', { class: 'now off', cx: padL, cy: y, r: 7 }));
         svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (padL - 19) + ',' + y + ' l10,-7 l0,14 z' })); }
-      else if (where === 'above') { svg.appendChild(svgEl('circle', { class: 'now', cx: W - padR, cy: y, r: 7 }));
+      else if (where === 'above') { svg.appendChild(svgEl('circle', { class: 'now off', cx: W - padR, cy: y, r: 7 }));
         svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (W - padR + 19) + ',' + y + ' l-10,-7 l0,14 z' })); }
       else { const cx = pos(c.percentile_below); svg.appendChild(svgEl('circle', { class: 'now', cx, cy: y, r: 7 }));
         if (tick && Math.abs(+tick.getAttribute('x1') - cx) < 9) svg.appendChild(tick); }   // the reading sits on the tick: keep the tick in view

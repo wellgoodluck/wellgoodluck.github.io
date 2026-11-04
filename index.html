@@ -220,7 +220,8 @@
   .mini .now { fill: var(--series); stroke: var(--surface); stroke-width: 2; }
   .mini .avg { stroke: var(--ink-2); stroke-width: 2; }
   .mini .mid { stroke: var(--muted); stroke-width: 1.5; }
-  .mini .beyond { fill: var(--series); }
+  .mini .now.off { fill: var(--surface); stroke: var(--series); stroke-width: 2.5; }   /* outside the range: a hollow dot pinned at the end */
+  .mini .beyond { fill: var(--ink-2); }   /* the arrow is an annotation, in the tick's gray */
 
   /* Sections ------------------------------------------------------------- */
   section.group { padding: 28px 0 8px; }
@@ -274,9 +275,10 @@
   .strip .mid { stroke: var(--muted); stroke-width: 1.5; }   /* the median: the bar's center, since it ranks readings */
   .strip text { font-size: 12.5px; fill: var(--muted); }   /* the labels are the context: never smaller than this */
   .strip text.avg-label { fill: var(--ink-2); }
-  .strip .beyond { fill: var(--series); }
+  .strip .now.off { fill: var(--surface); stroke: var(--series); stroke-width: 3; }   /* outside the range: a hollow dot pinned at the end */
+  .strip .beyond { fill: var(--ink-2); }   /* the arrow and its label are annotations, in the tick's gray */
   .strip .qual { fill: var(--ink-2); font-weight: 600; }   /* "in today's dollars" changes how the bar reads */
-  .strip .beyond-label { font-size: 12.5px; fill: var(--series); font-weight: 600; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
+  .strip .beyond-label { font-size: 12.5px; fill: var(--ink-2); font-weight: 600; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
   .context { margin: 6px 0 0; font-size: 15px; font-weight: 600; }
   .household { margin: 6px 0 0; font-size: 13.5px; color: var(--ink-2); }
   .explainer { margin: 8px 0 0; font-size: 13.5px; }
@@ -383,7 +385,7 @@
   <div class="wrap">
     <h2 id="how-to-read">How to read this page</h2>
     <p><strong>The big number</strong> is the latest official reading. The date beside it is the period it describes, which is usually a few weeks behind today, because that is how long the agencies take to count.</p>
-    <p><strong>The bar underneath</strong> ranks that reading against everything the indicator has done since records began. It spans the typical range, the middle 90 percent of that history, and the dot sits at the reading's rank: halfway along, at the small notch, means half of all past readings were lower, which is what the sentence under it says in words. That middle reading is the median, and the label above the notch gives it. A dot near either end means today is unusual; a dot in the middle means it is not, whatever the headlines say. A dot pinned at either end, with an arrow pointing outward, means the reading is outside the typical range altogether, which is rarer still. The numbers at the ends are the readings at the edges of that middle 90 percent. Because the bar shows rank rather than amount, the same distance along it can stand for a small change in one place and a large one in another.</p>
+    <p><strong>The bar underneath</strong> ranks that reading against everything the indicator has done since records began. It spans the typical range, the middle 90 percent of that history, and the dot sits at the reading's rank: halfway along, at the small notch, means half of all past readings were lower, which is what the sentence under it says in words. That middle reading is the median, and the label above the notch gives it. A dot near either end means today is unusual; a dot in the middle means it is not, whatever the headlines say. A hollow dot pinned at either end, with a gray arrow pointing outward, means the reading is outside the typical range altogether, which is rarer still. The numbers at the ends are the readings at the edges of that middle 90 percent. Because the bar shows rank rather than amount, the same distance along it can stand for a small change in one place and a large one in another.</p>
     <p><strong>At a glance</strong>, at the top, puts every number's bar in one list so you can scan them all before reading any one in full. Each row links to its tile. Prefer the tiles alone? <a href="?view=tiles">Hide the overview</a> to leave the list out.</p>
     <p><strong>The line in plain terms</strong> restates the reading as something a household would feel: what last year's $100 buys, the payment on the median home at this rate, how many people the unemployment rate represents. It is computed from the same data each time the figures refresh.</p>
     <p><strong>The 2015–19 average</strong> is the last five full years before the pandemic. It is not a target, just a reasonable stand-in for what "normal" felt like recently. Its tick on the bar sits at that average's own rank in the history.</p>
@@ -576,11 +578,11 @@
       // current reading; outside the range, the dot pinned at that end of the track with an arrow pointing outward,
       // and a label that steps past the 2015–19 tick rather than over it
       const beyondW = 105;
-      if (where === 'below') { svg.appendChild(svgEl('circle', { class: 'now', cx: padL, cy: y, r: 7 }));
+      if (where === 'below') { svg.appendChild(svgEl('circle', { class: 'now off', cx: padL, cy: y, r: 7 }));
         svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (padL - 19) + ',' + y + ' l10,-7 l0,14 z' }));
         let bx = padL + 12; if (ax != null && ax > bx - 6 && ax < bx + beyondW + 6) bx = ax + 8;
         const bl = svgEl('text', { class: 'beyond-label', x: bx, y: y + 4, 'text-anchor': 'start' }); bl.textContent = 'below the range'; svg.appendChild(bl); }
-      else if (where === 'above') { svg.appendChild(svgEl('circle', { class: 'now', cx: W - padR, cy: y, r: 7 }));
+      else if (where === 'above') { svg.appendChild(svgEl('circle', { class: 'now off', cx: W - padR, cy: y, r: 7 }));
         svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (W - padR + 19) + ',' + y + ' l-10,-7 l0,14 z' }));
         let bx = W - padR - 12; if (ax != null && ax < bx + 6 && ax > bx - beyondW - 6) bx = ax - 8;
         const bl = svgEl('text', { class: 'beyond-label', x: bx, y: y + 4, 'text-anchor': 'end' }); bl.textContent = 'above the range'; svg.appendChild(bl); }
@@ -629,9 +631,9 @@
       let tick = null;
       if (c.baseline_2015_19 != null && avgRank != null) { const ax = pos(avgRank); tick = svgEl('line', { class: 'avg', x1: ax, x2: ax, y1: y - 6, y2: y + 6 }); svg.appendChild(tick); }
       // outside the range: the dot pinned at that end, with an arrow pointing outward (the key shows the same pair)
-      if (where === 'below') { svg.appendChild(svgEl('circle', { class: 'now', cx: pad, cy: y, r: 5.5 }));
+      if (where === 'below') { svg.appendChild(svgEl('circle', { class: 'now off', cx: pad, cy: y, r: 5.5 }));
         svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (pad - 16) + ',' + y + ' l9,-6 l0,12 z' })); }
-      else if (where === 'above') { svg.appendChild(svgEl('circle', { class: 'now', cx: W - pad, cy: y, r: 5.5 }));
+      else if (where === 'above') { svg.appendChild(svgEl('circle', { class: 'now off', cx: W - pad, cy: y, r: 5.5 }));
         svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (W - pad + 16) + ',' + y + ' l-9,-6 l0,12 z' })); }
       else { const cx = pos(c.percentile_below); svg.appendChild(svgEl('circle', { class: 'now', cx, cy: y, r: 5.5 }));
         if (tick && Math.abs(+tick.getAttribute('x1') - cx) < 7) svg.appendChild(tick); }
@@ -652,7 +654,7 @@
     key.appendChild(el('span', { html: keySvg('<line x1="3" x2="27" y1="7" y2="7" stroke="var(--range)" stroke-width="5" stroke-linecap="round"/>') + 'typical range (the middle 90% of its history)' }));
     key.appendChild(el('span', { html: keySvg('<line x1="3" x2="27" y1="7" y2="7" stroke="var(--range)" stroke-width="5" stroke-linecap="round"/><line x1="15" x2="15" y1="3.5" y2="10.5" stroke="var(--muted)" stroke-width="1.5"/>') + 'median, always the middle' }));
     key.appendChild(el('span', { html: keySvg('<line x1="15" x2="15" y1="1" y2="13" stroke="var(--ink-2)" stroke-width="2"/>') + '2015–19 average' }));
-    key.appendChild(el('span', { html: keySvg('<circle cx="11" cy="7" r="5.5" fill="var(--series)"/><path d="M29,7 l-9,-6 l0,12 z" fill="var(--series)"/>') + 'outside the range' }));
+    key.appendChild(el('span', { html: keySvg('<circle cx="11" cy="7" r="4.5" fill="var(--surface)" stroke="var(--series)" stroke-width="2.5"/><path d="M29,7 l-9,-6 l0,12 z" fill="var(--ink-2)"/>') + 'outside the range' }));
     key.appendChild(el('a', { href: '#how-to-read', text: 'How to read this ↓' }));
     g.appendChild(key);
     const cols = el('div', { class: 'cols' });
