@@ -76,6 +76,22 @@ TILES = [
         "note": "Seasonally adjusted, from the monthly household survey.",
     },
     {
+        # A computed tile (Nov 3): job openings divided by the number of unemployed, same month. Computed tiles
+        # are built before the companions are fetched, so the "series_ratio" op fetches its two inputs itself.
+        "id": "openings_ratio",
+        "agency": "BLS",
+        "section": "Jobs",
+        "title": "Openings per job seeker",
+        "subtitle": "Unfilled jobs for each person looking for work, monthly",
+        "series": "JTSJOL",
+        "params": {},
+        "freq": "m",
+        "computed": {"op": "series_ratio", "a": "JTSJOL", "b": "UNEMPLOY", "start": "2000-12-01"},
+        "display": {"scale": 1, "decimals": 2, "suffix": "", "signed": False,
+                    "unit": "job openings per unemployed person"},
+        "note": "Job openings from the Bureau of Labor Statistics' survey of employers (JOLTS, JTSJOL), divided by the number of unemployed people from its household survey (UNEMPLOY), for the same month; both seasonally adjusted. Openings are counted since December 2000 and come out about a month after the unemployment figures, so the latest month here trails the jobs report. A reading of 1.0 means one open job for every person looking. The hires, quits and layoffs rates are on the chart page.",
+    },
+    {
         "id": "claims",
         "agency": "Labor Department",
         "section": "Jobs",
@@ -1159,6 +1175,38 @@ def household_lines(tiles_out, companions_out, extras):
             [{"series": "GASREGW", "url": "https://fred.stlouisfed.org/series/GASREGW"}])
     except Exception: pass
 
+    # Openings per job seeker (Nov 3): the two counts behind the ratio, the ratio per 10 job seekers, the same month
+    # a year earlier (exactly that month; none when it is missing, as October 2025 is), and the 2019 average.
+    try:
+        t = T["openings_ratio"]
+        d = t["context"]["current"]["date"]
+        r = t["context"]["current"]["value"]
+        o, u = dict(C["openings"]).get(d), dict(C["unemployed"]).get(d)
+        per10 = lambda v: int(v * 10 + 0.5)
+        obs = dict((x, v) for x, v in t["observations"])
+        ya = obs.get(f"{int(d[:4]) - 1}{d[4:]}")
+        r19 = [v for x, v in t["observations"] if x.startswith("2019")]
+        n, m = per10(r), (per10(ya) if ya is not None else None)
+        month = f"{to_date(d).strftime('%B')} {d[:4]}"
+        mil = lambda v: f"{v / 1000:.1f} million"
+        if n == 10:
+            count = "about one opening for every job seeker"
+            unit = " for every 10"
+        else:
+            count = f"about {n} openings for every 10 job seekers"
+            unit = ""
+        if m is None:
+            change = ""
+        elif m == n:
+            change = ", the same as a year earlier"
+        else:
+            change = f", {'up' if n > m else 'down'} from {m}{unit} a year earlier"
+        text = f"In {month} there were {mil(o)} open jobs and {mil(u)} people looking for work, {count}{change}."
+        if len(r19) == 12:
+            text += f" In 2019 there were about {per10(sum(r19) / 12)}{unit}."
+        lines["openings_ratio"] = (text, [{"series": "UNEMPLOY", "url": "https://fred.stlouisfed.org/series/UNEMPLOY"}])
+    except Exception: pass
+
     for t in tiles_out:
         if t["id"] in lines:
             text, sources = lines[t["id"]]
@@ -1255,6 +1303,35 @@ DERIVED = [
         "op": "scale", "a": "electricity", "k": 100 / 3.5, "freq": "m",
         "why": "The BLS average residential electricity price divided by 3.5 miles per kilowatt-hour, a typical EV's efficiency. Public fast charging costs two to three times this. Different scale: cents per mile.",
         "panel": "group:per_mile", "panel_title": "Cents per mile", "display": {"scale": 1, "decimals": 1, "suffix": "¢"},
+    },
+    # The labor turnover rates under Openings per job seeker (Nov 3), in one shared sub-panel. Copies (scale by 1)
+    # of the hires, quits and layoffs companions, which stay on the unemployment chart's own axis; here the tile's
+    # scale is a ratio, so the rates need a panel of their own.
+    {
+        "id": "turnover_hires",
+        "label": "Hires rate",
+        "for": ["openings_ratio"],
+        "op": "scale", "a": "hires_rate", "k": 1, "freq": "m",
+        "why": "Hires in the month as a share of employment (JOLTS, JTSHIR). Low hiring with low layoffs is the 'frozen' job market: hard to lose a job, hard to find one. Different scale: percent of employment.",
+        # the shared panel's clip comes from its first member: 0-6.5%, so the spring 2020 layoffs spike (8.6% in
+        # March) is marked off the chart and the ordinary 1-4% range stays readable; hires peaked at 6.1% in May 2020
+        "panel": "group:turnover", "panel_title": "Share of workers, each month", "display": {"scale": 1, "decimals": 1, "suffix": "%", "clip": [0, 6.5]},
+    },
+    {
+        "id": "turnover_quits",
+        "label": "Quits rate",
+        "for": ["openings_ratio"],
+        "op": "scale", "a": "quits_rate", "k": 1, "freq": "m",
+        "why": "Workers leaving voluntarily as a share of employment (JOLTS, JTSQUR). People tend to quit when they expect to find the next job. Different scale: percent of employment.",
+        "panel": "group:turnover", "panel_title": "Share of workers, each month", "display": {"scale": 1, "decimals": 1, "suffix": "%"},
+    },
+    {
+        "id": "turnover_layoffs",
+        "label": "Layoffs and discharges rate",
+        "for": ["openings_ratio"],
+        "op": "scale", "a": "layoffs_rate", "k": 1, "freq": "m",
+        "why": "Involuntary separations as a share of employment (JOLTS, JTSLDR), the monthly counterpart of weekly jobless claims. Different scale: percent of employment.",
+        "panel": "group:turnover", "panel_title": "Share of workers, each month", "display": {"scale": 1, "decimals": 1, "suffix": "%"},
     },
 ]
 # Each price tile also gets its inflation-adjusted line on the detail page: the same
@@ -1635,6 +1712,18 @@ def compute_tile(spec, by_id):
         if len(out) < 3:
             raise RuntimeError("inputs do not overlap")
         return out
+    if spec["op"] == "series_ratio":
+        # a / b for two FRED series fetched here (they are not tiles), matched on the same date (Nov 3:
+        # openings per job seeker). A month either series lacks is left out.
+        params = {"observation_start": spec.get("start", "1776-07-04")}
+        a = get_observations(spec["a"], params)
+        time.sleep(0.4)
+        b = dict(get_observations(spec["b"], params))
+        time.sleep(0.4)
+        out = [(d, v / b[d]) for d, v in a if b.get(d)]
+        if len(out) < 3:
+            raise RuntimeError("inputs do not overlap")
+        return out
     raise RuntimeError(f"unknown op {spec['op']}")
 
 
@@ -1745,7 +1834,7 @@ def main():
             continue
         try:
             obs = compute_tile(spec["computed"], by_id)
-            print(f"{spec['id']:16s} computed from {', '.join(v for k, v in spec['computed'].items() if isinstance(v, str) and k != 'op')} ({len(obs)} obs)", flush=True)
+            print(f"{spec['id']:16s} computed from {', '.join(v for k, v in spec['computed'].items() if isinstance(v, str) and k not in ('op', 'start'))} ({len(obs)} obs)", flush=True)
             info = get_series_info(spec["series"])
             time.sleep(0.4)
         except Exception as e:

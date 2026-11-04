@@ -4,6 +4,8 @@ dek: In a market where few people are laid off and few are hired, the person bet
 date: 2026-10-29
 kind: path
 order: 6
+tile: openings_ratio
+hook: what the numbers mean for a job search
 ---
 
 ## What reaches you, in order
