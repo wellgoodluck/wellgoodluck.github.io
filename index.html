@@ -37,6 +37,7 @@
     --hairline: #e3e2dc;
     --grid: #ebeae4;
     --series: #0b7a75;   /* deep teal: no party's color (the Democratic lane is blue) */
+    --nav: #8a6100;      /* ochre: wayfinding only (the section bar, the site links), never data; 5.5:1 on white */
     --c1: #903a03;       /* the first companion series, as on the chart page (the Chart to try picture) */
     --series-wash: rgba(11, 122, 117, 0.10);
     --recession: rgba(27, 27, 26, 0.07);
@@ -60,6 +61,7 @@
       --hairline: #2c2c2a;
       --grid: #262624;
       --series: #2bb3a8;
+      --nav: #d9a83a;
       --c1: #fb8304;
       --series-wash: rgba(43, 179, 168, 0.14);
       --focus: #2bb3a8;
@@ -92,7 +94,7 @@
   /* Masthead ------------------------------------------------------------- */
   .masthead { padding: 40px 0 0; }
   .masthead .title-row { display: flex; align-items: center; justify-content: space-between; gap: 8px 20px; margin: 0 0 10px; }   /* center, since the lockup has no text baseline of its own */
-  .masthead .site-link { font-size: 15px; font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--hairline); padding-bottom: 1px; white-space: nowrap; }
+  .masthead .site-link { font-size: 15px; font-weight: 600; text-decoration: none; border-bottom: 2px solid var(--nav); padding-bottom: 1px; white-space: nowrap; }
   .masthead .site-link:hover { border-color: var(--ink); }
   .masthead .site-links { display: flex; gap: 16px; }
   /* the latest readings as plain HTML, written at build time; the script replaces them with the tiles */
@@ -145,13 +147,13 @@
   /* Section nav: a bar below the masthead (sheet surface between two hairlines, with an "On this page" label), so it
      reads as a menu and not as a line of links; it stays at the top while you scroll. The section in view carries a
      2px ink rule along the bar's bottom edge. On phones: one sideways-scrolling row, no label. Same rules in site.css. */
-  .secnav { position: sticky; top: 0; z-index: 5; margin: 14px 0 0; background: var(--surface); border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
+  .secnav { position: sticky; top: 0; z-index: 5; margin: 14px 0 0; background: var(--surface); border-top: 3px solid var(--nav); border-bottom: 1px solid var(--hairline); }
   .secnav .wrap { display: flex; align-items: baseline; gap: 0 20px; }   /* baseline, not center: the label is smaller type and sits on the links' baseline */
-  .secnav-label { flex: none; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
+  .secnav-label { flex: none; font-size: 12.5px; font-weight: 600; color: var(--nav); text-transform: uppercase; letter-spacing: 0.06em; }
   .sections-nav { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 0 22px; font-size: 15px; }
-  .sections-nav a { display: inline-block; padding: 11px 0 9px; margin-bottom: -1px; color: var(--ink-2); font-weight: 600; text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; }
-  .sections-nav a:hover { color: var(--ink); border-bottom-color: var(--muted); }
-  .sections-nav a[aria-current] { color: var(--ink); border-bottom-color: var(--ink); }
+  .sections-nav a { display: inline-block; padding: 11px 0 8px; margin-bottom: -1px; color: var(--ink-2); font-weight: 600; text-decoration: none; border-bottom: 3px solid transparent; white-space: nowrap; }
+  .sections-nav a:hover { color: var(--ink); border-bottom-color: var(--nav); }
+  .sections-nav a[aria-current] { color: var(--ink); border-bottom-color: var(--nav); }
   /* jumps land below the sticky nav; --nav-h is its measured height */
   main, section.group, .tile, .glance, #how-to-read { scroll-margin-top: calc(var(--nav-h, 48px) + 8px); }
   .skip { position: absolute; left: 8px; top: -60px; z-index: 10; padding: 10px 14px; background: var(--ink); color: var(--surface); font-size: 13.5px; font-weight: 600; text-decoration: none; border-radius: 4px; }
@@ -161,7 +163,7 @@
   /* In short: one plain paragraph under each section heading, computed from the tiles' own figures at every refresh */
   .in-short { margin: -4px 0 16px; max-width: 46em; font-size: 15px; line-height: 1.5; color: var(--ink-2); text-wrap: pretty; }
   .in-short strong { color: var(--ink); font-weight: 600; }
-  .to-glance { font-size: 13.5px; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; padding: 8px 0; white-space: nowrap; }
+  .to-glance { font-size: 13.5px; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 3px; padding: 8px 0; white-space: nowrap; }
   .to-glance:hover { color: var(--ink); text-decoration-color: var(--ink); }
   @media (max-width: 760px) {
     .masthead { padding-top: 22px; }
@@ -178,7 +180,7 @@
     .sections-nav::-webkit-scrollbar { display: none; }
     .sections-nav li:last-child { padding-right: 16px; }
     .secnav-label { display: none; }
-    .sections-nav a { padding: 14px 0 12px; }   /* about 46px: a thumb-sized target */
+    .sections-nav a { padding: 14px 0 11px; }   /* about 46px: a thumb-sized target */
     /* the row fades at an edge with more to scroll to (classes set from the scroll position) */
     .sections-nav.fade-r { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
     .sections-nav.fade-l { -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to left, #000 calc(100% - 36px), transparent); }

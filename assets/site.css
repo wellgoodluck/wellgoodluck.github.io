@@ -9,7 +9,7 @@
 :root {
   color-scheme: light;
   --page: #f6f6f3; --surface: #ffffff; --ink: #1b1b1a; --ink-2: #5a5955; --muted: #72716b;
-  --hairline: #e3e2dc; --grid: #ebeae4; --series: #0b7a75; --focus: #0b7a75; --c1: #903a03; --c3: #b88e2f;
+  --hairline: #e3e2dc; --grid: #ebeae4; --series: #0b7a75; --focus: #0b7a75; --c1: #903a03; --c3: #b88e2f; --nav: #8a6100;
   --series-wash: rgba(11, 122, 117, 0.10); --full-ink: #0b6b66; --full-line: rgba(11, 122, 117, 0.45);   /* the Featured card and its pills, as on the almanac */
   --banner: #fff4d6; --banner-ink: #5a4300; --max: 1120px; --measure: 39em;   /* about 76 characters at 17px (was 42em, about 84) */
 }
@@ -18,7 +18,7 @@
   :root {
     color-scheme: dark;
     --page: #121211; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
-    --hairline: #2c2c2a; --grid: #262624; --series: #2bb3a8; --focus: #2bb3a8; --c1: #fb8304; --c3: #7c6713;
+    --hairline: #2c2c2a; --grid: #262624; --series: #2bb3a8; --focus: #2bb3a8; --c1: #fb8304; --c3: #7c6713; --nav: #d9a83a;
     --series-wash: rgba(43, 179, 168, 0.14); --full-ink: #5cc8be; --full-line: rgba(43, 179, 168, 0.6); --banner: #3a2f10; --banner-ink: #f3dfa0;
   }
 }
@@ -33,7 +33,7 @@ a:hover { text-decoration-color: var(--ink); }
 
 .masthead { padding: 18px 0 14px; border-bottom: 1px solid var(--hairline); }
 .crumb { margin: 0; font-size: 13.5px; color: var(--ink-2); }
-.crumb a { text-decoration: none; border-bottom: 1px solid var(--hairline); }
+.crumb a { text-decoration: none; border-bottom: 2px solid var(--nav); }
 .crumb .sep { color: var(--muted); margin: 0 6px; }
 
 /* Article ------------------------------------------------------------------ */
@@ -117,13 +117,13 @@ a:hover { text-decoration-color: var(--ink); }
    by a 2px ink rule on the bar's bottom edge; on phones one sideways-scrolling row with edge fades and no label */
 .article-head { padding-bottom: 0; }
 .article-head h1, .article-head .dek { max-width: var(--measure); }
-.secnav { position: sticky; top: 0; z-index: 5; margin: 14px 0 0; background: var(--surface); border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
+.secnav { position: sticky; top: 0; z-index: 5; margin: 14px 0 0; background: var(--surface); border-top: 3px solid var(--nav); border-bottom: 1px solid var(--hairline); }
 .secnav .wrap { display: flex; align-items: baseline; gap: 0 20px; }   /* baseline, not center: the label is smaller type and sits on the links' baseline */
-.secnav-label { flex: none; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
+.secnav-label { flex: none; font-size: 12.5px; font-weight: 600; color: var(--nav); text-transform: uppercase; letter-spacing: 0.06em; }
 .sections-nav { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 0 22px; font-size: 15px; }
-.sections-nav a { display: inline-block; padding: 11px 0 9px; margin-bottom: -1px; color: var(--ink-2); font-weight: 600; text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; }
-.sections-nav a:hover { color: var(--ink); border-bottom-color: var(--muted); }
-.sections-nav a[aria-current] { color: var(--ink); border-bottom-color: var(--ink); }
+.sections-nav a { display: inline-block; padding: 11px 0 8px; margin-bottom: -1px; color: var(--ink-2); font-weight: 600; text-decoration: none; border-bottom: 3px solid transparent; white-space: nowrap; }
+.sections-nav a:hover { color: var(--ink); border-bottom-color: var(--nav); }
+.sections-nav a[aria-current] { color: var(--ink); border-bottom-color: var(--nav); }
 .secnav + main.article { padding-top: 0; }
 #latest, #household-paths, #the-numbers, #the-ideas { scroll-margin-top: calc(var(--nav-h, 48px) + 8px); }   /* jumps land below the bar */
 @media (max-width: 760px) {
@@ -132,7 +132,7 @@ a:hover { text-decoration-color: var(--ink); }
   .sections-nav { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 0 16px; margin: 0 -16px; gap: 0 20px; }
   .sections-nav::-webkit-scrollbar { display: none; }
   .sections-nav li:last-child { padding-right: 16px; }
-  .sections-nav a { padding: 14px 0 12px; }   /* about 46px: a thumb-sized target */
+  .sections-nav a { padding: 14px 0 11px; }   /* about 46px: a thumb-sized target */
   .sections-nav.fade-r { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
   .sections-nav.fade-l { -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to left, #000 calc(100% - 36px), transparent); }
   .sections-nav.fade-l.fade-r { -webkit-mask-image: linear-gradient(to right, transparent, #000 36px, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, transparent, #000 36px, #000 calc(100% - 36px), transparent); }
@@ -213,7 +213,7 @@ footer.about p { max-width: 48em; margin: 0 0 8px; }
 /* The crumb's home link (Nov 4): the small mark and the two-weight name, underlined under the name only.
    Same mark rules in index.html (the masthead lockup) and chart.html (its crumb). */
 .crumb a.home { border-bottom: 0; }
-.crumb a.home .name { border-bottom: 1px solid var(--hairline); }
+.crumb a.home .name { border-bottom: 2px solid var(--nav); }
 .crumb a.home:hover .name { border-bottom-color: var(--ink); }
 .crumb b { font-weight: 700; color: var(--ink); }
 .crumb .mark { display: inline-block; width: 1.55em; height: 1.55em; margin: 0 0.12em 0 -0.28em; vertical-align: -0.42em; }
