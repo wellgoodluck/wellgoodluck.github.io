@@ -48,6 +48,36 @@
           "label": "2026: mergers, the cap, foreign money"
         }
       ]
+    },
+    "main-street": {
+      "title": "Who Owns Main Street",
+      "dek": "Six pages, read in order: how private equity and corporate groups bought vet clinics, dental offices and plumbing, heating and electrical companies, usually keeping the local name; why pharmacies changed hands differently; who makes the equipment in American homes; and where the money from all of it goes.",
+      "parts": [
+        {
+          "slug": "who-owns-the-vet",
+          "label": "Vet clinics"
+        },
+        {
+          "slug": "who-owns-the-dentist",
+          "label": "Dental offices"
+        },
+        {
+          "slug": "who-owns-the-trades",
+          "label": "HVAC, plumbing and electrical"
+        },
+        {
+          "slug": "who-owns-the-pharmacy",
+          "label": "Pharmacies"
+        },
+        {
+          "slug": "who-makes-the-equipment",
+          "label": "The equipment makers"
+        },
+        {
+          "slug": "where-the-money-goes",
+          "label": "Where the money goes"
+        }
+      ]
     }
   }
 }
