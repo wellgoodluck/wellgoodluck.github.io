@@ -554,7 +554,7 @@ HEAD = """<!doctype html>
 <link rel="stylesheet" href="../assets/site.css{css_v}">
 </head>
 <body>
-<header class="masthead">
+<header class="masthead" id="top">
   <div class="wrap">
     <p class="crumb"><a class="home" href="../"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M25 14H15V50H25"/><path d="M39 14H49V50H39"/><circle cx="32" cy="32" r="8.5"/></svg><span class="name"><b>Economy</b> in Context</span></a> <span class="sep">/</span> <a href="./">Articles</a></p>
   </div>
@@ -761,7 +761,7 @@ def render_index(articles):
 
     jump = [("#latest", "Latest", latest), ("#household-paths", "Your situation", paths),
             ("#the-numbers", "The numbers", numbers), ("#the-ideas", "The ideas", ideas)]
-    secnav = ('<nav class="secnav" aria-label="On this page"><div class="wrap"><span class="secnav-label" aria-hidden="true">On this page</span>'
+    secnav = ('<nav class="secnav" aria-label="On this page"><div class="wrap"><span class="secnav-label" aria-hidden="true">On this page</span><a class="to-top" href="#top" aria-label="Back to the top of the page">↑ Top</a>'
               '<ul class="sections-nav" id="nav">' + "".join(f'<li><a href="{h}">{t}</a></li>' for h, t, items in jump if items)
               + '</ul></div></nav>\n')
     page = page.replace("{SECNAV}", secnav, 1)

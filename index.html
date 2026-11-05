@@ -151,7 +151,11 @@
      2px ink rule along the bar's bottom edge. On phones: one sideways-scrolling row, no label. Same rules in site.css. */
   .secnav { position: sticky; top: 0; z-index: 5; margin: 14px 0 0; background: linear-gradient(var(--nav-wash), var(--nav-wash)), var(--surface); border-top: 3px solid var(--nav); border-bottom: 1px solid var(--hairline); }
   .secnav .wrap { display: flex; align-items: baseline; gap: 0 20px; }   /* baseline, not center: the label is smaller type and sits on the links' baseline */
-  .secnav-label { flex: none; font-size: 12.5px; font-weight: 600; color: var(--nav); text-transform: uppercase; letter-spacing: 0.06em; }
+  .secnav-label { flex: none; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }   /* a label, not a link: gray, so everything ochre in the bar can be clicked */
+  /* ↑ Top: the way back to the top of the page, first in the row at every width (outside the list, so it stays put while the
+     row scrolls sideways on phones) */
+  .to-top { flex: none; font-size: 12.5px; font-weight: 600; color: var(--nav); text-transform: uppercase; letter-spacing: 0.02em; text-decoration: none; white-space: nowrap; padding: 13px 0 10px; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+  .to-top:hover { color: var(--ink); border-bottom-color: var(--nav); }
   .sections-nav { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 0 22px; font-size: 15px; }
   .sections-nav a { display: inline-block; padding: 11px 0 8px; margin-bottom: -1px; color: var(--nav); font-weight: 600; text-decoration: none; border-bottom: 3px solid transparent; white-space: nowrap; }
   .sections-nav a:hover { color: var(--ink); border-bottom-color: var(--nav); }
@@ -182,6 +186,7 @@
     .sections-nav::-webkit-scrollbar { display: none; }
     .sections-nav li:last-child { padding-right: 16px; }
     .secnav-label { display: none; }
+    .to-top { padding: 14px 0 11px; }
     .sections-nav a { padding: 14px 0 11px; }   /* about 46px: a thumb-sized target */
     /* the row fades at an edge with more to scroll to (classes set from the scroll position) */
     .sections-nav.fade-r { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
@@ -421,7 +426,7 @@
 
 <div id="banner" class="banner" hidden></div>
 
-<header class="masthead">
+<header class="masthead" id="top">
   <div class="wrap">
     <div class="title-row"><h1 class="brand"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M25 14H15V50H25"/><path d="M39 14H49V50H39"/><circle cx="32" cy="32" r="8.5"/></svg><span>Economy <span class="bl">in Context</span><span aria-hidden="true">.</span></span></h1><span class="site-links"><a class="site-link" href="articles/">Articles</a><a class="site-link" href="articles/about.html">About</a></span></div>
     <p class="tagline">The main numbers on the U.S. economy, each shown against its own history, so you can see what is high, what is low and what is normal.</p>
@@ -429,7 +434,7 @@
     <p class="coming" id="coming" hidden></p>
   </div>
 </header>
-<nav class="secnav" aria-label="On this page"><div class="wrap"><span class="secnav-label" aria-hidden="true">On this page</span><ul class="sections-nav" id="nav"></ul></div></nav>
+<nav class="secnav" aria-label="On this page"><div class="wrap"><span class="secnav-label" aria-hidden="true">On this page</span><a class="to-top" href="#top" aria-label="Back to the top of the page">↑ Top</a><ul class="sections-nav" id="nav"></ul></div></nav>
 
 <main class="wrap" id="main">
   <p class="status" id="status" role="status">Loading the latest figures…</p>
