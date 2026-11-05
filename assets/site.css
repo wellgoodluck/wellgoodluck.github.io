@@ -9,7 +9,7 @@
 :root {
   color-scheme: light;
   --page: #f6f6f3; --surface: #ffffff; --ink: #1b1b1a; --ink-2: #5a5955; --muted: #72716b;
-  --hairline: #e3e2dc; --grid: #ebeae4; --series: #0b7a75; --focus: #0b7a75; --c1: #903a03; --c3: #b88e2f; --nav: #8a6100;
+  --hairline: #e3e2dc; --grid: #ebeae4; --series: #0b7a75; --focus: #0b7a75; --c1: #903a03; --c3: #b88e2f; --nav: #8a6100; --nav-wash: rgba(138, 97, 0, 0.09);
   --series-wash: rgba(11, 122, 117, 0.10); --full-ink: #0b6b66; --full-line: rgba(11, 122, 117, 0.45);   /* the Featured card and its pills, as on the almanac */
   --banner: #fff4d6; --banner-ink: #5a4300; --max: 1120px; --measure: 39em;   /* about 76 characters at 17px (was 42em, about 84) */
 }
@@ -18,7 +18,7 @@
   :root {
     color-scheme: dark;
     --page: #121211; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
-    --hairline: #2c2c2a; --grid: #262624; --series: #2bb3a8; --focus: #2bb3a8; --c1: #fb8304; --c3: #7c6713; --nav: #d9a83a;
+    --hairline: #2c2c2a; --grid: #262624; --series: #2bb3a8; --focus: #2bb3a8; --c1: #fb8304; --c3: #7c6713; --nav: #d9a83a; --nav-wash: rgba(217, 168, 58, 0.12);
     --series-wash: rgba(43, 179, 168, 0.14); --full-ink: #5cc8be; --full-line: rgba(43, 179, 168, 0.6); --banner: #3a2f10; --banner-ink: #f3dfa0;
   }
 }
@@ -117,11 +117,11 @@ a:hover { text-decoration-color: var(--ink); }
    by a 2px ink rule on the bar's bottom edge; on phones one sideways-scrolling row with edge fades and no label */
 .article-head { padding-bottom: 0; }
 .article-head h1, .article-head .dek { max-width: var(--measure); }
-.secnav { position: sticky; top: 0; z-index: 5; margin: 14px 0 0; background: var(--surface); border-top: 3px solid var(--nav); border-bottom: 1px solid var(--hairline); }
+.secnav { position: sticky; top: 0; z-index: 5; margin: 14px 0 0; background: linear-gradient(var(--nav-wash), var(--nav-wash)), var(--surface); border-top: 3px solid var(--nav); border-bottom: 1px solid var(--hairline); }
 .secnav .wrap { display: flex; align-items: baseline; gap: 0 20px; }   /* baseline, not center: the label is smaller type and sits on the links' baseline */
 .secnav-label { flex: none; font-size: 12.5px; font-weight: 600; color: var(--nav); text-transform: uppercase; letter-spacing: 0.06em; }
 .sections-nav { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 0 22px; font-size: 15px; }
-.sections-nav a { display: inline-block; padding: 11px 0 8px; margin-bottom: -1px; color: var(--ink-2); font-weight: 600; text-decoration: none; border-bottom: 3px solid transparent; white-space: nowrap; }
+.sections-nav a { display: inline-block; padding: 11px 0 8px; margin-bottom: -1px; color: var(--nav); font-weight: 600; text-decoration: none; border-bottom: 3px solid transparent; white-space: nowrap; }
 .sections-nav a:hover { color: var(--ink); border-bottom-color: var(--nav); }
 .sections-nav a[aria-current] { color: var(--ink); border-bottom-color: var(--nav); }
 .secnav + main.article { padding-top: 0; }

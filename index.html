@@ -38,6 +38,7 @@
     --grid: #ebeae4;
     --series: #0b7a75;   /* deep teal: no party's color (the Democratic lane is blue) */
     --nav: #8a6100;      /* ochre: wayfinding only (the section bar, the site links), never data; 5.5:1 on white */
+    --nav-wash: rgba(138, 97, 0, 0.09);   /* the section bar's tint */
     --c1: #903a03;       /* the first companion series, as on the chart page (the Chart to try picture) */
     --series-wash: rgba(11, 122, 117, 0.10);
     --recession: rgba(27, 27, 26, 0.07);
@@ -62,6 +63,7 @@
       --grid: #262624;
       --series: #2bb3a8;
       --nav: #d9a83a;
+      --nav-wash: rgba(217, 168, 58, 0.12);
       --c1: #fb8304;
       --series-wash: rgba(43, 179, 168, 0.14);
       --focus: #2bb3a8;
@@ -94,8 +96,8 @@
   /* Masthead ------------------------------------------------------------- */
   .masthead { padding: 40px 0 0; }
   .masthead .title-row { display: flex; align-items: center; justify-content: space-between; gap: 8px 20px; margin: 0 0 10px; }   /* center, since the lockup has no text baseline of its own */
-  .masthead .site-link { font-size: 15px; font-weight: 600; text-decoration: none; border-bottom: 2px solid var(--nav); padding-bottom: 1px; white-space: nowrap; }
-  .masthead .site-link:hover { border-color: var(--ink); }
+  .masthead .site-link { color: var(--nav); font-size: 15px; font-weight: 600; text-decoration: none; border-bottom: 3px solid var(--nav); padding-bottom: 1px; white-space: nowrap; }
+  .masthead .site-link:hover { color: var(--ink); border-color: var(--ink); }
   .masthead .site-links { display: flex; gap: 16px; }
   /* the latest readings as plain HTML, written at build time; the script replaces them with the tiles */
   .static-figures { padding: 0 0 24px; max-width: 46em; }
@@ -147,11 +149,11 @@
   /* Section nav: a bar below the masthead (sheet surface between two hairlines, with an "On this page" label), so it
      reads as a menu and not as a line of links; it stays at the top while you scroll. The section in view carries a
      2px ink rule along the bar's bottom edge. On phones: one sideways-scrolling row, no label. Same rules in site.css. */
-  .secnav { position: sticky; top: 0; z-index: 5; margin: 14px 0 0; background: var(--surface); border-top: 3px solid var(--nav); border-bottom: 1px solid var(--hairline); }
+  .secnav { position: sticky; top: 0; z-index: 5; margin: 14px 0 0; background: linear-gradient(var(--nav-wash), var(--nav-wash)), var(--surface); border-top: 3px solid var(--nav); border-bottom: 1px solid var(--hairline); }
   .secnav .wrap { display: flex; align-items: baseline; gap: 0 20px; }   /* baseline, not center: the label is smaller type and sits on the links' baseline */
   .secnav-label { flex: none; font-size: 12.5px; font-weight: 600; color: var(--nav); text-transform: uppercase; letter-spacing: 0.06em; }
   .sections-nav { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 0 22px; font-size: 15px; }
-  .sections-nav a { display: inline-block; padding: 11px 0 8px; margin-bottom: -1px; color: var(--ink-2); font-weight: 600; text-decoration: none; border-bottom: 3px solid transparent; white-space: nowrap; }
+  .sections-nav a { display: inline-block; padding: 11px 0 8px; margin-bottom: -1px; color: var(--nav); font-weight: 600; text-decoration: none; border-bottom: 3px solid transparent; white-space: nowrap; }
   .sections-nav a:hover { color: var(--ink); border-bottom-color: var(--nav); }
   .sections-nav a[aria-current] { color: var(--ink); border-bottom-color: var(--nav); }
   /* jumps land below the sticky nav; --nav-h is its measured height */
@@ -163,7 +165,7 @@
   /* In short: one plain paragraph under each section heading, computed from the tiles' own figures at every refresh */
   .in-short { margin: -4px 0 16px; max-width: 46em; font-size: 15px; line-height: 1.5; color: var(--ink-2); text-wrap: pretty; }
   .in-short strong { color: var(--ink); font-weight: 600; }
-  .to-glance { font-size: 13.5px; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 3px; padding: 8px 0; white-space: nowrap; }
+  .to-glance { font-size: 13.5px; color: var(--nav); text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 3px; padding: 8px 0; white-space: nowrap; }
   .to-glance:hover { color: var(--ink); text-decoration-color: var(--ink); }
   @media (max-width: 760px) {
     .masthead { padding-top: 22px; }
@@ -246,12 +248,13 @@
   .glance .ghead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px; margin: 0 0 4px; }
   .glance h2 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
   .view-switch { font-size: 13.5px; color: var(--ink-2); }
-  .view-switch a { color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--hairline); }
-  .view-switch a:hover { color: var(--ink); border-color: var(--ink); }
+  .view-switch a { color: var(--nav); text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .view-switch a:hover { color: var(--ink); text-decoration-color: var(--ink); }
   p.view-switch { margin: 18px 0 0; }
   .glance .key { margin: 0 0 14px; font-size: 13.5px; color: var(--ink-2); display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; }
   .glance .key svg { vertical-align: -3px; margin-right: 5px; }
-  .glance .key a { color: var(--ink-2); }
+  .glance .key a, .masthead .updated .htr a { color: var(--nav); text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 3px; }   /* wayfinding: ochre, like the bar */
+  .glance .key a:hover, .masthead .updated .htr a:hover { color: var(--ink); text-decoration-color: var(--ink); }
   .glance .cols { columns: 3 300px; column-gap: 28px; }
   .glance .grp { break-inside: avoid; margin: 0 0 14px; }
   .glance h3 { margin: 0 0 2px; font-size: 12.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
