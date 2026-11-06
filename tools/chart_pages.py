@@ -337,7 +337,7 @@ def write_home_static(out_root, series_path=os.path.join("data", "series.json"))
     page = page.replace(status, block, 1)
     if asof:
         page = page.replace('<p class="updated" id="updated"></p>',
-                            f'<p class="updated" id="updated">New figures last checked {asof} · data from FRED</p>', 1)
+                            f'<p class="updated" id="updated">New figures last checked {asof} · <span class="nw">data from FRED</span></p>', 1)
     # the Coming up line, as of the build's UTC date; the script redraws it for the reader's own date
     try:
         coming = coming_html(data.get("calendar"), datetime.now(timezone.utc).date())

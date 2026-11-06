@@ -610,7 +610,10 @@ def render_article(a):
         else:
             body += "\n" + nxt
     page += body
-    page += "\n</article>\n</main>\n" + FOOT
+    page += "\n</article>\n</main>\n"
+    if 'class="table-scroll"' in page:            # a table may be wider than a phone: assets/tables.js marks the ones that are
+        page += '<script src="../assets/tables.js' + asset_stamp("assets/tables.js") + '"></script>\n'
+    page += FOOT
     return clean_chart_links(page, CHART_IDS) if clean_chart_links else page
 
 
@@ -770,7 +773,8 @@ def render_index(articles):
     if latest:
         page += '<h2 id="latest">Latest</h2>\n' + listing(latest[:LATEST_SHOWN], dated=True)
         if len(latest) > LATEST_SHOWN:
-            page += (f'<details class="earlier"><summary>Earlier pieces ({len(latest) - LATEST_SHOWN})</summary>\n'
+            page += (f'<details class="earlier"><summary><span class="more">Show {len(latest) - LATEST_SHOWN} earlier pieces ↓</span>'
+                     f'<span class="less">Hide the earlier pieces ↑</span></summary>\n'
                      + listing(latest[LATEST_SHOWN:], dated=True) + "</details>\n")
     if paths:
         page += '<h2 id="household-paths">Start from your situation</h2>\n<p class="dek">Which of the numbers reach you, in what order, and how long they take. One page per kind of household.</p>\n'

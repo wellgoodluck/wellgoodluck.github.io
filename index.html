@@ -352,7 +352,7 @@
   .strip .now.off { fill: var(--surface); stroke: var(--series); stroke-width: 3; }   /* outside the range: a hollow dot pinned at the end */
   .strip .beyond { fill: var(--ink-2); }   /* the arrow and its label are annotations, in the tick's gray */
   .strip .qual { fill: var(--ink-2); font-weight: 600; }   /* "in today's dollars" changes how the bar reads */
-  .strip .beyond-label { font-size: 12.5px; fill: var(--ink-2); font-weight: 600; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
+  .strip .beyond-label { font-size: 12.5px; fill: var(--ink-2); font-weight: 600; }   /* under the track since Nov 5, so no halo */
   .context { margin: 6px 0 0; font-size: 15px; font-weight: 600; }
   .household { margin: 6px 0 0; font-size: 13.5px; color: var(--ink-2); }
   .explainer { margin: 8px 0 0; font-size: 13.5px; }
@@ -405,6 +405,8 @@
   .tile-more[open] > summary { padding-bottom: 0; }
   @media (min-width: 761px) { .tile-more > summary { display: none; } }
   .chart-foot .legend:first-child { white-space: nowrap; }
+  @media (max-width: 760px) { .chart-foot .legend .sep { display: none; } .chart-foot .legend .site { display: block; } }   /* phones: the site name on its own line, not after a dangling dot (Nov 5) */
+  .masthead .updated .nw { white-space: nowrap; }
   details.table { margin: 10px 0 0; font-size: 13.5px; }
   details.table summary { cursor: pointer; color: var(--ink-2); }
   details.table table { border-collapse: collapse; margin-top: 8px; width: 100%; max-width: 320px; }
@@ -667,16 +669,29 @@
         svg.appendChild(lab);
       }
       // current reading; outside the range, the dot pinned at that end of the track with an arrow pointing outward,
-      // and a label that steps past the 2015–19 tick rather than over it
-      const beyondW = 105;
-      if (where === 'below') { svg.appendChild(svgEl('circle', { class: 'now off', cx: padL, cy: y, r: 7 }));
-        svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (padL - 19) + ',' + y + ' l10,-7 l0,14 z' }));
-        let bx = padL + 12; if (ax != null && ax > bx - 6 && ax < bx + beyondW + 6) bx = ax + 8;
-        const bl = svgEl('text', { class: 'beyond-label', x: bx, y: y + 4, 'text-anchor': 'start' }); bl.textContent = 'below the range'; svg.appendChild(bl); }
-      else if (where === 'above') { svg.appendChild(svgEl('circle', { class: 'now off', cx: W - padR, cy: y, r: 7 }));
-        svg.appendChild(svgEl('path', { class: 'beyond', d: 'M' + (W - padR + 19) + ',' + y + ' l-10,-7 l0,14 z' }));
-        let bx = W - padR - 12; if (ax != null && ax < bx + 6 && ax > bx - beyondW - 6) bx = ax - 8;
-        const bl = svgEl('text', { class: 'beyond-label', x: bx, y: y + 4, 'text-anchor': 'end' }); bl.textContent = 'above the range'; svg.appendChild(bl); }
+      // and "below/above the range" under the track at that end, on the 2015–19 label's line (it sat on the track
+      // until Nov 5 and read like struck-through text); if the two labels would touch, it steps past the other one
+      if (where === 'below' || where === 'above') {
+        const low = where === 'below', ex = low ? padL : W - padR;
+        svg.appendChild(svgEl('circle', { class: 'now off', cx: ex, cy: y, r: 7 }));
+        svg.appendChild(svgEl('path', { class: 'beyond', d: low ? 'M' + (padL - 19) + ',' + y + ' l10,-7 l0,14 z' : 'M' + (W - padR + 19) + ',' + y + ' l-10,-7 l0,14 z' }));
+        const bl = svgEl('text', { class: 'beyond-label', x: low ? 0 : W, y: y + 24, 'text-anchor': low ? 'start' : 'end' });
+        bl.textContent = low ? 'below the range' : 'above the range'; svg.appendChild(bl);
+        const al = svg.querySelector('.avg-label');
+        if (al) {
+          const b = bl.getBBox(), a = al.getBBox(), gap = 14;
+          if (b.x < a.x + a.width + gap && a.x < b.x + b.width + gap) {          // they would touch: move ours past the avg label
+            // past the avg label by 14px, or by as little as 6px on a narrow strip; failing that, the avg label steps
+            // aside, starting (or ending) at its tick
+            if (low) { const nx = Math.min(a.x + a.width + gap, W - b.width);
+              if (nx >= a.x + a.width + 6) bl.setAttribute('x', nx);
+              else { const sx = Math.max(b.width + 6, ax - 4); al.setAttribute('text-anchor', sx + a.width <= W ? 'start' : 'end'); al.setAttribute('x', sx + a.width <= W ? sx : W); } }
+            else { const nx = Math.max(a.x - gap, b.width);
+              if (nx <= a.x - 6) bl.setAttribute('x', nx);
+              else { const ex2 = Math.min(W - b.width - 6, ax + 4); al.setAttribute('text-anchor', ex2 - a.width >= 0 ? 'end' : 'start'); al.setAttribute('x', ex2 - a.width >= 0 ? ex2 : 0); } }
+          }
+        }
+      }
       else { const cx = pos(c.percentile_below); svg.appendChild(svgEl('circle', { class: 'now', cx, cy: y, r: 7 }));
         if (tick && Math.abs(ax - cx) < 9) svg.appendChild(tick); }   // the reading sits on the tick: keep the tick in view
 
@@ -952,7 +967,7 @@
     const foot = el('div', { class: 'chart-foot' });
     foot.appendChild(el('span', { class: 'legend', html: '<i></i>Recessions' }));
     // a price tile's chart is the price as charged; its range and sentence are in today's dollars, so say which
-    foot.appendChild(el('span', { class: 'legend', text: t.display.unit + (adjusted(t) ? ', as charged' : '') + ' · economyincontext.org' }));
+    foot.appendChild(el('span', { class: 'legend' }, [t.display.unit + (adjusted(t) ? ', as charged' : ''), el('span', { class: 'sep', text: ' · ' }), el('span', { class: 'site', text: 'economyincontext.org' })]));
 
     const wrapper = document.createDocumentFragment();
     wrapper.appendChild(head); wrapper.appendChild(box); wrapper.appendChild(foot);
@@ -1092,7 +1107,8 @@
     main.innerHTML = '';
     const gen = new Date(data.generated);
     const upd = document.getElementById('updated');
-    upd.textContent = 'New figures last checked ' + MONTHS_LONG[gen.getMonth()] + ' ' + gen.getDate() + ', ' + gen.getFullYear() + ' · data from FRED';
+    upd.textContent = 'New figures last checked ' + MONTHS_LONG[gen.getMonth()] + ' ' + gen.getDate() + ', ' + gen.getFullYear() + ' · ';
+    upd.appendChild(el('span', { class: 'nw', text: 'data from FRED' }));   // breaks before it, not inside it
     upd.appendChild(el('span', { class: 'htr' }, [' · ', el('a', { href: '#how-to-read', text: 'How to read this page ↓' })]));
     renderComing(data.calendar);                           // the Coming up line under it (fail-soft: no calendar, no line)
     // the provenance sentence lives in the footer; the masthead keeps a short Updated line
