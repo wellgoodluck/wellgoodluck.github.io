@@ -285,8 +285,8 @@ def coming_html(calendar, today):
     items = coming_up(calendar, today)
     if not items:
         return ""
-    return "Next releases: " + " · ".join(
-        f'<span class="rel"><a href="{html.escape(url)}">{html.escape(label)}</a> {fmt_day(when)}</span>'
+    return '<span class="rel-h">Next releases<span class="sep">: </span></span>' + '<span class="sep"> · </span>'.join(
+        f'<span class="rel"><a href="{html.escape(url)}">{html.escape(label)}</a><span class="when"> {fmt_day(when)}</span></span>'
         for label, url, when in items)
 
 

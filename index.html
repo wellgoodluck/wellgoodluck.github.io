@@ -123,6 +123,17 @@
      upcoming means no line). Each release is a link to its agency's release page; a release and its date stay on one line. */
   .masthead .coming { margin: 4px 0 0; color: var(--ink-2); font-size: 13.5px; }
   .masthead .coming .rel { white-space: nowrap; }
+  /* Phones (Nov 5): the line wrapped into four ragged lines with trailing middots, so it becomes a short list: a small
+     uppercase heading, then one release per line with its date lined up on the right. The separators are spans so they
+     can drop out; the markup is the same at every width (tools/chart_pages.py writes it too). */
+  @media (max-width: 760px) {
+    .masthead .coming { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; margin: 12px 0 14px; max-width: 22rem; }
+    .masthead .coming[hidden] { display: none; }
+    .masthead .coming .rel-h { grid-column: 1 / -1; font-size: 12.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 1px; }
+    .masthead .coming .sep { display: none; }
+    .masthead .coming .rel { display: contents; }
+    .masthead .coming .when { text-align: right; font-variant-numeric: tabular-nums; }
+  }
   /* The lockup (Nov 4): the bracket mark beside the name, "Economy" in 700 and "in Context" in 400 Ink Secondary, then an
      ink period. The h1's accessible name stays "Economy in Context": the mark and the period are aria-hidden. The mark's
      left bracket lines up with the text edge below it. Same mark rules in site.css and chart.html (the crumbs). */
@@ -182,12 +193,12 @@
     .masthead .site-link { font-size: 13.5px; }
     .masthead .updated { margin-top: 10px; }
     .secnav { margin-top: 10px; }
-    .sections-nav { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 0 16px; margin: 0 -16px; gap: 0 20px; }
+    .sections-nav { flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 0 16px; margin: 0 -16px -1px; gap: 0 20px; }   /* sideways only (Nov 5): the links' -1px marker overlap made the row 1px taller than its box, so it also scrolled up and down; the row now takes the overlap itself */
     .sections-nav::-webkit-scrollbar { display: none; }
     .sections-nav li:last-child { padding-right: 16px; }
     .secnav-label { display: none; }
     .to-top { padding: 14px 0 11px; }
-    .sections-nav a { padding: 14px 0 11px; }   /* about 46px: a thumb-sized target */
+    .sections-nav a { padding: 14px 0 11px; margin-bottom: 0; }   /* about 46px: a thumb-sized target */
     /* the row fades at an edge with more to scroll to (classes set from the scroll position) */
     .sections-nav.fade-r { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 36px), transparent); }
     .sections-nav.fade-l { -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(to left, #000 calc(100% - 36px), transparent); }
@@ -1063,10 +1074,10 @@
     const items = comingUp(calendar, today);
     p.innerHTML = '';
     if (!items.length) { p.hidden = true; return; }
-    p.appendChild(document.createTextNode('Next releases: '));
+    p.appendChild(el('span', { class: 'rel-h' }, ['Next releases', el('span', { class: 'sep', text: ': ' })]));
     items.forEach((it, i) => {
-      if (i) p.appendChild(document.createTextNode(' · '));
-      p.appendChild(el('span', { class: 'rel' }, [el('a', { href: it.url, text: it.label }), ' ' + fmtDay(it.date)]));
+      if (i) p.appendChild(el('span', { class: 'sep', text: ' · ' }));
+      p.appendChild(el('span', { class: 'rel' }, [el('a', { href: it.url, text: it.label }), el('span', { class: 'when', text: ' ' + fmtDay(it.date) })]));
     });
     p.hidden = false;
   }
