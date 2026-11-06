@@ -177,6 +177,11 @@
   .skip:focus { top: 8px; }
   .sec-head { display: flex; justify-content: space-between; align-items: baseline; gap: 4px 16px; flex-wrap: wrap; margin: 0 0 14px; }
   section.group .sec-head h2 { margin: 0; }
+  /* Section headings in the detail (Nov 5, option D of four): the At a glance band behind the heading row, under the
+     2px Muted rule that still divides the sections, the heading kept at 22px so a section outranks an overview group.
+     On the band "↑ At a glance" is ink with the ochre underline (ochre text is 4.3:1 on the light band; ink is 13:1). */
+  section.group .sec-head { background: var(--hairline); border-radius: 3px; padding: 7px 12px 8px; align-items: center; }
+  section.group .sec-head .to-glance { color: var(--ink); margin-left: auto; }   /* stays at the right when a long heading pushes it to a second line */
   /* In short: one plain paragraph under each section heading, computed from the tiles' own figures at every refresh */
   .in-short { margin: -4px 0 16px; max-width: 46em; font-size: 15px; line-height: 1.5; color: var(--ink-2); text-wrap: pretty; }
   .in-short strong { color: var(--ink); font-weight: 600; }
@@ -271,7 +276,6 @@
   .glance .key svg { vertical-align: -3px; margin-right: 5px; }
   .glance .key a, .masthead .updated .htr a { color: var(--nav); text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 3px; }   /* wayfinding: ochre, like the bar */
   .glance .key a:hover, .masthead .updated .htr a:hover { color: var(--ink); text-decoration-color: var(--ink); }
-  .glance .cols { columns: 3 300px; column-gap: 28px; }
   /* Group headings (Nov 5, option F of seven, a reader's idea): ink caps on a slim neutral band, so a group's name outranks
      the row names under it (the old 12.5px Muted label read as the quietest text in the block). The band is the hairline
      gray, not a tint: ochre is for wayfinding and teal for readings. The band stands in for the first row's hairline. */
@@ -279,6 +283,18 @@
   .glance h3 { margin: 0; padding: 5px 10px; background: var(--hairline); border-radius: 3px; font-size: 13.5px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: 0.07em; }
   .glance h3 .adj { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--ink-2); }
   .glance h3 + a.row { border-top: 0; }
+  /* Desktop (Nov 5, option D of four): each group is a full-width band with its rows in columns under it, two columns
+     from 720px (where every name and date fits) and three from 1000px, read across then down. The newspaper columns it replaces stacked the groups, so
+     the bands landed at uneven heights once they were bands (a reader called it staggered). */
+  @media (min-width: 720px) {
+    .glance .grp { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; margin-bottom: 18px; }
+    .glance .grp h3 { grid-column: 1 / -1; }
+    .glance .grp a.row:nth-of-type(-n+2) { border-top: 0; }
+  }
+  @media (min-width: 1000px) {
+    .glance .grp { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .glance .grp a.row:nth-of-type(3) { border-top: 0; }
+  }
   .glance a.row { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "t v" "s s"; column-gap: 10px; align-items: baseline;
     min-height: 44px; padding: 6px 0 4px; border-top: 1px solid var(--hairline); text-decoration: none; color: inherit; }
   .glance a.row:hover .t { text-decoration: underline; text-decoration-color: var(--muted); text-underline-offset: 3px; }
