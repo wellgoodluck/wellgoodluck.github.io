@@ -411,6 +411,55 @@
   }
   .panel .clear { margin: 12px 0 0; font-size: 13.5px; }
   .panel .clear button { background: none; border: 0; padding: 0; color: var(--ink-2); text-decoration: underline; cursor: pointer; }
+  /* Show it as (Batch C, Nov 6): the forms a chart can take, as radios between "On now" and the groups. Desktop: an open
+     fieldset under its legend. Phones and tablets (<=860px, where the panel sits under the chart): a 44px row naming the
+     choice, "Show it as   Change from a year ago ▸", that opens the list in place. A form a tile can't take stays in the
+     list, disabled, its reason after it in Muted. The base rules come first and the narrow-screen rules after them. */
+  .showas { border-top: 1px solid var(--hairline); padding: 8px 0 10px; }
+  .sa-toggle { display: none; }
+  .sa-body { margin: 0; padding: 0; border: 0; min-width: 0; }
+  .sa-legend { padding: 0; margin: 0 0 2px; font-size: 15px; font-weight: 600; }
+  .opt.sa-opt { align-items: center; margin: 6px 0 0; }
+  .opt.sa-opt input { margin: 0; }
+  .opt.sa-opt > label { display: block; }   /* the reason runs on after the name, not beside it in a column */
+  .sa-why { color: var(--muted); }
+  .sa-help { margin: 8px 0 0; font-size: 12.5px; color: var(--ink-2); line-height: 1.35; }
+  .opt .form-off { grid-column: 2; font-size: 12.5px; color: var(--ink-2); margin: 1px 0 0; line-height: 1.35; }
+  .opt .form-off[hidden] { display: none; }
+  /* Compare with another number (Batch C): a select at the foot of Companion series, a text button to stop, the rule in
+     one Muted line, and where the compared number went */
+  .cmp { margin: 12px 0 0; padding: 10px 0 0; border-top: 1px solid var(--hairline); }
+  .cmp-lbl { display: block; margin: 0 0 4px; font-size: 13.5px; color: var(--ink-2); }
+  .cmp-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+  .cmp-sel { flex: 1 1 12em; min-width: 0; max-width: 100%; min-height: 38px; padding: 0 8px; border: 1px solid var(--muted); border-radius: 4px; background: var(--surface); color: var(--ink); font-size: 14px; }
+  .cmp-sel:disabled { color: var(--muted); cursor: default; }
+  .cmp-clear { background: none; border: 0; padding: 0; color: var(--ink-2); font-size: 13.5px; text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; cursor: pointer; }
+  .cmp-clear:hover { text-decoration-color: var(--ink); }
+  .cmp-clear[hidden] { display: none; }
+  .cmp-help { margin: 6px 0 0; font-size: 12.5px; color: var(--muted); line-height: 1.35; }
+  .cmp-state, .cmp-msg { margin: 6px 0 0; font-size: 12.5px; color: var(--ink); line-height: 1.35; }
+  .cmp-state:empty, .cmp-msg:empty { display: none; }
+  @media (max-width: 860px) {
+    .showas { padding: 0 0 6px; }
+    .sa-toggle { display: flex; align-items: center; justify-content: space-between; gap: 6px 12px; width: 100%; min-height: 44px; padding: 0; border: 0; background: none; color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+    .sa-toggle .sa-h { flex: none; font-size: 15px; font-weight: 600; }
+    .sa-toggle .sa-cur { font-size: 13.5px; color: var(--ink-2); text-align: right; }
+    .sa-toggle .sa-cur::after { content: "\00a0▸"; content: "\00a0▸" / ""; color: var(--muted); }
+    .showas.open .sa-toggle .sa-cur::after { content: "\00a0▾"; content: "\00a0▾" / ""; }
+    .sa-legend { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+    .showas:not(.open) .sa-body { display: none; }
+    .opt.sa-opt { grid-template-columns: 20px 1fr; margin: 0; min-height: 44px; }
+    .opt.sa-opt input { width: 20px; height: 20px; }
+    .opt.sa-opt > label { padding: 12px 0; }   /* 44px: a line of 13.5px text and 12px above and below */
+    .cmp-sel { min-height: 44px; font-size: 16px; }   /* 16px: a phone doesn't zoom into it */
+    .cmp-clear { min-height: 44px; }
+  }
+  /* which form the chart is in (over it), and where the compared number is (under its key) */
+  .form-note { margin: 0 0 8px; font-size: 13.5px; color: var(--ink); }
+  .form-note[hidden], .cmp-note[hidden] { display: none; }
+  .cmp-note { margin: 6px 0 0; font-size: 13.5px; color: var(--ink-2); }
+  .cmp-note a { color: var(--nav); font-weight: 600; text-decoration-color: var(--nav); text-decoration-thickness: 2px; }
+  .cmp-note a:hover { color: var(--ink); text-decoration-color: var(--ink); }
 
   .status { padding: 24px 0; color: var(--ink-2); }
   /* Embed mode (chart.html?...&embed=1): just the chart, for iframes in articles */
@@ -429,6 +478,7 @@
   body.embed .chart { border: 0; padding: 0; }
   body.embed .framing { font-size: 12.5px; padding: 6px 10px; margin: 6px 0 0; }
   body.embed .adjust-note { font-size: 12.5px; margin: 2px 0 0; }
+  body.embed .form-note, body.embed .cmp-note { font-size: 12.5px; margin: 2px 0 4px; }
   /* an embed frozen at a date (&asof=): the readings stop there, and a line says so instead of the sentence, which describes today */
   body.embed .frozen { margin: 0; font-size: 12.5px; color: var(--ink-2); }
   .index { padding: 20px 0 40px; }
@@ -494,6 +544,172 @@
   const MAX_SERIES = COLORS.length;   // companions and sub-panel lines together: one color each, never reused
   const OWN_SCALE = { prime_age_epop: true, continuing_claims: true, price_level: true, dollar_index: true };   // drawn in a sub-panel, not on the main axis
   const PANEL_OF = {}, PANEL_TITLE = {};   // series that share one sub-panel: id -> its group's key; key -> the panel's title
+  const CMP_SLOT = '#cmp';   // the compared number's key in state.slots (Batch C): it takes a color like a companion
+
+  // ---- Show it as (Batch C, Nov 6) ------------------------------------------------------------------
+  // A chart page can draw its number another way: the tile's own form (the default), the change from a year ago, the
+  // level as reported, the level in today's dollars, or an index, 100 at the first reading in view. Only what the
+  // committed data supports is offered; every other form stays in the list, disabled, with a short reason. The
+  // headline, the range strip and the sentence always describe the tile's own form.
+  //   measure: rate (changes in percentage points; never today's dollars or an index), share (of GDP, of a cost), ratio,
+  //            count, price (dollars, pay too), index (a price index), balance (dollars either side of zero), change (a
+  //            change already), growth (GDP's yearly pace)
+  //   own:     what the tile shows: level, yoy (percent change from a year ago), yoyAbs (a change from a year ago in its
+  //            own unit), chg (from the month before), growth
+  //   level:   where the level comes from: 'self', a companion series kept for article text, or null (not on the site yet)
+  //   labels:  own (the tile's own form), lvl (as reported, when that isn't the tile's own form), real (today's dollars);
+  //            lvlUnit and lvlDisplay describe a level read from a companion
+  const SA_PRICE = (noun) => ({ measure: 'price', own: 'level', level: 'self', own_: noun + ', as charged', real: noun + ', in today’s dollars' });
+  const SA_RATE = { measure: 'rate', own: 'level', level: 'self', own_: 'Rate, as reported' };
+  const SA_INDEX = (src, base, digits) => ({ measure: 'index', own: 'yoy', level: src, own_: 'Change from a year ago', lvl: 'Index, ' + base + ' = 100, as reported', lvlUnit: 'index, ' + base + ' = 100', lvlDisplay: { scale: 1, decimals: digits || 1 } });
+  const SHOW_AS = {
+    payrolls: { measure: 'change', own: 'chg', level: null, own_: 'Change from the month before', lvl: 'Total jobs, as reported', yoy: 'Change from a year ago, in jobs', clip: { yoy: [-10000, 10000] } },
+    unemployment: SA_RATE,
+    openings_ratio: { measure: 'ratio', own: 'level', level: 'self', own_: 'Openings per job seeker, as reported', yoy: 'Change from a year ago, in openings per job seeker' },
+    claims: { measure: 'count', own: 'level', level: 'self', own_: 'Claims a week, as reported', clip: { yoy: [-100, 300] } },
+    pay: { measure: 'price', own: 'yoy', level: 'pay_level', own_: 'Change from a year ago', lvl: 'Dollars an hour, as paid', real: 'Dollars an hour, in today’s dollars', lvlUnit: 'dollars an hour', lvlDisplay: { scale: 1, decimals: 2, prefix: '$' } },
+    health_jobs: { measure: 'change', own: 'yoyAbs', level: null, own_: 'Change from a year ago, in jobs', lvl: 'Health care jobs, as reported' },
+    newspaper_jobs: { measure: 'count', own: 'level', level: 'self', own_: 'Jobs, as reported' },
+    cpi: SA_INDEX('cpi_index', '1982–84'),
+    core_cpi: SA_INDEX(null, '1982–84'),
+    rent: SA_INDEX('rent_level', '1982–84'),
+    gdp: { measure: 'growth', own: 'growth', level: null, own_: 'Growth from the quarter before, at a yearly pace', lvl: 'Real GDP, as reported' },
+    fed_funds: SA_RATE, ten_year: SA_RATE, mortgage: SA_RATE, mortgage_delinquency: SA_RATE,
+    housing_starts: { measure: 'count', own: 'level', level: 'self', own_: 'Homes started, at a yearly pace, as reported' },
+    home_prices: SA_INDEX('home_price_level', 'January 1991'),
+    deficit: { measure: 'share', own: 'level', level: 'self', own_: 'Percent of GDP, as reported' },
+    debt: { measure: 'share', own: 'level', level: 'self', own_: 'Percent of GDP, as reported' },
+    trade: { measure: 'balance', own: 'level', level: 'self', own_: 'Balance, as reported', yoy: 'Change from a year ago, in dollars', real: 'Balance, in today’s dollars' },
+    gas: SA_PRICE('Dollars a gallon'), milk: SA_PRICE('Dollars a gallon'), electricity: SA_PRICE('Cents a kilowatt-hour'), natural_gas: SA_PRICE('Dollars a therm'),
+    eggs: SA_PRICE('Dollars a dozen'), bread: SA_PRICE('Dollars a pound'), coffee: SA_PRICE('Dollars a pound'), ground_beef: SA_PRICE('Dollars a pound'), chicken: SA_PRICE('Dollars a pound'),
+    drive_cost: { measure: 'share', own: 'level', level: 'self', own_: 'Percent of a gas mile’s cost, as reported' },
+  };
+  const FORM_ORDER = ['yoy', 'level', 'real', 'index'];
+  const FORM_LABEL = { yoy: 'Change from a year ago', level: 'As reported', real: 'In today’s dollars', index: 'Index, 100 at the start of the view' };
+  // the short reason beside a form a tile can't take
+  const FORM_WHY = { rate: 'not for rates', share: 'not for shares', ratio: 'not for ratios', count: 'not in dollars', change: 'not in dollars',
+    index: 'an index, not dollars', growth: 'already adjusted for inflation', balance: 'not for a balance', later: 'not available yet' };
+  const PP_UNIT = 'percentage points, change from a year earlier', PCT_UNIT = 'percent, year over year';
+  // The reading a year before each one: the same month, quarter or year; for a weekly series the same week a year
+  // earlier (52 weeks back, within three days, since a few early weeks are dated on other weekdays). Null when missing.
+  function yearAgo(obs, freq) {
+    const by = new Map(obs.map(p => [p[0], p[1]])), out = [];
+    obs.forEach(p => {
+      let prev = null;
+      if (freq === 'w') {
+        const back = parseDate(p[0]).getTime() - 364 * 86400000;
+        for (const k of [0, -1, 1, -2, 2, -3, 3]) { const key = iso(new Date(back + k * 86400000)); if (by.has(key)) { prev = by.get(key); break; } }
+      } else { const key = (+p[0].slice(0, 4) - 1) + p[0].slice(4); if (by.has(key)) prev = by.get(key); }
+      out.push([p[0], p[1], prev]);
+    });
+    return out;
+  }
+  // A level restated in dollars of its latest reading's month with the CPI: the same method as deflate() in fetch_fred.py,
+  // which makes the price tiles' today's-dollars lines (months after the latest CPI use the latest CPI; a missing month
+  // inside the CPI's span uses the average of its neighbors; readings before the CPI begins are dropped).
+  function deflateObs(obs, cpi) {
+    const months = cpi.map(p => [p[0].slice(0, 7), p[1]]).sort((a, b) => a[0] < b[0] ? -1 : 1), by = new Map(months);
+    if (months.length < 2 || !obs.length) return [];
+    const first = months[0][0], last = months[months.length - 1][0];
+    const at = m => { if (by.has(m)) return by.get(m); if (m > last) return months[months.length - 1][1]; if (m < first) return null;
+      const i = months.findIndex(x => x[0] > m); return (months[i - 1][1] + months[i][1]) / 2; };
+    const base = at(obs[obs.length - 1][0].slice(0, 7));
+    return obs.map(p => { const c = at(p[0].slice(0, 7)); return c ? [p[0], p[1] * base / c] : null; }).filter(Boolean);
+  }
+  function meanIn(obs, a, b) { const v = obs.filter(p => p[0] >= a && p[0] <= b).map(p => p[1]); return v.length ? v.reduce((x, y) => x + y, 0) / v.length : null; }
+  // Every form for a tile, in panel order (the tile's own first). A form: key ('own' or a FORM_ORDER key), label, enabled,
+  // why (when not), unit, unitKey (forms that share a unitKey share a scale), display, clip, span (the readings it is made
+  // from, for the dates), series(view) -> the readings to draw, and stats() -> its median and 2015–19 average.
+  function buildForms(t, compById) {
+    const sa = SHOW_AS[t.id] || { measure: 'count', own: 'level', level: 'self', own_: 'As reported' }, d = t.display;
+    const freq = t.freq, clipFor = k => (sa.clip && sa.clip[k]) || null;
+    const ownKind = sa.own === 'yoyAbs' ? 'yoy' : sa.own;
+    const make = (key, label, unit, unitKey, display, obs, extra) => {
+      let st = null;
+      const f = Object.assign({ key, label, enabled: true, why: '', unit, unitKey, display, clip: null, span: obs, own: key === 'own', series: () => f.span,
+        // its median since it begins, and its 2015–19 average when it covers those years
+        stats: () => st || (st = (o => ({ median: o.length ? median(o.map(p => p[1])) : null, since: o.length ? o[0][0] : null,
+          baseline: o.length && o[0][0] <= '2015-01-31' && o[o.length - 1][0] >= '2019-10-01' ? meanIn(o, '2015-01-01', '2019-12-31') : null }))(f.span)) }, extra || {});
+      return f;
+    };
+    const off = (key, label, why) => ({ key, label, enabled: false, why: FORM_WHY[why] || why, own: false });
+    const forms = [make('own', sa.own_, d.unit, ownKind + '|' + d.unit, d, t.observations, { clip: d.clip || null, csvUnit: rawUnit(t) })];
+    // the level: the tile's own readings, or a companion kept for article text (these start in 2018)
+    const lvlComp = sa.level && sa.level !== 'self' ? compById[sa.level] : null;
+    const lvl = sa.level === 'self' ? { obs: t.observations, unit: d.unit, display: d } : lvlComp && lvlComp.observations.length > 2
+      ? { obs: lvlComp.observations, unit: sa.lvlUnit, display: sa.lvlDisplay, since: lvlComp.observations[0][0] } : null;
+    const noDollars = sa.measure === 'rate' || sa.measure === 'share' || sa.measure === 'ratio' || sa.measure === 'count' || sa.measure === 'change' || sa.measure === 'index' || sa.measure === 'growth';
+    FORM_ORDER.forEach(k => {
+      if (k === 'yoy') {
+        if (sa.own === 'yoy' || sa.own === 'yoyAbs') return;
+        const label = sa.yoy || (sa.measure === 'rate' || sa.measure === 'share' ? FORM_LABEL.yoy + ', in percentage points' : FORM_LABEL.yoy);
+        if (sa.own === 'growth') { forms.push(off('yoy', label, 'later')); return; }
+        if (sa.own === 'chg') {      // jobs added over twelve months: the sum of twelve monthly changes, the level's change from a year ago
+          const o = t.observations, out = [];
+          for (let i = 11; i < o.length; i++) {
+            const a = parseDate(o[i - 11][0]), b = parseDate(o[i][0]);
+            if ((b.getUTCFullYear() - a.getUTCFullYear()) * 12 + b.getUTCMonth() - a.getUTCMonth() === 11) out.push([o[i][0], o.slice(i - 11, i + 1).reduce((s, p) => s + p[1], 0)]);
+          }
+          const unit = d.unit + ', change from a year earlier';
+          forms.push(make('yoy', label, unit, 'yoy|' + unit, Object.assign({}, d, { signed: true, clip: null }), out, { clip: clipFor('yoy'), csvUnit: rawUnit(t) + ', change from a year earlier' }));
+          return;
+        }
+        const ya = yearAgo(lvl.obs, freq).filter(p => p[2] != null);
+        if (sa.measure === 'rate' || sa.measure === 'share') {
+          forms.push(make('yoy', label, PP_UNIT, 'yoy|' + PP_UNIT, { scale: 1, decimals: d.decimals, suffix: ' pts', signed: true }, ya.map(p => [p[0], p[1] - p[2]]), { clip: clipFor('yoy'), pp: true }));
+        } else if (sa.measure === 'balance' || sa.measure === 'ratio') {
+          const unit = d.unit + ', change from a year earlier';
+          forms.push(make('yoy', label, unit, 'yoy|' + unit, Object.assign({}, d, { signed: true, clip: null }), ya.map(p => [p[0], p[1] - p[2]]), { clip: clipFor('yoy'), csvUnit: rawUnit(t) + ', change from a year earlier' }));
+        } else {
+          forms.push(make('yoy', label, PCT_UNIT, 'yoy|' + PCT_UNIT, { scale: 1, decimals: 1, suffix: '%', signed: true }, ya.filter(p => p[2] > 0).map(p => [p[0], (p[1] / p[2] - 1) * 100]), { clip: clipFor('yoy') }));
+        }
+      } else if (k === 'level') {
+        if (sa.own === 'level') return;
+        const label = sa.lvl || FORM_LABEL.level;
+        if (!lvl) { forms.push(off('level', label, 'later')); return; }
+        forms.push(make('level', label, lvl.unit, 'level|' + lvl.unit, lvl.display, lvl.obs, { since: lvl.since }));
+      } else if (k === 'real') {
+        const label = sa.real || FORM_LABEL.real;
+        if (noDollars) { forms.push(off('real', label, sa.measure)); return; }
+        if (!lvl) { forms.push(off('real', label, 'later')); return; }
+        const cpi = compById.cpi_index, own = compById[t.id + '_real'];
+        const obs = sa.level === 'self' && own ? own.observations : cpi ? deflateObs(lvl.obs, cpi.observations) : [];
+        if (obs.length < 3) { forms.push(off('real', label, 'later')); return; }
+        const unit = lvl.unit + ', in today’s dollars';
+        forms.push(make('real', label, unit, 'real|' + unit, lvl.display, obs, { clip: sa.level === 'self' ? d.clip || null : null, since: lvl.since, csvUnit: sa.level === 'self' ? rawUnit(t) + ', in today’s dollars' : unit }));
+      } else {
+        const label = FORM_LABEL.index;
+        if (sa.measure === 'rate' || sa.measure === 'share' || sa.measure === 'ratio' || sa.measure === 'balance') { forms.push(off('index', label, sa.measure)); return; }
+        if (!lvl) { forms.push(off('index', label, 'later')); return; }
+        // 100 at the first reading in view, so it moves with the range; a clipped level keeps its clip, rescaled
+        const f = make('index', label, 'index', 'index', { scale: 1, decimals: 1 }, lvl.obs, { since: lvl.since });
+        f.series = view => {
+          const a = view ? view.start.getTime() : -Infinity, first = lvl.obs.find(p => parseDate(p[0]).getTime() >= a && p[1]);
+          if (!first) return [];
+          f.base = first; f.unit = 'index, ' + fmtPeriod(first[0], freq === 'w' ? 'd' : pf(t)) + ' = 100';
+          f.clip = sa.level === 'self' && d.clip ? [d.clip[0] / first[1] * 100, d.clip[1] / first[1] * 100] : null;
+          return lvl.obs.map(p => [p[0], p[1] / first[1] * 100]);
+        };
+        f.stats = () => ({ median: null, baseline: null, since: null });
+        forms.push(f);
+      }
+    });
+    return forms;
+  }
+  // The line that says which form the chart is in, when it isn't the tile's own: over the chart on the page and in an
+  // embed, under the reading in an image. A form kept only since 2018 says so.
+  function formNoteText(ctx, F, where) {
+    // U.S. punctuation: a period after a quoted form name goes inside the closing quote
+    const own = '“' + ctx.forms[0].label + '.”';
+    return 'The chart shows “' + F.label + '.” ' + (where === 'page' ? 'The reading, bar and sentence above show ' + own : where === 'embed' ? 'The reading above shows ' + own : 'The latest reading above is ' + own)
+      + (F.since ? ' In this form the figures start in ' + fmtPeriod(F.since, 'm', true) + ', as far back as the site keeps them.' : '');
+  }
+  // The unit of the raw numbers a CSV holds, where the page shows them scaled (Batch C fix): electricity names its own
+  // (csv_unit, dollars where the page shows cents); trade's millions show as billions, housing starts' thousands as millions.
+  const CSV_UNIT = { trade: 'millions of dollars', housing_starts: 'thousands of units per year' };
+  function rawUnit(t) { return t.display.csv_unit || CSV_UNIT[t.id] || t.display.unit; }
+  // the unit key of a tile's own form, for Compare: the compared number is always drawn in its own form
+  function ownUnitKey(t) { const sa = SHOW_AS[t.id]; return (sa ? (sa.own === 'yoyAbs' ? 'yoy' : sa.own) : 'level') + '|' + t.display.unit; }
 
   // ---- utils --------------------------------------------------------------
   function fmtValue(v, d, opts) {
@@ -683,7 +899,8 @@
   // ---- state (mirrored in the URL) ----------------------------------------
   // slots: each series overlay keeps the color it was given when turned on, until it is turned off (color follows the series, not its place in a list)
   // defaultOn: an overlay that is on when the address carries no ov at all (a price page's today's-dollars line)
-  const state = { id: null, range: DEFAULT_RANGE, from: null, to: null, on: new Set(), embed: false, ownPage: false, slots: new Map(), ovGiven: false, defaultOn: null, asof: null };
+  // as: the Show it as form (null for the tile's own); cmp: the id of the number compared with (Batch C)
+  const state = { id: null, range: DEFAULT_RANGE, from: null, to: null, on: new Set(), embed: false, ownPage: false, slots: new Map(), ovGiven: false, defaultOn: null, asof: null, as: null, cmp: null };
   // a chart's page is /chart/<id>/; chart.html?id=<id> (embeds, and this file opened on its own) also works
   const SITE = 'https://economyincontext.org';
   function chartPath(id, query) { const s = query ? String(query).replace(/%2C/g, ',') : ''; return '/chart/' + encodeURIComponent(id) + '/' + (s ? '?' + s : ''); }
@@ -702,6 +919,9 @@
     if (ym.test(q.get('to') || '')) { state.to = q.get('to'); state.range = null; }
     state.ovGiven = q.has('ov');
     (q.get('ov') || '').split(',').filter(Boolean).forEach(x => state.on.add(x));
+    // Show it as and Compare (Batch C): checked against the tile once the data is in (render); anything else is dropped
+    if (FORM_ORDER.includes(q.get('as'))) state.as = q.get('as');
+    if (/^[a-z0-9_]+$/.test(q.get('cmp') || '')) state.cmp = q.get('cmp');
   }
   function freeSlot() { const used = new Set(state.slots.values()); for (let i = 0; i < MAX_SERIES; i++) if (!used.has(i)) return i; return -1; }
   function writeUrl() {
@@ -716,6 +936,8 @@
     const isDefault = state.defaultOn && ordered.length === 1 && ordered[0] === state.defaultOn;
     if (ordered.length && !isDefault) q.set('ov', ordered.join(','));
     else if (!ordered.length && state.defaultOn) q.set('ov', 'none');
+    if (state.as) q.set('as', state.as);
+    if (state.cmp) q.set('cmp', state.cmp);
     if (state.embed) q.set('embed', '1');
     if (state.embed && state.asof) q.set('asof', state.asof);
     const s = q.toString();
@@ -756,29 +978,38 @@
     const evKeyText = el('span', {}), evKeySum = state.embed ? el('summary', {}) : null;
     const evKey = state.embed ? el('details', { class: 'ev-key', hidden: '' }, [evKeySum, evKeyText]) : el('p', { class: 'ev-key', hidden: '' }, [evKeyText]);
     if (state.embed) evKey.addEventListener('toggle', () => draw());
-    function activeOverlays() { return overlays.filter(o => state.on.has(o.id) && appliesTo(o, t.id) && (!o.requires || state.on.has(o.requires))); }
+    function activeOverlays() { return overlays.filter(o => ctx.isActive(o)); }
+    // Show it as and Compare in words beside the chart (Batch C): which form the chart is in, and where the compared number is
+    const formNote = el('p', { class: 'form-note', hidden: '' }), cmpNote = el('p', { class: 'cmp-note', hidden: '' });
     const EMBED_MIN_PLOT = 120; let embedTrim = 0, fitting = false, exportPlotH = null, exportNumbers = false, unlabeled = 0, lettersUsed = new Set(), lastScale = null, inSnapshot = false;
     if (state.embed && document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (box.isConnected) draw(); });   // the key may wrap differently once the font is in
     function colorFor(id) { return COLORS[state.slots.has(id) ? state.slots.get(id) : 0]; }
 
     function window_() {
+      const F = ctx.form(), obs = F.span;   // the dates of the form shown (Show it as): a form kept since 2018 starts there
       const last = parseDate(obs[obs.length - 1][0]);
       let start, end = last;
       if (state.range) { const r = RANGES.find(x => x.key === state.range); start = r.years ? new Date(Date.UTC(last.getUTCFullYear() - r.years, last.getUTCMonth(), last.getUTCDate())) : parseDate(obs[0][0]); }
       else {
         start = state.from ? parseDate(state.from + '-01') : parseDate(obs[0][0]);
         if (state.to) { end = parseDate(state.to + '-01'); end.setUTCMonth(end.getUTCMonth() + 1); end.setUTCDate(0); if (end > last) end = last; }
-        if (end <= start) { start = parseDate(obs[0][0]); end = last; }
       }
+      if (!F.own && start < parseDate(obs[0][0])) start = parseDate(obs[0][0]);
+      if (end <= start) { start = parseDate(obs[0][0]); end = last; }
       return { start, end };
     }
 
     function draw() {
       const old = box.querySelector('svg'); if (old) old.remove();
-      const act = activeOverlays();
+      // Show it as (Batch C): the form drawn, its readings and its number format; the headline and strip stay the tile's own
+      const F = ctx.form(), d = F.display, { start, end } = window_(), fobs = F.series({ start, end });
+      const act = activeOverlays(), cmpO = ctx.compare();
       const lines = act.filter(o => o.type === 'line' || o.type === 'stat');
-      const comps = act.filter(o => o.type === 'series' && !OWN_SCALE[o.id]);
-      const subs = act.filter(o => o.type === 'series' && OWN_SCALE[o.id]);
+      // series on the main scale share its unit; the rest each get a sub-panel (never a second axis). A series moved off
+      // the main scale by Show it as keeps the tile's own number format; the compared number keeps its own.
+      const series = act.filter(o => o.type === 'series').concat(cmpO ? [cmpO] : []).map(o => ctx.shares(o) ? o : Object.assign({}, o, { display: o.display || t.display }));
+      const comps = series.filter(o => ctx.shares(o));
+      const subs = series.filter(o => !ctx.shares(o));
       const eras = act.filter(o => o.type === 'era');
       const evs = act.filter(o => o.type === 'events');
       box.classList.toggle('has-comps', comps.length + subs.length > 0);
@@ -788,7 +1019,9 @@
       unlabeled = 0;
       // on a narrow chart each lane's name sits above it instead of in the left margin, so the plot keeps its width
       const laneLabelW = eras.length && !narrow ? Math.max(...eras.map(o => textW(o.lane, 11))) + 10 : 0, laneNameH = narrow ? 13 : 0;
-      const mL = Math.max(narrow ? 44 : 52, laneLabelW), mR = 14, mT = evs.length ? (narrow ? 32 : 40) : 12;
+      // the main plot's unit over it, when the chart isn't in the tile's own form or a compared number has its own panel
+      const capText = !F.own || subs.some(o => o.isCompare) ? F.unit.charAt(0).toUpperCase() + F.unit.slice(1) : '', capH = capText ? 14 : 0;
+      const mL = Math.max(narrow ? 44 : 52, laneLabelW), mR = 14, mT = (evs.length ? (narrow ? 32 : 40) : 12) + capH;
       const basePlotH = state.embed ? (narrow ? 200 : 280) : (narrow ? 240 : 380);
       const plotH = exportPlotH || (state.embed ? Math.max(EMBED_MIN_PLOT, basePlotH - embedTrim) : basePlotH), subH = narrow ? 90 : 120, laneH = 18, laneGap = 4;
       const xAxisH = 22;
@@ -797,32 +1030,40 @@
       const panels = [], byGroup = {};
       subs.forEach(o => {
         const k = PANEL_OF[o.id];
+        if (o.isCompare) { panels.push({ members: [o], title: 'Compared: ' + o.label + ' (' + o.unit + ')', display: o.display }); return; }
         if (!k) { panels.push({ members: [o], title: o.label, display: o.display }); return; }
         if (!byGroup[k]) { byGroup[k] = { members: [], title: PANEL_TITLE[k] || o.label, display: o.display }; panels.push(byGroup[k]); }
         byGroup[k].members.push(o);
       });
       // a sub-panel's name wraps to the plot's width instead of running off the chart; each extra line adds subTitleH
       const subTitleH = 13, subLines = panels.map(pn => splitLines(pn.title, 11, Math.max(80, width - mL - mR)));
+      ctx.drawn = { panels: panels.length, cmpPanel: subs.some(o => o.isCompare), cmpShared: comps.some(o => o.isCompare) };
       const subsH = panels.reduce((a, pn, i) => a + subH + 10 + (subLines[i].length - 1) * subTitleH, 0);
       const lanesH = eras.length ? eras.length * (laneH + laneGap + laneNameH) + 6 : 0;
       const creditH = 16;   // the credit line, inside the frame, so a cropped screenshot keeps it
       const height = mT + plotH + xAxisH + subsH + lanesH + 4 + creditH;
       const iw = width - mL - mR, ih = plotH;
-      const { start, end } = window_();
       const x0 = start.getTime(), x1 = end.getTime();
       const xs = v => mL + (v - x0) / Math.max(1, x1 - x0) * iw;
       const inWin = o => { const tm = parseDate(o[0]).getTime(); return tm >= x0 && tm <= x1; };
-      const pts = obs.filter(inWin);
+      const obs = fobs, pts = obs.filter(inWin);
       if (!pts.length) { box.insertBefore(svgEl('svg', { viewBox: '0 0 ' + width + ' 40', width, height: 40 }), tip); return; }
 
-      const clip = d.clip || null, clampV = v => clip ? Math.min(clip[1], Math.max(clip[0], v)) : v;
+      const clip = F.clip || null, clampV = v => clip ? Math.min(clip[1], Math.max(clip[0], v)) : v;
       const plotted = pts.map(p => clampV(p[1]));
       let lo = Math.min(...plotted), hi = Math.max(...plotted);
       const compPts = comps.map(o => ({ o, pts: o.observations.filter(inWin) }));
       compPts.forEach(c => c.pts.forEach(p => { const v = clampV(p[1]); if (v < lo) lo = v; if (v > hi) hi = v; }));
-      // on a price tile the chart is as charged, so its median and 2015–19 lines are too (the tile's range is in today's dollars)
-      const lineVals = lines.map(o => ({ o: o.type === 'stat' && t.display.adjust ? Object.assign({}, o, { label: o.label + ', as charged' }) : o,
-        v: o.type === 'line' ? o.value : o.stat === 'median' ? ctx.median : t.context.baseline_2015_19 })).filter(x => x.v != null);
+      // on a price tile the chart is as charged, so its median and 2015–19 lines are too (the tile's range is in today's dollars).
+      // In another form (Show it as) the two are worked out from the readings drawn: the median since they begin, and the
+      // 2015–19 average when they cover those years; fixed lines (targets, estimates) show only in the tile's own form.
+      const lineVals = lines.map(o => {
+        if (o.type === 'line') return { o, v: o.value };
+        if (F.own) return { o: t.display.adjust ? Object.assign({}, o, { label: o.label + ', as charged' }) : o, v: o.stat === 'median' ? ctx.median : t.context.baseline_2015_19 };
+        const st = F.stats();
+        return o.stat === 'median' ? { o: Object.assign({}, o, { label: 'Median since ' + fmtPeriod(st.since, pf(t) === 'w' ? 'm' : pf(t), true) }), v: st.median } : { o, v: st.baseline };
+      }).filter(x => x.v != null);
+      ctx.drawn.lines = lineVals.map(x => x.o);
       lineVals.forEach(x => { if (x.v < lo) lo = x.v; if (x.v > hi) hi = x.v; });
       if (lo === hi) { lo -= 1; hi += 1; }
       const pad = (hi - lo) * 0.08; lo -= pad; hi += pad;
@@ -830,7 +1071,9 @@
       lastScale = { xs, ys, clampV, pts, x0, x1, mT, ih, mL, mR, width };   // where a reader's note goes in an image
 
       const svg = svgEl('svg', { viewBox: '0 0 ' + width + ' ' + height, width, height, role: 'img',
-        'aria-label': t.title + ', ' + start.getUTCFullYear() + ' to ' + end.getUTCFullYear() + '. Latest: ' + fmtValue(obs[obs.length - 1][1], d) + ', ' + fmtPeriod(obs[obs.length - 1][0], pf(t)) + '. ' + contextSentence(t) + (act.length ? ' Overlays on: ' + act.map(o => o.label).join(', ') + '.' : '') });
+        'aria-label': t.title + (F.own ? '' : ', shown as ' + lowerFirst(F.label)) + ', ' + start.getUTCFullYear() + ' to ' + end.getUTCFullYear() + '. Latest: ' + fmtValue(obs[obs.length - 1][1], d) + ', ' + fmtPeriod(obs[obs.length - 1][0], pf(t)) + '.' + (F.own ? ' ' + contextSentence(t) : '')
+          + (act.length ? ' Overlays on: ' + act.map(o => o.label).join(', ') + '.' : '') + (cmpO ? ' Compared with ' + cmpO.label + (ctx.shares(cmpO) ? ', on the same scale.' : ', in its own panel below.') : '') });
+      if (capText) { const cap = svgEl('text', { class: 'sub-title', x: mL, y: 11 }); cap.textContent = capText; svg.appendChild(cap); }
 
       // recessions (main plot and sub-panels)
       const recRects = [];
@@ -1108,7 +1351,8 @@
           const q = c.pts[j]; dots[k + 1].setAttribute('cx', xs(compTimes[k][j])); dots[k + 1].setAttribute('cy', ys(clampV(q[1]))); dots[k + 1].setAttribute('visibility', 'visible');
           html += '<br><span class="k" style="background:' + colorFor(c.o.id) + '"></span>' + fmtValue(q[1], c.o.display || d) + ' ' + shortLabel(c.o.label);
         });
-        subTimes.forEach(s => { if (!s.sp.length) return; const j = nearest(s.times, times[i]); if (Math.abs(s.times[j] - times[i]) > 45 * 86400000) return; html += '<br><span class="k" style="background:' + colorFor(s.o.id) + '"></span>' + fmtValue(s.sp[j][1], s.o.display || d) + ' ' + shortLabel(s.o.label); });
+        // a quarterly or yearly series shows the reading for the period that holds the date, as on the main scale
+        subTimes.forEach(s => { if (!s.sp.length) return; const q_ = s.o.freq === 'q' || s.o.freq === 'a', j = nearest(s.times, times[i], q_); if (Math.abs(s.times[j] - times[i]) > (s.o.freq === 'a' ? 370 : q_ ? 100 : 45) * 86400000) return; html += '<br><span class="k" style="background:' + colorFor(s.o.id) + '"></span>' + fmtValue(s.sp[j][1], s.o.display || d) + ' ' + shortLabel(s.o.label); });
         const near = evItems.filter(e => Math.abs(e.tm - times[i]) <= 20 * 86400000);
         near.forEach(e => { html += '<br>▼ ' + (e.num ? e.num + '. ' : '') + e.label + ' (' + evDate(e) + ')'; });
         tip.innerHTML = html; tip.style.display = 'block';
@@ -1131,9 +1375,10 @@
 
       // legend
       legend.innerHTML = '';
-      legend.appendChild(el('span', {}, [el('i', { style: 'background: var(--series)' }), t.title + (adjusted(t) ? ', as charged' : '') + ' (' + d.unit + ')']));
+      legend.appendChild(el('span', {}, [el('i', { style: 'background: var(--series)' }), t.title + (F.own && adjusted(t) ? ', as charged' : '') + ' (' + F.unit + ')']));
       // the key always gives the full name (it wraps); only the hover box shortens long ones
-      compPts.concat(subs.map(o => ({ o }))).forEach(c => legend.appendChild(el('span', {}, [el('i', { style: 'background:' + colorFor(c.o.id), 'data-slot': state.slots.has(c.o.id) ? state.slots.get(c.o.id) : 0 }), c.o.label])));
+      compPts.concat(subs.map(o => ({ o }))).forEach(c => legend.appendChild(el('span', {}, [el('i', { style: 'background:' + colorFor(c.o.id), 'data-slot': state.slots.has(c.o.id) ? state.slots.get(c.o.id) : 0 }),
+        c.o.isCompare ? 'Compared: ' + c.o.label + ' (' + c.o.unit + ')' : c.o.label])));
       lineVals.forEach(x => legend.appendChild(el('span', {}, [el('i', { class: 'dash' + (x.o.stat === 'median' ? ' dot' : '') }), x.o.label])));
       legend.appendChild(el('span', {}, [el('i', { class: 'rec' }), 'Recessions (NBER)']));
       // lane colors that carry meaning get a key: party, and the Fed's lighter (easing) and darker (tightening) shades
@@ -1164,6 +1409,13 @@
           e.source ? el('a', { class: 'src', href: e.source, rel: 'noopener', text: 'source' }) : ''])));
         evList.appendChild(ul);
       }
+      formNote.hidden = F.own;
+      formNote.textContent = F.own ? '' : formNoteText(ctx, F, state.embed ? 'embed' : 'page');
+      cmpNote.hidden = !cmpO; cmpNote.textContent = '';
+      if (cmpO) cmpNote.append((ctx.shares(cmpO) ? 'Compared with ' + cmpO.label + ', on the same scale: both are in ' + cmpO.unit + '. '
+        : 'Compared with ' + cmpO.label + ', in its own panel under the chart, with its own scale (' + cmpO.unit + '). '),
+        el('a', Object.assign({ href: chartPath(cmpO.cmpId), text: 'Its own chart: ' + cmpO.label + '\u00a0→' }, state.embed ? { target: '_top' } : {})));
+      if (ctx.syncAdjust) ctx.syncAdjust();
       ctx.view = { start, end, first: pts[0][0], last: pts[pts.length - 1][0] };   // the readings in view: citations, alt text, the data-in-view file
       syncDates();
       ctx.onWindow && ctx.onWindow(start, end);
@@ -1270,15 +1522,15 @@
     // the jump links and the phone bar say how many overlays are on
     const seeBar = el('div', { class: 'see-chart', hidden: '' }), seeA = el('a', { href: '#chart-top' }); seeBar.appendChild(seeA);
     function syncToPanel() {
-      const n = Array.from(state.on).filter(id => ctx.ovById[id] && appliesTo(ctx.ovById[id], t.id)).length;
+      const n = Array.from(state.on).filter(id => ctx.ovById[id] && ctx.isActive(ctx.ovById[id])).length + (state.cmp ? 1 : 0);   // what is drawn, the compared number too
       toPanelT.textContent = 'Overlays' + (n ? ' · ' + n + ' on' : '');
       seeA.textContent = (n ? n + (n === 1 ? ' overlay' : ' overlays') + ' on · ' : '') + 'See the chart ↑';
     }
     syncToPanel(); ctx.syncToPanel = syncToPanel;
     const frag = document.createDocumentFragment();
     head.id = 'chart-top';
-    if (state.embed) { frag.appendChild(framing); frag.appendChild(head); frag.appendChild(box); frag.appendChild(legend); frag.appendChild(evKey); }
-    else { frag.appendChild(head); frag.appendChild(box); frag.appendChild(toPanel); frag.appendChild(legend); frag.appendChild(evKey); frag.appendChild(framing); frag.appendChild(panelSlot); frag.appendChild(useSlot); frag.appendChild(evList); }
+    if (state.embed) { frag.appendChild(framing); frag.appendChild(head); frag.appendChild(formNote); frag.appendChild(box); frag.appendChild(legend); frag.appendChild(cmpNote); frag.appendChild(evKey); }
+    else { frag.appendChild(head); frag.appendChild(formNote); frag.appendChild(box); frag.appendChild(toPanel); frag.appendChild(legend); frag.appendChild(cmpNote); frag.appendChild(evKey); frag.appendChild(framing); frag.appendChild(panelSlot); frag.appendChild(useSlot); frag.appendChild(evList); }
     if ('ResizeObserver' in window) { let w = 0; new ResizeObserver(() => { const nw = box.clientWidth; if (nw && nw !== w) { w = nw; draw(); } }).observe(box); } else requestAnimationFrame(draw);
 
     // For the images under Use this chart: draw this view at a fixed width (the desktop layout, whatever the screen), copy the
@@ -1530,6 +1782,9 @@
     const sub = t.subtitle + ' (' + d.unit + '). Latest: ' + fmtValue(hv, d) + ', ' + hdate + '.';
     y += 4;
     wrap(sub, 13.5, 400, inner).forEach(line => { y += 19; parts.push(S('text', { x: PAD, y, style: 'font-size:13.5px;fill:' + tok.ink2 }, line)); });
+    // in another form (Show it as), a line says what the chart shows: the reading above stays the tile's own (Batch C)
+    const F = ctx.form();
+    if (!F.own) { y += 4; wrap(formNoteText(ctx, F, 'image'), 13.5, 600, inner).forEach(line => { y += 19; parts.push(S('text', { x: PAD, y, style: 'font-size:13.5px;font-weight:600;fill:' + tok.ink }, line)); }); }
     y += 12;
     snap.svg.setAttribute('x', PAD); snap.svg.setAttribute('y', y);
     parts.push(snap.svg);
@@ -1596,7 +1851,8 @@
       const subL = wide ? [] : wrap(t.subtitle, 12.5, 400, inner);
       const sentInline = wide && width(vtxt, vpx, 700) + 10 + width(hdate, 12.5) + 16 + width(sent, 14, 600) <= inner;
       const sentL = sentInline ? [] : wrap(sent, 14, 600, inner);
-      const adjL = adjusted(t) ? wrap('The sentence is in today’s dollars; the chart’s main line is the price as charged.', 11.5, 400, inner) : [];
+      // a price page's note, or in another form (Show it as) the line saying what the chart shows (Batch C)
+      const adjL = !ctx.form().own ? wrap(formNoteText(ctx, ctx.form(), 'image'), 11.5, 400, inner) : adjusted(t) ? wrap('The sentence is in today’s dollars; the chart’s main line is the price as charged.', 11.5, 400, inner) : [];
       const headH = titleL.length * 22 + subL.length * 17 + (wide ? 34 : 40) + sentL.length * 19 + (adjL.length ? 3 + adjL.length * 15 : 0) + 10;
       let snap0 = chart.snapshot(inner + 18, 200), numbers = false;
       if (snap0.unlabeled) { numbers = true; snap0 = chart.snapshot(inner + 18, 200, true); }
@@ -1776,34 +2032,111 @@
     // under the reader's pointer.
     const onNow = el('div', { class: 'on-now', role: 'group', 'aria-labelledby': 'on-now-h' });
     panel.appendChild(onNow);
+    const rows = [], counters = [];   // every overlay's checkbox, and each group's "N on"
+    // after any change: the chart, the address, and everything in the panel that says what is on
+    function changed() { writeUrl(); redraw(); syncAll(); }
+    function syncAll(focusAt) { counters.forEach(f => f()); paintSwatches(); syncCap(); syncShowAs(); syncCmp(); syncOnNow(focusAt); ctx.syncToPanel && ctx.syncToPanel(); }
+
+    // ---- Show it as (Batch C): the forms, the tile's own first; disabled ones say why. On desktop an open fieldset; on
+    // phones and tablets a row that names the choice ("Show it as · Change from a year ago ▸") and opens the list in place.
+    const sa = el('div', { class: 'showas' }), saCur = el('span', { class: 'sa-cur' });
+    const saToggle = el('button', { type: 'button', class: 'sa-toggle', 'aria-expanded': 'false', 'aria-controls': 'sa-body' }, [el('span', { class: 'sa-h', text: 'Show it as' }), saCur]);
+    const saBody = el('fieldset', { class: 'sa-body', id: 'sa-body' }, [el('legend', { class: 'sa-legend', text: 'Show it as' })]);
+    const saInputs = [];
+    ctx.forms.forEach(f => {
+      const id = 'sa-' + f.key, inp = el('input', { type: 'radio', name: 'show-as', id, value: f.key });
+      if (!f.enabled) inp.disabled = true;
+      const lab = el('label', { for: id }, [f.label]);
+      if (!f.enabled) lab.appendChild(el('span', { class: 'sa-why', text: ' · ' + f.why }));
+      inp.addEventListener('change', () => {
+        if (!inp.checked) return;
+        state.as = f.key === 'own' ? null : f.key;
+        changed();
+        announce('The chart now shows “' + f.label + '.”');
+      });
+      saInputs.push([f, inp]);
+      saBody.appendChild(el('div', { class: 'opt sa-opt' }, [inp, lab]));
+    });
+    saBody.appendChild(el('p', { class: 'sa-help', text: 'Changes the chart and what you copy or download. The reading, bar and sentence above stay as the tile shows them.' }));
+    saToggle.addEventListener('click', () => { const open = !sa.classList.contains('open'); sa.classList.toggle('open', open); saToggle.setAttribute('aria-expanded', String(open)); });
+    sa.appendChild(saToggle); sa.appendChild(saBody);
+    panel.appendChild(sa);
+    function syncShowAs() {
+      const F = ctx.form();
+      saInputs.forEach(([f, inp]) => { inp.checked = f === F; });
+      saCur.textContent = F.label;
+    }
+
     const groups = ['Reference lines', 'Companion series', 'Metro areas', 'Eras', 'Events'];
     const capNotes = [];   // one in each group that holds series, so the reason shows where the reader is
     // open a group when one of its overlays is on, and Companion series always (the comparisons are the page's best
     // reason to exist, and a closed group hid them); with nothing on, Reference lines opens too
-    const anyOn = overlays.some(o => state.on.has(o.id) && appliesTo(o, t.id) && !o.hiddenInPanel);
+    const anyOn = overlays.some(o => state.on.has(o.id) && appliesTo(o, t.id) && !o.hiddenInPanel) || !!state.cmp;
+    // Compare with another number (Batch C), at the foot of Companion series: every other tile, grouped by the almanac's
+    // sections, one at a time
+    const cmpSel = el('select', { id: 'cmp-sel', class: 'cmp-sel', 'aria-describedby': 'cmp-help' });
+    cmpSel.appendChild(el('option', { value: '', text: 'Choose a number…' }));
+    const secs = [];
+    ctx.tiles.forEach(x => { if (!secs.includes(x.section)) secs.push(x.section); });
+    secs.forEach(sname => {
+      const og = el('optgroup', { label: sname });
+      ctx.tiles.filter(x => x.section === sname && x.id !== t.id).forEach(x => og.appendChild(el('option', { value: x.id, text: x.title })));
+      if (og.children.length) cmpSel.appendChild(og);
+    });
+    const cmpClear = el('button', { type: 'button', class: 'cmp-clear', text: 'Stop comparing', hidden: '' });
+    const cmpState = el('p', { class: 'cmp-state' }), cmpMsg = el('p', { class: 'cmp-msg', role: 'alert' });
+    const cmpBox = el('div', { class: 'cmp' }, [el('label', { for: 'cmp-sel', class: 'cmp-lbl', text: 'Compare with another number' }), el('div', { class: 'cmp-row' }, [cmpSel, cmpClear]),
+      el('p', { class: 'cmp-help', id: 'cmp-help', text: 'Numbers measured the same way share this scale; any other opens in its own panel under the chart.' }), cmpState, cmpMsg]);
+    function setCompare(id) {
+      if ((id || null) === state.cmp) return;
+      const keep = state.slots.get(CMP_SLOT);
+      state.slots.delete(CMP_SLOT);
+      if (id) {
+        const k = freeSlot();
+        if (k < 0) { if (keep != null) state.slots.set(CMP_SLOT, keep); cmpSel.value = state.cmp || ''; cmpMsg.textContent = 'Four lines at a time, each in its own color. Turn one off to compare.'; return; }
+        state.slots.set(CMP_SLOT, k);
+      }
+      cmpMsg.textContent = '';
+      state.cmp = id || null;
+      changed();
+      const o = ctx.compare();
+      announce(o ? 'Comparing with ' + o.label + (ctx.shares(o) ? ', on the same scale.' : ', in its own panel under the chart.') : 'Comparison removed.');
+    }
+    cmpSel.addEventListener('change', () => setCompare(cmpSel.value));
+    cmpClear.addEventListener('click', () => { setCompare(null); cmpSel.focus(); });
+    function syncCmp() {
+      const o = ctx.compare(), F = ctx.form();
+      cmpSel.value = state.cmp || '';
+      cmpSel.disabled = !o && state.slots.size >= MAX_SERIES;   // four lines already: the cap note says why
+      cmpClear.hidden = !o;
+      cmpState.textContent = !o ? '' : ctx.shares(o) ? 'On the same scale as the chart: both are in ' + o.unit + '.' : 'In its own panel under the chart: ' + o.label + ' is in ' + o.unit + ', the chart in ' + F.unit + '.';
+    }
+    // why an overlay rests while another form is shown
+    function formOff(o) { return o.type === 'stat' ? 'Not for “' + ctx.form().label + '”' : 'Only for “' + ctx.forms[0].label + '”'; }
+
     groups.forEach(g => {
       const items = overlays.filter(o => o.group === g && appliesTo(o, t.id) && !o.hiddenInPanel);
-      if (!items.length) return;
+      if (!items.length && g !== 'Companion series') return;
       const open = g === 'Companion series' || (anyOn ? items.some(o => state.on.has(o.id)) : g === 'Reference lines');
       const det = el('details', open ? { open: '' } : {});
       // a group's note covers the overlays group_note_for names; with none of them on this page, it isn't shown
       const gfor = ctx.groupNoteFor && ctx.groupNoteFor[g];
       const gnote = ctx.groupNotes && ctx.groupNotes[g] && (!gfor || items.some(o => gfor.includes(o.id))) ? ctx.groupNotes[g] : '';
-      const onCount = items.filter(o => state.on.has(o.id)).length;
       const sum = el('summary', {}, [el('span', { text: g }, [])]);
       const cnt = el('span', { class: 'count' }); sum.firstChild.appendChild(cnt);
-      function updateCount() { const n = items.filter(o => state.on.has(o.id) && (!o.requires || state.on.has(o.requires))).length; cnt.textContent = n ? n + ' on' : ''; }
-      updateCount();
+      // the compared number counts in Companion series
+      const updateCount = () => { const n = items.filter(o => ctx.isActive(o)).length + (g === 'Companion series' && state.cmp ? 1 : 0); cnt.textContent = n ? n + ' on' : ''; };
+      counters.push(updateCount);
       det.appendChild(sum);
       if (gnote) det.appendChild(noteEl('p', 'why gnote', gnote));
-      if (items.some(o => o.type === 'series')) { const cn = el('p', { class: 'cap-note', hidden: '' }); cn.textContent = 'Four lines at a time, each in its own color. Turn one off to add another.'; capNotes.push(cn); det.appendChild(cn); }
+      if (items.some(o => o.type === 'series') || g === 'Companion series') { const cn = el('p', { class: 'cap-note', hidden: '' }); cn.textContent = 'Four lines at a time, each in its own color. Turn one off to add another.'; capNotes.push(cn); det.appendChild(cn); }
       items.forEach(o => {
         const id = 'ov-' + o.id;
         // the label holds only the name, so a checkbox's accessible name stays short; its first sentence describes it
         const row = el('div', { class: 'opt' }), lab = el('label', { for: id });
         const cb = el('input', { type: 'checkbox', id });
         if (state.on.has(o.id)) cb.checked = true;
-        if (o.requires) { cb.disabled = !state.on.has(o.requires); cb.setAttribute('data-requires', o.requires); }
+        if (o.requires) cb.setAttribute('data-requires', o.requires);
         if (o.type === 'series') lab.appendChild(el('span', { class: 'sw', 'data-sw': o.id }));
         lab.appendChild(document.createTextNode(o.label));
         const extras = [], desc = [];
@@ -1813,6 +2146,8 @@
         const note = o.note || o.why;
         const why = note || extras.length ? noteEl('span', 'why', note, extras) : null;
         if (why && why.descId) desc.unshift(why.descId);
+        // Show it as (Batch C): while another form leaves this overlay out, a line says so and the box rests
+        const fo = el('span', { class: 'form-off', id: id + '-form', hidden: '' }); desc.push(fo.id);
         if (desc.length) cb.setAttribute('aria-describedby', desc.join(' '));
         if (o.type === 'series') cb.setAttribute('data-series', '');
         cb.addEventListener('change', () => {
@@ -1820,26 +2155,37 @@
             if (o.type === 'series') { const k = freeSlot(); if (k < 0) { cb.checked = false; syncCap(); return; } state.slots.set(o.id, k); }
             state.on.add(o.id);
           } else { state.on.delete(o.id); state.slots.delete(o.id); }
-          panel.querySelectorAll('input[data-requires="' + o.id + '"]').forEach(x => { x.disabled = !cb.checked; if (!cb.checked && x.checked) { x.checked = false; state.on.delete(x.id.slice(3)); } });
-          updateCount(); writeUrl(); redraw(); paintSwatches(); syncCap(); syncOnNow(); ctx.syncToPanel && ctx.syncToPanel();
+          rows.forEach(r => { if (r.o.requires === o.id && !cb.checked && r.cb.checked) { r.cb.checked = false; state.on.delete(r.o.id); } });
+          changed();
         });
-        row.appendChild(cb); row.appendChild(lab); if (why) row.appendChild(why);
+        row.appendChild(cb); row.appendChild(lab); row.appendChild(fo); if (why) row.appendChild(why);
+        rows.push({ o, cb, fo });
         det.appendChild(row);
       });
+      if (g === 'Companion series') det.appendChild(cmpBox);
       panel.appendChild(det);
     });
     const clear = el('p', { class: 'clear' });
     const cb = el('button', { type: 'button', text: 'Turn everything off' });
-    cb.addEventListener('click', () => { state.on.clear(); state.slots.clear(); panel.querySelectorAll('input[type=checkbox]').forEach(x => { x.checked = false; if (x.hasAttribute('data-requires')) x.disabled = true; }); panel.querySelectorAll('.count').forEach(x => x.textContent = ''); writeUrl(); redraw(); paintSwatches(); syncCap(); syncOnNow(); ctx.syncToPanel && ctx.syncToPanel(); });
+    cb.addEventListener('click', () => {
+      state.on.clear(); state.slots.clear(); state.cmp = null; cmpMsg.textContent = '';
+      rows.forEach(r => { r.cb.checked = false; });
+      changed();
+    });
     clear.appendChild(cb); panel.appendChild(clear);
     function paintSwatches() {
       // each series keeps the color of its slot (see state.slots)
       panel.querySelectorAll('.sw').forEach(s => { const id = s.getAttribute('data-sw'), on = state.on.has(id) && state.slots.has(id); s.style.background = on ? COLORS[state.slots.get(id)] : ''; s.classList.toggle('off', !on); });
     }
-    // four series at a time: the rest wait, disabled, with a line saying why
+    // four series at a time: the rest wait, disabled, with a line saying why. A box also rests while it needs another
+    // overlay that is off, or while Show it as leaves it out.
     function syncCap() {
       const full = state.slots.size >= MAX_SERIES;
-      panel.querySelectorAll('input[data-series]').forEach(x => { if (!x.checked) x.disabled = full; });
+      rows.forEach(r => {
+        const off = !ctx.inForm(r.o);
+        r.cb.disabled = off || (!!r.o.requires && !state.on.has(r.o.requires)) || (r.o.type === 'series' && !r.cb.checked && full);
+        r.fo.hidden = !off; r.fo.textContent = off ? formOff(r.o) : '';
+      });
       capNotes.forEach(cn => { cn.hidden = !full; });
     }
     function chipName(s) {
@@ -1851,23 +2197,36 @@
     }
     function syncOnNow(focusAt) {
       onNow.textContent = '';
-      const on = Array.from(panel.querySelectorAll('details input[type=checkbox]')).filter(x => x.checked);
+      // what is drawn: an overlay resting under Show it as isn't listed; the compared number comes last
+      const on = rows.filter(r => r.cb.checked && ctx.isActive(r.o));
+      const cmpO = ctx.compare();
       onNow.appendChild(el('span', { class: 'on-now-h', id: 'on-now-h', text: 'On now' }));
-      if (!on.length) { onNow.appendChild(el('span', { class: 'none', text: 'nothing yet. Tick a box below.' })); if (focusAt != null) h2.focus(); return; }
-      on.forEach((x, i) => {
-        const o = ctx.ovById[x.id.slice(3)], name = o ? o.label : x.id.slice(3), chip = el('span', { class: 'chip' });
+      if (!on.length && !cmpO) { onNow.appendChild(el('span', { class: 'none', text: 'nothing yet. Tick a box below.' })); if (focusAt != null) h2.focus(); return; }
+      const chip = (name, slot, find, turnOff) => {
+        const c = el('span', { class: 'chip' });
         const go = el('button', { type: 'button', class: 'go', title: name, 'aria-label': name + ', find it in the list' });
-        if (state.slots.has(x.id.slice(3))) go.appendChild(el('span', { class: 'sw', style: 'background:' + COLORS[state.slots.get(x.id.slice(3))] }));
+        if (slot != null) go.appendChild(el('span', { class: 'sw', style: 'background:' + COLORS[slot] }));
         go.appendChild(document.createTextNode(chipName(name)));
-        go.addEventListener('click', () => { const det = x.closest('details'); if (det) det.open = true; x.scrollIntoView({ block: 'center' }); x.focus({ preventScroll: true }); });
+        go.addEventListener('click', find);
         const off = el('button', { type: 'button', class: 'x', 'aria-label': 'Turn off ' + name, text: '×' });
-        off.addEventListener('click', () => { x.checked = false; x.dispatchEvent(new Event('change')); syncOnNow(i); });
-        chip.appendChild(go); chip.appendChild(off); onNow.appendChild(chip);
+        off.addEventListener('click', turnOff);
+        c.appendChild(go); c.appendChild(off); onNow.appendChild(c);
+      };
+      on.forEach((r, i) => {
+        const name = r.o.label;
+        chip(name, state.slots.has(r.o.id) ? state.slots.get(r.o.id) : null,
+          () => { const det = r.cb.closest('details'); if (det) det.open = true; r.cb.scrollIntoView({ block: 'center' }); r.cb.focus({ preventScroll: true }); },
+          () => { r.cb.checked = false; r.cb.dispatchEvent(new Event('change')); syncOnNow(i); });
       });
+      if (cmpO) {
+        const i = on.length, name = 'Compared with ' + cmpO.label;
+        chip(name, state.slots.get(CMP_SLOT), () => { const det = cmpSel.closest('details'); if (det) det.open = true; cmpSel.scrollIntoView({ block: 'center' }); cmpSel.focus({ preventScroll: true }); },
+          () => { setCompare(null); syncOnNow(i); });
+      }
       // after a ×, focus moves to the chip that took its place (or the last one), so the keyboard isn't dropped
-      if (focusAt != null) { const xs = onNow.querySelectorAll('.x'); xs[Math.min(focusAt, xs.length - 1)].focus(); }
+      if (focusAt != null) { const xs = onNow.querySelectorAll('.x'); if (xs.length) xs[Math.min(focusAt, xs.length - 1)].focus(); else h2.focus(); }
     }
-    paintSwatches(); syncCap(); syncOnNow();
+    syncAll();
     return panel;
   }
 
@@ -1877,11 +2236,23 @@
     const det = el('details', { class: 'table' });
     det.appendChild(el('summary', { text: 'Show the readings in view' }));
     const scroll = el('div', { class: 'scroll', tabindex: '0', role: 'region', 'aria-label': 'Readings in view' }), tbl = el('table'); scroll.appendChild(tbl); det.appendChild(scroll);
-    function activeSeries() { return overlays.filter(o => o.type === 'series' && state.on.has(o.id) && appliesTo(o, t.id)); }
+    // the series drawn with the indicator, the compared number last (Batch C)
+    function activeSeries() { return overlays.filter(o => o.type === 'series' && ctx.isActive(o)).concat(ctx.compare() ? [ctx.compare()] : []); }
+    const RANK = { w: 0, m: 1, q: 2, a: 3 };
+    // a date's period at a frequency: the week's date, its month, its quarter or its year
+    function periodOf(date, freq) { return freq === 'w' ? date : freq === 'm' ? date.slice(0, 7) : freq === 'q' ? date.slice(0, 4) + 'Q' + (Math.floor((+date.slice(5, 7) - 1) / 3) + 1) : date.slice(0, 4); }
+    // a compared number reported more often than the indicator: the average of its readings in each of the indicator's periods
+    function finer(o) { return o.isCompare && RANK[o.freq] < RANK[t.freq]; }
     // Join a companion to the indicator's dates: weekly on the exact date, monthly on the
     // year-month, quarterly carried forward across the quarter's three months.
     function joinMap(o) {
       const m = new Map();
+      if (finer(o)) {
+        const sums = new Map();
+        o.observations.forEach(p => { const k = periodOf(p[0], t.freq), x = sums.get(k) || [0, 0]; x[0] += p[1]; x[1]++; sums.set(k, x); });
+        sums.forEach((x, k) => m.set(k, x[0] / x[1]));
+        return m;
+      }
       o.observations.forEach(p => {
         if (o.freq === 'w') m.set(p[0], p[1]);
         else if (o.freq === 'q') { const y = +p[0].slice(0, 4), mo = +p[0].slice(5, 7); for (let k = 0; k < 3; k++) { const mm = mo + k; m.set(y + '-' + String(mm).padStart(2, '0'), p[1]); } }
@@ -1890,13 +2261,28 @@
       });
       return m;
     }
-    function lookup(m, o, date) { const k = o.freq === 'w' ? date : date.slice(0, 7); return m.has(k) ? m.get(k) : null; }
+    function lookup(m, o, date) {
+      if (o.isCompare && o.freq === 'w' && t.freq === 'w') {   // two weekly numbers dated on different weekdays: the same week
+        const tm = parseDate(date).getTime();
+        for (const k of [0, -1, 1, -2, 2, -3, 3]) { const key = iso(new Date(tm + k * 86400000)); if (m.has(key)) return m.get(key); }
+        return null;
+      }
+      const k = finer(o) ? periodOf(date, t.freq) : o.freq === 'w' ? date : date.slice(0, 7); return m.has(k) ? m.get(k) : null;
+    }
+    // the readings of the form shown (Show it as), with each series' reading for the same period
+    function formObs(view) { return ctx.form().series(view || ctx.view || null); }
     function rows(start, end) {
       const comps = activeSeries();
       const maps = comps.map(joinMap);
       const out = [];
-      t.observations.forEach(p => { const tm = parseDate(p[0]).getTime(); if (tm < start.getTime() || tm > end.getTime()) return; out.push([p[0], p[1]].concat(maps.map((m, k) => lookup(m, comps[k], p[0])))); });
+      formObs({ start, end }).forEach(p => { const tm = parseDate(p[0]).getTime(); if (tm < start.getTime() || tm > end.getTime()) return; out.push([p[0], p[1]].concat(maps.map((m, k) => lookup(m, comps[k], p[0])))); });
       return { comps, out };
+    }
+    // a column's name: a compared number says so, and how a finer one is averaged
+    function colName(o, csvUnit) {
+      if (!o.isCompare) return o.label + (o.freq === 'q' ? ' (quarterly)' : o.freq === 'a' ? ' (annual)' : '');
+      const u = csvUnit ? rawUnit(o.tile) : o.unit;
+      return 'Compared: ' + o.label + ' (' + u + (finer(o) ? ', average for each ' + (t.freq === 'm' ? 'month' : t.freq === 'q' ? 'quarter' : 'year') : '') + ')';
     }
     let cur = null;
     function refresh(start, end) {
@@ -1905,26 +2291,39 @@
       const { comps, out } = rows(start, end);
       tbl.innerHTML = '';
       tbl.appendChild(el('caption', { class: 'sr-only', text: t.title + ', readings in view' }));
-      const thead = el('tr'); thead.appendChild(el('th', { scope: 'col', text: 'Period' })); thead.appendChild(el('th', { scope: 'col', class: 'num', text: t.title }));
-      comps.forEach(o => thead.appendChild(el('th', { class: 'num', text: o.label + (o.freq === 'q' ? ' (quarterly)' : o.freq === 'a' ? ' (annual)' : '') })));
+      const F = ctx.form(), fd = F.display;
+      const thead = el('tr'); thead.appendChild(el('th', { scope: 'col', text: 'Period' })); thead.appendChild(el('th', { scope: 'col', class: 'num', text: t.title + (F.own ? '' : ' (' + F.unit + ')') }));
+      comps.forEach(o => thead.appendChild(el('th', { class: 'num', text: colName(o) })));
       tbl.appendChild(thead);
-      out.slice().reverse().forEach(r => { const tr = el('tr'); tr.appendChild(el('td', { text: fmtPeriod(r[0], pf(t)) })); for (let i = 1; i < r.length; i++) tr.appendChild(el('td', { class: 'num', text: r[i] == null ? '' : fmtValue(r[i], i === 1 ? d : (comps[i - 2].display || d)) })); tbl.appendChild(tr); });
+      // a companion without its own format is in the tile's own unit
+      out.slice().reverse().forEach(r => { const tr = el('tr'); tr.appendChild(el('td', { text: fmtPeriod(r[0], pf(t)) })); for (let i = 1; i < r.length; i++) tr.appendChild(el('td', { class: 'num', text: r[i] == null ? '' : fmtValue(r[i], i === 1 ? fd : (comps[i - 2].display || d)) })); tbl.appendChild(tr); });
     }
     det.addEventListener('toggle', () => { if (det.open && cur) refresh(cur[0], cur[1]); });
     // all readings, or (with a view) the readings in view: the chart's dates, and the series that are on
     function csv(view) {
-      const comps = activeSeries();
+      const comps = activeSeries(), F = ctx.form();
       const inView = p => !view || (parseDate(p[0]).getTime() >= view.start.getTime() && parseDate(p[0]).getTime() <= view.end.getTime());
       const span = view ? ', ' + fmtPeriod(view.first, pf(t), true) + ' to ' + fmtPeriod(view.last, pf(t), true) + ' (the readings in view)' : '';
-      // the CSV carries raw values, so its header names the raw unit where the page shows a scaled one (cents vs dollars)
-      // two lines saying what this is and where it came from, a blank line, then the table
-      const series = [t.source.series].concat(comps.map(o => o.source && o.source.label ? o.source.label.replace(/^FRED /, '') : null).filter(Boolean));
-      const lines = [csvQ(t.title + ' (' + (d.csv_unit || d.unit) + ')' + span + ', from Economy in Context: ' + SITE + chartPath(t.id)),
+      // the CSV carries raw values, so its header names the raw unit where the page shows a scaled one (cents vs dollars).
+      // In another form (Show it as) the main column is that form, its unit named, and a line says how it was made.
+      const unit = F.csvUnit || F.unit;   // the raw numbers' unit (see CSV_UNIT); an index names its base
+      const name = t.title + (F.own ? '' : ', ' + lowerFirst(F.label)) + ' (' + unit + ')';
+      // two lines saying what this is and where it came from (three in another form), a blank line, then the table
+      const rowsObs = formObs(view);   // first: an index takes its base from the view here
+      const series = [t.source.series].concat(F.key === 'real' ? ['CPIAUCSL'] : [])
+        .concat(comps.map(o => o.isCompare ? o.tile.source.series : o.source && o.source.label ? o.source.label.replace(/^FRED /, '') : null).filter(Boolean))
+        .filter((x, i, a) => a.indexOf(x) === i);
+      const made = F.own ? null : F.key === 'yoy' ? (F.pp ? 'Change from a year ago, in percentage points: each reading minus the one a year earlier' : t.freq === 'm' && SHOW_AS[t.id] && SHOW_AS[t.id].own === 'chg' ? 'Change from a year ago: the sum of the twelve monthly changes' : (F.display.suffix === '%' ? 'Change from a year ago: each reading against the one a year earlier, in percent' : 'Change from a year ago: each reading minus the one a year earlier'))
+          + (t.freq === 'w' ? ' (the same week a year earlier)' : '') + ', worked out by Economy in Context'
+        : F.key === 'real' ? 'In today’s dollars: adjusted for inflation with the CPI (CPIAUCSL), in dollars of the latest reading’s month, as on the price pages'
+        : F.key === 'index' ? 'Index: 100 at ' + fmtPeriod(F.base[0], pf(t), true) + ', the first reading in view; every reading divided by that one, times 100'
+        : 'As reported: the level FRED publishes';
+      const lines = [csvQ(name + span + ', from Economy in Context: ' + SITE + chartPath(t.id, F.own ? '' : 'as=' + F.key)),
         csvQ('Data: ' + (t.agency ? t.agency + ' via ' : '') + 'FRED series ' + series.join(', ') + ', retrieved ' + String(ctx.data.generated || '').slice(0, 10)
-          + (d.flipped ? '. Sign flipped from FRED: a deficit is positive here, negative in ' + t.series : '')), '',
-        'date,' + csvQ(t.title + ' (' + (d.csv_unit || d.unit) + ')') + comps.map(o => ',' + csvQ(o.label)).join('')];
+          + (d.flipped ? '. Sign flipped from FRED: a deficit is positive here, negative in ' + t.series : ''))].concat(made ? [csvQ(made + '.')] : []).concat(['',
+        'date,' + csvQ(name) + comps.map(o => ',' + csvQ(o.isCompare ? colName(o, true) : o.label)).join('')]);
       const maps = comps.map(joinMap);
-      t.observations.filter(inView).forEach(p => lines.push(p[0] + ',' + p[1] + maps.map((m, k) => { const v = lookup(m, comps[k], p[0]); return ',' + (v == null ? '' : v); }).join('')));
+      rowsObs.filter(inView).forEach(p => lines.push(p[0] + ',' + p[1] + maps.map((m, k) => { const v = lookup(m, comps[k], p[0]); return ',' + (v == null ? '' : v); }).join('')));
       lines.push(''); lines.push('# ' + ctx.data.attribution); lines.push('# ' + t.source.url);
       return lines.join('\n');
     }
@@ -1969,7 +2368,8 @@
     const status = el('p', { class: 'use-status', role: 'status', 'aria-live': 'polite' });
     let statusTimer = 0;
     function say(msg, keep) { clearTimeout(statusTimer); status.textContent = msg; if (!keep) statusTimer = setTimeout(() => { status.textContent = ''; }, 9000); }
-    const base = () => 'economyincontext-' + t.id + '-' + (state.range || 'custom') + (opts.size !== 'full' ? '-' + opts.size : '') + (opts.style === 'bw' ? '-bw' : '') + (opts.large ? '-large' : '');
+    const base = () => 'economyincontext-' + t.id + '-' + (state.range || 'custom') + (state.as ? '-' + state.as : '') + (state.cmp ? '-vs-' + state.cmp : '')
+      + (opts.size !== 'full' ? '-' + opts.size : '') + (opts.style === 'bw' ? '-bw' : '') + (opts.large ? '-large' : '');
     function save(blob, name) {
       const a = el('a', { href: URL.createObjectURL(blob), download: name });
       document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 30000);
@@ -2137,10 +2537,12 @@
     // the iframe for this exact view; a sub-panel needs the taller frame, as in articles. With asof, frozen at that date.
     function embedCode(asof) {
       const v = viewQuery(), q = 'id=' + encodeURIComponent(t.id) + (v ? '&' + v : '') + '&embed=1' + (asof ? '&asof=' + asof : '');
-      const act = Array.from(state.on).map(id => ctx.ovById[id]).filter(o => o && appliesTo(o, t.id) && (!o.requires || state.on.has(o.requires)));
-      const subs = new Set(act.filter(o => OWN_SCALE[o.id]).map(o => PANEL_OF[o.id] || o.id)).size, lanes = act.filter(o => o.type === 'era').length;
-      const political = act.some(o => o.political), events = act.some(o => o.type === 'events');
-      const h = 600 + subs * 130 + (lanes ? lanes * 35 + 6 : 0) + (political ? 170 : 0) + (events ? 70 : 0) + (adjusted(t) ? 60 : 0) + (asof ? 20 : 0);
+      const act = Array.from(state.on).map(id => ctx.ovById[id]).filter(o => o && ctx.isActive(o));
+      // sub-panels as drawn: own-scale series, series another form moved off the main scale, a compared number in its own
+      const subs = ctx.drawn ? ctx.drawn.panels : new Set(act.filter(o => OWN_SCALE[o.id]).map(o => PANEL_OF[o.id] || o.id)).size, lanes = act.filter(o => o.type === 'era').length;
+      const political = act.some(o => o.political), events = act.some(o => o.type === 'events'), F = ctx.form();
+      const h = 600 + subs * 130 + (lanes ? lanes * 35 + 6 : 0) + (political ? 170 : 0) + (events ? 70 : 0) + (adjusted(t) && F.own ? 60 : 0) + (asof ? 20 : 0)
+        + (F.own ? 0 : 60) + (state.cmp ? 40 : 0);   // the line naming the form, and the one naming the compared number
       const title = (t.title + (asof ? ', readings through ' + fmtPeriod(t.observations[t.observations.length - 1][0], pf(t), true) : '') + ' — Economy in Context').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
       return '<iframe src="' + SITE + '/chart.html?' + q.replace(/%2C/g, ',').replace(/&/g, '&amp;') + '" width="100%" height="' + Math.ceil(h / 10) * 10 + '" style="border:0" loading="lazy" title="' + title + '"></iframe>';
     }
@@ -2178,10 +2580,13 @@
       q.forEach((val, key) => out.set(key, val));
       return SITE + chartPath(t.id, out.toString());
     }
-    function seriesOn() { return ctx.overlays.filter(o => o.type === 'series' && state.on.has(o.id) && appliesTo(o, t.id)); }
+    function seriesOn() { return ctx.overlays.filter(o => o.type === 'series' && ctx.isActive(o)); }
+    // "Hourly pay and inflation (CPI, all items), January 2005 to September 2026"; another form goes in parentheses after
+    // the name ("Hourly pay (dollars an hour, as paid)"), and a compared number after "compared with" (Batch C)
+    function formName() { const F = ctx.form(); return F.own ? '' : ' (' + (F.key === 'index' && F.base ? 'index, 100 at ' + fmtPeriod(F.base[0], pf(t), true) : lowerFirst(F.label)) + ')'; }
     function chartName() {
-      const v = ctx.view, others = seriesOn().map(o => lowerFirst(o.label));
-      return t.title + (others.length ? ' and ' + listWords(others) : '') + ', ' + fmtPeriod(v.first, pf(t), true) + ' to ' + fmtPeriod(v.last, pf(t), true);
+      const v = ctx.view, others = seriesOn().map(o => lowerFirst(o.label)), c = ctx.compare();
+      return t.title + formName() + (others.length ? ' and ' + listWords(others) : '') + (c ? ' compared with ' + lowerFirst(c.label) : '') + ', ' + fmtPeriod(v.first, pf(t), true) + ' to ' + fmtPeriod(v.last, pf(t), true);
     }
     function credit() { return t.agency ? t.agency + ' via FRED' : 'FRED (' + t.source.series + ')'; }
     function syncCite() {
@@ -2206,15 +2611,20 @@
     sec.appendChild(alt);
     function altText() {
       const v = ctx.view; if (!v) return '';
-      const act = ctx.overlays.filter(o => state.on.has(o.id) && appliesTo(o, t.id) && (!o.requires || state.on.has(o.requires)));
+      const act = ctx.overlays.filter(o => ctx.isActive(o)), F = ctx.form(), fd = F.display, c = ctx.compare();
       const series = act.filter(o => o.type === 'series').map(o => lowerFirst(o.label)), eras = act.filter(o => o.type === 'era').map(o => ERA_ALT[o.id] || lowerFirst(o.label));
-      const refs = act.filter(o => o.type === 'line' || o.type === 'stat').map(refAlt), evs = act.filter(o => o.type === 'events').map(o => lowerFirst(o.label));
-      const parts = ['Line chart of ' + lowerFirst(t.title) + ' (' + d.unit + '), ' + fmtPeriod(v.first, pf(t), true) + ' to ' + fmtPeriod(v.last, pf(t), true)
-        + (series.length ? ', with ' + listWords(series) : '') + '. Recessions are shaded'
+      // reference lines as drawn: in another form the median names the month it starts from
+      const refs = (ctx.drawn && ctx.drawn.lines ? ctx.drawn.lines : act.filter(o => o.type === 'line' || o.type === 'stat')).map(o => o.stat === 'median' && !F.own ? 'the ' + lowerFirst(o.label) : refAlt(o)), evs = act.filter(o => o.type === 'events').map(o => lowerFirst(o.label));
+      const fobs = F.series(v);
+      const parts = ['Line chart of ' + lowerFirst(t.title) + ' (' + F.unit + ')' + (F.own ? ', ' : ', shown as “' + F.label + ',” ') + fmtPeriod(v.first, pf(t), true) + ' to ' + fmtPeriod(v.last, pf(t), true)
+        + (series.length ? ', with ' + listWords(series) : '') + (c ? ', compared with ' + lowerFirst(c.label) + ' (' + c.unit + ')' + (ctx.shares(c) ? ' on the same scale' : ' in its own panel below') : '')
+        + '. Recessions are shaded'
         + (eras.length ? '; bands below the chart mark ' + listWords(eras) : '') + (refs.length ? '; dashed lines mark ' + listWords(refs) : '')
         + (evs.length ? '; markers along the top show ' + listWords(evs) : '') + '.'];
-      const lp = t.observations.filter(p => p[0] <= v.last).pop();
-      if (lp) parts.push('The last reading shown, for ' + fmtPeriod(lp[0], pf(t), true) + ', is ' + fmtValue(lp[1], d) + '.' + (lp[0] === t.observations[t.observations.length - 1][0] ? ' ' + contextSentence(t) : ''));
+      const lp = fobs.filter(p => p[0] <= v.last).pop();
+      // the tile's own sentence describes its own form, so another form leaves it out
+      if (lp) parts.push('The last reading shown, for ' + fmtPeriod(lp[0], pf(t), true) + ', is ' + fmtValue(lp[1], fd) + '.' + (F.own && lp[0] === t.observations[t.observations.length - 1][0] ? ' ' + contextSentence(t) : ''));
+      if (c) { const cp = c.observations.filter(p => p[0] <= v.last).pop(); if (cp) parts.push(c.label + '’s last reading shown, for ' + fmtPeriod(cp[0], pf(c.tile), true) + ', is ' + fmtValue(cp[1], c.display) + '.'); }
       const w = words();
       if (hasWords(w)) {
         const bits = [];
@@ -2295,8 +2705,8 @@
     // A frozen embed (&asof=): every series stops at that date, and the headline is the last reading before it. The
     // sentence and strip describe today's reading, so the embed shows a line saying what it holds instead.
     let frozen = null;
+    const t0 = t, cut = p => (state.asof.length === 7 ? p[0].slice(0, 7) : p[0]) <= state.asof;
     if (state.asof) {
-      const cut = p => (state.asof.length === 7 ? p[0].slice(0, 7) : p[0]) <= state.asof;
       const kept = t.observations.filter(cut);
       if (kept.length) {
         t = Object.assign({}, t, { observations: kept, headline: null });
@@ -2312,6 +2722,42 @@
     if (adjusted(t) && ovById[t.id + '_real']) { state.defaultOn = t.id + '_real'; if (!state.ovGiven) state.on.add(state.defaultOn); }
     // colors in the address's order, four series at most (an older link with more keeps the first four)
     Array.from(state.on).forEach(id => { const o = ovById[id]; if (o.type !== 'series' || !appliesTo(o, t.id)) return; const k = freeSlot(); if (k < 0) state.on.delete(id); else state.slots.set(id, k); });
+
+    // Show it as (Batch C): the forms this tile can take, made from the committed figures before a frozen embed's cut and
+    // then cut at the same date, so "today's dollars" stays today's. A form the address names that this tile can't take
+    // falls back to the tile's own, silently.
+    const rawById = {}; (compData.companions || []).forEach(c => { rawById[c.id] = c; });
+    const forms = buildForms(t0, rawById);
+    if (frozen) forms.forEach(f => {
+      if (!f.enabled) return;
+      const ser = f.series; f.span = f.span.filter(cut); f.series = v => ser(v).filter(cut);
+      if (f.span.length < 2 && !f.own) { f.enabled = false; f.why = FORM_WHY.later; }
+    });
+    ctx.forms = forms;
+    if (state.as && !forms.some(f => f.key === state.as && f.enabled)) state.as = null;
+    ctx.form = () => forms.find(f => f.key === (state.as || 'own'));
+    // What another form leaves out, while it is shown (the overlay stays on, so the tile's own form brings it back):
+    // targets and estimates, which are in the tile's own unit; a price page's today's-dollars line; and the median and the
+    // 2015–19 average where the form can't give them (an index, or readings that start after 2015).
+    ctx.inForm = o => {
+      const F = ctx.form();
+      if (F.own) return true;
+      if (o.type === 'line' || o.id === t.id + '_real') return false;
+      if (o.type === 'stat') { const st = F.stats(); return o.stat === 'median' ? st.median != null : st.baseline != null; }
+      return true;
+    };
+    ctx.isActive = o => state.on.has(o.id) && appliesTo(o, t.id) && (!o.requires || state.on.has(o.requires)) && ctx.inForm(o);
+    // Compare (Batch C): one other tile, always in its own form. It shares the main scale when it is measured the way the
+    // main line is now drawn (the same unit key), and otherwise gets a sub-panel of its own: never a second axis.
+    const tileById = {}; data.tiles.forEach(x => { tileById[x.id] = x; });
+    if (state.cmp && (!tileById[state.cmp] || state.cmp === t.id)) state.cmp = null;
+    const cmpCache = {};
+    ctx.tiles = data.tiles;
+    ctx.compareOf = id => cmpCache[id] || (cmpCache[id] = (c => ({ id: CMP_SLOT, cmpId: c.id, isCompare: true, type: 'series', label: c.title, unit: c.display.unit,
+      unitKey: ownUnitKey(c), freq: c.freq, display: c.display, observations: frozen ? c.observations.filter(cut) : c.observations, tile: c }))(tileById[id]));
+    ctx.compare = () => state.cmp ? ctx.compareOf(state.cmp) : null;
+    ctx.shares = o => o.isCompare ? o.unitKey === ctx.form().unitKey : !OWN_SCALE[o.id] && ctx.form().own;
+    if (state.cmp) { const k = freeSlot(); if (k < 0) state.cmp = null; else state.slots.set(CMP_SLOT, k); }
 
     const layout = el('div', { class: 'layout' }), left = el('div', {});
     const c = t.context, d = t.display;
@@ -2333,7 +2779,11 @@
     left.appendChild(buildStrip(t));
     if (frozen) left.appendChild(el('p', { class: 'frozen', text: 'Readings through ' + fmtPeriod(frozen[0], pf(t), true) + ', as embedded. Newer readings are on the full chart.' }));
     else left.appendChild(el('p', { class: 'context', text: contextSentence(t) }));
-    if (adjusted(t)) left.appendChild(el('p', { class: 'adjust-note', text: 'The range and the sentence are in today’s dollars. The chart’s main line is the price as charged.' }));
+    if (adjusted(t)) {
+      const adj = el('p', { class: 'adjust-note', text: 'The range and the sentence are in today’s dollars. The chart’s main line is the price as charged.' });
+      left.appendChild(adj);
+      ctx.syncAdjust = () => { adj.hidden = !ctx.form().own; };   // another form says what the chart shows instead (Batch C)
+    }
 
     const table = buildTable(ctx);
     ctx.onWindow = table.refresh;
