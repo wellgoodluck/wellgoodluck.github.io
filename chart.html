@@ -144,7 +144,8 @@
   }
   /* The jump row (phones and tablets, Batch B): "Overlays · N on ↓" and "Copy or share ↓", two boxes 46px tall, half the
      width each, between the chart and its key */
-  .to-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; margin: 10px 0 0; }
+  .to-panel { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; margin: 10px 0 0; }
+  @media (max-width: 860px) { .to-panel { display: grid; } }   /* phones and tablets only; at 861px and up the panel sits beside the chart */
   .to-panel a { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-height: 46px; padding: 0 12px; background: var(--surface); border: 1px solid var(--frame); border-radius: 4px; font-size: 15px; font-weight: 600; color: var(--ink); text-decoration: none; }
   .to-panel a:hover { border-color: var(--ink); }
   .to-panel .arr { color: var(--ink-2); font-weight: 400; }
