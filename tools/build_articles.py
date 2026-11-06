@@ -29,7 +29,7 @@ Each source file starts with a front-matter block:
                                   needs only a later date on it; a future date schedules it.)
     picture: health_jobs range=10y   (optional: the picture on the Featured card while this article is featured:
                                   a tile id and, optionally, the view's range and ov, as in a chart page's address;
-                                  drawn like the Chart to try picture. For a series, picture in series.json.)
+                                  drawn like the Make your own chart picture. For a series, picture in series.json.)
     ---
 
 then Markdown. Supported: # ## ### headings, paragraphs, **bold**, *italic*,
@@ -365,8 +365,8 @@ def series_next(slug):
 
 
 def featured_picture(feat):
-    """The Featured card's picture: the item's `picture` field ("<tile id> [range=…] [ov=…]") drawn like the Chart to try
-    picture, as inline SVG, or "" (no field, or no data)."""
+    """The Featured card's picture: the item's `picture` field ("<tile id> [range=…] [ov=…]") drawn like the Make your own
+    chart picture, as inline SVG, or "" (no field, or no data)."""
     spec = (feat.get("picture") or "").split()
     if not spec:
         return ""
@@ -392,7 +392,7 @@ def featured_html(feat, link_prefix=""):
 
 
 def chart_prompt_pick(path=os.path.join("articles", "chart-prompts.json"), today=None):
-    """The Chart to try line: the prompt with the newest date on or before today (UTC), as
+    """The Make your own chart card (called Chart to try until Nov 6): the prompt with the newest date on or before today (UTC), as
     {text, link, url} with url relative to the site root, or None. Fail-soft: a missing or bad file, or a
     prompt whose chart has no page this build, means no line (with a log line)."""
     from datetime import datetime, timezone
@@ -425,7 +425,7 @@ def chart_prompt_pick(path=os.path.join("articles", "chart-prompts.json"), today
 
 def chart_prompt_thumb(tile_id, query, series_path=os.path.join("data", "series.json"),
                        companions_path=os.path.join("data", "companions.json")):
-    """A small picture of the Chart to try view, as inline SVG (220x64 viewBox, colors from CSS tokens, no
+    """A small picture of the Make your own chart view, as inline SVG (220x64 viewBox, colors from CSS tokens, no
     axes): the indicator over the view's range, with the first companion series the view turns on that shares its
     scale. Fail-soft: anything missing means no picture (with a log line), and the line still shows."""
     from datetime import date as _date
@@ -497,15 +497,19 @@ def chart_prompt_thumb(tile_id, query, series_path=os.path.join("data", "series.
         return ""
 
 
+# The fixed line under every prompt on the Make your own chart card (Nov 6; the same words in index.html)
+MAKE_YOUR_OWN = "Add a recession, a president or another line, then copy it into a slide, a paper or a newsletter. Free to use with credit."
+
+
 def chart_prompt_html(cp, link_prefix=""):
     if not cp:
         return ""
     href = f'{link_prefix}{html.escape(cp["url"], quote=True)}'
     thumb = (f'<a class="cthumb" href="{href}" aria-hidden="true" tabindex="-1">{cp["svg"]}</a>'
              if cp.get("svg") else "")                      # the picture repeats the title's link, so it is skipped by assistive tech
-    return (f'<aside class="chart-try" aria-label="Chart to try"><div class="ctext"><span class="flabel">Chart to try</span>'
+    return (f'<aside class="chart-try" aria-label="Make your own chart"><div class="ctext"><span class="flabel">Make your own chart</span>'
             f'<a class="ftitle" href="{href}">{inline(cp["title"])}</a> →'
-            f'<p class="fdek">{inline(cp["text"])}</p></div>{thumb}</aside>\n')
+            f'<p class="fdek">{inline(cp["text"])}</p><p class="fhow">{MAKE_YOUR_OWN}</p></div>{thumb}</aside>\n')
 
 
 def fmt_date(s):

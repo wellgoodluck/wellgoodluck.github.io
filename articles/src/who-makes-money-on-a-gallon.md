@@ -3,6 +3,7 @@ title: Who's Making Money on a Gallon of Gas Right Now
 dek: The extra money is mostly not in pumping crude. The war cut off more fuel than oil, so in 2026 the extra profit is in turning crude into gasoline and diesel. Whether that is gouging or what a fuel shortage looks like is the argument.
 date: 2026-11-06
 featured: 2026-11-06
+picture: gas range=5y
 ---
 
 ## The question

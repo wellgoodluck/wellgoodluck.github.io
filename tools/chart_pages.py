@@ -327,11 +327,23 @@ def write_home_static(out_root, series_path=os.path.join("data", "series.json"))
                          f'({html.escape(when)}). {html.escape(sentence)}' + (f' {html.escape(hh)}' if hh else "") + "</li>")
         if items:
             out.append(f'<h2>{html.escape(sec)}</h2><ul>' + "".join(items) + "</ul>")
+    # The home page's In short (summaries.home, written by fetch_fred.py from Nov 6), as one plain paragraph above the
+    # list, its figures in bold. A series.json from before then has none, and the list starts as it did.
+    short = ""
+    try:
+        para = ((data.get("summaries") or {}).get("home") or {}).get("paragraph") or []
+        if para:
+            short = "".join(html.escape(x) if isinstance(x, str) else f"<strong>{html.escape(x.get('t', ''))}</strong>" for x in para
+                            if isinstance(x, (str, dict)))
+    except Exception as e:                                   # never the build's problem
+        print(f"home: WARNING in short: {e}")
+        short = ""
     gen = (data.get("generated") or "")[:10]
     asof = f"{MONTHS_LONG[int(gen[5:7]) - 1]} {int(gen[8:10])}, {gen[:4]}" if len(gen) == 10 else ""
     block = ('<p class="status" id="status" role="status">Loading the charts…</p>\n'
              '  <noscript><p class="status">The charts need JavaScript. The latest readings are listed below.</p></noscript>\n'
              '  <div class="static-figures" id="static-figures">'
+             + (f'<p class="short-static"><b>In short:</b> {short}</p>' if short else "")
              + (f'<p class="asof">Latest readings, as of {asof}. Each links to its full chart.</p>' if asof else "")
              + "".join(out) + "</div>")
     page = page.replace(status, block, 1)

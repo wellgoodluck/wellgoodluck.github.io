@@ -12,6 +12,7 @@
   --hairline: #e3e2dc; --grid: #ebeae4; --series: #0b7a75; --focus: #0b7a75; --c1: #903a03; --c3: #b88e2f; --nav: #8a6100; --nav-wash: rgba(138, 97, 0, 0.09);
   --series-wash: rgba(11, 122, 117, 0.10); --full-ink: #0b6b66; --full-line: rgba(11, 122, 117, 0.45);   /* the Featured card and its pills, as on the almanac */
   --banner: #fff4d6; --banner-ink: #5a4300; --max: 1120px; --measure: 39em;   /* about 76 characters at 17px (was 42em, about 84) */
+  --frame: #c4c2b9;   /* the sides of framed boxes (cards, chart frames), Nov 6: the range bar's gray; Featured keeps its teal */
 }
 /* dark colors on screen only: printing from a browser in dark mode stays on the light tokens */
 @media screen and (prefers-color-scheme: dark) {
@@ -20,6 +21,7 @@
     --page: #121211; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
     --hairline: #2c2c2a; --grid: #262624; --series: #2bb3a8; --focus: #2bb3a8; --c1: #fb8304; --c3: #7c6713; --nav: #d9a83a; --nav-wash: rgba(217, 168, 58, 0.12);
     --series-wash: rgba(43, 179, 168, 0.14); --full-ink: #5cc8be; --full-line: rgba(43, 179, 168, 0.6); --banner: #3a2f10; --banner-ink: #f3dfa0;
+    --frame: #45443f;
   }
 }
 
@@ -71,7 +73,7 @@ a:hover { text-decoration-color: var(--ink); }
 
 /* Live chart embeds: wider than the text column */
 .article figure.chart-embed { margin: 22px 0 26px; width: min(860px, calc(100vw - 32px)); }
-.article figure.chart-embed iframe { display: block; width: 100%; border: 1px solid var(--hairline); border-radius: 6px; background: var(--surface); }
+.article figure.chart-embed iframe { display: block; width: 100%; border: 1px solid var(--frame); border-radius: 6px; background: var(--surface); }
 .article figure.chart-embed figcaption { margin: 8px 0 0; font-size: 13.5px; color: var(--ink-2); max-width: calc(var(--measure) * 17 / 13.5); }   /* the text column's width: 42em at the body's 17px */
 .article figure.chart-embed figcaption a { white-space: nowrap; }
 /* Static figures ({{figure}} in an article): plain HTML bars from numbers in the text. Bars in Neutral Ground Teal,
@@ -154,11 +156,11 @@ a:hover { text-decoration-color: var(--ink); }
 }
 /* the feed, under the lead items on the articles index */
 .article > .feed-link { max-width: var(--measure); margin: 14px 0 0; font-size: 13.5px; color: var(--ink-2); }
-/* The lead on the articles index: the Featured card (teal wash) and Chart to try (sheet) side by side, stacked on phones;
+/* The lead on the articles index: the Featured card (teal wash) and Make your own chart (sheet) side by side, stacked on phones;
    the same rules as the almanac's (index.html). Each ends with a picture drawn from the site's data, kept at the foot */
 .article > .lead { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 16px; margin: 22px 0 0; align-items: stretch; max-width: calc(var(--measure) * 17 / 15 + 320px); }
 .lead:has(> :only-child) { grid-template-columns: minmax(0, 1fr); }
-.featured, .chart-try { display: flex; flex-direction: column; margin: 0; padding: 14px 18px 14px; border: 1px solid var(--hairline); border-top: 2px solid var(--ink); border-radius: 6px; background: var(--surface); font-size: 15px; line-height: 1.45; color: var(--ink); text-wrap: pretty; }
+.featured, .chart-try { display: flex; flex-direction: column; margin: 0; padding: 14px 18px 14px; border: 1px solid var(--frame); border-top: 2px solid var(--ink); border-radius: 6px; background: var(--surface); font-size: 15px; line-height: 1.45; color: var(--ink); text-wrap: pretty; }
 .featured { border-color: var(--full-line); border-top-color: var(--ink); background: var(--series-wash); }
 .featured .ctext, .chart-try .ctext { flex: none; min-width: 0; }
 .featured .flabel, .chart-try .flabel { display: block; margin: 0 0 4px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
@@ -167,6 +169,7 @@ a:hover { text-decoration-color: var(--ink); }
 .article .featured a.ftitle:hover, .article .chart-try a.ftitle:hover { text-decoration: underline; text-decoration-color: var(--ink); text-underline-offset: 3px; }
 .featured .fdek, .chart-try .fdek { margin: 4px 0 0; color: var(--ink-2); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 .chart-try .fdek { -webkit-line-clamp: 3; }
+.chart-try .fhow { margin: 6px 0 0; color: var(--ink-2); font-size: 13.5px; }   /* the fixed how-to line under the prompt (Nov 6) */
 /* A featured series: the parts in reading order under the dek, as numbered pill buttons */
 .featured .fparts { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 10px; }
 .featured .fparts li { margin: 0; }
@@ -241,10 +244,10 @@ footer.about p { max-width: 48em; margin: 0 0 8px; }
 .mark path { fill: none; stroke: var(--ink); stroke-width: 6.5; }
 .mark circle { fill: var(--series); }
 
-/* The weekly digest signup (Nov 4): a card like Chart to try before the footer of every article page and the index;
+/* The weekly digest signup (Nov 4): a card like Make your own chart before the footer of every article page and the index;
    a plain HTML form that posts to Buttondown (no script). Same rules in index.html. */
 .signup-wrap { padding-top: 8px; padding-bottom: 28px; }
-.signup { max-width: var(--measure); padding: 14px 18px 16px; border: 1px solid var(--hairline); border-top: 2px solid var(--ink); border-radius: 6px; background: var(--surface); font-size: 15px; line-height: 1.45; }
+.signup { max-width: var(--measure); padding: 14px 18px 16px; border: 1px solid var(--frame); border-top: 2px solid var(--ink); border-radius: 6px; background: var(--surface); font-size: 15px; line-height: 1.45; }
 .signup h2 { margin: 0 0 4px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
 .signup .stext { margin: 0 0 12px; }
 .signup label { display: block; margin: 0 0 4px; font-size: 13.5px; color: var(--ink-2); }

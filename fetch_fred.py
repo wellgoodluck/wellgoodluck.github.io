@@ -1406,6 +1406,202 @@ def section_summaries(tiles_out):
     return out
 
 
+# ---- "In short" for the home page (Nov 6): four readings in a fixed order, from the same figures the tiles show ----------
+# Same rules as section_summaries(): templates only, never a model. Every number is a tile's current reading (formatted as
+# the tile formats it), its period, or its rank in its own history; the only other words are connectives and the fixed
+# bins below. Fixed set and order: prices against pay, unemployment, the 30-year mortgage rate. A missing input drops its
+# clause and its row; nothing at all means no "home" key, and the page shows no In short. Written to
+# data/series.json summaries.home: the desktop paragraph as text and figure segments, and one clause per phone row.
+
+def _half_up(x, nd):
+    """x rounded to nd decimals the way the pages round (half away from zero, on the shortest decimal form)."""
+    from decimal import Decimal, ROUND_HALF_UP
+    q = Decimal(repr(abs(x))).quantize(Decimal(1).scaleb(-nd), rounding=ROUND_HALF_UP)
+    return float(q) * (-1 if x < 0 else 1)
+
+
+def tile_share(pct_below):
+    """The whole percent a tile's sentence prints ("Higher than 67% of months"): the share of the history below the
+    reading, or above it for a reading in the lower half, kept between 1 and 99 (as contextSentence in index.html)."""
+    v = pct_below if pct_below >= 50 else 100 - pct_below
+    return int(min(99, max(1, _half_up(v, 0))))
+
+
+# The share in words. Every band is true of every share in it: the bare fraction only at the whole percent nearest it
+# (67, 75, 80, 90), "about" only from four points under it, "nearly" only within three points under it, "more than"
+# only above it. So 63% is "about two-thirds" and 78% "more than three-quarters", never "four-fifths". Shares from 40%
+# to 60% of the history never get here: they read "near the middle of its history".
+FRACTION_WORDS = [            # (lowest share, highest share, words), shares as the whole percents the tiles print
+    (60, 62, "more than half"),
+    (63, 66, "about two-thirds"),
+    (67, 67, "two-thirds"),
+    (68, 71, "more than two-thirds"),
+    (72, 74, "nearly three-quarters"),
+    (75, 75, "three-quarters"),
+    (76, 79, "more than three-quarters"),
+    (80, 80, "four-fifths"),
+    (81, 86, "more than four-fifths"),
+    (87, 89, "nearly nine-tenths"),
+    (90, 90, "nine-tenths"),
+    (91, 96, "more than nine-tenths"),
+    (97, 99, "nearly all"),
+]
+
+
+def fraction_words(share):
+    for lo, hi, words in FRACTION_WORDS:
+        if lo <= share <= hi:
+            return words
+    return None
+
+
+def home_summary(tiles_out, today=None):
+    """{"paragraph": [segment, …], "rows": {id: clause}, "order": [ids]} or None. A segment is a string or a figure,
+    {"t": "3.7%", "id": "cpi", "name": "Inflation, 3.7%"}, which the page sets in bold as a link to that chart."""
+    today = today or date.today()
+    T = {t["id"]: t for t in tiles_out}
+    EN = "–"
+    MONTHS_LONG = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+                   "October", "November", "December"]
+    MONTHS = [m[:3] for m in MONTHS_LONG]
+
+    def ctx(tid):
+        return T[tid]["context"]                      # none of the four is a price tile, so never today's dollars
+
+    def val(tid, v=None):
+        d = T[tid]["display"]
+        v = ctx(tid)["current"]["value"] if v is None else v
+        nd = d.get("decimals", 0)
+        return f"{abs(_half_up(v / (d.get('scale') or 1), nd)):.{nd}f}{d.get('suffix', '')}"
+
+    def when(tid):
+        """The reading's period: "September" (or "September 2025" when it is not this year), "Nov 5" for a week."""
+        s = ctx(tid)["current"]["date"]
+        y, m, dd = int(s[:4]), int(s[5:7]), int(s[8:10])
+        if T[tid]["freq"] in ("w", "d"):
+            return f"{MONTHS[m - 1]} {dd}" + (f", {y}" if y != today.year else "")
+        return MONTHS_LONG[m - 1] + (f" {y}" if y != today.year else "")
+
+    def noun(tid):
+        return {"a": "years", "q": "quarters", "w": "weeks", "d": "days"}.get(T[tid]["freq"], "months")
+
+    def rank(tid, hi_word, lo_word, hi_rec, lo_rec):
+        """("rank words", where) with where in "high", "low", "middle", "record"."""
+        c = ctx(tid)
+        p = c["percentile_below"]
+        if p >= 50 and c.get("highest_since") is None:
+            return hi_rec, "record"
+        if p < 50 and c.get("lowest_since") is None:
+            return lo_rec, "record"
+        if 40 <= p <= 60:
+            return "near the middle of its history", "middle"
+        words = fraction_words(tile_share(p))
+        since = str(c["since"])[:4]
+        of = " " if words == "nearly all" else " of "
+        return f"{hi_word if p >= 50 else lo_word} than in {words}{of}{noun(tid)} since {since}", ("high" if p >= 50 else "low")
+
+    def fig(tid, text, name):
+        return {"t": text, "id": tid, "name": name}
+
+    def cap(s):
+        return s[:1].upper() + s[1:]
+
+    sentences, rows, order = [], {}, []
+
+    # 1. Prices, then pay against prices (one sentence when both are here)
+    prices = None
+    try:
+        v = ctx("cpi")["current"]["value"]
+        shown = _half_up(v, T["cpi"]["display"].get("decimals", 1))
+        if shown > 0:
+            r, _ = rank("cpi", "a faster rise", "a slower rise", "the fastest rise on record", "the slowest rise on record")
+            r = r if not r.startswith("near") else "a rise near the middle of its history"
+            prices = [f"prices in {when('cpi')} were ", fig("cpi", val("cpi"), f"Inflation, {val('cpi')}"), f" higher than a year earlier, {r}"]
+        elif shown < 0:                                      # prices falling: "a fall larger than in …"
+            r, _ = rank("cpi", "a fall smaller", "a fall larger", "the smallest fall on record", "the largest fall on record")
+            prices = [f"prices in {when('cpi')} were ", fig("cpi", val("cpi"), f"Inflation, −{val('cpi')}"), f" lower than a year earlier, {r}"]
+        else:                                                # 0.0% as printed: neither a rise nor a fall
+            r, _ = rank("cpi", "higher", "lower", "the highest on record", "the lowest on record")
+            prices = [f"prices in {when('cpi')} were unchanged from a year earlier, {r}"]
+        rows["cpi"] = cap(r) + "."
+        order.append("cpi")
+    except Exception as e:                                   # noqa: BLE001
+        print(f"home summary: prices skipped: {e}", file=sys.stderr, flush=True)
+    pay = None
+    try:
+        pv = ctx("pay")["current"]["value"]
+        r, _ = rank("pay", "faster", "slower", "the fastest on record", "the slowest on record")
+        vs = None
+        pay_month = ctx("pay")["current"]["date"][:7]
+        cpi_then = next((v for d, v in T["cpi"]["observations"] if d[:7] == pay_month), None) if "cpi" in T else None
+        if cpi_then is not None:                             # pay against prices in the same month, as the tiles print them
+            gap = _half_up(pv, 1) - _half_up(cpi_then, 1)
+            gap = round(gap, 1)
+            vs = ("about the same as prices" if abs(gap) <= 0.2 else
+                  ("a little ahead of prices" if gap > 0 else "a little behind prices") if abs(gap) <= 1.0 else
+                  ("ahead of prices" if gap > 0 else "behind prices"))
+        up = _half_up(pv, 1)
+        dirn = "up " if up > 0 else "down " if up < 0 else ""
+        pay = [f"pay in {when('pay')} was {dirn}" if dirn else f"pay in {when('pay')} was unchanged from a year earlier"]
+        if dirn:
+            pay.append(fig("pay", val("pay"), f"Hourly pay, {'−' if up < 0 else ''}{val('pay')}"))
+        pay.append(f", {r}" + (f" and {vs}" if vs else ""))
+        rows["pay"] = cap(r) + (f" and {vs}" if vs else "") + "."
+        order.append("pay")
+    except Exception as e:                                   # noqa: BLE001
+        print(f"home summary: pay skipped: {e}", file=sys.stderr, flush=True)
+    if prices and pay:
+        sentences.append(prices + ["; "] + pay + ["."])
+    elif prices or pay:
+        sentences.append((prices or pay) + ["."])
+
+    # 2. Unemployment
+    try:
+        r, _ = rank("unemployment", "higher", "lower", "the highest on record", "the lowest on record")
+        sentences.append([f"unemployment in {when('unemployment')}, at ", fig("unemployment", val("unemployment"), f"Unemployment rate, {val('unemployment')}"), f", was {r}."])
+        rows["unemployment"] = cap(r) + "."
+        order.append("unemployment")
+    except Exception as e:                                   # noqa: BLE001
+        print(f"home summary: unemployment skipped: {e}", file=sys.stderr, flush=True)
+
+    # 3. The 30-year mortgage rate, and the 2015–19 average beside it
+    try:
+        c = ctx("mortgage")
+        r, _ = rank("mortgage", "higher", "lower", "the highest on record", "the lowest on record")
+        m, b = c["current"]["value"], c.get("baseline_2015_19")
+        base = None
+        if b is not None:
+            gap = _half_up(m, 2) - _half_up(b, 2)
+            word = ("well above" if gap >= 1.5 else "above" if gap >= 0.5 else
+                    "well below" if gap <= -1.5 else "below" if gap <= -0.5 else "about the same as")
+            base = (f"{word} the ", fig("mortgage", val("mortgage", b), f"30-year mortgage rate, 2015 to 2019 average, {val('mortgage', b)}"), f" of 2015{EN}19")
+        s = ["the 30-year mortgage rate was ", fig("mortgage", val("mortgage"), f"30-year mortgage rate, {val('mortgage')}"), f" on {when('mortgage')}, {r}"]
+        if base:
+            s += [" and " + base[0], base[1], base[2]]
+        sentences.append(s + ["."])
+        rows["mortgage"] = cap(r) + (f", {base[0]}{base[1]['t']}{base[2]}" if base else "") + "."
+        order.append("mortgage")
+    except Exception as e:                                   # noqa: BLE001
+        print(f"home summary: mortgage skipped: {e}", file=sys.stderr, flush=True)
+
+    if not sentences:
+        return None
+    para = []
+    for s in sentences:
+        s = list(s)
+        s[0] = cap(s[0])
+        if para:
+            para.append(" ")
+        para.extend(s)
+    merged = []                                              # neighbouring strings joined, so the JSON stays small
+    for seg in para:
+        if isinstance(seg, str) and merged and isinstance(merged[-1], str):
+            merged[-1] += seg
+        else:
+            merged.append(seg)
+    return {"paragraph": merged, "rows": rows, "order": order}
+
+
 DERIVED = [
     {
         "id": "payrolls_3mo",
@@ -2139,6 +2335,12 @@ def main():
         summaries = section_summaries(tiles_out)      # after the household lines, which two of them read
     except Exception as e:
         print(f"summaries skipped: {e}", file=sys.stderr, flush=True)
+    try:                                              # the home page's In short (a missing input drops its clause)
+        home = home_summary(tiles_out)
+        if home:
+            summaries["home"] = home
+    except Exception as e:
+        print(f"home summary skipped: {e}", file=sys.stderr, flush=True)
 
     print("recessions      USREC", flush=True)
     rec = get_observations(RECESSIONS_SERIES, {"observation_start": RECESSIONS_START})

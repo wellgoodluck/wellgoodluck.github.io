@@ -21,6 +21,17 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Economy in Context: the main numbers on the U.S. economy, each shown against its own history.">
 <meta name="twitter:card" content="summary_large_image">
+<script>
+  /* Which view (Nov 6): the home page by default; the full almanac at ?view=all (and ?view=tiles, the tiles alone). A link
+     into the almanac (#i-<id> a tile, #s-<section>, #at-a-glance, #in-detail, #how-to-read) opens the full view for that
+     visit, so chart-page crumbs and old links still land. Set before the first paint; without scripts neither class is set
+     and the page is the plain list of readings, as before. */
+  (function () {
+    var v = new URLSearchParams(location.search).get('view');
+    var full = v === 'all' || v === 'tiles' || /^#(i-|s-|at-a-glance$|in-detail$|how-to-read$)/.test(location.hash);
+    document.documentElement.classList.add(full ? 'v-all' : 'v-home');
+  })();
+</script>
 <style>
   /* Public Sans (SIL Open Font License), served from this site: no third-party requests. */
   @font-face { font-family: "Public Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("assets/fonts/PublicSans-Regular.woff2") format("woff2"); }
@@ -39,7 +50,7 @@
     --series: #0b7a75;   /* deep teal: no party's color (the Democratic lane is blue) */
     --nav: #8a6100;      /* ochre: wayfinding only (the section bar, the site links), never data; 5.5:1 on white */
     --nav-wash: rgba(138, 97, 0, 0.09);   /* the section bar's tint */
-    --c1: #903a03;       /* the first companion series, as on the chart page (the Chart to try picture) */
+    --c1: #903a03;       /* the first companion series, as on the chart page (the Make your own chart picture) */
     --series-wash: rgba(11, 122, 117, 0.10);
     --recession: rgba(27, 27, 26, 0.07);
     --focus: #0b7a75;
@@ -48,6 +59,7 @@
     --full-ink: #0b6b66;
     --full-line: rgba(11, 122, 117, 0.45);
     --range: #c4c2b9;    /* the typical-range bar: darker than a hairline, because it carries meaning */
+    --frame: #c4c2b9;    /* the sides of framed boxes (tiles, cards, the index panel, chart frames), Nov 6; Featured keeps its teal */
     --max: 1120px;
   }
   /* dark colors on screen only: printing from a browser in dark mode stays on the light tokens */
@@ -73,6 +85,7 @@
       --full-ink: #5cc8be;
       --full-line: rgba(43, 179, 168, 0.6);
       --range: #45443f;
+      --frame: #45443f;
     }
   }
 
@@ -96,12 +109,17 @@
   /* Masthead ------------------------------------------------------------- */
   .masthead { padding: 40px 0 0; }
   .masthead .title-row { display: flex; align-items: center; justify-content: space-between; gap: 8px 20px; margin: 0 0 10px; }   /* center, since the lockup has no text baseline of its own */
-  .masthead .site-link { color: var(--nav); font-size: 15px; font-weight: 600; text-decoration: none; border-bottom: 3px solid var(--nav); padding-bottom: 1px; white-space: nowrap; }
-  .masthead .site-link:hover { color: var(--ink); border-color: var(--ink); }
-  .masthead .site-links { display: flex; gap: 16px; }
+  /* The site menu (Nov 6): The numbers · Your situation · Articles · About, right of the lockup on one row; on phones a row
+     under the lockup. Ochre wayfinding with a 2px underline, each link a 44px target. */
+  .site-menu { display: flex; flex-wrap: wrap; gap: 0 16px; }
+  .site-menu a { display: inline-flex; align-items: center; min-height: 44px; color: var(--nav); font-size: 15px; font-weight: 600; text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 5px; white-space: nowrap; }
+  .site-menu a:hover { color: var(--ink); text-decoration-color: var(--ink); }
+  .site-menu a[aria-current] { color: var(--ink); }
+  .masthead h1 a.home { color: inherit; text-decoration: none; display: inherit; align-items: inherit; }   /* in the full view the lockup leads home */
   /* the latest readings as plain HTML, written at build time; the script replaces them with the tiles */
   .static-figures { padding: 0 0 24px; max-width: 46em; }
   .static-figures .asof { color: var(--ink-2); margin: 0 0 4px; }
+  .static-figures .short-static { margin: 0 0 14px; font-size: 17px; }
   .static-figures h2 { font-size: 19px; margin: 22px 0 6px; }
   .static-figures ul { margin: 0; padding: 0 0 0 1.1em; }
   .static-figures li { margin: 0 0 6px; line-height: 1.45; }
@@ -142,11 +160,11 @@
   .mark path { fill: none; stroke: var(--ink); stroke-width: 6.5; }
   .mark circle { fill: var(--series); }
   .brand .bl { font-weight: 400; color: var(--ink-2); white-space: nowrap; }   /* "in Context" never splits */
-  @media (max-width: 340px) { .masthead h1.brand { font-size: 23px; } }   /* 320px phones: still one line */
-  /* The weekly digest signup (Nov 4): a card like Chart to try between the tiles and the footer; a plain HTML form that
+  @media (max-width: 340px) { .masthead h1.brand { font-size: 23px; } .site-menu { gap: 0 11px; } .site-menu a { font-size: 14px; } }   /* 320px phones: still one line each */
+  /* The weekly digest signup (Nov 4): a card like Make your own chart between the tiles and the footer; a plain HTML form that
      posts to Buttondown (no script). The field's border is Muted, not a hairline, so it passes 3:1. Same rules in site.css. */
   .signup-wrap { padding-top: 8px; padding-bottom: 28px; }
-  .signup { max-width: 39em; padding: 14px 18px 16px; border: 1px solid var(--hairline); border-top: 2px solid var(--ink); border-radius: 6px; background: var(--surface); font-size: 15px; line-height: 1.45; scroll-margin-top: calc(var(--nav-h, 48px) + 8px); }
+  .signup { max-width: 39em; padding: 14px 18px 16px; border: 1px solid var(--frame); border-top: 2px solid var(--ink); border-radius: 6px; background: var(--surface); font-size: 15px; line-height: 1.45; scroll-margin-top: calc(var(--nav-h, 48px) + 8px); }
   .signup h2 { margin: 0 0 4px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
   .signup .stext { margin: 0 0 12px; text-wrap: pretty; }
   .signup label { display: block; margin: 0 0 4px; font-size: 13.5px; color: var(--ink-2); }
@@ -191,11 +209,10 @@
     .masthead { padding-top: 22px; }
     .masthead .title-row { gap: 4px 12px; }
     .masthead h1 { font-size: 28px; letter-spacing: -0.02em; }
-    /* phones: Articles and About move to a small row at the top right; the lockup stays on one line below it */
-    .masthead .title-row { flex-wrap: wrap; row-gap: 8px; }
-    .masthead .site-links { order: -1; width: 100%; justify-content: flex-end; }
+    /* phones (Nov 6): the lockup on one line, the site menu in a row under it, then the tagline */
+    .masthead .title-row { flex-wrap: wrap; row-gap: 2px; margin-bottom: 6px; }
+    .site-menu { width: 100%; gap: 0 14px; }
     .masthead h1.brand { font-size: 26px; white-space: nowrap; }
-    .masthead .site-link { font-size: 13.5px; }
     .masthead .updated { margin-top: 10px; }
     .secnav { margin-top: 10px; }
     .sections-nav { flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 0 16px; margin: 0 -16px -1px; gap: 0 20px; }   /* sideways only (Nov 5): the links' -1px marker overlap made the row 1px taller than its box, so it also scrolled up and down; the row now takes the overlap itself */
@@ -217,11 +234,11 @@
 
   /* The lead: two cards side by side above the overview, stacked on phones. Left, the featured article or series on a
      teal-washed card (the one tinted block on the page: it marks the lead the way a newspaper's rule does, and readers
-     said the plain rule was too easy to miss); right, Chart to try on the sheet. Both carry a 2px ink rule along the top,
+     said the plain rule was too easy to miss); right, Make your own chart on the sheet. Both carry a 2px ink rule along the top,
      and both end with a picture drawn from the site's data, kept at the foot so the two line up. Same rules in site.css. */
   .lead { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 16px; margin: 22px 0 0; align-items: stretch; }
   .lead:has(> :only-child) { grid-template-columns: minmax(0, 1fr); }
-  .featured, .chart-try { display: flex; flex-direction: column; margin: 0; padding: 14px 18px 14px; border: 1px solid var(--hairline); border-top: 2px solid var(--ink); border-radius: 6px; background: var(--surface); font-size: 15px; line-height: 1.45; color: var(--ink); text-wrap: pretty; }
+  .featured, .chart-try { display: flex; flex-direction: column; margin: 0; padding: 14px 18px 14px; border: 1px solid var(--frame); border-top: 2px solid var(--ink); border-radius: 6px; background: var(--surface); font-size: 15px; line-height: 1.45; color: var(--ink); text-wrap: pretty; }
   .featured { border-color: var(--full-line); border-top-color: var(--ink); background: var(--series-wash); }
   .featured .ctext, .chart-try .ctext { flex: none; min-width: 0; }
   .featured .flabel, .chart-try .flabel { display: block; margin: 0 0 4px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
@@ -230,6 +247,7 @@
   .featured .ftitle:hover, .chart-try .ftitle:hover { text-decoration: underline; text-decoration-color: var(--ink); text-underline-offset: 3px; }
   .featured .fdek, .chart-try .fdek { margin: 4px 0 0; color: var(--ink-2); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
   .chart-try .fdek { -webkit-line-clamp: 3; }
+  .chart-try .fhow { margin: 6px 0 0; color: var(--ink-2); font-size: 13.5px; }   /* the fixed how-to line under the prompt */
   @media (max-width: 760px) { .featured .fdek, .chart-try .fdek { -webkit-line-clamp: 3; } }
   /* A featured series: the parts in reading order under the dek, as numbered pill buttons */
   .featured .fparts { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 10px; }
@@ -250,7 +268,7 @@
   .thumb .end-halo { stroke: var(--surface); stroke-width: 9; }
   @media (max-width: 760px) { .lead { grid-template-columns: minmax(0, 1fr); gap: 10px; } }
   /* The summary zone (the lead and At a glance) sits on a full-width Sheet band; the band is drawn with a spread shadow
-     clipped to the zone's height, so it reaches the window's edges without widening the page. Inside it, Chart to try
+     clipped to the zone's height, so it reaches the window's edges without widening the page. Inside it, Make your own chart
      takes the page color so the white card doesn't vanish into the white band. */
   .summary-zone { padding: 22px 0 26px; background: var(--surface); box-shadow: 0 0 0 100vmax var(--surface); clip-path: inset(0 -100vmax); }
   .summary-zone .lead { margin-top: 0; }
@@ -264,6 +282,143 @@
   @media (max-width: 760px) { .detail-break { margin-top: 28px; } .detail-break h2 { font-size: 24px; } }
   @media print { .summary-zone { background: none; box-shadow: none; clip-path: none; padding-top: 0; } .detail-break { break-before: page; } }
   @media print { .lead { display: none; } }
+
+  /* ===== The home page (Nov 6): the default view. The full almanac below is ?view=all. ===================================
+     Which parts belong to which view: .full-only is hidden on the home page, .home-only everywhere else (and without
+     scripts, when neither class is on the root, the page is the plain readings list as before). */
+  .v-home .full-only, html:not(.v-home) .home-only { display: none !important; }
+  .h-sec { padding: 30px 0 0; }
+  /* Section bands: the At a glance band at section size. Loose text under a band (keys, intro lines, lists) starts at the
+     band's text, 12px in; boxes (cards, the index panel) line up with the band's outer edge. */
+  .band { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; margin: 0 0 10px; padding: 7px 12px 8px; background: var(--hairline); border-radius: 3px; }
+  .band h2 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.25; }
+  .band .bandsub { font-size: 13.5px; color: var(--ink-2); }
+  .in-band { padding: 0 12px; }
+  /* wayfinding links on the home page: ochre with the 2px underline, 44px tall */
+  a.wf { display: inline-flex; align-items: center; min-height: 44px; color: var(--nav); font-size: 15px; font-weight: 600; text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  a.wf:hover { color: var(--ink); text-decoration-color: var(--ink); }
+  /* ↑ Top: phones only, after each section from Six numbers on */
+  .htop { display: none; margin: 0; text-align: right; }
+  .htop a { font-size: 13.5px; }
+  @media (max-width: 760px) { .htop { display: block; } }
+
+  /* In short: a label row with How to read this page at the right of the paragraph's measure; the paragraph on desktop,
+     four compact rows on phones; the Updates box beside it on desktop */
+  .short { display: grid; grid-template-columns: minmax(0, 1fr) minmax(200px, 16.5rem); gap: 0 48px; align-items: start; padding-top: 22px; }
+  .short-main { min-width: 0; font-size: clamp(18px, 4.6vw, 21px); max-width: 36em; }
+  .lblrow { display: flex; justify-content: space-between; align-items: baseline; gap: 0 16px; margin: 0 0 2px; }
+  .lbl { margin: 0; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; line-height: 1.5; }
+  .lblrow a.wf { font-size: 14px; white-space: nowrap; margin-left: auto; }
+  .short-p { margin: 0; line-height: 1.5; text-wrap: pretty; }
+  .short-p a { color: var(--ink); font-weight: 700; text-decoration-color: var(--ink-2); text-underline-offset: 4px; }
+  .short-p a:hover { text-decoration-color: var(--ink); }
+  .short-foot { margin: 10px 0 0; font-size: 13.5px; color: var(--muted); }
+  .short-foot .chk { display: none; }
+  .short-foot.nosum { margin: 0; }
+  .short.nosum { display: block; }
+  .short.nosum .short-main { max-width: none; }
+  .nw { white-space: nowrap; }
+  .short-rows { display: none; }
+  .updates { margin-top: 10px; padding: 0 0 0 16px; border-left: 1px solid var(--frame); font-size: 13.5px; color: var(--ink-2); line-height: 1.55; }
+  .updates h2 { margin: 0 0 4px; }
+  .updates p { margin: 0 0 10px; }
+  .updates .rh { font-weight: 600; color: var(--ink); margin: 0 0 2px; }
+  /* Next releases (all widths since Nov 6): one release per line, its date at the right in tabular figures */
+  .rels { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1px 14px; margin: 0; padding: 0; list-style: none; font-variant-numeric: tabular-nums; }
+  .rels li { display: contents; }
+  .rels a { color: var(--ink-2); text-decoration-color: var(--muted); }
+  .rels a:hover { color: var(--ink); }
+  .rels .when { text-align: right; white-space: nowrap; }
+  @media (max-width: 760px) {
+    .short { display: block; padding-top: 16px; }
+    .updates, .short-p { display: none; }
+    .short-rows { display: block; }
+    .short-foot .chk { display: block; }
+  }
+  /* the phone rows: each one block link to its chart page, about 85px tall */
+  .rkey { display: flex; flex-wrap: wrap; gap: 2px 12px; margin: 2px 0 2px; font-size: 12.5px; color: var(--ink-2); }
+  .rkey span, .hkey span { display: inline-flex; align-items: center; gap: 5px; }
+  .rkey span { white-space: nowrap; }
+  /* under 340px the key takes two lines: its four labels need about 310px */
+  .rkey svg, .hkey svg { flex: none; }
+  .srows { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--grid); }
+  .srows li { border-bottom: 1px solid var(--grid); }
+  a.srow { display: block; padding: 10px 0; color: inherit; text-decoration: none; }
+  .srow .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .srow .nm { font-size: 16px; font-weight: 600; text-decoration: underline; text-decoration-color: var(--frame); text-underline-offset: 3px; }
+  a.srow:hover .nm { text-decoration-color: var(--ink); }
+  .srow .rd { white-space: nowrap; }
+  .srow .rv { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+  .srow .rp { font-size: 13.5px; color: var(--muted); margin-left: 4px; }
+  .srow .mini { margin: 4px 0 2px; }
+  .srow .mini svg { display: block; width: 100%; height: 16px; overflow: visible; }
+  .srow .cl { display: block; font-size: 14px; color: var(--ink-2); line-height: 1.4; }
+  /* the home page's strips name the median dotted and the 2015–19 average dashed, as its keys draw them */
+  .v-home .mini .mid, .v-home .strip .mid { stroke-dasharray: 1.5 2; }
+  .v-home .mini .avg, .v-home .strip .avg { stroke-dasharray: 3 2.5; }
+
+  /* Six numbers for a household: tile parts on a card, three to a row on desktop */
+  .hkey { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; margin: 0 0 12px; font-size: 13.5px; color: var(--ink-2); }
+  .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  @media (max-width: 999px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 760px) { .cards { grid-template-columns: minmax(0, 1fr); } }
+  .card { display: flex; flex-direction: column; min-width: 0; background: var(--surface); border: 1px solid var(--frame); border-radius: 6px; padding: 18px 18px 14px; }
+  .card .ch { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .card h3 { margin: 0; font-size: 19px; font-weight: 700; line-height: 1.25; }
+  .card h3 a { color: inherit; text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 4px; }
+  .card h3 a:hover { text-decoration-color: var(--ink); }
+  .card .per { font-size: 13.5px; color: var(--muted); white-space: nowrap; }
+  .card .what { margin: 2px 0 0; font-size: 13.5px; color: var(--ink-2); }
+  .card .value { margin: 10px 0 0; font-size: 40px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .card .strip { margin: 12px 0 2px; }
+  .card .context { margin: 4px 0 10px; }
+  .card .asch { margin: 0 0 10px; font-size: 13.5px; color: var(--ink-2); }
+  .card a.full { align-self: flex-start; margin-top: auto; display: inline-flex; align-items: center; min-height: 36px; padding: 4px 11px; font-size: 13.5px; line-height: 1.3; }
+
+  /* Your situation: six cells in the index rows' style, ochre links, three columns (two on phones) */
+  .paths { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 16px; margin: 0; padding: 0 12px; list-style: none; }
+  .paths li { border-bottom: 1px solid var(--grid); }
+  .paths a.wf { display: flex; min-height: 44px; padding: 4px 0; line-height: 1.3; }
+  @media (max-width: 760px) { .paths { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  /* All 28 numbers: an intro line with the ochre link at the right, then a framed panel of group bands and rows */
+  .allintro { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0 20px; margin: 0 0 8px; }
+  .allintro p { margin: 0; font-size: 14px; color: var(--ink-2); }
+  .ipanel { background: var(--surface); border: 1px solid var(--frame); border-radius: 6px; padding: 14px 18px 18px; }
+  .igrp + .igrp { margin-top: 14px; }
+  .igrp h3 { margin: 0; padding: 5px 10px; background: var(--hairline); border-radius: 3px; font-size: 13.5px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: 0.07em; }
+  .igrp ul { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 16px; margin: 0; padding: 0; list-style: none; }
+  @media (max-width: 999px) { .igrp ul { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 760px) { .igrp ul { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ipanel { padding: 12px 12px 14px; } }
+  .igrp li { border-bottom: 1px solid var(--grid); }
+  .igrp a { display: flex; flex-direction: column; justify-content: center; min-height: 52px; padding: 6px 0; color: var(--ink); text-decoration: none; }
+  .igrp .n { font-size: 14.5px; line-height: 1.3; text-decoration: underline; text-decoration-color: var(--frame); text-underline-offset: 3px; }
+  .igrp a:hover .n { text-decoration-color: var(--ink); }
+  .igrp .v { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .igrp .v .p { color: var(--muted); }
+
+  /* the lead on the home page: on the page background, after the index */
+  .h-lead .lead { margin: 0; }
+  /* the home page's footer: the release list (phones), two links, the license line */
+  /* the home page's reading guide (Nov 6): the full view's own paragraphs, trimmed to what the home page shows */
+  .home-guide { padding-top: 30px; scroll-margin-top: 8px; }
+  .guide-text { max-width: calc(36em + 24px); font-size: 15px; color: var(--ink-2); }
+  .guide-text p { margin: 0 0 10px; }
+  .guide-text strong { color: var(--ink); font-weight: 600; }
+  .guide-text a { color: var(--ink-2); }
+  @media print { .home-guide { break-before: page; } }
+  .home-foot { padding-top: 28px; padding-bottom: 36px; font-size: 13.5px; color: var(--ink-2); line-height: 1.6; }
+  .home-foot .frel { display: none; max-width: 22rem; margin: 0 0 10px; }
+  .home-foot .frel .lbl { margin: 0 0 2px; }
+  .home-foot .links { margin: 0; }
+  .home-foot .links a { display: inline-block; padding: 12px 0; color: var(--ink-2); }
+  .home-foot .links .sep { margin: 0 6px; color: var(--muted); }
+  .home-foot .lic { margin: 0; }
+  @media (max-width: 760px) { .home-foot .frel { display: block; } }
+  .home-foot.nosum .frel { display: block; }
+  .v-home .signup-wrap { padding-top: 28px; padding-bottom: 0; }
+  @media print { .htop, .short-rows, .home-foot .frel { display: none !important; } }
+
   /* At a glance: every number on one screen (left out with ?view=tiles) ---- */
   .glance { padding: 24px 0 8px; }
   .glance .ghead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px; margin: 0 0 4px; }
@@ -341,7 +496,7 @@
   /* Tile ------------------------------------------------------------------ */
   .tile {
     background: var(--surface);
-    border: 1px solid var(--hairline);
+    border: 1px solid var(--frame);
     border-radius: 6px;
     padding: 18px 18px 14px;
     min-width: 0;
@@ -378,8 +533,8 @@
   /* Chart ----------------------------------------------------------------- */
   .chart-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin: 18px 0 4px; }
   .chart-head .range-title { font-size: 13.5px; }
-  .chart-head .full { display: inline-block; padding: 3px 11px; border: 1px solid var(--full-line); border-radius: 4px; background: var(--series-wash); color: var(--full-ink); font-weight: 600; text-decoration: none; line-height: 1.5; }
-  .chart-head .full:hover { background: var(--full-ink); border-color: var(--full-ink); color: var(--surface); }
+  a.full { display: inline-block; padding: 3px 11px; border: 1px solid var(--full-line); border-radius: 4px; background: var(--series-wash); color: var(--full-ink); font-weight: 600; text-decoration: none; line-height: 1.5; }
+  a.full:hover { background: var(--full-ink); border-color: var(--full-ink); color: var(--surface); }
   .ranges { display: inline-flex; border: 1px solid var(--hairline); border-radius: 4px; overflow: hidden; }
   .ranges button {
     background: transparent; border: 0; padding: 3px 9px; font-size: 13.5px; cursor: pointer; color: var(--ink-2); white-space: nowrap;
@@ -445,7 +600,7 @@
   @media print {
     :root { --page: #fff; --surface: #fff; }
     body { background: #fff; }
-    .secnav, .masthead .site-link, .ranges, .chart-head .full, details.table, .tip, .banner, .view-switch, .featured, .tile-more > summary { display: none !important; }
+    .secnav, .site-menu, .ranges, a.full, .htop, details.table, .tip, .banner, .view-switch, .featured, .tile-more > summary { display: none !important; }
     .glance { break-inside: avoid; }
     .masthead .updated .htr, .masthead .coming, .to-glance, .skip { display: none !important; }
     .tile { break-inside: avoid; }
@@ -461,13 +616,13 @@
 
 <header class="masthead" id="top">
   <div class="wrap">
-    <div class="title-row"><h1 class="brand"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M25 14H15V50H25"/><path d="M39 14H49V50H39"/><circle cx="32" cy="32" r="8.5"/></svg><span>Economy <span class="bl">in Context</span><span aria-hidden="true">.</span></span></h1><span class="site-links"><a class="site-link" href="articles/">Articles</a><a class="site-link" href="articles/about.html">About</a></span></div>
-    <p class="tagline">The main numbers on the U.S. economy, each shown against its own history, so you can see what is high, what is low and what is normal.</p>
-    <p class="updated" id="updated"></p>
-    <p class="coming" id="coming" hidden></p>
+    <div class="title-row"><h1 class="brand" id="brand"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M25 14H15V50H25"/><path d="M39 14H49V50H39"/><circle cx="32" cy="32" r="8.5"/></svg><span>Economy <span class="bl">in Context</span><span aria-hidden="true">.</span></span></h1><nav class="site-menu" aria-label="Site"><a href="?view=all" id="menu-numbers">The numbers</a><a href="./#your-situation">Your situation</a><a href="articles/">Articles</a><a href="articles/about.html">About</a></nav></div>
+    <p class="tagline">The main numbers on the U.S. economy, each shown against its own history.</p>
+    <p class="updated full-only" id="updated"></p>
+    <p class="coming full-only" id="coming" hidden></p>
   </div>
 </header>
-<nav class="secnav" aria-label="On this page"><div class="wrap"><span class="secnav-label" aria-hidden="true">On this page</span><a class="to-top" href="#top" aria-label="Back to the top of the page">↑ Top</a><ul class="sections-nav" id="nav"></ul></div></nav>
+<nav class="secnav full-only" aria-label="On this page"><div class="wrap"><span class="secnav-label" aria-hidden="true">On this page</span><a class="to-top" href="#top" aria-label="Back to the top of the page">↑ Top</a><ul class="sections-nav" id="nav"></ul></div></nav>
 
 <main class="wrap" id="main">
   <p class="status" id="status" role="status">Loading the latest figures…</p>
@@ -486,7 +641,26 @@
   </section>
 </div>
 
-<footer class="about">
+<section class="wrap home-guide home-only" id="reading-guide" aria-labelledby="guide-h">
+  <div class="band"><h2 id="guide-h">How to read this page</h2></div>
+  <div class="in-band guide-text">
+    <p><strong>The big number</strong> is the latest official reading. The date beside it is the period it describes, which is usually a few weeks behind today, because that is how long the agencies take to count.</p>
+    <p><strong>The bar underneath</strong> ranks that reading against everything the indicator has done since records began. It spans the typical range, the middle 90 percent of that history, and the dot sits at the reading's rank: halfway along, at the small notch, means half of all past readings were lower, which is what the sentence under it says in words. That middle reading is the median, and the label above the notch gives it. A dot near either end means today is unusual; a dot in the middle means it is not, whatever the headlines say. A hollow dot pinned at either end, with a gray arrow pointing outward, means the reading is outside the typical range altogether, which is rarer still. The numbers at the ends are the readings at the edges of that middle 90 percent. Because the bar shows rank rather than amount, the same distance along it can stand for a small change in one place and a large one in another.</p>
+    <p><strong>The 2015–19 average</strong> is the last five full years before the pandemic. It is not a target, just a reasonable stand-in for what "normal" felt like recently. Its tick on the bar sits at that average's own rank in the history.</p>
+    <p><strong>Price cards</strong> show prices as charged at the store and the pump, but compare them with the past after taking out inflation, because a raw price almost always sets a record eventually. Their typical range and 2015–19 average are in today's dollars.</p>
+    <p><strong>Revisions.</strong> Agencies revise their numbers as more data comes in, sometimes substantially. This page always shows the current figures, so a month's reading here can differ from the headline that was reported at the time.</p>
+    <p id="attribution-home"></p>
+    <p><a href="articles/about.html">About this site, where the numbers come from, and every correction →</a></p>
+  </div>
+  <p class="htop"><a class="wf" href="#top" aria-label="Back to the top of the page">↑ Top</a></p>
+</section>
+
+<footer class="wrap home-foot home-only" id="home-foot">
+  <div class="frel" id="frel" hidden></div>
+  <p class="links"><a href="articles/how-this-site-is-paid-for.html">How this site is paid for</a><span class="sep" aria-hidden="true">·</span><a href="articles/about.html">About this site</a></p>
+  <p class="lic">Charts and writing are free to reuse under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Data is credited to its agency on every chart.</p>
+</footer>
+<footer class="about full-only">
   <div class="wrap">
     <h2 id="how-to-read">How to read this page</h2>
     <p><strong>The big number</strong> is the latest official reading. The date beside it is the period it describes, which is usually a few weeks behind today, because that is how long the agencies take to count.</p>
@@ -497,7 +671,7 @@
     <p><strong>The 2015–19 average</strong> is the last five full years before the pandemic. It is not a target, just a reasonable stand-in for what "normal" felt like recently. Its tick on the bar sits at that average's own rank in the history.</p>
     <p><strong>What things cost</strong> shows prices as charged at the store and the pump, but compares them with the past after taking out inflation, because a raw price almost always sets a record eventually. Their typical range and 2015–19 average are in today's dollars; the chart and the year-ago figure are the prices people actually paid.</p>
     <p><strong>The chart</strong> shows the full history, with recessions shaded as dated by the National Bureau of Economic Research. Use the buttons to zoom in.</p>
-    <p><strong>Add context</strong> opens one indicator at full size, with context you can turn on: reference lines such as the Fed's target, companion series such as PCE inflation or the U-6 rate, and bands showing who held the presidency and Congress, who chaired the Fed, and when major events happened. The main page stays plain on purpose; the context is there for readers who want it, each piece with its source and selection rule.</p>
+    <p><strong>See the chart</strong> opens one indicator at full size, with context you can turn on: reference lines such as the Fed's target, companion series such as PCE inflation or the U-6 rate, and bands showing who held the presidency and Congress, who chaired the Fed, and when major events happened. The main page stays plain on purpose; the context is there for readers who want it, each piece with its source and selection rule.</p>
     <p><strong>Revisions.</strong> Agencies revise their numbers as more data comes in, sometimes substantially. This page always shows the current figures, so a month's reading here can differ from the headline that was reported at the time.</p>
     <p><strong>Articles</strong> explain each number in plain words, follow the numbers to five kinds of household, and take up what is argued about. Each number links to its own explainer, and all of them are linked from the top of the page.</p>
     <p id="attribution"></p>
@@ -518,6 +692,9 @@
   ];
   const DEFAULT_RANGE = '25y';
   const DESKTOP = window.matchMedia('(min-width: 761px)');
+  const HOME = document.documentElement.classList.contains('v-home');   // set in the head: the home page, or the full almanac
+  // the fixed line under every prompt on the Make your own chart card (the same words in tools/build_articles.py)
+  const MAKE_YOUR_OWN = 'Add a recession, a president or another line, then copy it into a slide, a paper or a newsletter. Free to use with credit.';
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -800,6 +977,12 @@
     return g;
   }
 
+  // The button to a chart page, on tiles and home cards (Nov 6, was "Add context"): it names what the chart page adds
+  // that the tile does not. Its accessible name keeps the visible words and adds the indicator's name.
+  function seeChart(t) {
+    return el('a', { class: 'full', href: 'chart/' + t.id + '/' }, [el('span', { text: 'See the chart: presidents, the Fed, events →' }), el('span', { class: 'sr-only', text: ' (' + t.title + ')' })]);
+  }
+
   // ---- chart --------------------------------------------------------------
   function niceTicks(lo, hi, count) {
     const span = hi - lo || 1;
@@ -965,7 +1148,7 @@
 
     const head = el('div', { class: 'chart-head' });
     // the button names what the chart page adds that the tile does not (the tile already has the chart itself)
-    head.appendChild(el('span', { class: 'range-title' }, [el('a', { class: 'full', href: 'chart/' + t.id + '/', text: 'Add context: presidents, the Fed, events →', 'aria-label': 'Add context to ' + t.title + ': presidents, the Fed, events' })]));
+    head.appendChild(el('span', { class: 'range-title' }, [seeChart(t)]));
     const ctl = el('div', { class: 'ranges', role: 'group', 'aria-label': 'Chart range' });
     // a series shorter than 25 years has one view, so no buttons
     if (yearsBetween(obs[0][0], obs[obs.length - 1][0]) < 24.5) range = 'all';
@@ -1100,45 +1283,206 @@
     return out.slice(0, COMING_MAX);
   }
   function fmtDay(s) { const dt = parseDate(s); return DAYS[dt.getUTCDay()] + ', ' + MONTHS[dt.getUTCMonth()] + ' ' + dt.getUTCDate(); }
+  // The releases as a list, one per line with the date at the right (the home page's Updates box and its phone footer)
+  function releaseList(items) {
+    return el('ul', { class: 'rels' }, items.map(it => el('li', {}, [el('a', { href: it.url, text: it.label }), el('span', { class: 'when', text: fmtDay(it.date) })])));
+  }
   // Fill the masthead's Coming up line, or hide it when there is nothing to say. `today` is the reader's own date.
   function renderComing(calendar) {
     const p = document.getElementById('coming');
-    if (!p) return;
+    if (!p) return [];
     const now = new Date();
     const today = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
     const items = comingUp(calendar, today);
     p.innerHTML = '';
-    if (!items.length) { p.hidden = true; return; }
+    if (!items.length) { p.hidden = true; return items; }
     p.appendChild(el('span', { class: 'rel-h' }, ['Next releases', el('span', { class: 'sep', text: ': ' })]));
     items.forEach((it, i) => {
       if (i) p.appendChild(el('span', { class: 'sep', text: ' · ' }));
       p.appendChild(el('span', { class: 'rel' }, [el('a', { href: it.url, text: it.label }), el('span', { class: 'when', text: ' ' + fmtDay(it.date) })]));
     });
     p.hidden = false;
+    return items;
   }
 
-  // ---- page ---------------------------------------------------------------
-  function render(data) {
+
+  // ---- the home page (Nov 6) -------------------------------------------------
+  // Everything on it comes from the same functions as the tiles: the value and period, the strip (placed by rank, price
+  // tiles in today's dollars, a hollow dot outside the range), the sentence. The In short words come from fetch_fred.py
+  // (summaries.home); without them there is no In short, and the rest of the page still draws.
+  const HOME_CARDS = ['cpi', 'pay', 'unemployment', 'mortgage', 'gas', 'rent'];
+  // the card's "what it measures" line, shorter than the tile's subtitle; a tile not listed here uses its subtitle
+  const HOME_WHAT = {
+    cpi: 'Prices, change from a year ago', pay: 'Average pay, change from a year ago',
+    unemployment: 'Share of the labor force looking for work', mortgage: 'Average rate on a new fixed loan',
+    gas: 'Regular, average price per gallon', rent: 'Rents, change from a year ago',
+  };
+  // the household paths, in the order the articles index lists them
+  const HOME_PATHS = [
+    ['Renting', 'articles/you-rent.html'], ['Owning with a mortgage', 'articles/you-own-with-a-fixed-mortgage.html'],
+    ['Working for a wage', 'articles/you-work-for-a-wage.html'], ['Looking for work', 'articles/you-are-looking-for-work.html'],
+    ['Retired on a fixed income', 'articles/you-are-retired-on-a-fixed-income.html'], ['Running a small business', 'articles/you-run-a-small-business.html'],
+  ];
+  // a reading's value and its date, as the tile and the overview row print them
+  function reading(t) {
+    const c = t.context;
+    return t.headline ? { value: t.headline.value, date: t.headline.date, freq: 'd' } : { value: c.current.value, date: c.current.date, freq: pf(t) };
+  }
+  // the short period for rows and the index: "Sep", "Oct 31", "Q3", "FY 2025"; the year added when it is not the data's year
+  function shortPeriod(r, year) {
+    const dt = parseDate(r.date), y = dt.getUTCFullYear(), m = dt.getUTCMonth(), yr = y !== year ? ' ' + y : '';
+    if (r.freq === 'a' || r.freq === 'y') return fmtPeriod(r.date, r.freq);
+    if (r.freq === 'q') return 'Q' + (Math.floor(m / 3) + 1) + yr;
+    if (r.freq === 'm') return MONTHS[m] + yr;
+    return MONTHS[m] + ' ' + dt.getUTCDate() + (y !== year ? ', ' + y : '');
+  }
+  // where the reading sits, for the rows' accessible names: the strip's own words without the repeated reading
+  function rangeWords(t) {
+    const c = compareContext(t), d = t.display, where = stripState(t);
+    let s = (where === 'within' ? 'Within' : where === 'below' ? 'Below' : 'Above') + ' its typical range of ' + fmtValue(c.typical_low, d) + ' to ' + fmtValue(c.typical_high, d) + (adjusted(t) ? ' in today’s dollars' : '') + '.';
+    if (c.baseline_2015_19 != null) s += ' 2015–19 average ' + fmtValue(c.baseline_2015_19, d) + '.';
+    return s;
+  }
+  const keySvg = (w, inner) => '<svg width="' + w + '" height="16" viewBox="0 0 ' + w + ' 16" aria-hidden="true" focusable="false">' + inner + '</svg>';
+  function stripKey(cls, words, out) {
+    const k = el('div', { class: cls });
+    k.appendChild(el('span', { html: keySvg(12, '<circle cx="6" cy="8" r="5.5" fill="var(--series)"/>') + words[0] }));
+    k.appendChild(el('span', { html: keySvg(18, '<line x1="2" x2="16" y1="8" y2="8" stroke="var(--range)" stroke-width="5" stroke-linecap="round"/>') + words[1] }));
+    k.appendChild(el('span', { html: keySvg(6, '<line x1="3" x2="3" y1="3" y2="13" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="1.5 2"/>') + words[2] }));
+    k.appendChild(el('span', { html: keySvg(6, '<line x1="3" x2="3" y1="1" y2="15" stroke="var(--ink-2)" stroke-width="2" stroke-dasharray="3 2.5"/>') + words[3] }));
+    if (out) k.appendChild(el('span', { html: keySvg(26, '<circle cx="9" cy="8" r="4.5" fill="var(--surface)" stroke="var(--series)" stroke-width="2.5"/><path d="M26,8 l-8,-5.5 l0,11 z" fill="var(--ink-2)"/>') + words[4] }));
+    return k;
+  }
+  function topLink() { return el('p', { class: 'htop' }, [el('a', { class: 'wf', href: '#top', 'aria-label': 'Back to the top of the page', text: '↑ Top' })]); }
+  function band(id, title, sub) {
+    return el('div', { class: 'band' }, [el('h2', { id, text: title })].concat(sub ? [el('span', { class: 'bandsub', text: sub })] : []));
+  }
+
+  function renderHome(data, sections, releases, lead) {
     const main = document.getElementById('main');
-    main.innerHTML = '';
-    const gen = new Date(data.generated);
-    const upd = document.getElementById('updated');
-    upd.textContent = 'New figures last checked ' + MONTHS_LONG[gen.getMonth()] + ' ' + gen.getDate() + ', ' + gen.getFullYear() + ' · ';
-    upd.appendChild(el('span', { class: 'nw', text: 'data from FRED' }));   // breaks before it, not inside it
-    upd.appendChild(el('span', { class: 'htr' }, [' · ', el('a', { href: '#how-to-read', text: 'How to read this page ↓' })]));
-    renderComing(data.calendar);                           // the Coming up line under it (fail-soft: no calendar, no line)
-    // the provenance sentence lives in the footer; the masthead keeps a short Updated line
-    document.getElementById('attribution').textContent = data.attribution + ' Figures refresh automatically as agencies publish.';
-    if (data.sample) {
-      const b = document.getElementById('banner');
-      b.textContent = 'Sample data. These are placeholder figures for layout only; the first scheduled refresh replaces them with real ones.';
-      b.hidden = false;
+    const T = {}; data.tiles.forEach(t => { T[t.id] = t; });
+    const gen = new Date(data.generated), year = gen.getUTCFullYear();
+    const checked = () => el('span', {}, ['Checked for new figures ', el('span', { class: 'nw', text: MONTHS[gen.getMonth()] + ' ' + gen.getDate() + ', ' + gen.getFullYear() }), ' · ', el('span', { class: 'nw', text: 'data from FRED' })]);
+    const htr = () => el('a', { class: 'wf', href: '#reading-guide', text: 'How to read this page' });
+
+    // In short (+ the Updates box on desktop)
+    const sum = data.summaries && data.summaries.home;
+    const para = sum && Array.isArray(sum.paragraph) ? sum.paragraph : null;
+    const rows = sum && sum.rows && typeof sum.rows === 'object' ? sum.rows : {};
+    const order = (sum && Array.isArray(sum.order) ? sum.order : []).filter(id => T[id] && typeof rows[id] === 'string');
+    const sec = el('section', { class: 'short', 'aria-labelledby': 'short-h' });
+    const left = el('div', { class: 'short-main' });
+    sec.appendChild(left);
+    if (para && para.length) {
+      left.appendChild(el('div', { class: 'lblrow' }, [el('h2', { class: 'lbl', id: 'short-h', text: 'In short' }), htr()]));
+      const p = el('p', { class: 'short-p' });
+      para.forEach(seg => {
+        if (typeof seg === 'string') p.appendChild(document.createTextNode(seg));
+        else if (seg && seg.t && T[seg.id]) p.appendChild(el('a', { href: 'chart/' + seg.id + '/', 'aria-label': seg.name || seg.t, text: seg.t }));
+        else if (seg && seg.t) p.appendChild(el('strong', { text: seg.t }));
+      });
+      left.appendChild(p);
+      // phones: one block link per reading, in the summary's order
+      if (order.length) {
+        const box = el('div', { class: 'short-rows' });
+        box.appendChild(stripKey('rkey', ['latest', 'typical range', 'median', '2015–19 avg', 'outside'], order.some(id => stripState(T[id]) !== 'within')));
+        const ul = el('ul', { class: 'srows' });
+        order.forEach(id => {
+          const t = T[id], r = reading(t);
+          ul.appendChild(el('li', {}, [el('a', { class: 'srow', href: 'chart/' + id + '/' }, [
+            el('span', { class: 'top' }, [el('span', { class: 'nm', text: t.title }), el('span', { class: 'rd' }, [el('span', { class: 'rv', text: fmtValue(r.value, t.display) }), el('span', { class: 'rp', text: shortPeriod(r, year) })])]),
+            miniStrip(t),
+            el('span', { class: 'cl', text: rows[id] }),
+            el('span', { class: 'sr-only', text: ' ' + rangeWords(t) }),
+          ])]));
+        });
+        box.appendChild(ul);
+        left.appendChild(box);
+      }
+      left.appendChild(el('p', { class: 'short-foot' }, ['Written automatically from the readings below, in the same words every time.', el('span', { class: 'chk' }, [checked()])]));
+    } else {
+      // no summary this refresh: no In short, just the date and the way to the reading guide
+      sec.setAttribute('aria-label', 'Updates');
+      sec.removeAttribute('aria-labelledby');
+      // without the box beside it, the release list moves to the footer at every width
+      left.appendChild(el('div', { class: 'lblrow' }, [el('p', { class: 'short-foot nosum' }, [checked()]), htr()]));
+      sec.classList.add('nosum');
+      document.getElementById('home-foot').classList.add('nosum');
     }
-    const sections = [];
-    data.tiles.forEach(t => { if (!sections.includes(t.section)) sections.push(t.section); });
-    const nav = document.getElementById('nav');
+    // Updates: desktop only, beside In short
+    const upd = el('aside', { class: 'updates', 'aria-labelledby': 'upd-h' }, [el('h2', { class: 'lbl', id: 'upd-h', text: 'Updates' }), el('p', {}, [checked()])]);
+    if (releases.length) { upd.appendChild(el('p', { class: 'rh', text: 'Next releases' })); upd.appendChild(releaseList(releases)); }
+    if (para && para.length) sec.appendChild(upd);
+    main.appendChild(sec);
+
+    // Six numbers for a household
+    const six = el('section', { class: 'h-sec', id: 'numbers', 'aria-labelledby': 'six-h' });
+    six.appendChild(band('six-h', 'Six numbers for a household'));
+    const cardTiles = HOME_CARDS.map(id => T[id]).filter(Boolean);
+    six.appendChild(stripKey('hkey in-band', ['Latest reading', 'Typical range: the middle 90% of its history', 'Median, always the middle', '2015–19 average', 'Outside the range'], cardTiles.some(t => stripState(t) !== 'within')));
+    const cards = el('div', { class: 'cards' });
+    cardTiles.forEach(t => {
+      const r = reading(t), card = el('article', { class: 'card', id: 'c-' + t.id });
+      card.appendChild(el('div', { class: 'ch' }, [el('h3', {}, [el('a', { href: 'chart/' + t.id + '/', text: t.title })]), el('span', { class: 'per', text: fmtPeriod(r.date, r.freq) })]));
+      card.appendChild(el('p', { class: 'what', text: HOME_WHAT[t.id] || t.subtitle }));
+      card.appendChild(el('p', { class: 'value', text: fmtValue(r.value, t.display) }));
+      card.appendChild(buildStrip(t));
+      card.appendChild(el('p', { class: 'context', text: contextSentence(t) }));
+      if (adjusted(t)) card.appendChild(el('p', { class: 'asch', text: 'Price as charged; the range is in today’s dollars.' }));
+      card.appendChild(seeChart(t));
+      cards.appendChild(card);
+    });
+    six.appendChild(cards);
+    main.appendChild(six);
+    main.appendChild(topLink());
+
+    // Your situation
+    const paths = el('section', { class: 'h-sec', id: 'your-situation', 'aria-labelledby': 'paths-h' });
+    paths.appendChild(band('paths-h', 'Your situation', 'Pick the one closest to yours'));
+    paths.appendChild(el('ul', { class: 'paths' }, HOME_PATHS.map(([label, url]) => el('li', {}, [el('a', { class: 'wf', href: url, text: label })]))));
+    main.appendChild(paths);
+    main.appendChild(topLink());
+
+    // All the numbers: one row each, grouped as on the almanac, each a link to its tile on ?view=all
+    const n = data.tiles.length;
+    const all = el('section', { class: 'h-sec', id: 'all-numbers', 'aria-labelledby': 'all-h' });
+    all.appendChild(band('all-h', 'All ' + n + ' numbers'));
+    all.appendChild(el('div', { class: 'allintro in-band' }, [el('p', { text: 'Heard a number on the news? Find it here.' }), el('a', { class: 'wf', href: '?view=all', text: 'See all ' + n + ' on one page, with charts →' })]));
+    const panel = el('div', { class: 'ipanel' });
+    sections.forEach(s => {
+      const g = el('div', { class: 'igrp' });
+      const gid = 'g-' + s.toLowerCase().replace(/[^a-z]+/g, '-');
+      g.appendChild(el('h3', { id: gid, text: s }));
+      g.appendChild(el('ul', { 'aria-labelledby': gid }, data.tiles.filter(t => t.section === s).map(t => {
+        const r = reading(t);
+        return el('li', {}, [el('a', { href: '?view=all#i-' + t.id }, [el('span', { class: 'n', text: t.title }), el('span', { class: 'v' }, [fmtValue(r.value, t.display) + ' ', el('span', { class: 'p', text: '· ' + shortPeriod(r, year) })])])]);
+      })));
+      panel.appendChild(g);
+    });
+    all.appendChild(panel);
+    main.appendChild(all);
+    main.appendChild(topLink());
+
+    // Featured and Make your own chart
+    if (lead.length) {
+      main.appendChild(el('section', { class: 'h-sec h-lead', 'aria-label': 'Featured, and a chart to make your own' }, [el('div', { class: 'lead' }, lead)]));
+      main.appendChild(topLink());
+    }
+
+    // the footer's release list (phones)
+    const fr = document.getElementById('frel');
+    if (fr && releases.length) { fr.innerHTML = ''; fr.appendChild(el('p', { class: 'lbl', text: 'Next releases' })); fr.appendChild(releaseList(releases)); fr.hidden = false; }
+
+    if (location.hash.length > 1) {
+      const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+      if (target) requestAnimationFrame(() => target.scrollIntoView());
+    }
+  }
+
+  // ---- the lead -------------------------------------------------------------
+  function leadCards(data) {
     // The lead: two cards side by side (stacked on phones), above everything else in main. Left, the featured article or
-    // series (explainers.json, written by the articles build) on a teal card; right, Chart to try on the sheet. Each ends
+    // series (explainers.json, written by the articles build) on a teal card; right, Make your own chart on the sheet. Each ends
     // with a picture (inline SVG the build draws from the site's own data) that repeats the title's link.
     const pic = (svg, url) => typeof svg === 'string' && svg.startsWith('<svg class="thumb"') ? el('a', { class: 'cthumb', href: url, 'aria-hidden': 'true', tabindex: '-1', html: svg }) : null;
     const lead = [];
@@ -1154,22 +1498,53 @@
       const thumb = pic(f.svg, f.url);
       lead.push(el('aside', { class: 'featured', 'aria-label': isSeries ? 'Featured series' : 'Featured article' }, thumb ? [text, thumb] : [text]));
     }
-    // Chart to try (explainers.json chart_prompt): a sentence and a link to a ready-made chart view
+    // Make your own chart (was Chart to try; explainers.json chart_prompt): a sentence and a link to a ready-made chart view
     const cp = data.chartPrompt;
     if (cp && cp.text && cp.url) {
       const text = el('div', { class: 'ctext' },
-        [el('span', { class: 'flabel', text: 'Chart to try' }), el('a', { class: 'ftitle', href: cp.url, text: cp.title || cp.link || 'See the chart' }), ' →',
-         el('p', { class: 'fdek', text: cp.text })]);
+        [el('span', { class: 'flabel', text: 'Make your own chart' }), el('a', { class: 'ftitle', href: cp.url, text: cp.title || cp.link || 'See the chart' }), ' →',
+         el('p', { class: 'fdek', text: cp.text }), el('p', { class: 'fhow', text: MAKE_YOUR_OWN })]);
       const thumb = pic(cp.svg, cp.url);
-      lead.push(el('aside', { class: 'chart-try', 'aria-label': 'Chart to try' }, thumb ? [text, thumb] : [text]));
+      lead.push(el('aside', { class: 'chart-try', 'aria-label': 'Make your own chart' }, thumb ? [text, thumb] : [text]));
     }
+    return lead;
+  }
+
+  // ---- page ---------------------------------------------------------------
+  function render(data) {
+    const main = document.getElementById('main');
+    main.innerHTML = '';
+    const gen = new Date(data.generated);
+    const upd = document.getElementById('updated');
+    upd.textContent = 'New figures last checked ' + MONTHS_LONG[gen.getMonth()] + ' ' + gen.getDate() + ', ' + gen.getFullYear() + ' · ';
+    upd.appendChild(el('span', { class: 'nw', text: 'data from FRED' }));   // breaks before it, not inside it
+    upd.appendChild(el('span', { class: 'htr' }, [' · ', el('a', { href: '#how-to-read', text: 'How to read this page ↓' })]));
+    const releases = renderComing(data.calendar);          // the Coming up line under it (fail-soft: no calendar, no line)
+    // the provenance sentence lives in the footer; the masthead keeps a short Updated line
+    document.getElementById('attribution').textContent = data.attribution + ' Figures refresh automatically as agencies publish.';
+    const ah = document.getElementById('attribution-home');   // the same sentence in the home page's reading guide
+    if (ah) ah.textContent = document.getElementById('attribution').textContent;
+    if (data.sample) {
+      const b = document.getElementById('banner');
+      b.textContent = 'Sample data. These are placeholder figures for layout only; the first scheduled refresh replaces them with real ones.';
+      b.hidden = false;
+    }
+    const sections = [];
+    data.tiles.forEach(t => { if (!sections.includes(t.section)) sections.push(t.section); });
+    if (HOME) { renderHome(data, sections, releases, leadCards(data)); return; }
+    // the full almanac: "The numbers" in the menu is the page you are on, and the lockup leads back to the home page
+    const mn = document.getElementById('menu-numbers'); if (mn) mn.setAttribute('aria-current', 'page');
+    const brand = document.getElementById('brand');
+    if (brand && !brand.querySelector('a')) { const home = el('a', { class: 'home', href: './' }); while (brand.firstChild) home.appendChild(brand.firstChild); brand.appendChild(home); }
+    const nav = document.getElementById('nav');
+    const lead = leadCards(data);
     // The summary zone: the lead and the overview on a full-width Sheet band; the detail sections follow on the page
     // background, after a labeled break, so the page reads as a summary, then the numbers in detail
     const zone = el('div', { class: 'summary-zone' });
     if (lead.length) zone.appendChild(el('div', { class: 'lead' }, lead));
     // ?view=tiles is the page as it was before the overview: the tiles alone, with a way back
     const hasGlance = new URLSearchParams(location.search).get('view') !== 'tiles';
-    if (!hasGlance) main.appendChild(el('p', { class: 'view-switch' }, ['Showing the tiles without the overview. ', el('a', { href: './', text: 'Show all the numbers at a glance →' })]));
+    if (!hasGlance) main.appendChild(el('p', { class: 'view-switch' }, ['Showing the tiles without the overview. ', el('a', { href: '?view=all', text: 'Show all the numbers at a glance →' })]));
     else { zone.appendChild(buildGlance(data, sections)); nav.appendChild(el('li', {}, [el('a', { href: '#at-a-glance', text: 'At a glance' })])); }
     if (zone.children.length) main.insertBefore(zone, main.firstChild);
     if (hasGlance) main.appendChild(el('div', { class: 'detail-break', id: 'in-detail' }, [el('h2', { text: 'The numbers in detail' }),

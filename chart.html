@@ -56,6 +56,7 @@
     /* Fed lanes: lighter = easing or expanding, darker = tightening or shrinking; no hue, so no traffic light */
     --era-a: #d8d6cd; --era-b: #c3c1b7; --war: #6e6c66; --qe-up: #d9d6cb; --qe-down: #9f9b90;
     --range: #c4c2b9;
+    --frame: #c4c2b9;   /* the sides of framed boxes (the chart frame), Nov 6: the range bar's gray */
   }
   /* dark colors on screen only: printing from a browser in dark mode stays on the light tokens */
   @media screen and (prefers-color-scheme: dark) {
@@ -68,6 +69,7 @@
       --ref: #a09e97; --dem: #2b4775; --rep: #6e3332; --divided: #2f2f2c; --ind: #6b6a66;
       --era-a: #3a3935; --era-b: #4a4944; --war: #5e5c57; --qe-up: #4a4944; --qe-down: #66645d;
       --range: #45443f;
+      --frame: #45443f;
     }
   }
   * { box-sizing: border-box; }
@@ -162,7 +164,7 @@
   .range-msg:empty { display: none; }
   .custom button { padding: 3px 9px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); font-size: 13.5px; cursor: pointer; }
 
-  .chart { position: relative; background: var(--surface); border: 1px solid var(--hairline); border-radius: 6px; padding: 8px 8px 4px; }
+  .chart { position: relative; background: var(--surface); border: 1px solid var(--frame); border-radius: 6px; padding: 8px 8px 4px; }
   .chart svg { display: block; width: 100%; overflow: visible; }
   .chart .grid-line { stroke: var(--grid); stroke-width: 1; }
   .chart .zero { stroke: var(--muted); stroke-width: 1; }
