@@ -1809,6 +1809,108 @@ for _t in TILES:
         })
 
 # ---------------------------------------------------------------------------
+# FHFA National Mortgage Database (Nov 6): the site's first source outside FRED.
+# A nationally representative 5% sample of all U.S. first-lien mortgages, so it
+# covers Fannie/Freddie, FHA/VA and everything else, unlike the bank-held FRED
+# series. Quarterly from 2002, published about three months after each quarter
+# (Q2 2026 on Sep 30, 2026); the latest two quarters are preliminary and usually
+# revised up. Values are shares of loans by count, to one decimal. The 30-89, 90+
+# and foreclosure categories do not overlap, so 90+ plus foreclosure is the
+# "seriously behind" share. One zip at a stable URL, read with the standard library.
+#
+# Stored as companions with "for": [] (fetched and committed, not drawn anywhere
+# yet). If FHFA can't be reached, the previous run's values are carried forward
+# from data/companions.json with a "stale_since" date, so nothing disappears.
+# FHFA's NMDB terms ask that users cite it with a disclaimer that the analysis is
+# the user's own and not FHFA's; whatever displays these must carry that.
+# ---------------------------------------------------------------------------
+NMDB_FILE = ("https://www.fhfa.gov/document/d/nmdb/"
+             "nmdb-mortgage-performance-statistics-national-census-areas-quarterly.zip")
+NMDB_PAGE = "https://www.fhfa.gov/data/national-mortgage-database-aggregate-statistics"
+NMDB_SERIES = [   # (companion id, FHFA SERIESID, label)
+    ("nmdb_30_89", "P3089DL", "Mortgages 30 to 89 days past due, share of all mortgages (FHFA NMDB)"),
+    ("nmdb_90", "P90DL", "Mortgages 90 or more days past due, share of all mortgages (FHFA NMDB)"),
+    ("nmdb_foreclosure", "PFORECL", "Mortgages in foreclosure, bankruptcy or deed in lieu, share of all mortgages (FHFA NMDB)"),
+    ("nmdb_forbearance", "PFORB", "Mortgages in forbearance, share of all mortgages (FHFA NMDB)"),
+]
+NMDB_PREVIOUS = os.environ.get("NMDB_PREVIOUS", "data/companions.json")   # last committed copy, for carry-forward
+NMDB_UA = "EconomyInContext-data-refresh/1.0 (+https://economyincontext.org)"
+
+
+def nmdb_quarter_date(period):
+    """'2026Q2' -> '2026-04-01', the first month of the quarter, as FRED dates quarterly series."""
+    y, q = period.strip().upper().split("Q")
+    return f"{int(y):04d}-{(int(q) - 1) * 3 + 1:02d}-01"
+
+
+def parse_nmdb(zip_bytes):
+    """{FHFA SERIESID: [(date, value), ...]} for the nation, all mortgages, from the zip's one CSV.
+    Columns are read by header name: FHFA's CSV order has differed from its data dictionary."""
+    import csv, io, zipfile
+    with zipfile.ZipFile(io.BytesIO(zip_bytes)) as z:
+        names = [n for n in z.namelist() if n.lower().endswith(".csv")]
+        if not names:
+            raise RuntimeError("no CSV in the NMDB zip")
+        text = z.read(names[0]).decode("utf-8-sig")
+    want = {code for _, code, _ in NMDB_SERIES}
+    out = {code: [] for code in want}
+    for row in csv.DictReader(io.StringIO(text)):
+        if (row.get("GEOLEVEL") != "National" or row.get("MARKET") != "All Mortgages"
+                or row.get("SERIESID") not in want or row.get("SUPPRESSED", "0").strip() != "0"):
+            continue
+        v = (row.get("VALUE1") or "").strip()
+        if v:
+            out[row["SERIESID"]].append((nmdb_quarter_date(row["PERIOD"]), float(v)))
+    for code in out:
+        out[code].sort()
+    return out
+
+
+def fetch_nmdb():
+    """Companion records for NMDB_SERIES. Never raises: on any failure it returns the previous
+    run's records (marked stale) or nothing, and says so in the log."""
+    try:
+        req = urllib.request.Request(NMDB_FILE, headers={"User-Agent": NMDB_UA})
+        with urllib.request.urlopen(req, timeout=90) as r:
+            body, last_mod = r.read(), r.headers.get("Last-Modified", "")
+        series = parse_nmdb(body)
+        # Sanity checks before anything replaces the committed copy.
+        latest = max((obs[-1][0] for obs in series.values() if obs), default="")
+        for cid, code, _ in NMDB_SERIES:
+            obs = series[code]
+            if code != "PFORB" and len(obs) < 80:          # forbearance only starts in 2019Q4
+                raise RuntimeError(f"{code}: only {len(obs)} quarters")
+            if any(not (0 <= v <= 25) for _, v in obs):
+                raise RuntimeError(f"{code}: value out of range")
+        if latest < (date.today() - timedelta(days=730)).isoformat():
+            raise RuntimeError(f"latest quarter {latest} is over two years old")
+        recs = []
+        for cid, code, label in NMDB_SERIES:
+            recs.append({
+                "id": cid, "label": label, "for": [], "freq": "q",
+                "why": "FHFA National Mortgage Database, national, all mortgages. Fetched for the mortgage tiles (Nov 6); not drawn yet.",
+                "source": {"agency": "Federal Housing Finance Agency", "dataset": "National Mortgage Database (NMDB) aggregate statistics",
+                           "series": code, "url": NMDB_PAGE, "file": NMDB_FILE, "last_modified": last_mod,
+                           "units": "percent of loans (count)", "decimals": 1,
+                           "note": "Latest two quarters are preliminary. Share of active first-lien mortgages at quarter end."},
+                "observations": [[d, v] for d, v in series[code]],
+            })
+        print(f"nmdb            FHFA NMDB: {len(recs)} series through {latest[:7]} (file {last_mod or 'no date'})", flush=True)
+        return recs
+    except Exception as e:
+        print(f"nmdb            FHFA NMDB fetch failed: {e}", file=sys.stderr, flush=True)
+        try:
+            with open(NMDB_PREVIOUS, encoding="utf-8") as f:
+                prev = [c for c in json.load(f).get("companions", []) if str(c.get("id", "")).startswith("nmdb_")]
+        except Exception:
+            prev = []
+        for c in prev:
+            c.setdefault("stale_since", date.today().isoformat())   # set once, so a failing streak doesn't churn commits
+        print(f"nmdb            carried forward {len(prev)} series from {NMDB_PREVIOUS}" if prev
+              else "nmdb            nothing to carry forward", file=sys.stderr, flush=True)
+        return prev
+
+# ---------------------------------------------------------------------------
 # First prints: what each month's figure was when it was first reported, from
 # ALFRED (FRED's vintage archive). History never changes, so it is kept in
 # data/firstprints.json and only missing months are fetched: one request per
@@ -2382,6 +2484,14 @@ def main():
         companions_out.extend(update_first_prints(FIRST_PRINTS_STORE, {t["id"]: t for t in TILES}))
     except Exception as e:                     # belt and braces: never let this stage fail the run
         print(f"first prints skipped: {e}", file=sys.stderr, flush=True)
+
+    # FHFA National Mortgage Database (not FRED). fetch_nmdb() never raises; the extra guard is belt and braces.
+    try:
+        nmdb = fetch_nmdb()
+        companions_out.extend(nmdb)
+        by_id.update({c["id"]: [tuple(o) for o in c["observations"]] for c in nmdb})
+    except Exception as e:
+        print(f"nmdb skipped: {e}", file=sys.stderr, flush=True)
 
     # Extra series for the household line on each tile. Latest value only; fail soft.
     extras = {}
