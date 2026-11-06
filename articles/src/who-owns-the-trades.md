@@ -5,7 +5,7 @@ date: 2026-11-05
 kind: concept
 label: Who owns the trades
 hook: how private equity is buying local HVAC, plumbing and electrical companies, and what is known about the effects
-order: 20
+order: 22
 ---
 
 ## The short version

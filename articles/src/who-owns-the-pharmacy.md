@@ -80,7 +80,7 @@ A town's grocers can at least see the wholesale prices. Pharmacy benefit manager
 
 ## See also
 
-- [The name on the clinic](who-owns-the-vet.html), [the dentist's door](who-owns-the-dentist.html) and [the truck](who-owns-the-trades.html): the private equity roll-ups this page contrasts with, parts 1 to 3 of this series.
+- [The name on the clinic](who-owns-the-vet.html), [the dentist's door](who-owns-the-dentist.html), [the frames](who-owns-eye-care.html) and [the truck](who-owns-the-trades.html): the private equity roll-ups this page contrasts with, parts 1 to 3 and 5 of this series.
 - [Who lobbies on health care](who-lobbies-on-health-care.html): how much pharmacy benefit managers and others spend in Washington.
 - [Who gains and who pays in health care](who-gains-and-who-pays-in-health-care.html): the wider health care money flows.
 

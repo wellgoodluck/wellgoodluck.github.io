@@ -5,7 +5,7 @@ date: 2026-11-05
 kind: concept
 label: Where the money goes
 hook: who invests in private equity, what the managers earn, how it's taxed, and whether it concentrates wealth
-order: 23
+order: 24
 ---
 
 ## The short version
@@ -95,7 +95,7 @@ An orchard's families can see the books and vote out the manager. Investors in a
 ## See also
 
 - [The name on the clinic](who-owns-the-vet.html): part 1 of this series, on veterinary care.
-- [The name on the dentist's door](who-owns-the-dentist.html), [the truck](who-owns-the-trades.html), [over the counter](who-owns-the-pharmacy.html) and [on the box](who-makes-the-equipment.html): parts 2 to 5.
+- [The name on the dentist's door](who-owns-the-dentist.html), [on the frames](who-owns-eye-care.html), [over the counter](who-owns-the-pharmacy.html), [on the truck](who-owns-the-trades.html) and [on the box](who-makes-the-equipment.html): parts 2 to 6.
 - [You run a small business](you-run-a-small-business.html): the numbers that matter most to owners.
 
 ## Sources

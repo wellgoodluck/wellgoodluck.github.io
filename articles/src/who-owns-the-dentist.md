@@ -100,6 +100,7 @@ Diners can see the menu and the prices before they order and can judge the food 
 ## See also
 
 - [The name on the clinic](who-owns-the-vet.html): how the same buying works in veterinary care, part 1 of this series.
+- [The name on the frames](who-owns-eye-care.html): the same buying in eye care, and the company on several sides of the eyewear business, the next part.
 - [The name on the truck](who-owns-the-trades.html): the same pattern in heating, plumbing and electrical work.
 - [Who gains and who pays in health care](who-gains-and-who-pays-in-health-care.html): the wider health care money flows.
 

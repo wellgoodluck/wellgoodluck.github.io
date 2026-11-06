@@ -5,7 +5,7 @@ date: 2026-11-05
 kind: concept
 label: Who makes the equipment
 hook: who owns the brands of air conditioners, furnaces, water heaters and appliances, and what has happened to their prices
-order: 22
+order: 23
 ---
 
 ## The short version
@@ -112,7 +112,7 @@ Cereal costs a few dollars and is bought every week, so a bad choice is cheap to
 
 ## See also
 
-- [The name on the truck](who-owns-the-trades.html): who owns the companies that install and repair this equipment, part 3 of this series.
+- [The name on the truck](who-owns-the-trades.html): who owns the companies that install and repair this equipment, part 5 of this series.
 - [Tariffs, and who pays](tariffs-and-who-pays.html): how tariffs reach prices.
 - [Why everything costs 30% more than it did in 2019](why-everything-costs-30-percent-more.html): the broader price rise these numbers sit inside.
 
