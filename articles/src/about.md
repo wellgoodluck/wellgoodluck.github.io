@@ -2,12 +2,13 @@
 title: About This Site
 dek: What it is, who is behind it, where the numbers come from, how the articles are written, and every correction made so far.
 date: 2026-11-03
+updated: 2026-11-05
 kind: page
 ---
 
 ## What it is
 
-Economy in Context is an almanac of the main numbers on the U.S. economy: jobs, prices, growth, interest rates, housing, the federal budget, trade and what everyday things cost. Each number is shown against its own history, so a reader can see what is high, what is low and what is normal without taking anyone's word for it. The articles explain what the numbers mean for a household, and lay out what is settled and what is argued about.
+Economy in Context is an almanac of the main numbers on the U.S. economy: jobs, prices, growth, interest rates, housing, the federal budget, trade and what everyday things cost. Each number is shown against its own history, so a reader can see what is high, what is low and what is normal without taking anyone's word for it. The articles explain what the numbers mean for a household, and lay out what is settled and what is argued about. The site went up in October 2026.
 
 ## Who is behind it
 
@@ -19,6 +20,17 @@ Every number on the almanac is the official series from the agency that produces
 
 Where the site chooses something, it says so on the page. The 2015–19 average is the comparison because it is the last five full years before the pandemic, not because it is a target. The bar under each number ranks today's reading against the indicator's whole history, so the middle of the bar is always the median. Prices of everyday things are compared with the past after taking out inflation, because a raw price sets a record eventually. Agencies revise their numbers; the site always shows the current figures and keeps the [first prints](what-the-first-print-got-wrong.html) separately. [How to read the almanac](../#how-to-read) covers the rest.
 
+## What's on the almanac, and what isn't
+
+The almanac carries the numbers that come up most when people argue about the economy, and it carries both kinds: the ones that tend to make the economy look strong, such as jobs added, unemployment, growth and pay, and the ones that tend to make it look hard, such as prices, rent, mortgage rates, groceries and the federal deficit. Several tiles also open lines that complicate their own headline. The unemployment rate opens U-6, which also counts people working part time who want full-time work and people who have stopped looking, and the share of 25-to-54-year-olds who have a job. Inflation opens the Federal Reserve's preferred measure. Hourly pay opens pay after inflation.
+
+Some things are not here, and a reader should know which:
+
+- **Stock prices and the best-known home-price index.** The S&P 500 and the Case-Shiller index belong to S&P Dow Jones Indices, which does not allow them to be republished without permission, and every chart here can be downloaded with its data.
+- **How the gains are shared.** Every number on the almanac is a national total or average, and an average can hide very different years for different households. Income and wealth by group are not on the almanac yet.
+
+[Suggestions](#contact) for numbers the almanac should carry are welcome.
+
 ## How the articles are written
 
 The articles follow a few rules, applied to every topic and every side:
@@ -28,7 +40,7 @@ The articles follow a few rules, applied to every topic and every side:
 - An indicator's track record names its false alarms as well as its hits.
 - Every analogy says where it breaks.
 - No advice, no endorsements, no villains, and no byline.
-- Articles on contested or political subjects get an independent check against the primary sources before they are published.
+- Articles on contested or political subjects get a second, separate fact-check of every figure and claim against the primary sources before they are published.
 
 Charts that show who held the presidency or Congress carry a line saying what that comparison can and cannot show. The site does not offer a "which party did better" button; [one article](indexed-to-inauguration.html) explains why, and does the comparison with its method stated.
 
