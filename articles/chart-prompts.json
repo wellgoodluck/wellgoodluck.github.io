@@ -10,6 +10,14 @@
    "title": "Rent increases vs. pay raises"
   },
   {
+   "date": "2026-11-06",
+   "chart": "gas",
+   "query": "range=all&ov=gas_real",
+   "text": "Regular averaged $4.15 in the week of November 2, 2026. Adjusted for inflation, that is below the June 2022 peak (about $5.71 in today's dollars) and well below June 2008 (about $6.33).",
+   "link": "See gas prices in today's dollars",
+   "title": "Gas prices, adjusted for inflation"
+  },
+  {
    "date": "2026-11-15",
    "chart": "cpi",
    "query": "range=10y&ov=restaurant_prices",
