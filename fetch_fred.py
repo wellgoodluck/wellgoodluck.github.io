@@ -253,6 +253,36 @@ TILES = [
                     "unit": "percent"},
         "note": "Freddie Mac's weekly survey of lenders.",
     },
+    {
+        # Nov 6: FHFA's purchase-only index (public domain on FRED), not Case-Shiller, which S&P does not allow
+        # to be republished without permission (see the About page).
+        "id": "home_prices",
+        "agency": "FHFA",
+        "section": "Housing",
+        "title": "Home prices",
+        "subtitle": "Prices of single-family houses, change from a year ago",
+        "series": "HPIPONM226S",
+        "params": {"units": "pc1", "observation_start": "1991-01-01"},
+        "freq": "m",
+        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": False,
+                    "unit": "percent, year over year"},
+        "note": "The Federal Housing Finance Agency's purchase-only index: each house is compared with its own earlier sale, so the figure tracks prices rather than which homes happened to sell. Covers houses bought with loans that Fannie Mae or Freddie Mac acquired, so jumbo-loan, cash and most FHA purchases are not counted. Seasonally adjusted.",
+    },
+    {
+        # Nov 6, from a reader's suggestion. No free national foreclosure series is on FRED; this is the
+        # longest free national read on missed mortgage payments.
+        "id": "mortgage_delinquency",
+        "agency": "Federal Reserve Board",
+        "section": "Housing",
+        "title": "Mortgage delinquency",
+        "subtitle": "Share of home loans held by banks that are 30 or more days behind, quarterly",
+        "series": "DRSFRMACBS",
+        "params": {"observation_start": "1991-01-01"},
+        "freq": "q",
+        "display": {"scale": 1, "decimals": 2, "suffix": "%", "signed": False,
+                    "unit": "percent of loans"},
+        "note": "Single-family mortgages on commercial banks' own books, by dollar amount: loans 30 or more days past due plus loans the bank has stopped counting interest on. Loans sold into Fannie Mae, Freddie Mac and Ginnie Mae securities, which include most FHA loans, are not counted, so this is a partial view. Seasonally adjusted; each quarter is published about two months after it ends.",
+    },
     # ---- Government and trade ---------------------------------------------
     {
         "id": "deficit",
@@ -874,6 +904,8 @@ COMPANIONS = [
      "params": {"observation_start": "2015-01-01"}, "freq": "m", "why": "Used for long-term unemployment in article text."},
     {"id": "rent_level", "label": "CPI, rent of primary residence, index", "for": [], "series": "CUSR0000SEHA",
      "params": {"observation_start": "2018-01-01"}, "freq": "m", "why": "Used for rent since 2019 in article text."},
+    {"id": "home_price_level", "label": "FHFA purchase-only house price index, level", "for": [], "series": "HPIPONM226S",
+     "params": {"observation_start": "2018-01-01"}, "freq": "m", "why": "Used for home prices since 2019 on the home prices tile (Nov 6)."},
     {"id": "eci_wages", "label": "Employment Cost Index, private wages and salaries, change from a year ago (not seasonally adjusted)",
      "for": [], "series": "CIU2020000000000I", "params": {"units": "pc1", "observation_start": "2002-01-01"}, "freq": "q",
      "why": "Used for the ECI line on the hourly pay page; not seasonally adjusted, as BLS headlines it."},
@@ -1101,6 +1133,28 @@ def household_lines(tiles_out, companions_out, extras):
                              + (f", {money(mortgage_payment(loan, ya))} at a year ago's rate" if ya else "")
                              + f", and {money(mortgage_payment(loan, b))} at the 2015{EN}19 average. Principal and interest only.",
                              src("median_home_price"))
+    except Exception: pass
+    try:
+        # A round $400,000 house, as the rent line uses a round $1,000: a reference, not a typical price.
+        txt = (f"Comparing each house with its own earlier sale, one that sold for $400,000 a year ago "
+               f"would sell for about {money(round(400000 * (1 + cur('home_prices') / 100), -3))} now.")
+        hl, pl_ = C.get("home_price_level") or [], C.get("pay_level") or []
+        h19 = [v for d, v in hl if d.startswith("2019-")]
+        p19 = [v for d, v in pl_ if d.startswith("2019-")]
+        srcs = []
+        if len(h19) == 12 and len(p19) == 12:
+            h_up, p_up = (hl[-1][1] / mean(h19) - 1) * 100, (pl_[-1][1] / mean(p19) - 1) * 100
+            txt += f" Since 2019 home prices are up {h_up:.0f}% and hourly pay {p_up:.0f}%."
+            srcs = [{"series": "AHETPI", "url": "https://fred.stlouisfed.org/series/AHETPI"}]
+        lines["home_prices"] = (txt, srcs)
+    except Exception: pass
+    try:
+        # "1 in N" for the latest quarter, the series' peak and its low, all from the tile's own history.
+        ob = T["mortgage_delinquency"]["observations"]
+        hi_d, hi_v = max(ob, key=lambda o: o[1]); lo_d, lo_v = min(ob, key=lambda o: o[1])
+        lines["mortgage_delinquency"] = (
+            f"About 1 in {round(100 / cur('mortgage_delinquency'))} home loans on banks' books is at least a month behind. "
+            f"At the peak, in {hi_d[:4]}, it was about 1 in {round(100 / hi_v)}; at the low, in {lo_d[:4]}, about 1 in {round(100 / lo_v)}.", [])
     except Exception: pass
 
     try:
@@ -1362,7 +1416,25 @@ def section_summaries(tiles_out):
         import re as _re
         mm = _re.search(r"costs (\$[\d,]+) a month at this rate.*?(\$[\d,]+) at the 2015", hh)
         if mm: text += f": the payment on the median home is about {mm.group(1)} a month, against {mm.group(2)} at the 2015{EN}19 rate"
-        out["Housing"] = text + "."
+        text += "."
+        # Nov 6: home prices and delinquency, each its own clause so either can drop alone.
+        if "home_prices" in T:
+            try:
+                hp = cur("home_prices")
+                rh = rank("home_prices", "faster", "slower") if hp > 0 else rank("home_prices")
+                text += (f" Home prices were {'up' if hp >= 0 else 'down'} {pct(abs(hp))} from a year earlier in {month('home_prices')}"
+                         + (f", {rh}" if rh else "") + ".")
+            except Exception as e:
+                print(f"summary Housing: home prices skipped: {e}", file=sys.stderr, flush=True)
+        if "mortgage_delinquency" in T:
+            try:
+                dq = cur("mortgage_delinquency"); rd_ = rank("mortgage_delinquency")
+                qn = ["first", "second", "third", "fourth"][(int(ctx("mortgage_delinquency")["current"]["date"][5:7]) - 1) // 3]
+                text += (f" At banks, {pct(dq, 2)} of home loans were at least a month behind in the {qn} quarter"
+                         + (f", {rd_}" if rd_ else "") + ".")
+            except Exception as e:
+                print(f"summary Housing: delinquency skipped: {e}", file=sys.stderr, flush=True)
+        out["Housing"] = text
     except Exception as e:
         print(f"summary Housing skipped: {e}", file=sys.stderr, flush=True)
 

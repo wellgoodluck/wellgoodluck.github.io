@@ -2,7 +2,7 @@
 title: About This Site
 dek: What it is, who is behind it, where the numbers come from, how the articles are written, and every correction made so far.
 date: 2026-11-03
-updated: 2026-11-05
+updated: 2026-11-06
 kind: page
 ---
 
@@ -26,7 +26,8 @@ The almanac carries the numbers that come up most when people argue about the ec
 
 Some things are not here, and a reader should know which:
 
-- **Stock prices and the best-known home-price index.** The S&P 500 and the Case-Shiller index belong to S&P Dow Jones Indices, which does not allow them to be republished without permission, and every chart here can be downloaded with its data.
+- **Stock prices and the best-known home-price index.** The S&P 500 and the Case-Shiller index belong to S&P Dow Jones Indices, which does not allow them to be republished without permission, and every chart here can be downloaded with its data. The home prices tile uses the Federal Housing Finance Agency's index instead.
+- **Foreclosures.** No free national count of foreclosures is published in a form the almanac can update on its own. The mortgage delinquency tile, the share of home loans at banks that are at least a month behind, is the nearest early sign.
 - **How the gains are shared.** Every number on the almanac is a national total or average, and an average can hide very different years for different households. Income and wealth by group are not on the almanac yet.
 
 [Suggestions](#contact) for numbers the almanac should carry are welcome.
