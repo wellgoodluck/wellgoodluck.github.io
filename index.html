@@ -375,8 +375,15 @@
   .card .asch { margin: 0 0 10px; font-size: 13.5px; color: var(--ink-2); }
   .card a.full { align-self: flex-start; margin-top: auto; display: inline-flex; align-items: center; min-height: 36px; padding: 4px 11px; font-size: 13.5px; line-height: 1.3; }
 
-  /* Your situation: six cells in the index rows' style, ochre links, three columns (two on phones) */
-  .paths { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 16px; margin: 0; padding: 0 12px; list-style: none; }
+  /* The home page's index geometry (Batch B, Nov 6), shared so the lists stay aligned if any of it changes: the index panel's
+     border and side padding, the group band's text inset, and the hang indent of the rows past the group label's text
+     (14px on desktop, 12px on phones). Your situation's links start at exactly
+     the x of the All N numbers rows' text. */
+  .v-home { --ip-border: 1px; --ip-pad-x: 18px; --grp-pad-x: 10px; --row-indent: 14px; }
+  @media (max-width: 760px) { .v-home { --ip-pad-x: 12px; --row-indent: 12px; } }
+  /* Your situation: six cells in the index rows' style, ochre links, three columns (two on phones), the links' text lined
+     up with the All N numbers rows' text */
+  .paths { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 16px; margin: 0; padding: 0 12px 0 calc(var(--ip-border, 1px) + var(--ip-pad-x, 18px) + var(--grp-pad-x, 10px) + var(--row-indent, 14px)); list-style: none; }
   .paths li { border-bottom: 1px solid var(--grid); }
   .paths a.wf { display: flex; min-height: 44px; padding: 4px 0; line-height: 1.3; }
   @media (max-width: 760px) { .paths { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -384,12 +391,12 @@
   /* All 28 numbers: an intro line with the ochre link at the right, then a framed panel of group bands and rows */
   .allintro { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0 20px; margin: 0 0 8px; }
   .allintro p { margin: 0; font-size: 14px; color: var(--ink-2); }
-  .ipanel { background: var(--surface); border: 1px solid var(--frame); border-radius: 6px; padding: 14px 18px 18px; }
+  .ipanel { background: var(--surface); border: var(--ip-border, 1px) solid var(--frame); border-radius: 6px; padding: 14px var(--ip-pad-x, 18px) 18px; }
   .igrp + .igrp { margin-top: 14px; }
-  .igrp h3 { margin: 0; padding: 5px 10px; background: var(--hairline); border-radius: 3px; font-size: 13.5px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: 0.07em; }
-  .igrp ul { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 16px; margin: 0; padding: 0; list-style: none; }
+  .igrp h3 { margin: 0; padding: 5px var(--grp-pad-x, 10px); background: var(--hairline); border-radius: 3px; font-size: 13.5px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: 0.07em; }
+  .igrp ul { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 16px; margin: 0; padding: 0 0 0 calc(var(--grp-pad-x, 10px) + var(--row-indent, 14px)); list-style: none; }   /* rows hang past the group label */
   @media (max-width: 999px) { .igrp ul { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-  @media (max-width: 760px) { .igrp ul { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ipanel { padding: 12px 12px 14px; } }
+  @media (max-width: 760px) { .igrp ul { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ipanel { padding: 12px var(--ip-pad-x, 12px) 14px; } }
   .igrp li { border-bottom: 1px solid var(--grid); }
   .igrp a { display: flex; flex-direction: column; justify-content: center; min-height: 52px; padding: 6px 0; color: var(--ink); text-decoration: none; }
   .igrp .n { font-size: 14.5px; line-height: 1.3; text-decoration: underline; text-decoration-color: var(--frame); text-underline-offset: 3px; }
@@ -1438,7 +1445,7 @@
 
     // Your situation
     const paths = el('section', { class: 'h-sec', id: 'your-situation', 'aria-labelledby': 'paths-h' });
-    paths.appendChild(band('paths-h', 'Your situation', 'Pick the one closest to yours'));
+    paths.appendChild(band('paths-h', 'Your situation', 'Pick the one closest to yours for a short guide to the numbers that matter most.'));
     paths.appendChild(el('ul', { class: 'paths' }, HOME_PATHS.map(([label, url]) => el('li', {}, [el('a', { class: 'wf', href: url, text: label })]))));
     main.appendChild(paths);
     main.appendChild(topLink());

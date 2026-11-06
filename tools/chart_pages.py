@@ -219,7 +219,9 @@ def write_chart_pages(out_root, series_path=os.path.join("data", "series.json"))
                    "og_description": "", "status": "Loading the figures…"}
         page = _set_head(base_ids, url, txt["title"], txt["og_title"], txt["description"], txt["og_description"], warn)
         page = _sub(page, '<h1 id="title">Loading…</h1>', f'<h1 id="title">{html.escape(t["title"])}</h1>', "h1", warn)
-        page = _sub(page, '<p class="crumb"><a href="/">', f'<p class="crumb"><a href="/#i-{t["id"]}">', "crumb", warn)   # back to its tile
+        # the crumb: back to its row in the full view ("All N numbers", N the number of tiles), then this page's name
+        page = _sub(page, '<p class="crumb"><a href="/">All the numbers</a>', f'<p class="crumb"><a href="/#i-{t["id"]}">All {len(ids)} numbers</a>', "crumb", warn)
+        page = _sub(page, '<span id="crumb-here"></span>', f'<span id="crumb-here">{html.escape(t["title"])}</span>', "crumb page", warn)
         page = _sub(page, '<p class="sub" id="subtitle"></p>', f'<p class="sub" id="subtitle">{html.escape(t["subtitle"])}</p>', "subtitle", warn)
         # the status line carries the reading before the script runs (its attributes may change: match on the id)
         m = re.findall(r'<p class="status" id="status"[^>]*>Loading the figures…</p>', page)

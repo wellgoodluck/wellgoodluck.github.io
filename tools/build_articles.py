@@ -560,10 +560,34 @@ HEAD = """<!doctype html>
 <body>
 <header class="masthead" id="top">
   <div class="wrap">
-    <p class="crumb"><a class="home" href="../"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M25 14H15V50H25"/><path d="M39 14H49V50H39"/><circle cx="32" cy="32" r="8.5"/></svg><span class="name"><b>Economy</b> in Context</span></a> <span class="sep">/</span> <a href="./">Articles</a></p>
+    <div class="title-row"><a class="brand" href="/"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M25 14H15V50H25"/><path d="M39 14H49V50H39"/><circle cx="32" cy="32" r="8.5"/></svg><span class="nm">Economy <span class="bl">in Context</span><span aria-hidden="true">.</span></span></a>{menu}</div>
   </div>
 </header>
 """
+
+# The site menu (Batch B, Nov 6), the same as the home page's and the chart pages': The numbers, Your situation, Articles,
+# About. `here` names the item for the page (aria-current="page") or the part of the site it belongs to (aria-current="true").
+MENU = [("numbers", "/?view=all", "The numbers"), ("situation", "/#your-situation", "Your situation"),
+        ("articles", "/articles/", "Articles"), ("about", "/articles/about.html", "About")]
+
+
+def site_menu(here=None, page=False):
+    cur = ' aria-current="page"' if page else ' aria-current="true"'
+    return ('<nav class="site-menu" aria-label="Site">'
+            + "".join(f'<a href="{u}"{cur if k == here else ""}>{t}</a>' for k, u, t in MENU) + "</nav>")
+
+
+def menu_for(a):
+    """Which menu item an article belongs to: About (the About page itself is the page), Your situation for the
+    household paths, Articles for the rest."""
+    if a["slug"] == "about":
+        return site_menu("about", page=True)
+    if a.get("kind") == "page":
+        return site_menu("about")
+    if a.get("kind") == "path":
+        return site_menu("situation")
+    return site_menu("articles")
+
 
 FOOT = """
 <div class="wrap signup-wrap">
@@ -594,7 +618,7 @@ FOOT = """
 
 def render_article(a):
     desc = html.escape(a.get("dek", a["title"]), quote=True)
-    page = HEAD.format(title=html.escape(a["title"]), desc=desc, canonical=f"{SITE}/articles/{a['slug']}.html", css_v=asset_stamp("assets/site.css"))
+    page = HEAD.format(title=html.escape(a["title"]), desc=desc, canonical=f"{SITE}/articles/{a['slug']}.html", css_v=asset_stamp("assets/site.css"), menu=menu_for(a))
     page += '<main class="wrap article">\n<article>\n'
     page += f'<h1>{inline(a["title"])}</h1>\n'
     if a.get("dek"):
@@ -710,8 +734,7 @@ def load_tiles():
 
 def render_index(articles):
     page = HEAD.format(title="Articles", desc="Longer reads on the U.S. economy: what the figures show, what is settled and what is argued about.",
-                       canonical=f"{SITE}/articles/", css_v=asset_stamp("assets/site.css"))
-    page = page.replace('<a href="./">Articles</a>', "Articles")
+                       canonical=f"{SITE}/articles/", css_v=asset_stamp("assets/site.css"), menu=site_menu("articles", page=True))
     page += '<div class="wrap article article-head">\n<h1>Articles</h1>\n<p class="dek">Longer reads on what the figures show, what is settled, and what is argued about.</p>\n</div>\n'
     # the section bar sits between the title and the lead items, as the almanac's does, and the rest is main
     page += "{SECNAV}"

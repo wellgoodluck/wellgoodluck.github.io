@@ -57,10 +57,12 @@
     --era-a: #d8d6cd; --era-b: #c3c1b7; --war: #6e6c66; --qe-up: #d9d6cb; --qe-down: #9f9b90;
     --range: #c4c2b9;
     --frame: #c4c2b9;   /* the sides of framed boxes (the chart frame), Nov 6: the range bar's gray */
+    --nav: #8a6100;     /* ochre: wayfinding only (the site menu), never data; as in index.html and site.css */
+    --full-ink: #0b6b66;   /* the button's teal ink (Copy image, as the Subscribe button); as in index.html and site.css */
   }
   /* dark colors on screen only: printing from a browser in dark mode stays on the light tokens */
   @media screen and (prefers-color-scheme: dark) {
-    :root:not(.export-light) {   /* "Download image" adds the class for a moment so the image is always in the light colors */
+    :root:not(.export-light) {   /* Use this chart adds the class for a moment so the image is always in the light colors */
       color-scheme: dark;
       --page: #121211; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
       --hairline: #2c2c2a; --grid: #262624; --series: #2bb3a8; --focus: #2bb3a8; --recession: rgba(240, 239, 236, 0.08);
@@ -70,8 +72,20 @@
       --era-a: #3a3935; --era-b: #4a4944; --war: #5e5c57; --qe-up: #4a4944; --qe-down: #66645d;
       --range: #45443f;
       --frame: #45443f;
+      --nav: #d9a83a; --full-ink: #5cc8be;
     }
   }
+  /* "Black and white, for print" (Use this chart): set for a moment while the image is drawn, with export-light. Lines
+     keep apart by weight and dash, not hue; the party lanes by lightness, the lighter one Democratic (keyed in the image). */
+  :root.export-bw {
+    --series: #1b1b1a; --c1: #1b1b1a; --c2: #1b1b1a; --c3: #5a5955; --c4: #8a8984; --ref: #5a5955;
+    --dem: #eeeeec; --rep: #c9c8c3; --divided: #dddcd7; --ind: #9c9a93; --recession: rgba(0, 0, 0, 0.08);
+    --banner: #f2f2f0; --banner-ink: #1b1b1a;
+  }
+  :root.export-bw .chart .cline[data-slot="0"] { stroke-dasharray: 7 3.5; }
+  :root.export-bw .chart .cline[data-slot="1"] { stroke-dasharray: 1.5 3; stroke-width: 2; }
+  :root.export-bw .chart .cline[data-slot="2"] { stroke-dasharray: 9 3 2 3; }
+  :root.export-bw .chart .cline[data-slot="3"] { stroke-width: 2.5; }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
   body { margin: 0; background: var(--page); color: var(--ink); font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 16px; line-height: 1.5; }
@@ -81,22 +95,39 @@
   button, input, select { font: inherit; color: inherit; }
   .wrap { max-width: var(--max); margin: 0 auto; padding: 0 16px; }
 
-  .masthead { padding: 22px 0 14px; border-bottom: 1px solid var(--hairline); }
+  .masthead { padding: 14px 0 14px; border-bottom: 1px solid var(--hairline); }
   .skips { margin: 0; }
   .skip { position: absolute; left: 8px; top: -60px; z-index: 10; padding: 10px 14px; background: var(--ink); color: var(--surface); font-size: 13.5px; font-weight: 600; text-decoration: none; border-radius: 4px; }
   .skip:focus { top: 8px; }
   body.embed .skips { display: none; }
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
-  .crumb { font-size: 13.5px; color: var(--ink-2); margin: 0 0 10px; }
-  .crumb a { text-decoration: none; }
-  /* the crumb carries the small mark and the two-weight name (Nov 4); the underline sits under the name only. Same mark
-     rules in index.html and site.css. */
-  .crumb .name { border-bottom: 1px solid var(--hairline); }
-  .crumb a:hover .name { border-bottom-color: var(--ink); }
-  .crumb b { font-weight: 700; color: var(--ink); }
-  .crumb .mark { display: inline-block; width: 1.55em; height: 1.55em; margin: 0 0.12em 0 0; vertical-align: -0.42em; }
+  /* The site's masthead row (Batch B, Nov 6): the lockup and the site menu, the same component as the home page's (index.html)
+     and the articles' (site.css). On a chart page the lockup is a link home at 22px, not the page's h1. Desktop: the menu
+     right of the lockup on one row; phones (<=760px): the lockup, then the menu in a row under it. */
+  .masthead .title-row { display: flex; align-items: center; justify-content: space-between; gap: 4px 20px; margin: 0 0 4px; }
+  .site-menu { display: flex; flex-wrap: wrap; gap: 0 16px; }
+  .site-menu a { display: inline-flex; align-items: center; min-height: 44px; color: var(--nav); font-size: 15px; font-weight: 600; text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 5px; white-space: nowrap; }
+  .site-menu a:hover { color: var(--ink); text-decoration-color: var(--ink); }
+  .site-menu a[aria-current] { color: var(--ink); }
+  a.brand { display: inline-flex; align-items: center; min-height: 44px; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.1; color: var(--ink); text-decoration: none; white-space: nowrap; }
+  a.brand .bl { font-weight: 400; color: var(--ink-2); }
+  a.brand:hover .nm { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+  .brand .mark { flex: none; width: 1.4em; height: 1.4em; margin: 0 0.1em 0 -0.26em; }
   .mark path { fill: none; stroke: var(--ink); stroke-width: 6.5; }
   .mark circle { fill: var(--series); }
+  @media (max-width: 760px) {
+    .masthead .title-row { flex-wrap: wrap; row-gap: 0; }
+    .site-menu { width: 100%; gap: 0 14px; }
+    a.brand { font-size: 20px; }
+  }
+  @media (max-width: 340px) { a.brand { font-size: 19px; } .site-menu { gap: 0 11px; } .site-menu a { font-size: 14px; } }   /* 320px phones: one line each */
+  /* the crumb: back to this number's row in the full view, then the page you are on */
+  .crumb { font-size: 13.5px; color: var(--ink-2); margin: 0 0 6px; }
+  .crumb a { display: inline-block; padding: 6px 0; color: var(--nav); font-weight: 600; text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .crumb a:hover { color: var(--ink); text-decoration-color: var(--ink); }
+  .crumb .sep { margin: 0 6px; color: var(--muted); }
+  .crumb[hidden] { display: none; }
+  @media (max-width: 760px) { .crumb { margin: -4px 0 0; } .crumb a { padding: 12px 0; } }   /* a 44px target on phones */
   .masthead h1 { margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.15; }
   .masthead .sub { margin: 4px 0 0; color: var(--ink-2); font-size: 17px; }
   .masthead .explainer { margin: 6px 0 0; font-size: 15px; color: var(--ink-2); }
@@ -111,11 +142,15 @@
     .panel { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow-y: auto; overscroll-behavior: contain; padding-right: 4px; }
     .to-panel, .to-chart { display: none; }
   }
-  .to-panel { margin: 0; font-size: 13.5px; }
+  /* The jump row (phones and tablets, Batch B): "Overlays · N on ↓" and "Copy or share ↓", two boxes 46px tall, half the
+     width each, between the chart and its key */
+  .to-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; margin: 10px 0 0; }
+  .to-panel a { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-height: 46px; padding: 0 12px; background: var(--surface); border: 1px solid var(--frame); border-radius: 4px; font-size: 15px; font-weight: 600; color: var(--ink); text-decoration: none; }
+  .to-panel a:hover { border-color: var(--ink); }
+  .to-panel .arr { color: var(--ink-2); font-weight: 400; }
   .to-chart { margin: -10px 0 0; font-size: 13.5px; }
-  /* thumb-sized: about 44px tall */
-  .to-panel a, .to-chart a { display: inline-block; padding: 12px 0; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; }
-  #chart-top, #overlays { scroll-margin-top: 12px; }
+  .to-chart a { display: inline-block; padding: 12px 0; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; }
+  #chart-top, #overlays, #use-this-chart { scroll-margin-top: 12px; }
   /* on phones the panel sits right under the key (see placePanel), and a bar leads back to the chart while it is in view */
   @media (max-width: 860px) {
     .panel { margin: 18px 0 0; }
@@ -153,7 +188,11 @@
   .ranges button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
   /* dark: the pressed range button fills with the range bar's gray; an ink block glared on the dark sheet */
   @media screen and (prefers-color-scheme: dark) { .ranges button[aria-pressed="true"] { background: var(--range); color: var(--ink); font-weight: 600; } }
-  @media (max-width: 760px) { .ranges button { padding: 8px 12px; } }   /* about 36px tall on phones */
+  /* phones (Batch B): the six buttons are 44px targets and fill the row; the custom range moves to the dates line below */
+  @media (max-width: 760px) {
+    .ranges { display: flex; width: 100%; }
+    .ranges button { flex: 1 1 auto; min-height: 44px; padding: 0 8px; }
+  }
   .custom { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--ink-2); flex-wrap: wrap; }
   .custom .fields { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .custom .fields[hidden] { display: none; }
@@ -163,6 +202,24 @@
   .range-msg { flex-basis: 100%; color: var(--ink); font-size: 13.5px; }
   .range-msg:empty { display: none; }
   .custom button { padding: 3px 9px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); font-size: 13.5px; cursor: pointer; }
+  .custom .dates-line button { padding: 0; border: 0; background: none; }
+  /* The dates line (phones, Batch B): "Jan 2001 to Sep 2026 · Change dates", or "… (custom) · Change dates · Reset";
+     Change dates opens From and To in place. Desktop keeps "Custom range…". */
+  .dates-line { display: none; margin: 0; font-size: 13.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .dates-line .dl-unit { white-space: nowrap; }
+  .dates-line .dl-sep { margin: 0 6px 0 2px; color: var(--muted); }
+  .dates-line .dl-btn { display: inline-flex; align-items: center; min-height: 44px; font: inherit; font-size: 13.5px; font-weight: 600; color: var(--nav); text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 3px; cursor: pointer; }
+  .dates-line .dl-btn:hover { color: var(--ink); text-decoration-color: var(--ink); }
+  .dates-line [hidden] { display: none; }
+  @media (max-width: 760px) {
+    .chart-head { gap: 4px 16px; }
+    .custom { flex-basis: 100%; }
+    .custom .toggle { display: none; }
+    .dates-line { display: block; }
+    .custom .fields { padding: 4px 0 6px; }
+    .custom input { font-size: 16px; min-height: 44px; width: 10.5em; }
+    .custom .fields > button { min-height: 44px; padding: 0 14px; }
+  }
 
   .chart { position: relative; background: var(--surface); border: 1px solid var(--frame); border-radius: 6px; padding: 8px 8px 4px; }
   .chart svg { display: block; width: 100%; overflow: visible; }
@@ -224,22 +281,80 @@
 
   .note { margin: 14px 0 0; font-size: 13.5px; color: var(--ink-2); }
   .source { margin: 4px 0 0; font-size: 13.5px; color: var(--muted); }
-  .actions { margin: 14px 0 0; display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 13.5px; }
-  .actions .reuse-short { align-self: center; font-size: 12.5px; color: var(--muted); }
-  .actions .reuse-short a { padding: 0; border: 0; background: none; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--hairline); }
-  .copy-fallback { flex-basis: 100%; font: inherit; font-size: 13px; padding: 6px 8px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); color: var(--ink); }
+  /* Use this chart (Batch B, Nov 6): Copy image and Download in view, then four disclosures. A framed box after the readings
+     on desktop; on phones and tablets it follows the overlay panel. Reader's words reach only the image, never the page. */
+  .use { margin: 18px 0 0; padding: 14px 18px 6px; background: var(--surface); border: 1px solid var(--frame); border-radius: 6px; }
+  .use h2 { margin: 0 0 10px; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+  .use-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .use button, .use select, .use input { font: inherit; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 16px; border: 1px solid var(--frame); border-radius: 4px; background: var(--surface); color: var(--ink); font-size: 15px; cursor: pointer; }
+  .btn:hover { border-color: var(--ink); }
+  .btn.primary { background: var(--full-ink); border-color: var(--full-ink); color: var(--surface); font-weight: 600; }
+  .btn.primary:hover { background: var(--ink); border-color: var(--ink); }
+  .btn.small { min-height: 40px; padding: 0 12px; font-size: 13.5px; }
+  .btn[aria-busy="true"] { cursor: progress; }
+  .dl-wrap { position: relative; }
+  .dl-wrap > .btn::after { content: " ▾"; content: " ▾" / ""; color: var(--muted); margin-left: 4px; }
+  .dl-list { position: absolute; left: 0; top: calc(100% + 4px); z-index: 6; min-width: 230px; margin: 0; padding: 4px 0; list-style: none; background: var(--surface); border: 1px solid var(--frame); border-radius: 4px; }
+  .dl-list[hidden] { display: none; }
+  .dl-list button { display: block; width: 100%; min-height: 44px; padding: 0 14px; border: 0; background: none; text-align: left; font-size: 15px; color: var(--ink); cursor: pointer; }
+  .dl-list button:hover, .dl-list button:focus-visible { background: var(--page); }
+  .dl-list .fmt { color: var(--muted); }
+  .use-help { margin: 8px 0 0; font-size: 13.5px; color: var(--ink-2); }
+  .use-status { margin: 4px 0 0; font-size: 13.5px; color: var(--ink); font-weight: 600; min-height: 1.5em; }
+  .use-status:empty { min-height: 0; margin: 0; }
+  .use details { border-top: 1px solid var(--hairline); }
+  .use details:first-of-type { margin-top: 12px; }
+  .use summary { display: flex; align-items: center; justify-content: space-between; min-height: 48px; cursor: pointer; list-style: none; font-size: 15px; font-weight: 600; }
+  .use summary::-webkit-details-marker { display: none; }
+  .use summary::after { content: "▸"; content: "▸" / ""; color: var(--muted); font-weight: 400; font-size: 13.5px; }
+  .use details[open] > summary::after { content: "▾"; content: "▾" / ""; }
+  .use .dbody { padding: 2px 0 16px; font-size: 13.5px; color: var(--ink-2); }
+  .use .dbody p { margin: 0 0 8px; max-width: 40em; }
+  .use fieldset { margin: 0 0 14px; padding: 0; border: 0; min-width: 0; }
+  .use legend, .use .lbl { padding: 0; margin: 0 0 6px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
+  .use label.f { display: block; margin: 0 0 4px; font-size: 13.5px; color: var(--ink-2); }
+  .use input[type="text"], .use input[type="month"] { min-height: 44px; padding: 0 10px; border: 1px solid var(--muted); border-radius: 4px; background: var(--page); color: var(--ink); font-size: 16px; }
+  .use .w-title { width: 100%; max-width: 34em; }
+  .use input:focus-visible, .use input:focus, .custom input:focus { outline: 2px solid var(--focus); outline-offset: 2px; }   /* a month field's focus sits inside it; ring the field */
+  .use .note-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; margin: 10px 0 0; }
+  .use .note-row > div { display: flex; flex-direction: column; }
+  .use .note-row .n-text { flex: 1 1 14em; }
+  .use .note-row .n-text input { width: 100%; }
+  .use .notes { margin: 8px 0 0; padding: 0; list-style: none; }
+  .use .notes li { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; color: var(--ink); }
+  .use .notes b { font-weight: 700; }
+  .use .notes button { min-height: 44px; padding: 0; border: 0; background: none; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; cursor: pointer; font-size: 13.5px; }
+  .use .w-msg { margin: 6px 0 0; color: var(--ink); font-weight: 600; }
+  .use .w-msg:empty { display: none; }
+  .use .opts { display: flex; flex-wrap: wrap; gap: 0 18px; }
+  .use .opts label { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 15px; color: var(--ink); cursor: pointer; }
+  .use .opts input { width: 18px; height: 18px; margin: 0; accent-color: var(--ink); }   /* not the browser's blue, a party's color here */
+  .use .preview { margin: 4px 0 16px; padding: 10px 12px 12px; border: 1px solid var(--frame); border-radius: 6px; max-width: 460px; }
+  .use .preview figcaption { margin: 0 0 8px; font-size: 12.5px; font-weight: 600; color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
+  .use .preview .pv { display: flex; justify-content: center; align-items: center; min-height: 120px; background: var(--page); border-radius: 2px; }
+  .use .preview img { display: block; max-width: 100%; max-height: 420px; height: auto; border: 1px solid var(--hairline); }
+  .use .preview .pv-msg { margin: 6px 0 0; font-size: 12.5px; color: var(--muted); }
+  .use .linkrow { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 10px; }
+  .use .cite { margin: 0 0 14px; }
+  .use .cite .lbl { margin-bottom: 4px; }
+  .use .cite p { margin: 0 0 8px; color: var(--ink); font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
+  .use .alt { color: var(--ink); font-size: 15px; line-height: 1.5; }
+  .use .reuse-short { margin: 0; padding: 10px 0 8px; border-top: 1px solid var(--hairline); font-size: 12.5px; color: var(--muted); }
+  .use .reuse-short a { color: var(--ink-2); text-decoration-color: var(--hairline); }
+  .copy-fallback { display: block; width: 100%; margin: 6px 0 0; font: inherit; font-size: 13px; padding: 6px 8px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); color: var(--ink); }
   .copy-fallback[hidden] { display: none; }
-  .actions .img-menu { position: relative; }
-  .actions .img-menu > summary { list-style: none; padding: 4px 10px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); cursor: pointer; font-size: 13.5px; }
-  .actions .img-menu > summary::-webkit-details-marker { display: none; }
-  .actions .img-menu > summary::after { content: " ▾"; content: " ▾" / ""; color: var(--muted); }   /* "/ """: drawn, not part of the name */
-  .img-list { position: absolute; left: 0; top: calc(100% + 4px); z-index: 6; width: 300px; background: var(--surface); border: 1px solid var(--hairline); border-radius: 4px; padding: 4px 0; }
-  @media (max-width: 600px) { .actions .img-menu[open] { flex-basis: 100%; } .img-list { position: static; width: auto; margin: 6px 0 0; } }
-  .actions .img-list button { display: block; width: 100%; text-align: left; border: 0; border-radius: 0; background: none; padding: 7px 12px; cursor: pointer; }
-  .actions .img-list button:hover, .actions .img-list button:focus-visible { background: var(--page); }
-  .img-list b { display: block; font-weight: 600; font-size: 13.5px; color: var(--ink); }
-  .img-list span { display: block; font-size: 12.5px; color: var(--muted); }
-  .actions button, .actions > a { padding: 4px 10px; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); cursor: pointer; text-decoration: none; font-size: 13.5px; }
+  @media (max-width: 760px) {
+    .use { padding: 12px 12px 4px; }
+    .use-row .btn { flex: 1 1 0; }
+    .btn.small { min-height: 44px; }
+    .use .dl-wrap { flex: 1 1 0; display: flex; }
+    .use .dl-wrap > .btn { flex: 1 1 auto; }
+    .dl-list { position: absolute; left: auto; right: 0; }
+    .use .note-row > div { flex: 1 1 100%; }
+    .use .note-row > div:last-child { flex: 0 0 auto; }
+    .use .note-row input[type="month"] { width: 100%; }
+  }
 
   details.table { margin: 14px 0 0; font-size: 13.5px; }
   details.table summary { cursor: pointer; color: var(--ink-2); }
@@ -277,6 +392,10 @@
   .opt .sw.off { visibility: hidden; }   /* an overlay's color is assigned when it is turned on */
   .on-now { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 12px; font-size: 12.5px; }
   .on-now .none { display: inline-flex; align-items: center; min-height: 30px; color: var(--muted); }   /* a chip's height, so the first tick never moves the list */
+  /* with nothing on, the heading and "nothing yet…" share one line, and the row keeps the height it has with one chip
+     (heading line, gap, a 30px chip; 42px on phones), so ticking the first box doesn't move the list */
+  .on-now:has(> .none) { min-height: calc(12.5px * 1.5 + 6px + 30px); align-content: flex-start; }
+  .on-now-h:has(+ .none) { flex: 0 0 auto; align-self: center; }
   .on-now-h { flex: 0 0 100%; font-size: 12.5px; font-weight: 600; color: var(--ink-2); }   /* its own line: a chip then starts a fresh row and fits, so it never wraps the header */
   .chip { display: inline-flex; align-items: stretch; max-width: 100%; border: 1px solid var(--hairline); border-radius: 4px; background: var(--surface); }
   .chip button { font: inherit; color: var(--ink); background: none; border: 0; min-height: 28px; cursor: pointer; }
@@ -285,14 +404,17 @@
   .chip .x { padding: 0 9px; color: var(--muted); font-size: 16px; line-height: 1; border-left: 1px solid var(--hairline); }
   .chip .go:hover { text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; }
   .chip .x:hover { color: var(--ink); }
-  @media (max-width: 860px) { .chip button { min-height: 40px; } .on-now .none { min-height: 42px; } }
+  @media (max-width: 860px) {
+    .chip button { min-height: 40px; } .on-now .none { min-height: 42px; }
+    .on-now:has(> .none) { min-height: calc(12.5px * 1.5 + 6px + 42px); }   /* the height with one chip: the heading line, the gap, a 42px chip */
+  }
   .panel .clear { margin: 12px 0 0; font-size: 13.5px; }
   .panel .clear button { background: none; border: 0; padding: 0; color: var(--ink-2); text-decoration: underline; cursor: pointer; }
 
   .status { padding: 24px 0; color: var(--ink-2); }
   /* Embed mode (chart.html?...&embed=1): just the chart, for iframes in articles */
   body.embed { background: var(--surface); }
-  body.embed .masthead, body.embed footer, body.embed .panel, body.embed .actions, body.embed details.table,
+  body.embed .masthead, body.embed footer, body.embed .panel, body.embed .use, body.embed details.table, body.embed .site-menu,
   body.embed .strip, body.embed .compare, body.embed .events-list, body.embed .custom, body.embed .to-panel { display: none; }
   body.embed .layout { display: block; padding: 10px 0 8px; }
   body.embed .wrap { padding: 0 10px; max-width: none; }
@@ -306,6 +428,8 @@
   body.embed .chart { border: 0; padding: 0; }
   body.embed .framing { font-size: 12.5px; padding: 6px 10px; margin: 6px 0 0; }
   body.embed .adjust-note { font-size: 12.5px; margin: 2px 0 0; }
+  /* an embed frozen at a date (&asof=): the readings stop there, and a line says so instead of the sentence, which describes today */
+  body.embed .frozen { margin: 0; font-size: 12.5px; color: var(--ink-2); }
   .index { padding: 20px 0 40px; }
   .index h2 { font-size: 22px; margin: 0 0 10px; }
   .index ul { columns: 2; column-gap: 24px; padding-left: 20px; }
@@ -315,7 +439,7 @@
   @media print {
     :root, :root:not(.export-light) { --page: #fff; --surface: #fff; }
     body { background: #fff; }
-    .panel, .actions, details.table, .ranges, .custom, .to-panel, .to-chart, .crumb, .see-chart { display: none !important; }
+    .panel, .use, details.table, .ranges, .custom, .to-panel, .to-chart, .crumb, .site-menu, .see-chart { display: none !important; }
     .layout { display: block; padding: 12px 0; }
     .chart, figure, .events-list li { break-inside: avoid; }
     footer { padding-bottom: 0; }
@@ -329,9 +453,10 @@
 <div class="sr-only" id="live" aria-live="polite"></div>
 <p class="skips"><a class="skip" href="#chart-top">Skip to the chart</a><a class="skip" href="#overlays">Skip to overlays</a></p>
 
-<header class="masthead">
+<header class="masthead" id="top">
   <div class="wrap">
-    <p class="crumb"><a href="/">← <svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M25 14H15V50H25"/><path d="M39 14H49V50H39"/><circle cx="32" cy="32" r="8.5"/></svg><span class="name"><b>Economy</b> in Context</span></a></p>
+    <div class="title-row"><a class="brand" href="/"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M25 14H15V50H25"/><path d="M39 14H49V50H39"/><circle cx="32" cy="32" r="8.5"/></svg><span class="nm">Economy <span class="bl">in Context</span><span aria-hidden="true">.</span></span></a><nav class="site-menu" aria-label="Site"><a href="/?view=all" aria-current="true">The numbers</a><a href="/#your-situation">Your situation</a><a href="/articles/">Articles</a><a href="/articles/about.html">About</a></nav></div>
+    <p class="crumb"><a href="/">All the numbers</a><span class="sep" aria-hidden="true">›</span><span id="crumb-here"></span></p>
     <h1 id="title">Loading…</h1>
     <p class="sub" id="subtitle"></p>
     <p class="explainer" id="explainer" hidden></p>
@@ -557,7 +682,7 @@
   // ---- state (mirrored in the URL) ----------------------------------------
   // slots: each series overlay keeps the color it was given when turned on, until it is turned off (color follows the series, not its place in a list)
   // defaultOn: an overlay that is on when the address carries no ov at all (a price page's today's-dollars line)
-  const state = { id: null, range: DEFAULT_RANGE, from: null, to: null, on: new Set(), embed: false, ownPage: false, slots: new Map(), ovGiven: false, defaultOn: null };
+  const state = { id: null, range: DEFAULT_RANGE, from: null, to: null, on: new Set(), embed: false, ownPage: false, slots: new Map(), ovGiven: false, defaultOn: null, asof: null };
   // a chart's page is /chart/<id>/; chart.html?id=<id> (embeds, and this file opened on its own) also works
   const SITE = 'https://economyincontext.org';
   function chartPath(id, query) { const s = query ? String(query).replace(/%2C/g, ',') : ''; return '/chart/' + encodeURIComponent(id) + '/' + (s ? '?' + s : ''); }
@@ -567,6 +692,9 @@
     state.ownPage = !!own;
     state.id = own ? decodeURIComponent(own[1]) : q.get('id');
     state.embed = q.get('embed') === '1';
+    // an embed frozen at today's data (Batch B): &asof=<the date of the last reading when the code was copied>. The embed
+    // cuts every series there, so later readings never appear in it. Only embeds read it; a chart page ignores it.
+    if (state.embed && /^\d{4}-(0[1-9]|1[0-2])(-(0[1-9]|[12]\d|3[01]))?$/.test(q.get('asof') || '')) state.asof = q.get('asof');
     if (q.get('range') && RANGES.some(r => r.key === q.get('range'))) state.range = q.get('range');
     const ym = /^\d{4}-(0[1-9]|1[0-2])$/;
     if (ym.test(q.get('from') || '')) { state.from = q.get('from'); state.range = null; }
@@ -588,11 +716,12 @@
     if (ordered.length && !isDefault) q.set('ov', ordered.join(','));
     else if (!ordered.length && state.defaultOn) q.set('ov', 'none');
     if (state.embed) q.set('embed', '1');
+    if (state.embed && state.asof) q.set('asof', state.asof);
     const s = q.toString();
     history.replaceState(null, '', location.pathname + (s ? '?' + s : ''));
   }
   // the view as a query string without the id: range, custom months, overlays
-  function viewQuery() { const q = new URLSearchParams(location.search); q.delete('id'); q.delete('embed'); return q.toString(); }
+  function viewQuery() { const q = new URLSearchParams(location.search); q.delete('id'); q.delete('embed'); q.delete('asof'); return q.toString(); }
 
   // ---- derived overlays ---------------------------------------------------
   function unifiedSegments(ovById) {
@@ -627,7 +756,7 @@
     const evKey = state.embed ? el('details', { class: 'ev-key', hidden: '' }, [evKeySum, evKeyText]) : el('p', { class: 'ev-key', hidden: '' }, [evKeyText]);
     if (state.embed) evKey.addEventListener('toggle', () => draw());
     function activeOverlays() { return overlays.filter(o => state.on.has(o.id) && appliesTo(o, t.id) && (!o.requires || state.on.has(o.requires))); }
-    const EMBED_MIN_PLOT = 120; let embedTrim = 0, fitting = false, exportPlotH = null, exportNumbers = false, unlabeled = 0, lettersUsed = new Set();
+    const EMBED_MIN_PLOT = 120; let embedTrim = 0, fitting = false, exportPlotH = null, exportNumbers = false, unlabeled = 0, lettersUsed = new Set(), lastScale = null, inSnapshot = false;
     if (state.embed && document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (box.isConnected) draw(); });   // the key may wrap differently once the font is in
     function colorFor(id) { return COLORS[state.slots.has(id) ? state.slots.get(id) : 0]; }
 
@@ -697,6 +826,7 @@
       if (lo === hi) { lo -= 1; hi += 1; }
       const pad = (hi - lo) * 0.08; lo -= pad; hi += pad;
       const ys = v => mT + (hi - v) / (hi - lo) * ih;
+      lastScale = { xs, ys, clampV, pts, x0, x1, mT, ih, mL, mR, width };   // where a reader's note goes in an image
 
       const svg = svgEl('svg', { viewBox: '0 0 ' + width + ' ' + height, width, height, role: 'img',
         'aria-label': t.title + ', ' + start.getUTCFullYear() + ' to ' + end.getUTCFullYear() + '. Latest: ' + fmtValue(obs[obs.length - 1][1], d) + ', ' + fmtPeriod(obs[obs.length - 1][0], pf(t)) + '. ' + contextSentence(t) + (act.length ? ' Overlays on: ' + act.map(o => o.label).join(', ') + '.' : '') });
@@ -763,7 +893,7 @@
       compPts.forEach(c => {
         if (!c.pts.length) return;
         let p = ''; c.pts.forEach((o, i) => { p += (i ? 'L' : 'M') + xs(parseDate(o[0]).getTime()).toFixed(1) + ',' + ys(clampV(o[1])).toFixed(1); });
-        svg.appendChild(svgEl('path', { class: 'cline', d: p, stroke: colorFor(c.o.id) }));
+        svg.appendChild(svgEl('path', { class: 'cline', d: p, stroke: colorFor(c.o.id), 'data-slot': state.slots.has(c.o.id) ? state.slots.get(c.o.id) : 0 }));
       });
 
       // the indicator
@@ -869,7 +999,7 @@
             if (peak) { const cx = xs(parseDate(peak[0]).getTime()); svg.appendChild(svgEl('path', { class: 'clipmark', fill: colorFor(o.id), d: 'M' + cx + ',' + (top + 6) + ' l-5,7 l10,0 z' }));
               const tx = svgEl('text', { class: 'cliplabel', x: cx + (cx > (mL + width - mR) / 2 ? -8 : 8), y: top + 14, 'text-anchor': cx > (mL + width - mR) / 2 ? 'end' : 'start' }); tx.textContent = fmtPeriod(peak[0], o.freq) + ': ' + fmtValue(peak[1], sdisp) + ', off the chart'; svg.appendChild(tx); }
           }
-          svg.appendChild(svgEl('path', { class: 'cline', d: p, stroke: colorFor(o.id) }));
+          svg.appendChild(svgEl('path', { class: 'cline', d: p, stroke: colorFor(o.id), 'data-slot': state.slots.has(o.id) ? state.slots.get(o.id) : 0 }));
         });
         lastSubBottom = top + subH - 12;
         cursorY += subH + 10 + extra;
@@ -1002,7 +1132,7 @@
       legend.innerHTML = '';
       legend.appendChild(el('span', {}, [el('i', { style: 'background: var(--series)' }), t.title + (adjusted(t) ? ', as charged' : '') + ' (' + d.unit + ')']));
       // the key always gives the full name (it wraps); only the hover box shortens long ones
-      compPts.concat(subs.map(o => ({ o }))).forEach(c => legend.appendChild(el('span', {}, [el('i', { style: 'background:' + colorFor(c.o.id) }), c.o.label])));
+      compPts.concat(subs.map(o => ({ o }))).forEach(c => legend.appendChild(el('span', {}, [el('i', { style: 'background:' + colorFor(c.o.id), 'data-slot': state.slots.has(c.o.id) ? state.slots.get(c.o.id) : 0 }), c.o.label])));
       lineVals.forEach(x => legend.appendChild(el('span', {}, [el('i', { class: 'dash' + (x.o.stat === 'median' ? ' dot' : '') }), x.o.label])));
       legend.appendChild(el('span', {}, [el('i', { class: 'rec' }), 'Recessions (NBER)']));
       // lane colors that carry meaning get a key: party, and the Fed's lighter (easing) and darker (tightening) shades
@@ -1033,7 +1163,10 @@
           e.source ? el('a', { class: 'src', href: e.source, rel: 'noopener', text: 'source' }) : ''])));
         evList.appendChild(ul);
       }
+      ctx.view = { start, end, first: pts[0][0], last: pts[pts.length - 1][0] };   // the readings in view: citations, alt text, the data-in-view file
+      syncDates();
       ctx.onWindow && ctx.onWindow(start, end);
+      if (!inSnapshot) ctx.onView && ctx.onView();
       // An embed fits its frame. An article's frame has one height for every screen, and on a phone the key, lanes and
       // framing line wrap taller. On this site's own pages the frame grows to fit (never shrinks); in a frame on another
       // site, which can't be resized from inside, the plot gives up the difference, down to 120px.
@@ -1091,6 +1224,7 @@
       [fromI, toI].forEach(x => x.setAttribute('aria-invalid', String(!!bad)));
       if (bad) return;
       state.range = null; state.from = fromI.value || null; state.to = toI.value || null; syncButtons(); writeUrl(); draw();
+      announce('Showing ' + dlRange.textContent);
     });
     // the month inputs fold behind a button; a URL with from/to opens them
     const fields = el('span', { class: 'fields', id: 'custom-fields' });
@@ -1098,35 +1232,65 @@
     const showFields = !!(state.from || state.to);
     const toggle = el('button', { type: 'button', class: 'toggle', text: 'Custom range…', 'aria-expanded': String(showFields), 'aria-controls': 'custom-fields' });
     if (!showFields) fields.hidden = true;
-    toggle.addEventListener('click', () => { const open = fields.hidden; fields.hidden = !open; toggle.setAttribute('aria-expanded', String(open)); if (open) fromI.focus(); });
-    custom.appendChild(toggle); custom.appendChild(fields);
+    function openFields(open, from) { fields.hidden = !open; toggle.setAttribute('aria-expanded', String(open)); dlChange.setAttribute('aria-expanded', String(open)); if (open) fromI.focus(); else if (from) from.focus(); }
+    toggle.addEventListener('click', () => openFields(fields.hidden));
+    // Phones (Batch B): no Custom button; a line under the range buttons says what is in view and opens the same From/To
+    // fields in place: "Jan 2001 to Sep 2026 · Change dates", or "… (custom) · Change dates · Reset". Desktop keeps the toggle.
+    const dlRange = el('span', { class: 'dl-range', id: 'dl-range' }), dlCustom = el('span', { class: 'dl-custom', text: '\u00a0(custom)' });
+    const dlChange = el('button', { type: 'button', class: 'dl-btn', text: 'Change dates', 'aria-expanded': String(showFields), 'aria-controls': 'custom-fields', 'aria-describedby': 'dl-range' });
+    const dlReset = el('button', { type: 'button', class: 'dl-btn', text: 'Reset', 'aria-label': 'Reset to the starting view' });
+    // each "·" is glued to the button after it ("· Change dates", "· Reset"), so a narrow screen breaks before a dot, never after one
+    const dlResetWrap = el('span', { class: 'dl-unit' }, [el('span', { class: 'dl-sep', 'aria-hidden': 'true', text: '·' }), dlReset]);
+    const datesLine = el('p', { class: 'dates-line' }, [dlRange, dlCustom, ' ', el('span', { class: 'dl-unit' }, [el('span', { class: 'dl-sep', 'aria-hidden': 'true', text: '·' }), dlChange]), ' ', dlResetWrap]);
+    dlChange.addEventListener('click', () => openFields(fields.hidden));
+    dlReset.addEventListener('click', () => {
+      state.range = DEFAULT_RANGE; state.from = state.to = null; fromI.value = toI.value = ''; rangeMsg.textContent = '';
+      [fromI, toI].forEach(x => x.removeAttribute('aria-invalid')); syncButtons(); writeUrl(); draw(); openFields(false);
+      const pressed = buttons.find(([k]) => k === state.range); (pressed ? pressed[1] : dlChange).focus();
+      announce('Back to the starting view, ' + dlRange.textContent);
+    });
+    function shortWhen(s) { const f = pf(t); return f === 'm' || f === 'w' || f === 'd' ? fmtPeriod(s, 'm') : fmtPeriod(s, f); }
+    function syncDates() {
+      if (!ctx.view) return;
+      dlRange.textContent = shortWhen(ctx.view.first) + ' to ' + shortWhen(ctx.view.last);
+      const isCustom = !state.range; dlCustom.hidden = !isCustom; dlResetWrap.hidden = !isCustom;
+      // From and To hold the range actually shown (a link may give only one end), unless the reader is typing in one
+      if (!inSnapshot) [[fromI, ctx.view.first], [toI, ctx.view.last]].forEach(([inp, d]) => { if (document.activeElement !== inp) inp.value = d.slice(0, 7); });
+    }
+    custom.appendChild(toggle); custom.appendChild(datesLine); custom.appendChild(fields);
     head.appendChild(custom);
 
-    const toPanel = el('p', { class: 'to-panel' }), toPanelA = el('a', { href: '#overlays' }); toPanel.appendChild(toPanelA);
-    const panelSlot = el('div', { class: 'panel-slot' });
+    // the jump row (below 861px): to the overlay panel, and to Use this chart
+    const toPanel = el('nav', { class: 'to-panel', 'aria-label': 'Jump to' }), toPanelA = el('a', { href: '#overlays' }), toPanelT = el('span', {});
+    toPanelA.appendChild(toPanelT); toPanelA.appendChild(el('span', { class: 'arr', 'aria-hidden': 'true', text: '↓' }));
+    toPanel.appendChild(toPanelA);
+    toPanel.appendChild(el('a', { href: '#use-this-chart' }, [el('span', { text: 'Copy or share' }), el('span', { class: 'arr', 'aria-hidden': 'true', text: '↓' })]));
+    const panelSlot = el('div', { class: 'panel-slot' }), useSlot = el('div', { class: 'use-slot' });
     // the jump links and the phone bar say how many overlays are on
     const seeBar = el('div', { class: 'see-chart', hidden: '' }), seeA = el('a', { href: '#chart-top' }); seeBar.appendChild(seeA);
     function syncToPanel() {
       const n = Array.from(state.on).filter(id => ctx.ovById[id] && appliesTo(ctx.ovById[id], t.id)).length;
-      toPanelA.textContent = 'Overlays' + (n ? ' · ' + n + ' on' : '') + ' ↓';
+      toPanelT.textContent = 'Overlays' + (n ? ' · ' + n + ' on' : '');
       seeA.textContent = (n ? n + (n === 1 ? ' overlay' : ' overlays') + ' on · ' : '') + 'See the chart ↑';
     }
     syncToPanel(); ctx.syncToPanel = syncToPanel;
     const frag = document.createDocumentFragment();
     head.id = 'chart-top';
     if (state.embed) { frag.appendChild(framing); frag.appendChild(head); frag.appendChild(box); frag.appendChild(legend); frag.appendChild(evKey); }
-    else { frag.appendChild(head); frag.appendChild(box); frag.appendChild(toPanel); frag.appendChild(legend); frag.appendChild(evKey); frag.appendChild(framing); frag.appendChild(panelSlot); frag.appendChild(evList); }
+    else { frag.appendChild(head); frag.appendChild(box); frag.appendChild(toPanel); frag.appendChild(legend); frag.appendChild(evKey); frag.appendChild(framing); frag.appendChild(panelSlot); frag.appendChild(useSlot); frag.appendChild(evList); }
     if ('ResizeObserver' in window) { let w = 0; new ResizeObserver(() => { const nw = box.clientWidth; if (nw && nw !== w) { w = nw; draw(); } }).observe(box); } else requestAnimationFrame(draw);
 
-    // For "Download image": draw this view at a fixed width (the desktop layout, whatever the screen), copy the
+    // For the images under Use this chart: draw this view at a fixed width (the desktop layout, whatever the screen), copy the
     // chart with every style written onto its elements, read the key and the framing line, then put the chart back.
     // All in one task, so nothing is painted in between.
     const STYLE_PROPS = ['fill', 'fill-opacity', 'stroke', 'stroke-width', 'stroke-opacity', 'stroke-dasharray', 'stroke-linecap',
       'stroke-linejoin', 'opacity', 'font-size', 'font-weight', 'font-variant-numeric', 'paint-order'];
-    function snapshot(cssWidth, plotH, numbers) {
+    // marks: a reader's notes [{ month: 'YYYY-MM', letter }]; each in view gets a lettered marker on the main line, in the
+    // copy only (Batch B). Returns which were placed.
+    function snapshot(cssWidth, plotH, numbers, marks) {
       const keep = [box.style.width, box.style.maxWidth];
       box.style.width = cssWidth + 'px'; box.style.maxWidth = 'none';
-      exportPlotH = plotH || null; exportNumbers = !!numbers;
+      exportPlotH = plotH || null; exportNumbers = !!numbers; inSnapshot = true;
       try {
         draw();
         const live = box.querySelector('svg'), copy = live.cloneNode(true);
@@ -1140,6 +1304,7 @@
         }
         drop.forEach(n => n.remove());
         copy.removeAttribute('class'); copy.setAttribute('overflow', 'visible');
+        const placed = placeMarks(copy, marks || []);
         const key = Array.from(legend.children).map(span => {
           const i = span.querySelector('i'), text = span.textContent.trim();
           if (!i) return { kind: 'events', text: text.replace(/^[▲▼]\s*/, ''), color: getComputedStyle(span).color };
@@ -1147,22 +1312,50 @@
           if (i.classList.contains('dash')) return { kind: i.classList.contains('dot') ? 'dot' : 'dash', text, color: ci.borderTopColor };
           if (i.classList.contains('hatch')) return { kind: 'hatch', text, color: ci.backgroundColor, edge: ci.borderTopColor, stripe: getComputedStyle(document.documentElement).getPropertyValue('--surface').trim() };
           if (i.classList.contains('rec') || i.classList.contains('lane')) return { kind: 'rec', text, color: ci.backgroundColor, edge: ci.borderTopColor };
-          return { kind: 'line', text, color: ci.backgroundColor };
+          return { kind: 'line', text, color: ci.backgroundColor, slot: i.hasAttribute('data-slot') ? +i.getAttribute('data-slot') : null };
         });
         // the events in view, with the numbers a narrow chart gives them
         const events = Array.from(evList.querySelectorAll('li')).map(li => ({ num: (li.querySelector('.num') || {}).textContent || '', date: (li.querySelector('.d') || {}).textContent || '',
           label: ((Array.from(li.childNodes).find(n => n.nodeType === 3 && n.textContent.trim()) || {}).textContent || '').trim() }));
-        return { svg: copy, width: +live.getAttribute('width'), height: +live.getAttribute('height'), key, events, unlabeled, framing: framing.hidden ? '' : framing.textContent };
+        return { svg: copy, width: +live.getAttribute('width'), height: +live.getAttribute('height'), key, events, unlabeled, framing: framing.hidden ? '' : framing.textContent, placed };
       } finally {
         exportPlotH = null; exportNumbers = false;
         box.style.width = keep[0]; box.style.maxWidth = keep[1];
         draw();
+        inSnapshot = false;
       }
     }
-    return { node: frag, redraw: draw, snapshot, box, panelSlot, seeBar };
+    // A reader's note at a month: a lettered circle just above (or below) the main line's reading for that month, with a
+    // short leader. The reading for a month is the last one dated in it or before it (a quarter or a year covers its months).
+    function placeMarks(svg, marks) {
+      const sc = lastScale, out = [];
+      if (!sc || !marks.length) return out;
+      const rs = getComputedStyle(document.documentElement), tk = n => rs.getPropertyValue(n).trim();
+      const ink = tk('--ink'), ink2 = tk('--ink-2'), surface = tk('--surface'), taken = [];
+      marks.forEach(m => {
+        const endOfMonth = new Date(Date.UTC(+m.month.slice(0, 4), +m.month.slice(5, 7), 0)).getTime(), startOfMonth = parseDate(m.month + '-01').getTime();
+        if (endOfMonth < sc.x0 || startOfMonth > sc.x1) { out.push({ letter: m.letter, inView: false }); return; }
+        let p = null; sc.pts.forEach(q => { if (parseDate(q[0]).getTime() <= endOfMonth) p = q; });
+        if (!p) { out.push({ letter: m.letter, inView: false }); return; }
+        const px = sc.xs(Math.max(sc.x0, parseDate(p[0]).getTime())), py = sc.ys(sc.clampV(p[1]));
+        let cy = py - 22; if (cy - 9 < sc.mT) cy = py + 22;
+        let cx = Math.min(Math.max(px, sc.mL + 9), sc.width - sc.mR - 9);
+        taken.forEach(o => { if (Math.abs(o[0] - cx) < 20 && Math.abs(o[1] - cy) < 20) cx = o[0] + 20; });   // two notes on one month sit side by side
+        taken.push([cx, cy]);
+        const g = svgEl('g', {});
+        g.appendChild(svgEl('line', { x1: px, y1: py, x2: cx, y2: cy + (cy < py ? 9 : -9), stroke: ink2, 'stroke-width': 1 }));
+        g.appendChild(svgEl('circle', { cx: px, cy: py, r: 2.5, fill: ink }));
+        g.appendChild(svgEl('circle', { cx, cy, r: 9, fill: surface, stroke: ink, 'stroke-width': 1.2, 'stroke-dasharray': '2.5 2' }));
+        const tx = svgEl('text', { x: cx, y: cy + 3.8, 'text-anchor': 'middle', style: 'font-size:11px;font-weight:700;fill:' + ink }); tx.textContent = m.letter;
+        g.appendChild(tx); svg.appendChild(g);
+        out.push({ letter: m.letter, inView: true });
+      });
+      return out;
+    }
+    return { node: frag, redraw: draw, snapshot, box, panelSlot, useSlot, seeBar };
   }
 
-  // ---- "Download image": the current view as a PNG ---------------------------
+  // ---- images of the current view (Use this chart) -----------------------
   // Title, latest reading, the chart (with its credit line), the key, the framing line when a political overlay is
   // on, and the page's address. Always in the light colors, the fonts embedded, at twice the size.
   const EXPORT_BOX = 960;                    // the chart's frame width in the image, in CSS pixels
@@ -1175,7 +1368,7 @@
       .then(buf => new Promise((ok, no) => { const fr = new FileReader(); fr.onload = () => ok(fr.result); fr.onerror = no; fr.readAsDataURL(new Blob([buf], { type: 'font/woff2' })); }))
       .then(url => '@font-face{font-family:"Public Sans";font-weight:' + w + ';font-style:normal;src:url(' + url + ') format("woff2")}')))
       .then(parts => parts.join(''))
-      .catch(err => { console.warn('Download image: fonts not embedded', err); fontFaces = null; return ''; });   // system fonts instead
+      .catch(err => { console.warn('Use this chart: fonts not embedded', err); fontFaces = null; return ''; });   // system fonts instead
     return fontFaces;
   }
   // Shared by both image makers: text measured and wrapped in the embedded font, SVG nodes, and the key in rows.
@@ -1214,6 +1407,8 @@
     } else span(f[1], 'font-weight:600;fill:' + tok.ink);
     parts.push(t);
   }
+  // "Black and white, for print": each companion slot's dash, as the export-bw rules in the style sheet draw it
+  const BW_DASH = ['7 3.5', '1.5 3', '9 3 2 3', null];
   // the key from snapshot(), wrapped into rows between x0 and xMax; with parts null it only counts. Returns the last row's baseline.
   function drawKey(parts, key, o) {
     let kx = o.x0, ky = o.y;
@@ -1223,7 +1418,8 @@
       if (kx > o.x0 && (kx + w > o.xMax || lines.length > 1)) { kx = o.x0; ky += o.row; }
       if (parts) {
         const g = svgNode('g', {});
-        if (k.kind === 'line') g.appendChild(svgNode('rect', { x: kx, y: ky - 5, width: 12, height: 3, rx: 1, fill: k.color }));
+        if (k.kind === 'line' && o.bw && k.slot != null && BW_DASH[k.slot]) g.appendChild(svgNode('line', { x1: kx, x2: kx + 14, y1: ky - 4, y2: ky - 4, stroke: k.color, 'stroke-width': 2, 'stroke-dasharray': BW_DASH[k.slot] }));
+        else if (k.kind === 'line') g.appendChild(svgNode('rect', { x: kx, y: ky - 5, width: 12, height: 3, rx: 1, fill: k.color }));
         else if (k.kind === 'dash') g.appendChild(svgNode('line', { x1: kx, x2: kx + 12, y1: ky - 4, y2: ky - 4, stroke: k.color, 'stroke-width': 2, 'stroke-dasharray': '3 2' }));
         else if (k.kind === 'dot') g.appendChild(svgNode('line', { x1: kx + 1, x2: kx + 12, y1: ky - 4, y2: ky - 4, stroke: k.color, 'stroke-width': 2, 'stroke-dasharray': '0.5 3', 'stroke-linecap': 'round' }));
         else if (k.kind === 'rec') g.appendChild(svgNode('rect', { x: kx, y: ky - 9, width: 10, height: 10, fill: k.color, stroke: k.edge, 'stroke-width': 1 }));
@@ -1243,26 +1439,90 @@
     });
     return ky;
   }
-  async function chartImage(ctx, chart) {
+  // ---- the reader's words in an image (Batch B) ------------------------------------
+  // A title and up to three notes at a date, typed under "Change the image". They go only into the copied or downloaded
+  // image (and its alt text): a dashed band labeled as added by the person who made the image, and a lettered marker on
+  // the plot for each note in view. Never drawn on the page, never put in an address, never stored or sent anywhere.
+  const BAND_LABEL = 'ADDED BY THE PERSON WHO MADE THIS IMAGE';
+  const NOT_IN_VIEW = ' (not in this view)';
+  function hasWords(w) { return !!(w && (w.title || (w.notes && w.notes.length))); }
+  function noteWhen(n) { return fmtPeriod(n.month + '-01', 'm', true); }
+  // a note's month is in view when any of it falls within the chart's dates
+  function noteInView(ctx, n) {
+    if (!ctx.view) return false;
+    const a = parseDate(n.month + '-01').getTime(), b = new Date(Date.UTC(+n.month.slice(0, 4), +n.month.slice(5, 7), 0)).getTime();
+    return b >= ctx.view.start.getTime() && a <= ctx.view.end.getTime();
+  }
+  // Lay the band out at a width: its lines, each with its size and weight, and its height. sz: label, title and note sizes.
+  function bandPlan(ctx, w, width, sz) {
+    if (!hasWords(w)) return null;
+    const padX = Math.round(sz.note * 0.9), padY = Math.round(sz.note * 0.75), room = width - padX * 2, rows = [];
+    rows.push({ text: BAND_LABEL, px: sz.label, wt: 600, ink: 'ink2', ls: true });
+    if (w.title) wrapText(w.title, sz.title, 700, room).forEach(l => rows.push({ text: l, px: sz.title, wt: 700, ink: 'ink' }));
+    (w.notes || []).forEach(n => {
+      const lead = n.letter + ' · ', leadW = textWidth(lead, sz.note, 700);
+      const body = noteWhen(n) + ': ' + n.text + (noteInView(ctx, n) ? '' : NOT_IN_VIEW);
+      wrapText(body, sz.note, 400, room - leadW).forEach((l, i) => rows.push({ text: l, px: sz.note, wt: 400, ink: 'ink', lead: i ? null : n.letter, indent: leadW }));
+    });
+    let h = padY;
+    rows.forEach((r, i) => { r.dy = (i ? Math.round(r.px * 1.38) : Math.round(r.px * 1.1)) + (i === 1 ? 3 : 0); h += r.dy; });
+    return { rows, h: h + padY + 2, padX, padY };
+  }
+  function drawBand(parts, plan, x, y, width, tok) {
+    const S = svgNode;
+    parts.push(S('rect', { x: x + 0.5, y: y + 0.5, width: width - 1, height: plan.h - 1, rx: 4, fill: 'none', stroke: tok.ink2, 'stroke-width': 1, 'stroke-dasharray': '4 3' }));
+    let yy = y + plan.padY;
+    plan.rows.forEach(r => {
+      yy += r.dy;
+      const fill = r.ink === 'ink2' ? tok.ink2 : tok.ink, st = 'font-size:' + r.px + 'px;font-weight:' + r.wt + ';fill:' + fill + (r.ls ? ';letter-spacing:0.06em' : '');
+      if (r.indent != null) {
+        if (r.lead) parts.push(S('text', { x: x + plan.padX, y: yy, style: 'font-size:' + r.px + 'px;font-weight:700;fill:' + tok.ink }, r.lead + ' ·'));
+        parts.push(S('text', { x: x + plan.padX + r.indent, y: yy, style: st }, r.text));
+      } else parts.push(S('text', { x: x + plan.padX, y: yy, style: st }, r.text));
+    });
+  }
+
+  // The tokens an image is drawn in: always the light colors; "Black and white, for print" swaps in grays and dashes.
+  function exportTokens() {
+    const cs = getComputedStyle(document.documentElement), v = n => cs.getPropertyValue(n).trim();
+    return { surface: v('--surface'), ink: v('--ink'), ink2: v('--ink-2'), muted: v('--muted'), hairline: v('--hairline'), banner: v('--banner'), bannerInk: v('--banner-ink'), series: v('--series') };
+  }
+  function exportClasses(o, on) {
+    const root = document.documentElement;
+    root.classList.toggle('export-light', on);
+    root.classList.toggle('export-bw', on && o.style === 'bw');
+  }
+  function finishSvg(parts, W, H, fonts, tok, title) {
+    const S = svgNode, out = S('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H });
+    out.appendChild(S('title', {}, title));
+    out.appendChild(S('style', {}, fonts + 'text{font-family:' + EXPORT_FAMILY + '}'));
+    out.appendChild(S('rect', { x: 0, y: 0, width: W, height: H, fill: tok.surface }));
+    parts.forEach(p => out.appendChild(p));
+    return new XMLSerializer().serializeToString(out);
+  }
+  function noteMarks(w) { return hasWords(w) ? (w.notes || []).map(n => ({ month: n.month, letter: n.letter })) : []; }
+
+  // ---- the full-width image ----------------------------------------------------------
+  // Title, latest reading, the chart (with its credit line), the key, the framing line when a political overlay is
+  // on, numbered events, the reader's band, and the page's address. Large text lays the picture out narrower (680 CSS px
+  // instead of 960) and scales it to the same pixel width, so every word comes out about 1.4 times larger.
+  async function chartImage(ctx, chart, o) {
     const t = ctx.tile, d = t.display, c = t.context;
     if (document.fonts && document.fonts.ready) await document.fonts.ready;
     const fonts = await embeddedFonts();
-    const root = document.documentElement;
+    const boxW = o.large ? 680 : EXPORT_BOX, marks = noteMarks(o.words);
     let snap, tok;
-    root.classList.add('export-light');
+    exportClasses(o, true);
     try {
-      snap = chart.snapshot(EXPORT_BOX);
-      if (snap.unlabeled) snap = chart.snapshot(EXPORT_BOX, null, true);   // a picture has no hover: every marker gets named
-      const cs = getComputedStyle(root), v = n => cs.getPropertyValue(n).trim();
-      tok = { surface: v('--surface'), ink: v('--ink'), ink2: v('--ink-2'), muted: v('--muted'), hairline: v('--hairline'), banner: v('--banner'), bannerInk: v('--banner-ink'), series: v('--series') };
-    } finally { root.classList.remove('export-light'); }
+      snap = chart.snapshot(boxW, null, false, marks);
+      if (snap.unlabeled) snap = chart.snapshot(boxW, null, true, marks);   // a picture has no hover: every marker gets named
+      tok = exportTokens();
+    } finally { exportClasses(o, false); }
 
-    const FAMILY = EXPORT_FAMILY, width = textWidth, wrap = wrapText, S = svgNode;
-
+    const width = textWidth, wrap = wrapText, S = svgNode;
     const PAD = 28, W = Math.round(snap.width + PAD * 2), inner = W - PAD * 2;
     const parts = [];
     let y = PAD;
-    // title, then what it measures and the latest reading
     wrap(t.title, 22, 700, inner).forEach(line => { y += 24; parts.push(S('text', { x: PAD, y, style: 'font-size:22px;font-weight:700;fill:' + tok.ink }, line)); });
     const hv = t.headline ? t.headline.value : c.current.value;
     const hdate = t.headline ? fmtPeriod(t.headline.date, 'd', true) : fmtPeriod(c.current.date, pf(t), true);
@@ -1270,25 +1530,21 @@
     y += 4;
     wrap(sub, 13.5, 400, inner).forEach(line => { y += 19; parts.push(S('text', { x: PAD, y, style: 'font-size:13.5px;fill:' + tok.ink2 }, line)); });
     y += 12;
-    // the chart, as drawn on the page (credit line included)
     snap.svg.setAttribute('x', PAD); snap.svg.setAttribute('y', y);
     parts.push(snap.svg);
     y += snap.height + 12;
-    // the key, wrapped into rows
-    y = drawKey(parts, snap.key, { x0: PAD, xMax: W - PAD, y: y + 13, px: 12.5, row: 19, gap: 18, ink: tok.ink2 }) + 8;
-    // the framing line that political overlays carry on the page goes with the picture
+    y = drawKey(parts, snap.key, { x0: PAD, xMax: W - PAD, y: y + 13, px: 12.5, row: 19, gap: 18, ink: tok.ink2, bw: o.style === 'bw' }) + 8;
     if (snap.framing) {
       const lines = wrap(snap.framing, 13, 400, inner - 24), h = lines.length * 18 + 14;
       y += 10;
-      parts.push(S('rect', { x: PAD, y, width: inner, height: h, rx: 4, fill: tok.banner }));
+      parts.push(S('rect', { x: PAD, y, width: inner, height: h, rx: 4, fill: tok.banner, stroke: o.style === 'bw' ? tok.ink2 : 'none', 'stroke-width': 1 }));
       lines.forEach((line, i) => parts.push(S('text', { x: PAD + 12, y: y + 20 + i * 18, style: 'font-size:13px;fill:' + tok.bannerInk }, line)));
       y += h;
     }
-    // numbered events, in two columns
     const evs = snap.events.filter(e => e.num);
     if (evs.length) {
       y += 8;
-      const colW = (inner - 24) / 2, half = Math.ceil(evs.length / 2), lines = evs.map(e => wrap(e.date + '\u2002' + e.label, 12.5, 400, colW - 26));
+      const colW = (inner - 24) / 2, half = Math.ceil(evs.length / 2), lines = evs.map(e => wrap(e.date + ' ' + e.label, 12.5, 400, colW - 26));
       for (let r = 0; r < half; r++) {
         [[r, PAD], [r + half, PAD + colW + 24]].forEach(([i, x]) => { if (!lines[i]) return;
           lines[i].forEach((line, j) => { const yy = y + 17 * (j + 1);
@@ -1297,36 +1553,23 @@
         y += 17 * Math.max(lines[r].length, lines[r + half] ? lines[r + half].length : 0);
       }
     }
-    // where it came from
+    const band = bandPlan(ctx, o.words, inner, { label: 11, title: 15, note: 13 });
+    if (band) { y += 14; drawBand(parts, band, PAD, y, inner, tok); y += band.h + 8; }
     y += 22;
     parts.push(S('line', { x1: PAD, x2: W - PAD, y1: y - 15, y2: y - 15, stroke: tok.hairline, 'stroke-width': 1 }));
     const reuse1 = 'Free to reuse with credit · CC BY 4.0';
     brandFooter(parts, tok, PAD, y, 12, W - PAD * 2 - textWidth(reuse1, 12) - 24, 'economyincontext.org' + chartPath(t.id));
     parts.push(S('text', { x: W - PAD, y, 'text-anchor': 'end', style: 'font-size:12px;fill:' + tok.muted }, reuse1));
     const H = Math.round(y + PAD - 6);
-
-    const out = S('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H });
-    out.appendChild(S('style', {}, fonts + 'text{font-family:' + FAMILY + '}'));
-    out.appendChild(S('rect', { x: 0, y: 0, width: W, height: H, fill: tok.surface }));
-    parts.forEach(p => out.appendChild(p));
-    const xml = new XMLSerializer().serializeToString(out);
-
-    const img = new Image();
-    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xml);
-    await img.decode();
-    await new Promise(r => setTimeout(r, 80));     // give the embedded fonts a beat in browsers that load them late
-    const scale = 2, canvas = document.createElement('canvas');
-    canvas.width = W * scale; canvas.height = H * scale;
-    const g = canvas.getContext('2d');
-    g.drawImage(img, 0, 0, canvas.width, canvas.height);
-    return new Promise((ok, no) => canvas.toBlob(b => b ? ok(b) : no(new Error('the browser would not make a PNG')), 'image/png'));
+    const scale = o.large ? 2 * (EXPORT_BOX / boxW) : 2;
+    return { xml: finishSvg(parts, W, H, fonts, tok, t.title + ' — Economy in Context'), W, H, pxW: Math.round(W * scale), pxH: Math.round(H * scale) };
   }
 
-  // ---- "Download image" for social posts -------------------------------------
+  // ---- the social shapes -----------------------------------------------------------
   // Each shape is laid out for its own frame, not cropped from the wide image: title, latest reading, the sentence,
-  // the chart with its plot stretched to fill, key, framing line, numbered events and the address. It is drawn at a
-  // small CSS width so the type stays readable in a phone feed, then scaled to the platform's pixels; a crowded view
-  // (many lanes, a long key) is drawn a little smaller rather than cut. Always in the light colors, fonts embedded.
+  // the chart with its plot stretched to fill, key, framing line, numbered events, the reader's band and the address. It
+  // is drawn at a small CSS width so the type stays readable in a phone feed, then scaled to the platform's pixels; a
+  // crowded view (many lanes, a long key) is drawn a little smaller rather than cut. Large text starts at 3/4 the width.
   // Story leaves the top and bottom 14% empty, where the apps put their controls.
   const SHAPES = [
     { key: 'wide', label: 'Wide 16:9', where: 'Nextdoor, X, LinkedIn, Facebook', w: 1600, h: 900, css: 720 },
@@ -1334,23 +1577,19 @@
     { key: 'portrait', label: 'Portrait 4:5', where: 'Instagram, Facebook, Threads, Bluesky', w: 1080, h: 1350, css: 480 },
     { key: 'story', label: 'Story 9:16', where: 'Instagram and Facebook stories', w: 1080, h: 1920, css: 480, safe: 0.14 },
   ];
-  async function socialImage(ctx, chart, shape) {
+  async function socialImage(ctx, chart, shape, o) {
     const t = ctx.tile, d = t.display, c = t.context;
     if (document.fonts && document.fonts.ready) await document.fonts.ready;
     const fonts = await embeddedFonts();
-    const FAMILY = EXPORT_FAMILY, width = textWidth, wrap = wrapText, S = svgNode;
-    const PAD = 20, MIN_PLOT = 110, wide = shape.w / shape.h > 1.5;
+    const width = textWidth, wrap = wrapText, S = svgNode;
+    const PAD = 20, MIN_PLOT = 110, wide = shape.w / shape.h > 1.5, base = shape.css * (o.large ? 0.75 : 1), marks = noteMarks(o.words);
     const hv = t.headline ? t.headline.value : c.current.value;
     const hdate = t.headline ? fmtPeriod(t.headline.date, 'd', true) : fmtPeriod(c.current.date, pf(t), true);
     const vtxt = fmtValue(hv, d), sent = contextSentence(t), vpx = wide ? 28 : 32;
-    // Lay the picture out at a CSS width of shape.css × f. Everything is measured first, then the plot takes what is
-    // left. If the plot would fall under MIN_PLOT, the next f draws the whole picture a little smaller; only at the
-    // last size does a long events list give way to "…and N more".
     function plan(f, cut) {
-      const W = shape.css * f, H = shape.h / (shape.w / W), inner = W - PAD * 2;
+      const W = base * f, H = shape.h / (shape.w / W), inner = W - PAD * 2;
       const top = shape.safe ? H * shape.safe : PAD - 2, bottom = H - (shape.safe ? H * shape.safe : PAD - 4);
       const KEY = y => ({ x0: PAD, xMax: W - PAD, y: y + 12, px: 11.5, row: 17, gap: 14 });
-      // a wide frame is short: the subtitle rides on the title's line if it fits, and the sentence beside the reading
       const titleL = wrap(t.title, 19, 700, inner);
       const subInline = wide && titleL.length === 1 && width(t.title, 19, 700) + 12 + width(t.subtitle, 12.5) <= inner;
       const subL = wide ? [] : wrap(t.subtitle, 12.5, 400, inner);
@@ -1358,40 +1597,36 @@
       const sentL = sentInline ? [] : wrap(sent, 14, 600, inner);
       const adjL = adjusted(t) ? wrap('The sentence is in today’s dollars; the chart’s main line is the price as charged.', 11.5, 400, inner) : [];
       const headH = titleL.length * 22 + subL.length * 17 + (wide ? 34 : 40) + sentL.length * 19 + (adjL.length ? 3 + adjL.length * 15 : 0) + 10;
-      // the chart once at a trial height, for its fixed parts (axis, lanes, sub-panels), its key and its events
       let snap0 = chart.snapshot(inner + 18, 200), numbers = false;
-      if (snap0.unlabeled) { numbers = true; snap0 = chart.snapshot(inner + 18, 200, true); }   // a picture has no hover: every marker gets named
+      if (snap0.unlabeled) { numbers = true; snap0 = chart.snapshot(inner + 18, 200, true); }
       const fixed = snap0.height - 200;
       const keyH = drawKey(null, snap0.key, KEY(0)) - KEY(0).y + 17 + 4;
       const framL = snap0.framing ? wrap(snap0.framing, 11.5, 400, inner - 16) : [];
       const framH = framL.length ? framL.length * 15 + 12 + 8 : 0;
-      // a narrow chart numbers its events; the list goes in the picture so every marker is named
+      const band = bandPlan(ctx, o.words, inner, { label: 9.5, title: 13, note: 11.5 }), bandH = band ? band.h + 8 : 0;
       let evs = snap0.events.filter(e => e.num), more = 0, cols = 1;
       const colW = () => cols === 1 ? inner : (inner - 14) / 2;
-      const evLines = list => list.map(e => wrap(e.date + ' ' + e.label, 11, 400, colW() - 22));
-      // in two columns each row is as tall as the taller of its pair
+      const evLines = list => list.map(e => wrap(e.date + ' ' + e.label, 11, 400, colW() - 22));
       const evH = () => { if (!evs.length) return 0; const ls = evLines(evs).map(l => l.length); let h = 0;
         if (cols === 1) h = ls.reduce((a, n) => a + n, 0); else { const half = Math.ceil(ls.length / 2); for (let i = 0; i < half; i++) h += Math.max(ls[i], ls[i + half] || 0); }
         return 8 + h * 14 + (more ? 14 : 0); };
-      const footH = 34, room = () => (bottom - top) - headH - fixed - keyH - framH - evH() - footH;
+      const footH = 34, room = () => (bottom - top) - headH - fixed - keyH - framH - bandH - evH() - footH;
       let plotH = room();
       if (plotH < MIN_PLOT && evs.length > 3) { cols = 2; plotH = room(); }
       while (cut && plotH < MIN_PLOT && evs.length > 1) { evs = evs.slice(0, -1); more++; plotH = room(); }
       const fits = plotH >= MIN_PLOT;
-      plotH = Math.max(MIN_PLOT, Math.min(plotH, Math.round(inner * 0.72)));   // a very tall plot would steepen every slope
-      return { fits, numbers, W, H, inner, top, bottom, KEY, titleL, subInline, subL, sentInline, sentL, adjL, framL, evs, more, cols, colW: colW(), evLines, plotH,
-               used: headH + fixed + plotH + keyH + framH + evH() + footH };
+      plotH = Math.max(MIN_PLOT, Math.min(plotH, Math.round(inner * 0.72)));
+      return { fits, numbers, W, H, inner, top, bottom, KEY, titleL, subInline, subL, sentInline, sentL, adjL, framL, band, evs, more, cols, colW: colW(), evLines, plotH,
+               used: headH + fixed + plotH + keyH + framH + bandH + evH() + footH };
     }
-    const root = document.documentElement;
     let L, snap, tok;
-    root.classList.add('export-light');
+    exportClasses(o, true);
     try {
-      const cs = getComputedStyle(root), v = n => cs.getPropertyValue(n).trim();
-      tok = { surface: v('--surface'), ink: v('--ink'), ink2: v('--ink-2'), muted: v('--muted'), hairline: v('--hairline'), banner: v('--banner'), bannerInk: v('--banner-ink'), series: v('--series') };
+      tok = exportTokens();
       for (const f of [1, 1.15, 1.3, 1.45, 1.6]) { L = plan(f, false); if (L.fits) break; }
       if (!L.fits) L = plan(1.6, true);
-      snap = chart.snapshot(L.inner + 18, L.plotH, L.numbers);
-    } finally { root.classList.remove('export-light'); }
+      snap = chart.snapshot(L.inner + 18, L.plotH, L.numbers, marks);
+    } finally { exportClasses(o, false); }
 
     const { W, H, inner } = L, parts = [];
     let y = L.top + Math.max(0, ((L.bottom - L.top) - L.used) / 2);
@@ -1410,10 +1645,10 @@
     snap.svg.setAttribute('x', PAD - (snap.width - inner) / 2); snap.svg.setAttribute('y', y);
     parts.push(snap.svg);
     y += snap.height + 4;
-    y = drawKey(parts, snap.key, Object.assign(L.KEY(y), { ink: tok.ink2 })) + 6;
+    y = drawKey(parts, snap.key, Object.assign(L.KEY(y), { ink: tok.ink2, bw: o.style === 'bw' })) + 6;
     if (L.framL.length) {
       const h = L.framL.length * 15 + 12; y += 8;
-      parts.push(S('rect', { x: PAD, y, width: inner, height: h, rx: 4, fill: tok.banner }));
+      parts.push(S('rect', { x: PAD, y, width: inner, height: h, rx: 4, fill: tok.banner, stroke: o.style === 'bw' ? tok.ink2 : 'none', 'stroke-width': 1 }));
       L.framL.forEach((line, i) => parts.push(S('text', { x: PAD + 8, y: y + 17 + i * 15, style: 'font-size:11.5px;fill:' + tok.bannerInk }, line)));
       y += h;
     }
@@ -1431,23 +1666,68 @@
       }
       if (L.more) { y += 14; parts.push(S('text', { x: PAD + 22, y, style: 'font-size:11px;fill:' + tok.muted }, '…and ' + L.more + ' more on the chart page')); }
     }
-    // where it came from, along the bottom of the safe area
+    if (L.band) { y += 8; drawBand(parts, L.band, PAD, y, inner, tok); y += L.band.h; }
     const footY = L.bottom - 6;
     parts.push(S('line', { x1: PAD, x2: W - PAD, y1: footY - 15, y2: footY - 15, stroke: tok.hairline, 'stroke-width': 1 }));
     brandFooter(parts, tok, PAD, footY, 11.5, W - PAD * 2 - textWidth('CC BY 4.0', 11.5) - 16, 'economyincontext.org' + chartPath(t.id));
     parts.push(S('text', { x: W - PAD, y: footY, 'text-anchor': 'end', style: 'font-size:11.5px;fill:' + tok.muted }, 'CC BY 4.0'));
+    return { xml: finishSvg(parts, W, H, fonts, tok, t.title + ' — Economy in Context'), W, H, pxW: shape.w, pxH: shape.h };
+  }
 
-    const out = S('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H });
-    out.appendChild(S('style', {}, fonts + 'text{font-family:' + FAMILY + '}'));
-    out.appendChild(S('rect', { x: 0, y: 0, width: W, height: H, fill: tok.surface }));
-    parts.forEach(p => out.appendChild(p));
-    const img = new Image();
-    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(out));
-    await img.decode();
-    await new Promise(r => setTimeout(r, 80));     // give the embedded fonts a beat, as the full-width image does
-    const canvas = document.createElement('canvas'); canvas.width = shape.w; canvas.height = shape.h;
-    canvas.getContext('2d').drawImage(img, 0, 0, shape.w, shape.h);
-    return new Promise((ok, no) => canvas.toBlob(b => b ? ok(b) : no(new Error('the browser would not make a PNG')), 'image/png'));
+  // ---- one picture, three files: SVG as drawn, PNG from it, PDF around the PNG --------------
+  function makeImage(ctx, chart, o) {
+    const shape = SHAPES.find(sh => sh.key === o.size);
+    return shape ? socialImage(ctx, chart, shape, o) : chartImage(ctx, chart, o);
+  }
+  async function toCanvas(img) {
+    const pic = new Image();
+    pic.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(img.xml);
+    await pic.decode();
+    await new Promise(r => setTimeout(r, 80));     // give the embedded fonts a beat in browsers that load them late
+    const canvas = document.createElement('canvas'); canvas.width = img.pxW; canvas.height = img.pxH;
+    const g = canvas.getContext('2d'); g.fillStyle = '#ffffff'; g.fillRect(0, 0, img.pxW, img.pxH);
+    g.drawImage(pic, 0, 0, img.pxW, img.pxH);
+    return canvas;
+  }
+  function pngOf(canvas) { return new Promise((ok, no) => canvas.toBlob(b => b ? ok(b) : no(new Error('the browser would not make a PNG')), 'image/png')); }
+  function svgOf(img) { return new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n' + img.xml], { type: 'image/svg+xml' }); }
+  // A PDF by hand, no library: one US Letter page (turned to the picture's shape, half-inch margins) holding the picture
+  // as an image, compressed losslessly where the browser can (CompressionStream, the zlib format PDF's FlateDecode reads),
+  // else as a high-quality JPEG. The page's text is in the picture, so it prints exactly as the PNG looks.
+  async function pdfOf(img, title) {
+    const canvas = await toCanvas(img), w = canvas.width, h = canvas.height;
+    let bytes, filter;
+    if (typeof CompressionStream === 'function') {
+      const px = canvas.getContext('2d').getImageData(0, 0, w, h).data, rgb = new Uint8Array(w * h * 3);
+      for (let i = 0, j = 0; i < px.length; i += 4, j += 3) { rgb[j] = px[i]; rgb[j + 1] = px[i + 1]; rgb[j + 2] = px[i + 2]; }
+      bytes = new Uint8Array(await new Response(new Blob([rgb]).stream().pipeThrough(new CompressionStream('deflate'))).arrayBuffer());
+      filter = '/FlateDecode';
+    } else {
+      const jpg = await new Promise((ok, no) => canvas.toBlob(b => b ? ok(b) : no(new Error('the browser would not make a JPEG')), 'image/jpeg', 0.95));
+      bytes = new Uint8Array(await jpg.arrayBuffer()); filter = '/DCTDecode';
+    }
+    const land = img.W > img.H, PW = land ? 792 : 612, PH = land ? 612 : 792, M = 36;
+    const k = Math.min((PW - 2 * M) / img.W, (PH - 2 * M) / img.H), dw = +(img.W * k).toFixed(2), dh = +(img.H * k).toFixed(2);
+    const dx = +((PW - dw) / 2).toFixed(2), dy = +(PH - M - dh).toFixed(2);
+    const hex = s => { let o = 'FEFF'; for (const ch of s) { const cp = ch.codePointAt(0); const u = cp > 0xffff ? [0xd800 + ((cp - 0x10000) >> 10), 0xdc00 + ((cp - 0x10000) & 0x3ff)] : [cp]; u.forEach(x => { o += x.toString(16).padStart(4, '0').toUpperCase(); }); } return '<' + o + '>'; };
+    const enc = new TextEncoder(), chunks = [], offs = [];
+    let len = 0;
+    const put = x => { const b = typeof x === 'string' ? enc.encode(x) : x; chunks.push(b); len += b.length; };
+    const obj = (n, parts) => { offs[n] = len; put(n + ' 0 obj\n'); parts.forEach(put); put('\nendobj\n'); };
+    const now = new Date(), pad2 = n => String(n).padStart(2, '0');
+    const stamp = 'D:' + now.getUTCFullYear() + pad2(now.getUTCMonth() + 1) + pad2(now.getUTCDate()) + pad2(now.getUTCHours()) + pad2(now.getUTCMinutes()) + pad2(now.getUTCSeconds()) + 'Z';
+    const content = 'q ' + dw + ' 0 0 ' + dh + ' ' + dx + ' ' + dy + ' cm /Im0 Do Q';
+    put('%PDF-1.4\n%âãÏÓ\n');
+    obj(1, ['<< /Type /Catalog /Pages 2 0 R >>']);
+    obj(2, ['<< /Type /Pages /Kids [3 0 R] /Count 1 >>']);
+    obj(3, ['<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + PW + ' ' + PH + '] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>']);
+    obj(4, ['<< /Type /XObject /Subtype /Image /Width ' + w + ' /Height ' + h + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter ' + filter + ' /Length ' + bytes.length + ' >>\nstream\n', bytes, '\nendstream']);
+    obj(5, ['<< /Length ' + content.length + ' >>\nstream\n' + content + '\nendstream']);
+    obj(6, ['<< /Title ' + hex(title) + ' /Author ' + hex('Economy in Context') + ' /Subject ' + hex('Free to reuse with credit, CC BY 4.0. economyincontext.org') + ' /Producer (economyincontext.org) /CreationDate (' + stamp + ') >>']);
+    const xref = len;
+    put('xref\n0 7\n0000000000 65535 f \n' + offs.slice(1).map(o => String(o).padStart(10, '0') + ' 00000 n \n').join(''));
+    put('trailer\n<< /Size 7 /Root 1 0 R /Info 6 0 R >>\nstartxref\n' + xref + '\n%%EOF\n');
+    return new Blob(chunks, { type: 'application/pdf' });
   }
 
   // ---- overlays panel -----------------------------------------------------
@@ -1630,17 +1910,20 @@
       out.slice().reverse().forEach(r => { const tr = el('tr'); tr.appendChild(el('td', { text: fmtPeriod(r[0], pf(t)) })); for (let i = 1; i < r.length; i++) tr.appendChild(el('td', { class: 'num', text: r[i] == null ? '' : fmtValue(r[i], i === 1 ? d : (comps[i - 2].display || d)) })); tbl.appendChild(tr); });
     }
     det.addEventListener('toggle', () => { if (det.open && cur) refresh(cur[0], cur[1]); });
-    function csv() {
+    // all readings, or (with a view) the readings in view: the chart's dates, and the series that are on
+    function csv(view) {
       const comps = activeSeries();
+      const inView = p => !view || (parseDate(p[0]).getTime() >= view.start.getTime() && parseDate(p[0]).getTime() <= view.end.getTime());
+      const span = view ? ', ' + fmtPeriod(view.first, pf(t), true) + ' to ' + fmtPeriod(view.last, pf(t), true) + ' (the readings in view)' : '';
       // the CSV carries raw values, so its header names the raw unit where the page shows a scaled one (cents vs dollars)
       // two lines saying what this is and where it came from, a blank line, then the table
       const series = [t.source.series].concat(comps.map(o => o.source && o.source.label ? o.source.label.replace(/^FRED /, '') : null).filter(Boolean));
-      const lines = [csvQ(t.title + ' (' + (d.csv_unit || d.unit) + '), from Economy in Context: ' + SITE + chartPath(t.id)),
+      const lines = [csvQ(t.title + ' (' + (d.csv_unit || d.unit) + ')' + span + ', from Economy in Context: ' + SITE + chartPath(t.id)),
         csvQ('Data: ' + (t.agency ? t.agency + ' via ' : '') + 'FRED series ' + series.join(', ') + ', retrieved ' + String(ctx.data.generated || '').slice(0, 10)
           + (d.flipped ? '. Sign flipped from FRED: a deficit is positive here, negative in ' + t.series : '')), '',
         'date,' + csvQ(t.title + ' (' + (d.csv_unit || d.unit) + ')') + comps.map(o => ',' + csvQ(o.label)).join('')];
       const maps = comps.map(joinMap);
-      t.observations.forEach(p => lines.push(p[0] + ',' + p[1] + maps.map((m, k) => { const v = lookup(m, comps[k], p[0]); return ',' + (v == null ? '' : v); }).join('')));
+      t.observations.filter(inView).forEach(p => lines.push(p[0] + ',' + p[1] + maps.map((m, k) => { const v = lookup(m, comps[k], p[0]); return ',' + (v == null ? '' : v); }).join('')));
       lines.push(''); lines.push('# ' + ctx.data.attribution); lines.push('# ' + t.source.url);
       return lines.join('\n');
     }
@@ -1648,17 +1931,322 @@
     return { node: det, refresh, csv };
   }
 
+  // ---- Use this chart (Batch B, Nov 6) ------------------------------------------------
+  // Copy image and Download in view; then Change the image (the reader's words, size, style, a live preview), Link or
+  // embed, Cite this chart, and Alt text for your copy. Everything is made in the browser from the view on screen.
+  const SIZES = [{ key: 'full', label: 'Full width', hint: 'About 2,000 px wide · slides, articles, print' }]
+    .concat(SHAPES.map(sh => ({ key: sh.key, label: sh.label, hint: sh.w.toLocaleString('en-US') + ' × ' + sh.h.toLocaleString('en-US') + ' px · ' + sh.where })));
+  const MLA_MONTHS = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
+  const SMALL_WORDS = /^(a|an|and|as|at|but|by|for|from|in|nor|of|on|or|per|the|to|vs\.?|with)$/i;
+  // titles in MLA and Chicago are in title case: each word capitalized except short joining words (never the first);
+  // a word already in capitals (CPI, GDP, U.S.) stays as it is
+  function titleCase(s) {
+    return s.split(' ').map((w, i) => {
+      if (i && SMALL_WORDS.test(w)) return w.toLowerCase();
+      return w.replace(/(^|[-(“"])([a-z])/g, (m, a, b) => a + b.toUpperCase());
+    }).join(' ');
+  }
+  // a name after "and" drops its capital unless it opens an abbreviation ("U-6", "PCE")
+  // names that stay capitalized mid-sentence: the Fed and its Reserve, Congress's chambers, the Sahm rule
+  function lowerFirst(s) { return /^[A-Z](\.|[A-Z0-9-])/.test(s) || /^(Fed\b|Fed’s|Fed's|Federal Reserve|Senate|House|Sahm)/.test(s) ? s : s.charAt(0).toLowerCase() + s.slice(1); }
+  // an era lane as the alt text names it after "bands below the chart mark …"; a lane not listed here keeps its label
+  const ERA_ALT = { president: 'the party of the president', senate: 'the Senate majority', house: 'the House majority', unified: 'unified or divided government',
+    fed_chair: 'each Federal Reserve chair', fed_balance_sheet: 'Fed bond-buying (QE) and runoff', fed_cycles: 'Fed rate hikes and cuts', wars: 'the years the U.S. was at war' };
+  // a reference line as the alt text names it after "dashed lines mark …"; {p} is the value the label gives in parentheses,
+  // so the wording follows the data. A line not listed here takes "the" and its label.
+  const REF_ALT = { fed_target: 'the Fed’s 2% inflation target', fomc_longrun_ffr: 'the FOMC longer-run Fed funds estimate{p}', fomc_longrun_unrate: 'the FOMC longer-run unemployment estimate{p}',
+    cbo_debt_2056: 'the CBO projection for 2056{p}', debt_ww2_peak: 'the 1946 peak{p}', sahm_threshold: 'the Sahm rule threshold{p}', baseline: 'the 2015–19 average', median: 'the median since records began' };
+  function refAlt(o) { const m = o.label.match(/\s*(\([^()]*\))\s*$/); return REF_ALT[o.id] ? REF_ALT[o.id].replace('{p}', m ? ' ' + m[1] : '') : 'the ' + lowerFirst(o.label); }
+  function listWords(xs) { return xs.length < 2 ? xs.join('') : xs.slice(0, -1).join(', ') + (xs.length > 2 ? ',' : '') + ' and ' + xs[xs.length - 1]; }
+  function longDate(dt) { return MONTHS_LONG[dt.getMonth()] + ' ' + dt.getDate() + ', ' + dt.getFullYear(); }
+
+  function buildUse(ctx, chart, table) {
+    const t = ctx.tile, d = t.display;
+    const sec = el('section', { class: 'use', id: 'use-this-chart', 'aria-labelledby': 'use-h' });
+    sec.appendChild(el('h2', { id: 'use-h', text: 'Use this chart', tabindex: '-1' }));
+    const opts = { size: 'full', style: 'color', large: false, words: { title: '', notes: [] } };
+    const status = el('p', { class: 'use-status', role: 'status', 'aria-live': 'polite' });
+    let statusTimer = 0;
+    function say(msg, keep) { clearTimeout(statusTimer); status.textContent = msg; if (!keep) statusTimer = setTimeout(() => { status.textContent = ''; }, 9000); }
+    const base = () => 'economyincontext-' + t.id + '-' + (state.range || 'custom') + (opts.size !== 'full' ? '-' + opts.size : '') + (opts.style === 'bw' ? '-bw' : '') + (opts.large ? '-large' : '');
+    function save(blob, name) {
+      const a = el('a', { href: URL.createObjectURL(blob), download: name });
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 30000);
+    }
+    // the reader's words as the image uses them: empty notes left out, each note keeping its row's letter
+    function words() {
+      const notes = [];
+      noteRows.forEach(r => { const m = r.month.value, x = r.text.value.trim(); if (/^\d{4}-\d{2}$/.test(m) && x) notes.push({ month: m, text: x, letter: r.letter }); });
+      return { title: titleI.value.trim(), notes };
+    }
+    function current() { opts.words = words(); return Object.assign({}, opts); }
+    let busy = false;
+    async function run(label, job) {
+      if (busy) return;
+      busy = true; sec.setAttribute('aria-busy', 'true'); say(label, true);
+      try { await job(); } catch (err) { console.error('Use this chart:', err); say('The image could not be made. Please try again.'); }
+      finally { busy = false; sec.removeAttribute('aria-busy'); }
+    }
+
+    // Copy image (the primary action) and Download
+    const row = el('div', { class: 'use-row' });
+    const copyBtn = el('button', { type: 'button', class: 'btn primary', text: 'Copy image' });
+    copyBtn.addEventListener('click', () => run('Making the image…', async () => {
+      const o = current(), name = base() + '.png';
+      const made = makeImage(ctx, chart, o).then(toCanvas).then(pngOf);
+      let copied = false, why = '';
+      if (navigator.clipboard && navigator.clipboard.write && typeof ClipboardItem === 'function') {
+        try {
+          // the item is handed the promise at once, so browsers that need the click's own moment (Safari) still allow it
+          let item;
+          try { item = new ClipboardItem({ 'image/png': made }); } catch (e) { item = new ClipboardItem({ 'image/png': await made }); }
+          await navigator.clipboard.write([item]); copied = true;
+        } catch (e) { why = e && e.name; }
+      }
+      const png = await made;   // a failure to make the picture is reported as such, not as a refused copy
+      if (copied) { say('Image copied. Paste it into a slide, a document or a post.'); return; }
+      save(png, name);
+      say(why === 'NotAllowedError' ? 'This browser didn’t allow copying the image, so it was downloaded instead: ' + name + '.' : 'This browser can’t copy images, so the image was downloaded instead: ' + name + '.');
+    }));
+    const dlWrap = el('div', { class: 'dl-wrap' });
+    const dlBtn = el('button', { type: 'button', class: 'btn', text: 'Download', 'aria-expanded': 'false', 'aria-controls': 'dl-list' });
+    const dlList = el('ul', { class: 'dl-list', id: 'dl-list', hidden: '' });
+    function closeList(focus) { dlList.hidden = true; dlBtn.setAttribute('aria-expanded', 'false'); if (focus) dlBtn.focus(); }
+    dlBtn.addEventListener('click', () => { const open = dlList.hidden; dlList.hidden = !open; dlBtn.setAttribute('aria-expanded', String(open)); if (open) dlList.querySelector('button').focus(); });
+    const items = [
+      ['Image (PNG)', () => run('Making the image…', async () => { const name = base() + '.png'; save(await pngOf(await toCanvas(await makeImage(ctx, chart, current()))), name); say('Downloaded ' + name + '.'); })],
+      ['Vector (SVG)', () => run('Making the image…', async () => { const name = base() + '.svg'; save(svgOf(await makeImage(ctx, chart, current())), name); say('Downloaded ' + name + '.'); })],
+      ['PDF', () => run('Making the PDF…', async () => { const name = base() + '.pdf'; save(await pdfOf(await makeImage(ctx, chart, current()), t.title + ' — Economy in Context'), name); say('Downloaded ' + name + '.'); })],
+      ['Data in view (CSV)', () => { const name = 'economyincontext-' + t.id + '-in-view.csv'; save(new Blob([table.csv(ctx.view)], { type: 'text/csv' }), name); say('Downloaded ' + name + '.'); }],
+      ['All readings (CSV)', () => { const name = 'economyincontext-' + t.id + '.csv'; save(new Blob([table.csv()], { type: 'text/csv' }), name); say('Downloaded ' + name + '.'); }],
+    ];
+    items.forEach(([label, go]) => { const b = el('button', { type: 'button', text: label }); b.addEventListener('click', () => { closeList(true); go(); }); dlList.appendChild(el('li', {}, [b])); });
+    dlList.addEventListener('keydown', e => {
+      const bs = Array.from(dlList.querySelectorAll('button')), i = bs.indexOf(document.activeElement);
+      if (e.key === 'Escape') { e.preventDefault(); closeList(true); }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); bs[(i + 1) % bs.length].focus(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); bs[(i - 1 + bs.length) % bs.length].focus(); }
+    });
+    document.addEventListener('click', e => { if (!dlList.hidden && !dlWrap.contains(e.target)) closeList(false); });
+    dlWrap.appendChild(dlBtn); dlWrap.appendChild(dlList);
+    row.appendChild(copyBtn); row.appendChild(dlWrap);
+    sec.appendChild(row);
+    const help = el('p', { class: 'use-help' });
+    sec.appendChild(help); sec.appendChild(status);
+    function syncHelp() {
+      const sz = SIZES.find(x => x.key === opts.size).label, w = words();
+      help.textContent = 'Copies as ' + sz + ', ' + (opts.style === 'bw' ? 'Black and white' : 'Color') + (opts.large ? ', large text' : '') + (hasWords(w) ? ', with your words' : '')
+        + '. Download has the image, a vector file, a PDF and the data.';
+    }
+
+    // Change the image
+    const chg = el('details', { class: 'chg' }), chgBody = el('div', { class: 'dbody' });
+    chg.appendChild(el('summary', { text: 'Change the image' })); chg.appendChild(chgBody);
+    const wf = el('fieldset', {}); wf.appendChild(el('legend', { text: 'Your words' }));
+    const titleI = el('input', { type: 'text', id: 'u-title', class: 'w-title', maxlength: '80', autocomplete: 'off', spellcheck: 'true' });
+    wf.appendChild(el('label', { class: 'f', for: 'u-title', text: 'Your title (optional, up to 80 characters)' })); wf.appendChild(titleI);
+    const notesBox = el('div', { class: 'notes-box' }), wMsg = el('p', { class: 'w-msg', role: 'alert' });
+    const addNote = el('button', { type: 'button', class: 'btn small', text: 'Add another note' });
+    const first = t.observations[0][0].slice(0, 7), last = t.observations[t.observations.length - 1][0].slice(0, 7);
+    const noteRows = [];
+    function relabel() {
+      noteRows.forEach((r, i) => { r.letter = 'ABC'[i]; r.wrap.setAttribute('aria-label', 'Note ' + r.letter); r.lab.textContent = 'Note ' + r.letter + ' month'; r.tlab.textContent = 'Note ' + r.letter + ' text (up to 60 characters)'; r.rm.textContent = 'Remove'; r.rm.setAttribute('aria-label', 'Remove note ' + r.letter); });
+      addNote.hidden = noteRows.length >= 3;
+    }
+    function newRow(focus) {
+      const n = noteRows.length, idm = 'u-month-' + (++noteSeq), idt = 'u-note-' + noteSeq;
+      const month = el('input', { type: 'month', id: idm, min: first, max: last, placeholder: 'YYYY-MM' }), text = el('input', { type: 'text', id: idt, maxlength: '60', autocomplete: 'off' });
+      const lab = el('label', { class: 'f', for: idm }), tlab = el('label', { class: 'f', for: idt }), rm = el('button', { type: 'button', class: 'btn small' });
+      const wrap = el('div', { class: 'note-row', role: 'group' }, [el('div', {}, [lab, month]), el('div', { class: 'n-text' }, [tlab, text]), el('div', {}, [rm])]);
+      const r = { month, text, lab, tlab, rm, wrap, letter: 'ABC'[n] };
+      month.addEventListener('change', () => {
+        const v = month.value.trim(), form = v && !/^\d{4}-(0[1-9]|1[0-2])$/.test(v), bad = form || (v && (v < first || v > last));
+        wMsg.textContent = form ? 'Type the month as year and month, like 2022-06.' : bad ? 'The data runs from ' + fmtPeriod(first + '-01', 'm') + ' to ' + fmtPeriod(last + '-01', 'm') + '. Pick a month in that span.' : '';
+        month.setAttribute('aria-invalid', String(!!bad)); if (bad) month.value = '';
+        changed();
+      });
+      text.addEventListener('input', changed);
+      rm.addEventListener('click', () => {
+        const i = noteRows.indexOf(r); noteRows.splice(i, 1); wrap.remove(); relabel(); changed();
+        if (!noteRows.length) newRow(false);
+        (noteRows[Math.min(i, noteRows.length - 1)] || {}).month.focus();
+      });
+      noteRows.push(r); notesBox.appendChild(wrap); relabel();
+      if (focus) month.focus();
+    }
+    addNote.addEventListener('click', () => { if (noteRows.length < 3) newRow(true); });
+    wf.appendChild(el('p', { class: 'lbl', style: 'margin-top: 12px', text: 'Add a note at a date' }));
+    wf.appendChild(notesBox); wf.appendChild(addNote); wf.appendChild(wMsg);
+    newRow(false);
+    wf.appendChild(el('p', { style: 'margin-top: 10px', text: 'Your words appear only in the image you copy or download, in a labeled band with a lettered marker. They are not added to this page or to links, and they are not saved or sent anywhere. The site’s title, source and license always stay.' }));
+    titleI.addEventListener('input', changed);
+    chgBody.appendChild(wf);
+    // the live preview: the very picture Copy image makes, small
+    const pvImg = el('img', { alt: '', width: '420', height: '260' }), pvBox = el('div', { class: 'pv' }, [pvImg]);
+    const preview = el('figure', { class: 'preview' }, [el('figcaption', { text: 'Preview of your copy' }), pvBox]);
+    chgBody.appendChild(preview);
+    const optRow = (legend, name, list, sel) => {
+      const fs = el('fieldset', {}); fs.appendChild(el('legend', { text: legend }));
+      const box = el('div', { class: 'opts' });
+      list.forEach(([key, label]) => {
+        const id = 'u-' + name + '-' + key, inp = el('input', { type: 'radio', name: 'u-' + name, id, value: key });
+        if (key === sel) inp.checked = true;
+        inp.addEventListener('change', () => { if (inp.checked) { opts[name] = key; changed(); } });
+        box.appendChild(el('label', { for: id }, [inp, label]));
+      });
+      fs.appendChild(box); return fs;
+    };
+    const sizeFs = optRow('Size', 'size', SIZES.map(x => [x.key, x.label]), 'full');
+    const sizeHint = el('p', { class: 'sz-hint', style: 'margin: 0' }); sizeFs.appendChild(sizeHint);
+    chgBody.appendChild(sizeFs);
+    const styleFs = optRow('Style', 'style', [['color', 'Color'], ['bw', 'Black and white, for print']], 'color');
+    const largeI = el('input', { type: 'checkbox', id: 'u-large' });
+    largeI.addEventListener('change', () => { opts.large = largeI.checked; changed(); });
+    styleFs.querySelector('.opts').appendChild(el('label', { for: 'u-large' }, [largeI, 'Large text, for slides']));
+    chgBody.appendChild(styleFs);
+    sec.appendChild(chg);
+    let pvTimer = 0, pvUrl = null, pvSeq = 0;
+    function refreshPreview() {
+      if (!chg.open) return;
+      clearTimeout(pvTimer);
+      pvTimer = setTimeout(async () => {
+        const seq = ++pvSeq;
+        try {
+          const img = await makeImage(ctx, chart, current());
+          if (seq !== pvSeq) return;
+          const url = URL.createObjectURL(new Blob([img.xml], { type: 'image/svg+xml' }));   // an object URL: the words stay out of the page's markup
+          pvImg.width = img.W; pvImg.height = img.H; pvImg.src = url;
+          if (pvUrl) URL.revokeObjectURL(pvUrl); pvUrl = url;
+        } catch (err) { console.error('Preview:', err); }
+      }, 250);
+    }
+    chg.addEventListener('toggle', refreshPreview);
+    function changed() { sizeHint.textContent = SIZES.find(x => x.key === opts.size).hint; syncHelp(); syncAlt(); refreshPreview(); }
+
+    // Link or embed
+    const lnk = el('details', {}), lnkBody = el('div', { class: 'dbody' });
+    lnk.appendChild(el('summary', { text: 'Link or embed' })); lnk.appendChild(lnkBody);
+    const copyBox = el('input', { class: 'copy-fallback', type: 'text', readonly: '', 'aria-label': 'Text to copy', hidden: '' });
+    function copyText(text, btn, label, done) {
+      const ok = () => { btn.textContent = 'Copied'; say(done || 'Copied.'); copyBox.hidden = true; setTimeout(() => { btn.textContent = label; }, 1500); };
+      const fail = () => { say('Couldn’t copy. The text is selected below; press Command C or Control C.'); copyBox.value = text; copyBox.hidden = false; copyBox.focus(); copyBox.select(); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok, fail); else fail();
+    }
+    const linkNow = () => SITE + chartPath(t.id, viewQuery());
+    // the iframe for this exact view; a sub-panel needs the taller frame, as in articles. With asof, frozen at that date.
+    function embedCode(asof) {
+      const v = viewQuery(), q = 'id=' + encodeURIComponent(t.id) + (v ? '&' + v : '') + '&embed=1' + (asof ? '&asof=' + asof : '');
+      const act = Array.from(state.on).map(id => ctx.ovById[id]).filter(o => o && appliesTo(o, t.id) && (!o.requires || state.on.has(o.requires)));
+      const subs = new Set(act.filter(o => OWN_SCALE[o.id]).map(o => PANEL_OF[o.id] || o.id)).size, lanes = act.filter(o => o.type === 'era').length;
+      const political = act.some(o => o.political), events = act.some(o => o.type === 'events');
+      const h = 600 + subs * 130 + (lanes ? lanes * 35 + 6 : 0) + (political ? 170 : 0) + (events ? 70 : 0) + (adjusted(t) ? 60 : 0) + (asof ? 20 : 0);
+      const title = (t.title + (asof ? ', readings through ' + fmtPeriod(t.observations[t.observations.length - 1][0], pf(t), true) : '') + ' — Economy in Context').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+      return '<iframe src="' + SITE + '/chart.html?' + q.replace(/%2C/g, ',').replace(/&/g, '&amp;') + '" width="100%" height="' + Math.ceil(h / 10) * 10 + '" style="border:0" loading="lazy" title="' + title + '"></iframe>';
+    }
+    ctx.embedCode = embedCode;
+    // frozen at the date of the latest reading: the month for monthly, quarterly and yearly series, the day for weekly ones
+    const lastObs = t.observations[t.observations.length - 1][0], asofNow = /^[mqa]$/.test(t.freq) ? lastObs.slice(0, 7) : lastObs;
+    const b1 = el('button', { type: 'button', class: 'btn small', text: 'Copy link to this view' });
+    const b2 = el('button', { type: 'button', class: 'btn small', text: 'Embed that stays current' });
+    const b3 = el('button', { type: 'button', class: 'btn small', text: 'Embed frozen at today’s data' });
+    b1.addEventListener('click', () => copyText(linkNow(), b1, 'Copy link to this view', 'Link copied.'));
+    b2.addEventListener('click', () => copyText(embedCode(), b2, 'Embed that stays current', 'Embed code copied. Paste it into your page’s HTML.'));
+    b3.addEventListener('click', () => copyText(embedCode(asofNow), b3, 'Embed frozen at today’s data', 'Embed code copied. Paste it into your page’s HTML.'));
+    lnkBody.appendChild(el('div', { class: 'linkrow' }, [b1, b2, b3]));
+    lnkBody.appendChild(el('p', { text: 'The link keeps the dates and overlays you chose. An embed puts this chart on another site in a frame. One that stays current shows new readings as they come out; a frozen one stops at the readings through ' + fmtPeriod(lastObs, pf(t), true) + ', the latest today, and says so. The agencies can still revise earlier readings in either.' }));
+    lnkBody.appendChild(copyBox);
+    sec.appendChild(lnk);
+
+    // Cite this chart
+    const cite = el('details', {}), citeBody = el('div', { class: 'dbody' });
+    cite.appendChild(el('summary', { text: 'Cite this chart' })); cite.appendChild(citeBody);
+    const cites = {};
+    [['apa', 'APA'], ['mla', 'MLA'], ['chicago', 'Chicago']].forEach(([k, label]) => {
+      const p = el('p', { id: 'cite-' + k }), b = el('button', { type: 'button', class: 'btn small', text: 'Copy ' + label + ' citation' });
+      b.addEventListener('click', () => copyText(p.textContent, b, 'Copy ' + label + ' citation', 'Citation copied.'));
+      cites[k] = p;
+      citeBody.appendChild(el('div', { class: 'cite' }, [el('p', { class: 'lbl', text: label }), p, b]));
+    });
+    citeBody.appendChild(el('p', { text: 'The address in each citation keeps this view’s dates, so a reader sees what you saw.' }));
+    sec.appendChild(cite);
+    // the permalink for a citation: the view's first and last months as from= and to=, and the overlays that are on
+    function permalink() {
+      const v = ctx.view, q = new URLSearchParams(viewQuery());
+      q.delete('range'); q.delete('from'); q.delete('to');
+      const out = new URLSearchParams(); out.set('from', v.first.slice(0, 7)); out.set('to', v.last.slice(0, 7));
+      q.forEach((val, key) => out.set(key, val));
+      return SITE + chartPath(t.id, out.toString());
+    }
+    function seriesOn() { return ctx.overlays.filter(o => o.type === 'series' && state.on.has(o.id) && appliesTo(o, t.id)); }
+    function chartName() {
+      const v = ctx.view, others = seriesOn().map(o => lowerFirst(o.label));
+      return t.title + (others.length ? ' and ' + listWords(others) : '') + ', ' + fmtPeriod(v.first, pf(t), true) + ' to ' + fmtPeriod(v.last, pf(t), true);
+    }
+    function credit() { return t.agency ? t.agency + ' via FRED' : 'FRED (' + t.source.series + ')'; }
+    function syncCite() {
+      if (!ctx.view) return;
+      const name = chartName(), url = permalink(), now = new Date(), through = fmtPeriod(ctx.view.last, pf(t), true);
+      const year = String(ctx.data.generated || '').slice(0, 4) || String(now.getFullYear());
+      cites.apa.innerHTML = '';
+      cites.apa.append('Economy in Context. (' + year + '). ', el('i', { text: name }), ' [Chart]. Data from ' + credit() + ', through ' + through + '. Retrieved ' + longDate(now) + ', from ' + url);
+      cites.mla.innerHTML = '';
+      cites.mla.append('“' + titleCase(name) + '.” ', el('i', { text: 'Economy in Context' }), ', data from ' + credit() + ' through ' + through + ', ' + url.replace(/^https:\/\//, '') + '. Accessed ' + now.getDate() + ' ' + MLA_MONTHS[now.getMonth()] + ' ' + now.getFullYear() + '.');
+      cites.chicago.textContent = 'Economy in Context. “' + titleCase(name) + '.” Chart. Data from ' + credit() + ', through ' + through + '. Accessed ' + longDate(now) + '. ' + url + '.';
+    }
+
+    // Alt text for your copy
+    const alt = el('details', {}), altBody = el('div', { class: 'dbody' });
+    alt.appendChild(el('summary', { text: 'Alt text for your copy' })); alt.appendChild(altBody);
+    const altP = el('p', { class: 'alt', id: 'alt-text' });
+    const altBtn = el('button', { type: 'button', class: 'btn small', text: 'Copy alt text' });
+    altBtn.addEventListener('click', () => copyText(altP.textContent, altBtn, 'Copy alt text', 'Alt text copied.'));
+    altBody.appendChild(el('p', { text: 'A description of the image for people who can’t see it. Paste it where your app asks for alt text or an image description. It follows the chart’s view and any words you added.' }));
+    altBody.appendChild(altP); altBody.appendChild(altBtn);
+    sec.appendChild(alt);
+    function altText() {
+      const v = ctx.view; if (!v) return '';
+      const act = ctx.overlays.filter(o => state.on.has(o.id) && appliesTo(o, t.id) && (!o.requires || state.on.has(o.requires)));
+      const series = act.filter(o => o.type === 'series').map(o => lowerFirst(o.label)), eras = act.filter(o => o.type === 'era').map(o => ERA_ALT[o.id] || lowerFirst(o.label));
+      const refs = act.filter(o => o.type === 'line' || o.type === 'stat').map(refAlt), evs = act.filter(o => o.type === 'events').map(o => lowerFirst(o.label));
+      const parts = ['Line chart of ' + lowerFirst(t.title) + ' (' + d.unit + '), ' + fmtPeriod(v.first, pf(t), true) + ' to ' + fmtPeriod(v.last, pf(t), true)
+        + (series.length ? ', with ' + listWords(series) : '') + '. Recessions are shaded'
+        + (eras.length ? '; bands below the chart mark ' + listWords(eras) : '') + (refs.length ? '; dashed lines mark ' + listWords(refs) : '')
+        + (evs.length ? '; markers along the top show ' + listWords(evs) : '') + '.'];
+      const lp = t.observations.filter(p => p[0] <= v.last).pop();
+      if (lp) parts.push('The last reading shown, for ' + fmtPeriod(lp[0], pf(t), true) + ', is ' + fmtValue(lp[1], d) + '.' + (lp[0] === t.observations[t.observations.length - 1][0] ? ' ' + contextSentence(t) : ''));
+      const w = words();
+      if (hasWords(w)) {
+        const bits = [];
+        if (w.title) bits.push('the title “' + w.title + '”');
+        w.notes.forEach(n => bits.push('note ' + n.letter + ' at ' + noteWhen(n) + ', “' + n.text + '”' + (noteInView(ctx, n) ? '' : ', not in this view')));
+        // a reader's words that already end a sentence (". ! ?" before the closing quote) take no second period
+        const said = listWords(bits);
+        parts.push('Added by the person who made this image: ' + said + (/[.!?]”$/.test(said) ? '' : '.'));
+      }
+      parts.push('Data: ' + credit() + '. Chart by Economy in Context, economyincontext.org, CC BY 4.0.');
+      return parts.join(' ');
+    }
+    function syncAlt() { altP.textContent = altText(); }
+
+    sec.appendChild(el('p', { class: 'reuse-short' }, ['Free to reuse with credit · ', el('a', { href: 'https://creativecommons.org/licenses/by/4.0/', rel: 'license noopener', text: 'CC BY 4.0' })]));
+    // a new view (range, dates, overlays) updates the citations, the alt text and an open preview
+    ctx.onView = () => { syncCite(); syncAlt(); refreshPreview(); };
+    changed();
+    return sec;
+  }
+
   // ---- page -----------------------------------------------------------------
   function render(data, compData, ovData, exData) {
     const main = document.getElementById('main'); main.innerHTML = '';
     document.getElementById('attribution').textContent = data.attribution;
-    const t = data.tiles.find(x => x.id === state.id);
+    let t = data.tiles.find(x => x.id === state.id);
     if (!t) {
       document.getElementById('title').textContent = 'Pick an indicator';
       document.getElementById('subtitle').textContent = 'Each one gets a full-size chart with optional overlays.';
       const idx = el('div', { class: 'index' }), ul = el('ul');
       data.tiles.forEach(x => ul.appendChild(el('li', {}, [el('a', { href: chartPath(x.id), text: x.title }), ' — ' + x.subtitle])));
       idx.appendChild(ul); main.appendChild(idx); document.title = 'Charts — Economy in Context';
+      document.querySelector('.crumb').hidden = true;   // the charts index: the menu's The numbers is the way back
       const setM = (sel, val) => { const m = document.querySelector(sel); if (m) m.setAttribute(sel.startsWith('link') ? 'href' : 'content', val); };
       setM('link[rel="canonical"]', SITE + '/chart/'); setM('meta[property="og:url"]', SITE + '/chart/');
       return;
@@ -1668,7 +2256,10 @@
     const canon = SITE + chartPath(t.id);
     const setMeta = (sel, val) => { const m = document.querySelector(sel); if (m) m.setAttribute(sel.startsWith('link') ? 'href' : 'content', val); };
     setMeta('link[rel="canonical"]', canon); setMeta('meta[property="og:url"]', canon);
-    document.querySelector('.crumb a').setAttribute('href', '/#i-' + t.id);   // back to this indicator's tile, on every copy of the page
+    // the crumb: back to this indicator's row in the full view, then this page's name, on every copy of the page
+    const crumbA = document.querySelector('.crumb a');
+    crumbA.setAttribute('href', '/#i-' + t.id); crumbA.textContent = 'All ' + data.tiles.length + ' numbers';
+    document.getElementById('crumb-here').textContent = t.title;
     if (!state.ownPage) {
       document.title = t.title + ' — Economy in Context';
       setMeta('meta[property="og:title"]', t.title + ' — Economy in Context');
@@ -1700,6 +2291,18 @@
     }));
     const overlays = ovData.overlays.concat(comps);
     const ovById = {}; overlays.forEach(o => ovById[o.id] = o);
+    // A frozen embed (&asof=): every series stops at that date, and the headline is the last reading before it. The
+    // sentence and strip describe today's reading, so the embed shows a line saying what it holds instead.
+    let frozen = null;
+    if (state.asof) {
+      const cut = p => (state.asof.length === 7 ? p[0].slice(0, 7) : p[0]) <= state.asof;
+      const kept = t.observations.filter(cut);
+      if (kept.length) {
+        t = Object.assign({}, t, { observations: kept, headline: null });
+        comps.forEach(c => { c.observations = c.observations.filter(cut); });
+        frozen = kept[kept.length - 1];
+      }
+    }
     const ctx = { tile: t, data, companions: comps, overlays, ovById, politicalNote: ovData.political_note, groupNotes: Object.assign({}, ovData.group_notes || {}), groupNoteFor: ovData.group_note_for || null, median: median(t.observations.map(p => p[1])) };
     comps.forEach(c => { if (c.groupNote && !ctx.groupNotes[c.group]) ctx.groupNotes[c.group] = c.groupNote; });
     // drop unknown overlay ids from the URL silently
@@ -1718,8 +2321,8 @@
       left.appendChild(el('div', { class: 'embed-head' }, [el('h2', { text: t.title + ': ' + sub }),
         el('a', { href: chartPath(t.id, viewQuery()), target: '_top', rel: 'noopener', text: 'Full chart and context →' })]));
     }
-    const hv = t.headline ? t.headline.value : c.current.value;
-    const hdate = t.headline ? fmtPeriod(t.headline.date, 'd', true) : fmtPeriod(c.current.date, pf(t), true);
+    const hv = frozen ? frozen[1] : t.headline ? t.headline.value : c.current.value;
+    const hdate = frozen ? fmtPeriod(frozen[0], pf(t), true) : t.headline ? fmtPeriod(t.headline.date, 'd', true) : fmtPeriod(c.current.date, pf(t), true);
     left.appendChild(el('div', { class: 'headline' }, [el('span', { class: 'value', text: fmtValue(hv, d) }), el('span', { class: 'when', text: hdate })]));
     const cmp = el('p', { class: 'compare' });
     if (t.headline) cmp.appendChild(el('span', { text: 'Monthly average ' + fmtPeriod(c.current.date, 'm') + ': ' + fmtValue(c.current.value, d) }));
@@ -1727,7 +2330,8 @@
     if (c.year_ago && t.freq !== 'a') cmp.appendChild(el('span', { text: 'A year ago: ' + fmtValue(c.year_ago.value, d) }));
     left.appendChild(cmp);
     left.appendChild(buildStrip(t));
-    left.appendChild(el('p', { class: 'context', text: contextSentence(t) }));
+    if (frozen) left.appendChild(el('p', { class: 'frozen', text: 'Readings through ' + fmtPeriod(frozen[0], pf(t), true) + ', as embedded. Newer readings are on the full chart.' }));
+    else left.appendChild(el('p', { class: 'context', text: contextSentence(t) }));
     if (adjusted(t)) left.appendChild(el('p', { class: 'adjust-note', text: 'The range and the sentence are in today’s dollars. The chart’s main line is the price as charged.' }));
 
     const table = buildTable(ctx);
@@ -1742,70 +2346,19 @@
     src.appendChild(document.createTextNode(', updated ' + (t.source.last_updated || '').slice(0, 10) + '. Figures are the current vintage and are revised by the agencies.'));
     left.appendChild(src);
 
-    const actions = el('div', { class: 'actions' });
-    const dl = el('button', { type: 'button', text: 'Download CSV (all readings)' });
-    dl.addEventListener('click', () => { const blob = new Blob([table.csv()], { type: 'text/csv' }); const a = el('a', { href: URL.createObjectURL(blob), download: 'economyincontext-' + t.id + '.csv' }); document.body.appendChild(a); a.click(); a.remove(); });
-    // a browser can refuse the clipboard; then the text is shown, selected, for copying by hand
-    const copyBox = el('input', { class: 'copy-fallback', type: 'text', readonly: '', 'aria-label': 'Text to copy', hidden: '' });
-    function copyText(text, btn, label) {
-      const done = () => { btn.textContent = 'Copied'; announce('Copied'); copyBox.hidden = true; setTimeout(() => btn.textContent = label, 1500); };
-      const fail = () => { announce('Couldn’t copy. The text is selected; press Command C or Control C.'); copyBox.value = text; copyBox.hidden = false; copyBox.focus(); copyBox.select(); btn.textContent = 'Couldn’t copy: press ⌘C or Ctrl+C'; setTimeout(() => btn.textContent = label, 4000); };
-      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fail); else fail();
-    }
-    const copy = el('button', { type: 'button', text: 'Copy link to this view' });
-    copy.addEventListener('click', () => copyText(location.href, copy, 'Copy link to this view'));
-    // the iframe for this exact view; a sub-panel needs the taller frame, as in articles
-    const embedBtn = el('button', { type: 'button', text: 'Copy embed code' });
-    function embedCode() {
-      // embeds stay on chart.html: id first, then the view, then embed=1
-      const v = viewQuery(), q = 'id=' + encodeURIComponent(t.id) + (v ? '&' + v : '') + '&embed=1';
-      // the frame's height follows what the view holds: sub-panels, lanes, the framing line and event labels each add room
-      const act = Array.from(state.on).map(id => ctx.ovById[id]).filter(o => o && appliesTo(o, t.id) && (!o.requires || state.on.has(o.requires)));
-      const subs = new Set(act.filter(o => OWN_SCALE[o.id]).map(o => PANEL_OF[o.id] || o.id)).size, lanes = act.filter(o => o.type === 'era').length;   // panels, not lines
-      const political = act.some(o => o.political), events = act.some(o => o.type === 'events');
-      const h = 600 + subs * 130 + (lanes ? lanes * 35 + 6 : 0) + (political ? 170 : 0) + (events ? 70 : 0) + (adjusted(t) ? 60 : 0);
-      const title = (t.title + ' — Economy in Context').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
-      return '<iframe src="' + SITE + '/chart.html?' + q.replace(/%2C/g, ',').replace(/&/g, '&amp;') + '" width="100%" height="' + Math.ceil(h / 10) * 10 + '" style="border:0" loading="lazy" title="' + title + '"></iframe>';
-    }
-    embedBtn.addEventListener('click', () => copyText(embedCode(), embedBtn, 'Copy embed code'));
-    ctx.embedCode = embedCode;
-    // a PNG of this view, with the title, key and credit built in, for posts and slides where an iframe can't go
-    // Download image: the full-width picture for slides and articles, or a shape for a social post
-    const imgBtn = el('details', { class: 'img-menu' }), imgSum = el('summary', { text: 'Download image' });
-    imgBtn.appendChild(imgSum);
-    const imgList = el('div', { class: 'img-list' });
-    let making = false;
-    [{ key: '', label: 'Full width', where: 'slides, articles, print', make: () => chartImage(ctx, chart) }]
-      .concat(SHAPES.map(sh => ({ key: '-' + sh.key, label: sh.label, where: sh.w + '×' + sh.h + ' · ' + sh.where, make: () => socialImage(ctx, chart, sh) })))
-      .forEach(o => {
-        const b = el('button', { type: 'button' }, [el('b', { text: o.label }), el('span', { text: o.where })]);
-        b.addEventListener('click', () => {
-          if (making) return;
-          making = true; imgBtn.open = false; imgSum.focus(); imgSum.textContent = 'Making the image…';
-          o.make().then(blob => {
-            const a = el('a', { href: URL.createObjectURL(blob), download: 'economyincontext-' + t.id + '-' + (state.range || 'custom') + o.key + '.png' });
-            document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 30000);
-            imgSum.textContent = 'Download image'; announce('Image downloaded');
-          }).catch(err => {
-            console.error('Download image:', err); imgSum.textContent = 'The image could not be made'; announce('The image could not be made');
-            setTimeout(() => { imgSum.textContent = 'Download image'; }, 2500);
-          }).finally(() => { making = false; });
-        });
-        imgList.appendChild(b);
-      });
-    imgBtn.appendChild(imgList);
-    document.addEventListener('click', e => { if (imgBtn.open && !imgBtn.contains(e.target)) imgBtn.open = false; });
-    imgBtn.addEventListener('keydown', e => { if (e.key === 'Escape' && imgBtn.open) { imgBtn.open = false; imgSum.focus(); } });
-    actions.appendChild(dl); actions.appendChild(imgBtn); actions.appendChild(copy); actions.appendChild(embedBtn); actions.appendChild(copyBox);
-    actions.appendChild(el('span', { class: 'reuse-short' }, ['Free to reuse with credit · ', el('a', { href: 'https://creativecommons.org/licenses/by/4.0/', rel: 'license noopener', text: 'CC BY 4.0' })]));
-    left.appendChild(actions);
     left.appendChild(table.node);
+    // Use this chart: after the readings on desktop; on phones and tablets it follows the overlay panel (see placePanel)
+    const use = state.embed ? null : buildUse(ctx, chart, table);
 
     layout.appendChild(left);
     if (!state.embed) {
       const panel = buildPanel(ctx, chart.redraw), phone = window.matchMedia('(max-width: 860px)');
       // desktop: a sticky column beside the chart; phone: right under the key, so a checkbox is a short scroll from the chart
-      const placePanel = () => { if (phone.matches) chart.panelSlot.appendChild(panel); else layout.appendChild(panel); syncBar(); };
+      const placePanel = () => {
+        if (phone.matches) { chart.panelSlot.appendChild(panel); chart.useSlot.appendChild(use); }
+        else { layout.appendChild(panel); left.appendChild(use); }
+        syncBar();
+      };
       let chartIn = true, panelIn = false;
       const syncBar = () => { chart.seeBar.hidden = !(phone.matches && panelIn && !chartIn); };
       if ('IntersectionObserver' in window) {
