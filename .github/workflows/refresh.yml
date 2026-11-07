@@ -69,7 +69,7 @@ jobs:
 
       - name: Assemble the site
         run: |
-          cp index.html chart.html public/
+          cp ./*.html public/
           cp data/overlays.json public/data/
           if [ -d assets ]; then cp -r assets public/; fi
           python3 tools/build_articles.py public
