@@ -556,24 +556,31 @@
   //            change already), growth (GDP's yearly pace)
   //   own:     what the tile shows: level, yoy (percent change from a year ago), yoyAbs (a change from a year ago in its
   //            own unit), chg (from the month before), growth
-  //   level:   where the level comes from: 'self', a companion series kept for article text, or null (not on the site yet)
+  //   level:   where the level comes from: 'self', a companion series (data/companions.json, fetched for this and for
+  //            article text), or null (not on the site yet). A form shows "not available yet" while its companion is missing
   //   labels:  own (the tile's own form), lvl (as reported, when that isn't the tile's own form), real (today's dollars);
-  //            lvlUnit and lvlDisplay describe a level read from a companion
+  //            lvlUnit and lvlDisplay describe a level read from a companion; lvlCsvUnit names its raw numbers' unit
+  //            in the CSV when the page shows them scaled (see CSV_UNIT); lvlName names what the level is when that isn't
+  //            the tile's title ("Total jobs" on jobs added): the key, table, CSV, citation and alt text use it for the
+  //            level and its index instead of the title (Nov 6 ruling)
   const SA_PRICE = (noun) => ({ measure: 'price', own: 'level', level: 'self', own_: noun + ', as charged', real: noun + ', in today’s dollars' });
   const SA_RATE = { measure: 'rate', own: 'level', level: 'self', own_: 'Rate, as reported' };
   const SA_INDEX = (src, base, digits) => ({ measure: 'index', own: 'yoy', level: src, own_: 'Change from a year ago', lvl: 'Index, ' + base + ' = 100, as reported', lvlUnit: 'index, ' + base + ' = 100', lvlDisplay: { scale: 1, decimals: digits || 1 } });
   const SHOW_AS = {
-    payrolls: { measure: 'change', own: 'chg', level: null, own_: 'Change from the month before', lvl: 'Total jobs, as reported', yoy: 'Change from a year ago, in jobs', clip: { yoy: [-10000, 10000] } },
+    payrolls: { measure: 'change', own: 'chg', level: 'payrolls_level', own_: 'Change from the month before', lvl: 'Total jobs, as reported', yoy: 'Change from a year ago, in jobs', clip: { yoy: [-10000, 10000] },
+      lvlName: 'Total jobs', lvlUnit: 'millions', lvlCsvUnit: 'thousands of jobs', lvlDisplay: { scale: 1000, decimals: 1, suffix: 'M' } },
     unemployment: SA_RATE,
     openings_ratio: { measure: 'ratio', own: 'level', level: 'self', own_: 'Openings per job seeker, as reported', yoy: 'Change from a year ago, in openings per job seeker' },
     claims: { measure: 'count', own: 'level', level: 'self', own_: 'Claims a week, as reported', clip: { yoy: [-100, 300] } },
     pay: { measure: 'price', own: 'yoy', level: 'pay_level', own_: 'Change from a year ago', lvl: 'Dollars an hour, as paid', real: 'Dollars an hour, in today’s dollars', lvlUnit: 'dollars an hour', lvlDisplay: { scale: 1, decimals: 2, prefix: '$' } },
-    health_jobs: { measure: 'change', own: 'yoyAbs', level: null, own_: 'Change from a year ago, in jobs', lvl: 'Health care jobs, as reported' },
+    health_jobs: { measure: 'change', own: 'yoyAbs', level: 'health_jobs_level', own_: 'Change from a year ago, in jobs', lvl: 'Health care jobs, as reported',
+      lvlName: 'Health care jobs', lvlUnit: 'millions', lvlCsvUnit: 'thousands of jobs', lvlDisplay: { scale: 1000, decimals: 1, suffix: 'M' } },
     newspaper_jobs: { measure: 'count', own: 'level', level: 'self', own_: 'Jobs, as reported' },
     cpi: SA_INDEX('cpi_index', '1982–84'),
-    core_cpi: SA_INDEX(null, '1982–84'),
+    core_cpi: SA_INDEX('core_cpi_index', '1982–84'),
     rent: SA_INDEX('rent_level', '1982–84'),
-    gdp: { measure: 'growth', own: 'growth', level: null, own_: 'Growth from the quarter before, at a yearly pace', lvl: 'Real GDP, as reported' },
+    gdp: { measure: 'growth', own: 'growth', level: 'gdp_real_level', own_: 'Growth from the quarter before, at a yearly pace', lvl: 'Real GDP, as reported', lvlName: 'Real GDP',
+      lvlUnit: 'trillions of 2017 dollars, at a yearly rate', lvlCsvUnit: 'billions of chained 2017 dollars, at a yearly rate', lvlDisplay: { scale: 1000, decimals: 1, prefix: '$', suffix: 'T' } },
     fed_funds: SA_RATE, ten_year: SA_RATE, mortgage: SA_RATE, mortgage_delinquency: SA_RATE,
     housing_starts: { measure: 'count', own: 'level', level: 'self', own_: 'Homes started, at a yearly pace, as reported' },
     home_prices: SA_INDEX('home_price_level', 'January 1991'),
@@ -634,16 +641,21 @@
     };
     const off = (key, label, why) => ({ key, label, enabled: false, why: FORM_WHY[why] || why, own: false });
     const forms = [make('own', sa.own_, d.unit, ownKind + '|' + d.unit, d, t.observations, { clip: d.clip || null, csvUnit: rawUnit(t) })];
-    // the level: the tile's own readings, or a companion kept for article text (these start in 2018)
+    // the level: the tile's own readings, or a companion. "since" only when the companion starts later than the tile's own
+    // readings (the forms note says so); the series the companion comes from goes in the CSV's Data line
     const lvlComp = sa.level && sa.level !== 'self' ? compById[sa.level] : null;
     const lvl = sa.level === 'self' ? { obs: t.observations, unit: d.unit, display: d } : lvlComp && lvlComp.observations.length > 2
-      ? { obs: lvlComp.observations, unit: sa.lvlUnit, display: sa.lvlDisplay, since: lvlComp.observations[0][0] } : null;
+      ? { obs: lvlComp.observations, unit: sa.lvlUnit, display: sa.lvlDisplay, csvUnit: sa.lvlCsvUnit,
+          since: t.observations.length && lvlComp.observations[0][0] > t.observations[0][0] ? lvlComp.observations[0][0] : null,
+          series: lvlComp.source && lvlComp.source.series, url: lvlComp.source && lvlComp.source.url } : null;
+    const src = lvl && lvl.series ? { srcSeries: lvl.series, srcUrl: lvl.url, srcName: sa.lvlName || null } : {};
+    const named = sa.lvlName ? { name: sa.lvlName } : {};   // what a level (and its index) is called where it isn't the tile
     const noDollars = sa.measure === 'rate' || sa.measure === 'share' || sa.measure === 'ratio' || sa.measure === 'count' || sa.measure === 'change' || sa.measure === 'index' || sa.measure === 'growth';
     FORM_ORDER.forEach(k => {
       if (k === 'yoy') {
         if (sa.own === 'yoy' || sa.own === 'yoyAbs') return;
         const label = sa.yoy || (sa.measure === 'rate' || sa.measure === 'share' ? FORM_LABEL.yoy + ', in percentage points' : FORM_LABEL.yoy);
-        if (sa.own === 'growth') { forms.push(off('yoy', label, 'later')); return; }
+        if (sa.own === 'growth' && !lvl) { forms.push(off('yoy', label, 'later')); return; }
         if (sa.own === 'chg') {      // jobs added over twelve months: the sum of twelve monthly changes, the level's change from a year ago
           const o = t.observations, out = [];
           for (let i = 11; i < o.length; i++) {
@@ -661,13 +673,13 @@
           const unit = d.unit + ', change from a year earlier';
           forms.push(make('yoy', label, unit, 'yoy|' + unit, Object.assign({}, d, { signed: true, clip: null }), ya.map(p => [p[0], p[1] - p[2]]), { clip: clipFor('yoy'), csvUnit: rawUnit(t) + ', change from a year earlier' }));
         } else {
-          forms.push(make('yoy', label, PCT_UNIT, 'yoy|' + PCT_UNIT, { scale: 1, decimals: 1, suffix: '%', signed: true }, ya.filter(p => p[2] > 0).map(p => [p[0], (p[1] / p[2] - 1) * 100]), { clip: clipFor('yoy') }));
+          forms.push(make('yoy', label, PCT_UNIT, 'yoy|' + PCT_UNIT, { scale: 1, decimals: 1, suffix: '%', signed: true }, ya.filter(p => p[2] > 0).map(p => [p[0], (p[1] / p[2] - 1) * 100]), Object.assign({ clip: clipFor('yoy') }, src)));
         }
       } else if (k === 'level') {
         if (sa.own === 'level') return;
         const label = sa.lvl || FORM_LABEL.level;
         if (!lvl) { forms.push(off('level', label, 'later')); return; }
-        forms.push(make('level', label, lvl.unit, 'level|' + lvl.unit, lvl.display, lvl.obs, { since: lvl.since }));
+        forms.push(make('level', label, lvl.unit, 'level|' + lvl.unit, lvl.display, lvl.obs, Object.assign({ since: lvl.since, csvUnit: lvl.csvUnit }, src, named)));
       } else if (k === 'real') {
         const label = sa.real || FORM_LABEL.real;
         if (noDollars) { forms.push(off('real', label, sa.measure)); return; }
@@ -676,13 +688,13 @@
         const obs = sa.level === 'self' && own ? own.observations : cpi ? deflateObs(lvl.obs, cpi.observations) : [];
         if (obs.length < 3) { forms.push(off('real', label, 'later')); return; }
         const unit = lvl.unit + ', in today’s dollars';
-        forms.push(make('real', label, unit, 'real|' + unit, lvl.display, obs, { clip: sa.level === 'self' ? d.clip || null : null, since: lvl.since, csvUnit: sa.level === 'self' ? rawUnit(t) + ', in today’s dollars' : unit }));
+        forms.push(make('real', label, unit, 'real|' + unit, lvl.display, obs, Object.assign({ clip: sa.level === 'self' ? d.clip || null : null, since: lvl.since, csvUnit: sa.level === 'self' ? rawUnit(t) + ', in today’s dollars' : unit }, src)));
       } else {
         const label = FORM_LABEL.index;
         if (sa.measure === 'rate' || sa.measure === 'share' || sa.measure === 'ratio' || sa.measure === 'balance') { forms.push(off('index', label, sa.measure)); return; }
         if (!lvl) { forms.push(off('index', label, 'later')); return; }
         // 100 at the first reading in view, so it moves with the range; a clipped level keeps its clip, rescaled
-        const f = make('index', label, 'index', 'index', { scale: 1, decimals: 1 }, lvl.obs, { since: lvl.since });
+        const f = make('index', label, 'index', 'index', { scale: 1, decimals: 1 }, lvl.obs, Object.assign({ since: lvl.since }, src, named));
         f.series = view => {
           const a = view ? view.start.getTime() : -Infinity, first = lvl.obs.find(p => parseDate(p[0]).getTime() >= a && p[1]);
           if (!first) return [];
@@ -697,7 +709,7 @@
     return forms;
   }
   // The line that says which form the chart is in, when it isn't the tile's own: over the chart on the page and in an
-  // embed, under the reading in an image. A form kept only since 2018 says so.
+  // embed, under the reading in an image. A form whose level the site keeps from later than the tile's own readings says so.
   function formNoteText(ctx, F, where) {
     // U.S. punctuation: a period after a quoted form name goes inside the closing quote
     const own = '“' + ctx.forms[0].label + '.”';
@@ -708,6 +720,14 @@
   // (csv_unit, dollars where the page shows cents); trade's millions show as billions, housing starts' thousands as millions.
   const CSV_UNIT = { trade: 'millions of dollars', housing_starts: 'thousands of units per year' };
   function rawUnit(t) { return t.display.csv_unit || CSV_UNIT[t.id] || t.display.unit; }
+  // The CSV's name for the form shown: the tile's title, then the form ("Hourly pay, dollars an hour, as paid"); a level
+  // with a name of its own goes by it ("Total jobs, as reported", not "Jobs added, total jobs, as reported"; "Real GDP,
+  // index, 100 at the start of the view")
+  function formTitle(t, F) {
+    if (F.own) return t.title;
+    if (F.name) return F.label.startsWith(F.name) ? F.label : F.name + ', ' + lowerFirst(F.label);
+    return t.title + ', ' + lowerFirst(F.label);
+  }
   // the unit key of a tile's own form, for Compare: the compared number is always drawn in its own form
   function ownUnitKey(t) { const sa = SHOW_AS[t.id]; return (sa ? (sa.own === 'yoyAbs' ? 'yoy' : sa.own) : 'level') + '|' + t.display.unit; }
 
@@ -986,7 +1006,7 @@
     function colorFor(id) { return COLORS[state.slots.has(id) ? state.slots.get(id) : 0]; }
 
     function window_() {
-      const F = ctx.form(), obs = F.span;   // the dates of the form shown (Show it as): a form kept since 2018 starts there
+      const F = ctx.form(), obs = F.span;   // the dates of the form shown (Show it as): a form kept from a later month starts there
       const last = parseDate(obs[obs.length - 1][0]);
       let start, end = last;
       if (state.range) { const r = RANGES.find(x => x.key === state.range); start = r.years ? new Date(Date.UTC(last.getUTCFullYear() - r.years, last.getUTCMonth(), last.getUTCDate())) : parseDate(obs[0][0]); }
@@ -1375,7 +1395,7 @@
 
       // legend
       legend.innerHTML = '';
-      legend.appendChild(el('span', {}, [el('i', { style: 'background: var(--series)' }), t.title + (F.own && adjusted(t) ? ', as charged' : '') + ' (' + F.unit + ')']));
+      legend.appendChild(el('span', {}, [el('i', { style: 'background: var(--series)' }), (F.name || t.title) + (F.own && adjusted(t) ? ', as charged' : '') + ' (' + F.unit + ')']));
       // the key always gives the full name (it wraps); only the hover box shortens long ones
       compPts.concat(subs.map(o => ({ o }))).forEach(c => legend.appendChild(el('span', {}, [el('i', { style: 'background:' + colorFor(c.o.id), 'data-slot': state.slots.has(c.o.id) ? state.slots.get(c.o.id) : 0 }),
         c.o.isCompare ? 'Compared: ' + c.o.label + ' (' + c.o.unit + ')' : c.o.label])));
@@ -1416,6 +1436,7 @@
         : 'Compared with ' + cmpO.label + ', in its own panel under the chart, with its own scale (' + cmpO.unit + '). '),
         el('a', Object.assign({ href: chartPath(cmpO.cmpId), text: 'Its own chart: ' + cmpO.label + '\u00a0→' }, state.embed ? { target: '_top' } : {})));
       if (ctx.syncAdjust) ctx.syncAdjust();
+      if (ctx.syncSource) ctx.syncSource();
       ctx.view = { start, end, first: pts[0][0], last: pts[pts.length - 1][0] };   // the readings in view: citations, alt text, the data-in-view file
       syncDates();
       ctx.onWindow && ctx.onWindow(start, end);
@@ -2292,7 +2313,7 @@
       tbl.innerHTML = '';
       tbl.appendChild(el('caption', { class: 'sr-only', text: t.title + ', readings in view' }));
       const F = ctx.form(), fd = F.display;
-      const thead = el('tr'); thead.appendChild(el('th', { scope: 'col', text: 'Period' })); thead.appendChild(el('th', { scope: 'col', class: 'num', text: t.title + (F.own ? '' : ' (' + F.unit + ')') }));
+      const thead = el('tr'); thead.appendChild(el('th', { scope: 'col', text: 'Period' })); thead.appendChild(el('th', { scope: 'col', class: 'num', text: (F.name || t.title) + (F.own ? '' : ' (' + F.unit + ')') }));
       comps.forEach(o => thead.appendChild(el('th', { class: 'num', text: colName(o) })));
       tbl.appendChild(thead);
       // a companion without its own format is in the tile's own unit
@@ -2307,13 +2328,15 @@
       // the CSV carries raw values, so its header names the raw unit where the page shows a scaled one (cents vs dollars).
       // In another form (Show it as) the main column is that form, its unit named, and a line says how it was made.
       const unit = F.csvUnit || F.unit;   // the raw numbers' unit (see CSV_UNIT); an index names its base
-      const name = t.title + (F.own ? '' : ', ' + lowerFirst(F.label)) + ' (' + unit + ')';
+      const name = formTitle(t, F) + ' (' + unit + ')';
       // two lines saying what this is and where it came from (three in another form), a blank line, then the table
       const rowsObs = formObs(view);   // first: an index takes its base from the view here
-      const series = [t.source.series].concat(F.key === 'real' ? ['CPIAUCSL'] : [])
+      const series = [t.source.series].concat(F.srcSeries ? [F.srcSeries] : []).concat(F.key === 'real' ? ['CPIAUCSL'] : [])
         .concat(comps.map(o => o.isCompare ? o.tile.source.series : o.source && o.source.label ? o.source.label.replace(/^FRED /, '') : null).filter(Boolean))
         .filter((x, i, a) => a.indexOf(x) === i);
-      const made = F.own ? null : F.key === 'yoy' ? (F.pp ? 'Change from a year ago, in percentage points: each reading minus the one a year earlier' : t.freq === 'm' && SHOW_AS[t.id] && SHOW_AS[t.id].own === 'chg' ? 'Change from a year ago: the sum of the twelve monthly changes' : (F.display.suffix === '%' ? 'Change from a year ago: each reading against the one a year earlier, in percent' : 'Change from a year ago: each reading minus the one a year earlier'))
+      const made = F.own ? null : F.key === 'yoy' && F.srcSeries && SHOW_AS[t.id] && SHOW_AS[t.id].own === 'growth'
+          ? 'Change from a year ago: real GDP (' + F.srcSeries + ') in each quarter against the same quarter a year earlier, in percent, worked out by Economy in Context'
+        : F.key === 'yoy' ? (F.pp ? 'Change from a year ago, in percentage points: each reading minus the one a year earlier' : t.freq === 'm' && SHOW_AS[t.id] && SHOW_AS[t.id].own === 'chg' ? 'Change from a year ago: the sum of the twelve monthly changes' : (F.display.suffix === '%' ? 'Change from a year ago: each reading against the one a year earlier, in percent' : 'Change from a year ago: each reading minus the one a year earlier'))
           + (t.freq === 'w' ? ' (the same week a year earlier)' : '') + ', worked out by Economy in Context'
         : F.key === 'real' ? 'In today’s dollars: adjusted for inflation with the CPI (CPIAUCSL), in dollars of the latest reading’s month, as on the price pages'
         : F.key === 'index' ? 'Index: 100 at ' + fmtPeriod(F.base[0], pf(t), true) + ', the first reading in view; every reading divided by that one, times 100'
@@ -2586,7 +2609,8 @@
     function formName() { const F = ctx.form(); return F.own ? '' : ' (' + (F.key === 'index' && F.base ? 'index, 100 at ' + fmtPeriod(F.base[0], pf(t), true) : lowerFirst(F.label)) + ')'; }
     function chartName() {
       const v = ctx.view, others = seriesOn().map(o => lowerFirst(o.label)), c = ctx.compare();
-      return t.title + formName() + (others.length ? ' and ' + listWords(others) : '') + (c ? ' compared with ' + lowerFirst(c.label) : '') + ', ' + fmtPeriod(v.first, pf(t), true) + ' to ' + fmtPeriod(v.last, pf(t), true);
+      const F = ctx.form(), head = F.name && F.label.startsWith(F.name) ? F.label : (F.name || t.title) + formName();
+      return head + (others.length ? ' and ' + listWords(others) : '') + (c ? ' compared with ' + lowerFirst(c.label) : '') + ', ' + fmtPeriod(v.first, pf(t), true) + ' to ' + fmtPeriod(v.last, pf(t), true);
     }
     function credit() { return t.agency ? t.agency + ' via FRED' : 'FRED (' + t.source.series + ')'; }
     function syncCite() {
@@ -2616,7 +2640,7 @@
       // reference lines as drawn: in another form the median names the month it starts from
       const refs = (ctx.drawn && ctx.drawn.lines ? ctx.drawn.lines : act.filter(o => o.type === 'line' || o.type === 'stat')).map(o => o.stat === 'median' && !F.own ? 'the ' + lowerFirst(o.label) : refAlt(o)), evs = act.filter(o => o.type === 'events').map(o => lowerFirst(o.label));
       const fobs = F.series(v);
-      const parts = ['Line chart of ' + lowerFirst(t.title) + ' (' + F.unit + ')' + (F.own ? ', ' : ', shown as “' + F.label + ',” ') + fmtPeriod(v.first, pf(t), true) + ' to ' + fmtPeriod(v.last, pf(t), true)
+      const parts = ['Line chart of ' + lowerFirst(F.name || t.title) + ' (' + F.unit + ')' + (F.own ? ', ' : ', shown as “' + F.label + ',” ') + fmtPeriod(v.first, pf(t), true) + ' to ' + fmtPeriod(v.last, pf(t), true)
         + (series.length ? ', with ' + listWords(series) : '') + (c ? ', compared with ' + lowerFirst(c.label) + ' (' + c.unit + ')' + (ctx.shares(c) ? ' on the same scale' : ' in its own panel below') : '')
         + '. Recessions are shaded'
         + (eras.length ? '; bands below the chart mark ' + listWords(eras) : '') + (refs.length ? '; dashed lines mark ' + listWords(refs) : '')
@@ -2794,6 +2818,13 @@
     const src = el('p', { class: 'source' });
     src.appendChild(document.createTextNode('Source: ')); src.appendChild(el('a', { href: t.source.url, rel: 'noopener', text: 'FRED ' + t.source.series }));
     if (t.headline) { src.appendChild(document.createTextNode(' and ')); src.appendChild(el('a', { href: t.headline.url, rel: 'noopener', text: t.headline.series })); }
+    // a form drawn from another series names it too: "Source: FRED A191RL1Q225SBEA; real GDP from FRED GDPC1, updated …" (Nov 6 ruling)
+    const srcLvl = el('span', { class: 'src-level' }); src.appendChild(srcLvl);
+    ctx.syncSource = () => {
+      const F = ctx.form(); srcLvl.textContent = '';
+      if (F.srcSeries && F.srcSeries !== t.source.series) srcLvl.append('; ' + lowerFirst(F.srcName || 'the level') + ' from ', el('a', { href: F.srcUrl || 'https://fred.stlouisfed.org/series/' + F.srcSeries, rel: 'noopener', text: 'FRED ' + F.srcSeries }));
+    };
+    ctx.syncSource();
     src.appendChild(document.createTextNode(', updated ' + (t.source.last_updated || '').slice(0, 10) + '. Figures are the current vintage and are revised by the agencies.'));
     left.appendChild(src);
 

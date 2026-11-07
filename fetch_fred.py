@@ -889,9 +889,12 @@ COMPANIONS = [
     },
     # Series read only by the live figures in article text (tools/figures.py), offered on no chart.
     # All tagged Public Domain: Citation Requested on FRED (checked Oct 30, 2026).
+    # pay_level, rent_level and home_price_level also give the chart pages their levels for "Show it as" (chart.html
+    # SHOW_AS), so they are kept from the series' first month (Nov 6); the article figures and household lines read
+    # only 2019 on, so the longer history changes none of them.
     {"id": "pay_level", "label": "Average hourly earnings, production and nonsupervisory workers, dollars",
-     "for": [], "series": "AHETPI", "params": {"observation_start": "2018-01-01"}, "freq": "m",
-     "why": "Used for pay since 2019 in article text."},
+     "for": [], "series": "AHETPI", "params": {"observation_start": "1964-01-01"}, "freq": "m",
+     "why": "Used for pay since 2019 in article text, and for hourly pay as paid, in today's dollars and as an index on its chart page."},
     {"id": "unemployed", "label": "Unemployed people, thousands", "for": [], "series": "UNEMPLOY",
      "params": {"observation_start": "2015-01-01"}, "freq": "m", "why": "Used for the unemployed count in article text."},
     {"id": "openings", "label": "Job openings, thousands (JOLTS)", "for": [], "series": "JTSJOL",
@@ -903,9 +906,26 @@ COMPANIONS = [
     {"id": "long_term_share", "label": "Share of the unemployed out of work 27 weeks or more", "for": [], "series": "LNS13025703",
      "params": {"observation_start": "2015-01-01"}, "freq": "m", "why": "Used for long-term unemployment in article text."},
     {"id": "rent_level", "label": "CPI, rent of primary residence, index", "for": [], "series": "CUSR0000SEHA",
-     "params": {"observation_start": "2018-01-01"}, "freq": "m", "why": "Used for rent since 2019 in article text."},
+     "params": {"observation_start": "1981-01-01"}, "freq": "m",
+     "why": "Used for rent since 2019 in article text, and for rent as reported and as an index on its chart page. The seasonally adjusted index begins in 1981."},
     {"id": "home_price_level", "label": "FHFA purchase-only house price index, level", "for": [], "series": "HPIPONM226S",
-     "params": {"observation_start": "2018-01-01"}, "freq": "m", "why": "Used for home prices since 2019 on the home prices tile (Nov 6)."},
+     "params": {"observation_start": "1991-01-01"}, "freq": "m",
+     "why": "Used for home prices since 2019 on the home prices tile (Nov 6), and for home prices as reported and as an index on its chart page."},
+    # Levels kept only for "Show it as" on the chart pages (chart.html SHOW_AS), offered as no companion line (Nov 6):
+    # each tile's own form is a change, and these are the levels it is the change of. BLS and BEA series, all tagged
+    # Public Domain: Citation Requested on FRED (checked Nov 6, 2026).
+    {"id": "core_cpi_index", "label": "CPI less food and energy, index", "for": [], "series": "CPILFESL",
+     "params": {"observation_start": "1957-01-01"}, "freq": "m",
+     "why": "Used for core inflation as reported and as an index on its chart page."},
+    {"id": "payrolls_level", "label": "All employees, total nonfarm, thousands", "for": [], "series": "PAYEMS",
+     "params": {"observation_start": "1939-01-01"}, "freq": "m",
+     "why": "Used for total jobs as reported and as an index on the jobs added chart page."},
+    {"id": "health_jobs_level", "label": "All employees, health care, thousands", "for": [], "series": "CES6562000101",
+     "params": {"observation_start": "1990-01-01"}, "freq": "m",
+     "why": "Used for health care jobs as reported and as an index on its chart page."},
+    {"id": "gdp_real_level", "label": "Real gross domestic product, billions of chained 2017 dollars, at a yearly rate", "for": [],
+     "series": "GDPC1", "params": {"observation_start": "1947-01-01"}, "freq": "q",
+     "why": "Used for real GDP as reported, as an index and its change from a year ago on the economic growth chart page."},
     {"id": "eci_wages", "label": "Employment Cost Index, private wages and salaries, change from a year ago (not seasonally adjusted)",
      "for": [], "series": "CIU2020000000000I", "params": {"units": "pc1", "observation_start": "2002-01-01"}, "freq": "q",
      "why": "Used for the ECI line on the hourly pay page; not seasonally adjusted, as BLS headlines it."},

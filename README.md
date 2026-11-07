@@ -39,7 +39,9 @@ history. Live at [economyincontext.org](https://economyincontext.org).
   typical range, record highs and lows), plus `data/companions.json` with the
   overlay series (PCE inflation, U-6, prime-age employment ratio, the CBO
   natural rate, continuing claims, single-family starts, wages, and derived
-  spreads). It also maintains `data/firstprints.json`: each month's figure as
+  spreads) and the levels the chart pages draw in "Show it as" (total jobs,
+  health care jobs, core CPI, real GDP, hourly pay, rent and home prices, each
+  from its series' first month). It also maintains `data/firstprints.json`: each month's figure as
   first reported, from ALFRED (FRED's vintage archive). First prints never
   change, so the file is filled in a few hundred months per run and then only
   the newest month is fetched.
