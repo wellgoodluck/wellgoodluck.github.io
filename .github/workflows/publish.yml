@@ -10,6 +10,7 @@ on:
     paths:
       - index.html
       - chart.html
+      - "*.html"
       - assets/**
       - articles/**
       - tools/**
@@ -42,7 +43,7 @@ jobs:
       - name: Assemble the site from the committed figures
         run: |
           mkdir -p public/data
-          cp index.html chart.html public/
+          cp ./*.html public/
           cp data/series.json data/companions.json data/overlays.json public/data/
           if [ -d assets ]; then cp -r assets public/; fi
           python3 tools/build_articles.py public
