@@ -30,7 +30,7 @@ Some states' rules lean cities toward the sales tax. Oklahoma cities can use pro
 
 ## What one busy restaurant pays
 
-Take a high-volume fast-food restaurant. The top-grossing chains average $6 million or more a year per location, by the trade magazine QSR's estimates for 2025: Chick-fil-A about $7.7 million, Raising Cane's about $6.6 million and In-N-Out, the highest-grossing burger chain, about $6.0 million ([QSR](https://www.qsrmagazine.com/story/these-20-fast-food-chains-earn-the-most-per-restaurant/)). Most fast-food restaurants sell far less, so $6 million is close to the top of the range, not a typical store. {{due 2027-08-15 "QSR 50 for 2027: update the per-restaurant sales figures"}}
+Take a high-volume fast-food restaurant. By the trade magazine QSR's estimates for 2025, the three chains that sell the most per location each averaged $6 million or more: Chick-fil-A about $7.7 million, Raising Cane's about $6.6 million and In-N-Out about $6.0 million, the most of any burger chain ([QSR](https://www.qsrmagazine.com/story/these-20-fast-food-chains-earn-the-most-per-restaurant/)). Most fast-food restaurants sell far less, so $6 million is close to the top of the range, not a typical store. {{due 2027-08-15 "QSR 50 for 2027: update the per-restaurant sales figures"}}
 
 What the city keeps from $6 million a year depends only on how many cents of each dollar's tax go to the city:
 
