@@ -805,7 +805,62 @@
   // dollar axes show whole dollars or full cents ($2.50, not $2.5)
   function axisDecimals(step, d) { const k = decimalsFor(step, d.scale); return d.prefix === '$' && !d.suffix && k === 1 ? 2 : k; }
   // "Data: BLS via FRED · economyincontext.org"; tiles without an agency credit the FRED series
-  function creditLine(t) { return 'Data: ' + (t.agency ? t.agency + ' via FRED' : 'FRED (' + t.source.series + ')') + ' · economyincontext.org'; }
+  function creditLine(t, drawn) { const more = otherCredits(drawn, 'credit'); return 'Data: ' + (t.agency ? t.agency + ' via FRED' : 'FRED (' + t.source.series + ')') + (more.length ? '; ' + more.join('; ') : '') + ' · economyincontext.org'; }
+  // the credit line, shortened only when it wouldn't fit the chart's width (a phone with a second source on): a long
+  // agency name gives way to a shorter one before anything else does
+  const CREDIT_SHORT = { 'Federal Reserve Board': ['Federal Reserve', 'Fed'] };
+  let creditMeas = null;
+  function fitCredit(t, drawn, avail) {
+    const full = creditLine(t, drawn);
+    try {
+      creditMeas = creditMeas || document.createElement('canvas').getContext('2d');
+      creditMeas.font = '11px ' + getComputedStyle(document.body).fontFamily;
+      if (creditMeas.measureText(full).width <= avail) return full;
+      for (const a of (CREDIT_SHORT[t.agency] || [])) {
+        const c = creditLine(Object.assign({}, t, { agency: a }), drawn);
+        if (creditMeas.measureText(c).width <= avail) return c;
+      }
+    } catch (e) { /* no canvas: keep the full line */ }
+    return full;
+  }
+  // sources outside FRED among the lines drawn (FHFA's mortgage database, Nov 6): short names for the image, long for citations
+  function otherCredits(list, key) { return (list || []).map(o => o && o[key]).filter((x, i, a) => x && a.indexOf(x) === i); }
+
+  // ---- FHFA National Mortgage Database lines (Nov 6) ------------------------------------------
+  // The fetcher stores FHFA's national, all-mortgage shares as companions with `for: []`; this attaches three of them
+  // to the mortgage delinquency chart page, display only. "90+ days behind or in foreclosure" is the site's sum of two
+  // FHFA figures that don't overlap, worked out here for each quarter both have. FHFA's terms ask that anyone citing
+  // the data say the analysis is their own, so the group note, the CSV and the citations carry that.
+  const NMDB_TILE = 'mortgage_delinquency';
+  const NMDB_GROUP = 'All mortgages (FHFA)';
+  const NMDB_NOTE = 'From the Federal Housing Finance Agency’s National Mortgage Database, a 5% sample of all U.S. first mortgages: Fannie Mae, Freddie Mac, FHA, VA and the rest. Shares of loans, quarterly since 2002, to one decimal; the latest two quarters are preliminary and usually revised up. The analysis is Economy in Context’s own, not FHFA’s.';
+  const NMDB_NOTICE = 'FHFA data from the National Mortgage Database. The opinions and analyses here are Economy in Context’s own; FHFA does not vouch for the data after download.';
+  const NMDB_LINES = [   // [id, label, why]; the first is the sum and is on when the page opens
+    ['nmdb_serious', 'All mortgages: 90+ days behind or in foreclosure', 'The two most serious stages together: the share of all mortgages in real trouble. Economy in Context adds FHFA’s two figures, which don’t overlap.'],
+    ['nmdb_90', 'All mortgages: 90+ days behind', 'Three or more payments missed, not yet in foreclosure.'],
+    ['nmdb_foreclosure', 'All mortgages: in foreclosure', 'In foreclosure, bankruptcy or a deed in lieu at the end of the quarter: homes in the process, not new filings.'],
+  ];
+  function attachNmdb(compData, tileId) {
+    if (tileId !== NMDB_TILE || !compData || !Array.isArray(compData.companions)) return;
+    const by = {}; compData.companions.forEach(c => { by[c.id] = c; });
+    const a = by.nmdb_90, b = by.nmdb_foreclosure;
+    if (!a || !b) return;                                  // not fetched yet: the page shows the bank series alone
+    const bmap = new Map(b.observations.map(p => [p[0], p[1]]));
+    const sum = a.observations.filter(p => bmap.has(p[0])).map(p => [p[0], Math.round((p[1] + bmap.get(p[0])) * 10) / 10]);
+    const src = by.nmdb_90.source || {};
+    const made = {
+      nmdb_serious: { observations: sum, source: { label: 'FHFA NMDB (P90DL + PFORECL)', url: src.url, series: 'P90DL + PFORECL' } },
+      nmdb_90: { observations: a.observations, source: { label: 'FHFA NMDB P90DL', url: src.url, series: 'P90DL' } },
+      nmdb_foreclosure: { observations: b.observations, source: { label: 'FHFA NMDB PFORECL', url: (b.source || {}).url || src.url, series: 'PFORECL' } },
+    };
+    const add = NMDB_LINES.map(([id, label, why]) => Object.assign({
+      id, label, why, for: [NMDB_TILE], freq: 'q', group: NMDB_GROUP, group_note: NMDB_NOTE,
+      display: { scale: 1, decimals: 1, suffix: '%' },
+      credit: 'FHFA', creditLong: 'Federal Housing Finance Agency, National Mortgage Database', notice: NMDB_NOTICE,
+    }, made[id]));
+    const ids = new Set(add.map(c => c.id));
+    compData.companions = compData.companions.filter(c => !ids.has(c.id)).concat(add);
+  }
   function appliesTo(o, id) { return o.applies_to === 'all' || (Array.isArray(o.applies_to) && o.applies_to.includes(id)) || (Array.isArray(o.for) && o.for.includes(id)); }
 
   // ---- context sentence & strip (same logic as the almanac page) ----------
@@ -1389,7 +1444,7 @@
       hit.addEventListener('mouseleave', () => { if (Date.now() - lastTouch > 1000) hide(); });
       hit.addEventListener('touchend', () => { lastTouch = Date.now(); clearTimeout(tapTimer); tapTimer = setTimeout(hide, 2500); });
       const credit = svgEl('text', { class: 'credit', x: width - mR, y: height - 3, 'text-anchor': 'end' });
-      credit.textContent = creditLine(t);
+      credit.textContent = fitCredit(t, comps, width - mR - 4);
       svg.appendChild(credit);
       box.insertBefore(svg, tip);
 
@@ -2088,7 +2143,7 @@
       saCur.textContent = F.label;
     }
 
-    const groups = ['Reference lines', 'Companion series', 'Metro areas', 'Eras', 'Events'];
+    const groups = ['Reference lines', 'Companion series', NMDB_GROUP, 'Metro areas', 'Eras', 'Events'];   // NMDB_GROUP: FHFA's mortgage lines, one page only (Nov 6)
     const capNotes = [];   // one in each group that holds series, so the reason shows where the reader is
     // open a group when one of its overlays is on, and Companion series always (the comparisons are the page's best
     // reason to exist, and a closed group hid them); with nothing on, Reference lines opens too
@@ -2331,9 +2386,11 @@
       const name = formTitle(t, F) + ' (' + unit + ')';
       // two lines saying what this is and where it came from (three in another form), a blank line, then the table
       const rowsObs = formObs(view);   // first: an index takes its base from the view here
+      const fredComps = comps.filter(o => !o.creditLong), otherComps = comps.filter(o => o.creditLong);
       const series = [t.source.series].concat(F.srcSeries ? [F.srcSeries] : []).concat(F.key === 'real' ? ['CPIAUCSL'] : [])
-        .concat(comps.map(o => o.isCompare ? o.tile.source.series : o.source && o.source.label ? o.source.label.replace(/^FRED /, '') : null).filter(Boolean))
+        .concat(fredComps.map(o => o.isCompare ? o.tile.source.series : o.source && o.source.label ? o.source.label.replace(/^FRED /, '') : null).filter(Boolean))
         .filter((x, i, a) => a.indexOf(x) === i);
+      const others = otherCredits(otherComps, 'creditLong'), notices = otherCredits(otherComps, 'notice');
       const made = F.own ? null : F.key === 'yoy' && F.srcSeries && SHOW_AS[t.id] && SHOW_AS[t.id].own === 'growth'
           ? 'Change from a year ago: real GDP (' + F.srcSeries + ') in each quarter against the same quarter a year earlier, in percent, worked out by Economy in Context'
         : F.key === 'yoy' ? (F.pp ? 'Change from a year ago, in percentage points: each reading minus the one a year earlier' : t.freq === 'm' && SHOW_AS[t.id] && SHOW_AS[t.id].own === 'chg' ? 'Change from a year ago: the sum of the twelve monthly changes' : (F.display.suffix === '%' ? 'Change from a year ago: each reading against the one a year earlier, in percent' : 'Change from a year ago: each reading minus the one a year earlier'))
@@ -2343,11 +2400,14 @@
         : 'As reported: the level FRED publishes';
       const lines = [csvQ(name + span + ', from Economy in Context: ' + SITE + chartPath(t.id, F.own ? '' : 'as=' + F.key)),
         csvQ('Data: ' + (t.agency ? t.agency + ' via ' : '') + 'FRED series ' + series.join(', ') + ', retrieved ' + String(ctx.data.generated || '').slice(0, 10)
-          + (d.flipped ? '. Sign flipped from FRED: a deficit is positive here, negative in ' + t.series : ''))].concat(made ? [csvQ(made + '.')] : []).concat(['',
+          + (d.flipped ? '. Sign flipped from FRED: a deficit is positive here, negative in ' + t.series : '')
+          + (others.length ? '; ' + others.join('; ') + ' (' + otherComps.map(o => o.source.series).join(', ') + ')' : ''))]
+        .concat(notices.map(n => csvQ(n))).concat(made ? [csvQ(made + '.')] : []).concat(['',
         'date,' + csvQ(name) + comps.map(o => ',' + csvQ(o.isCompare ? colName(o, true) : o.label)).join('')]);
       const maps = comps.map(joinMap);
       rowsObs.filter(inView).forEach(p => lines.push(p[0] + ',' + p[1] + maps.map((m, k) => { const v = lookup(m, comps[k], p[0]); return ',' + (v == null ? '' : v); }).join('')));
       lines.push(''); lines.push('# ' + ctx.data.attribution); lines.push('# ' + t.source.url);
+      otherComps.map(o => o.source && o.source.url).filter((u, i, a) => u && a.indexOf(u) === i).forEach(u => lines.push('# ' + u));
       return lines.join('\n');
     }
     function csvQ(s) { return '"' + String(s).replace(/"/g, '""') + '"'; }
@@ -2612,7 +2672,7 @@
       const F = ctx.form(), head = F.name && F.label.startsWith(F.name) ? F.label : (F.name || t.title) + formName();
       return head + (others.length ? ' and ' + listWords(others) : '') + (c ? ' compared with ' + lowerFirst(c.label) : '') + ', ' + fmtPeriod(v.first, pf(t), true) + ' to ' + fmtPeriod(v.last, pf(t), true);
     }
-    function credit() { return t.agency ? t.agency + ' via FRED' : 'FRED (' + t.source.series + ')'; }
+    function credit() { const more = otherCredits(seriesOn(), 'creditLong'); return (t.agency ? t.agency + ' via FRED' : 'FRED (' + t.source.series + ')') + (more.length ? '; ' + more.join('; ') : ''); }
     function syncCite() {
       if (!ctx.view) return;
       const name = chartName(), url = permalink(), now = new Date(), through = fmtPeriod(ctx.view.last, pf(t), true);
@@ -2711,6 +2771,7 @@
       p.hidden = false;
     }
 
+    attachNmdb(compData, t.id);
     // overlays: hand-compiled ones plus every companion series that applies here.
     // A companion can ask for its own sub-panel (`panel: "own"`) and carry its own number format (`display`).
     // Companions that name the same `panel: "group:<key>"` share one sub-panel and one scale, titled by their `panel_title`;
@@ -2721,7 +2782,8 @@
     });
     const comps = (compData.companions || []).filter(c => appliesTo(c, t.id)).map(c => ({
       id: c.id, type: 'series', group: c.group || 'Companion series', groupNote: c.group_note || null, label: c.label, applies_to: c.for, why: c.why, observations: c.observations, freq: c.freq,
-      source: c.source ? { label: 'FRED ' + c.source.series, url: c.source.url } : null,
+      source: c.source ? { label: c.source.label || 'FRED ' + c.source.series, url: c.source.url, series: c.source.series } : null,
+      credit: c.credit || null, creditLong: c.creditLong || null, notice: c.notice || null,
       display: c.display ? c.display : c.id === 'continuing_claims' ? { scale: 1000, decimals: 0, suffix: 'K', clip: [0, 4000000] } : c.id === 'price_level' || c.id === 'dollar_index' ? { scale: 1, decimals: 0, suffix: '' } : OWN_SCALE[c.id] ? { scale: 1, decimals: 1, suffix: '%' } : null,
     }));
     const overlays = ovData.overlays.concat(comps);
@@ -2744,6 +2806,8 @@
     Array.from(state.on).forEach(id => { if (!ovById[id]) state.on.delete(id); });
     // a price page opens with its today's-dollars line on, so the chart shows what the range and sentence describe
     if (adjusted(t) && ovById[t.id + '_real']) { state.defaultOn = t.id + '_real'; if (!state.ovGiven) state.on.add(state.defaultOn); }
+    // the mortgage delinquency page opens with FHFA's all-mortgage line on beside the bank series (Nov 6)
+    else if (t.id === NMDB_TILE && ovById.nmdb_serious) { state.defaultOn = 'nmdb_serious'; if (!state.ovGiven) state.on.add(state.defaultOn); }
     // colors in the address's order, four series at most (an older link with more keeps the first four)
     Array.from(state.on).forEach(id => { const o = ovById[id]; if (o.type !== 'series' || !appliesTo(o, t.id)) return; const k = freeSlot(); if (k < 0) state.on.delete(id); else state.slots.set(id, k); });
 

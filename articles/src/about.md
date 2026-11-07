@@ -22,12 +22,11 @@ Where the site chooses something, it says so on the page. The 2015–19 average 
 
 ## What's on the almanac, and what isn't
 
-The almanac carries the numbers that come up most when people argue about the economy, and it carries both kinds: the ones that tend to make the economy look strong, such as jobs added, unemployment, growth and pay, and the ones that tend to make it look hard, such as prices, rent, mortgage rates, groceries and the federal deficit. Several tiles also open lines that complicate their own headline. The unemployment rate opens U-6, which also counts people working part time who want full-time work and people who have stopped looking, and the share of 25-to-54-year-olds who have a job. Inflation opens the Federal Reserve's preferred measure. Hourly pay opens pay after inflation.
+The almanac carries the numbers that come up most when people argue about the economy, and it carries both kinds: the ones that tend to make the economy look strong, such as jobs added, unemployment, growth and pay, and the ones that tend to make it look hard, such as prices, rent, mortgage rates, groceries and the federal deficit. Several tiles also open lines that complicate their own headline. The unemployment rate opens U-6, which also counts people working part time who want full-time work and people who have stopped looking, and the share of 25-to-54-year-olds who have a job. Inflation opens the Federal Reserve's preferred measure. Hourly pay opens pay after inflation. Mortgage delinquency, which counts only loans banks hold, opens the Federal Housing Finance Agency's figures for all mortgages: the share 90 days or more behind and the share in foreclosure.
 
 Some things are not here, and a reader should know which:
 
 - **Stock prices and the best-known home-price index.** The S&P 500 and the Case-Shiller index belong to S&P Dow Jones Indices, which does not allow them to be republished without permission, and every chart here can be downloaded with its data. The home prices tile uses the Federal Housing Finance Agency's index instead.
-- **Foreclosures.** No free national count of foreclosures is published in a form the almanac can update on its own. The mortgage delinquency tile, the share of home loans at banks that are at least a month behind, is the nearest early sign.
 - **How the gains are shared.** Every number on the almanac is a national total or average, and an average can hide very different years for different households. Income and wealth by group are not on the almanac yet.
 
 [Suggestions](#contact) for numbers the almanac should carry are welcome.
