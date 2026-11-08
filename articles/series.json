@@ -82,6 +82,20 @@
           "label": "Where the money goes"
         }
       ]
+    },
+    "property-tax": {
+      "title": "Property taxes: how the rate gets set, and how states limit it",
+      "dek": "Two pages, read in order: how a local government's budget, the value of its property and the rollback rate produce a tax rate, worked through for one made-up town; then the three ways states limit property taxes, and what changed in 2026.",
+      "parts": [
+        {
+          "slug": "how-a-property-tax-rate-is-set",
+          "label": "How the rate gets set"
+        },
+        {
+          "slug": "property-tax-limits-by-state",
+          "label": "Limits by state"
+        }
+      ]
     }
   }
 }
