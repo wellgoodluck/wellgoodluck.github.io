@@ -40,6 +40,9 @@ jobs:
       - name: Fetch the latest figures from FRED
         env:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          # Car insurance and child care come from the BLS public data API (Nov 8). Without this secret
+          # those two tiles are skipped and the rest of the site publishes as usual.
+          BLS_API_KEY: ${{ secrets.BLS_API_KEY }}
         run: python3 fetch_fred.py public/data/series.json
 
       - name: Keep a copy of the figures in the repo
@@ -51,9 +54,11 @@ jobs:
           mkdir -p data
           cp public/data/series.json data/series.json
           cp public/data/companions.json data/companions.json
+          if [ -f public/data/series-staged.json ]; then cp public/data/series-staged.json data/series-staged.json; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/series.json data/companions.json
+          if [ -f data/series-staged.json ]; then git add data/series-staged.json; fi
           if [ -f data/firstprints.json ]; then git add data/firstprints.json; fi
           if git diff --cached --quiet; then
             echo "Figures unchanged; nothing to commit."
