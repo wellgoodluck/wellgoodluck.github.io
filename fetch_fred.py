@@ -145,6 +145,36 @@ TILES = [
                     "unit": "thousands of jobs", "year": "calendar"},
         "note": "Everyone working for newspaper publishers, from reporters to printing, ad sales and delivery, including the self-employed; a person with jobs at two papers counts twice. Online-only outlets were counted in a separate industry until the 2022 industry codes grouped them with publishers of the same kind. From the BLS productivity program; each year posts the following spring. Magazine and broadcasting jobs are on the chart page.",
     },
+    # ---- Jobs: behind "More numbers" (Nov 8). "more": True puts a tile behind its section's reveal on the
+    # almanac and in All N numbers; it is otherwise a tile like any other (its own chart page, rank and range).
+    {
+        "id": "prime_age_employment",
+        "agency": "BLS",
+        "section": "Jobs",
+        "more": True,
+        "title": "Prime-age employment",
+        "subtitle": "Share of people aged 25 to 54 who have a job, monthly",
+        "series": "LNS12300060",
+        "params": {"observation_start": "1948-01-01"},
+        "freq": "m",
+        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": False,
+                    "unit": "percent of people aged 25 to 54"},
+        "note": "From the household survey, seasonally adjusted. Counting only these ages keeps the number from moving as the population ages and people retire, and it needs no judgment about who is looking for work. Also on the unemployment chart page as a companion line.",
+    },
+    {
+        "id": "sahm_rule",
+        "agency": "Claudia Sahm via FRED",
+        "section": "Jobs",
+        "more": True,
+        "title": "Sahm rule",
+        "subtitle": "How far unemployment's three-month average sits above its low of the past year, as first published",
+        "series": "SAHMREALTIME",
+        "params": {"observation_start": "1959-12-01"},
+        "freq": "m",
+        "display": {"scale": 1, "decimals": 2, "suffix": " pts", "signed": False,
+                    "unit": "percentage points"},
+        "note": "The three-month average unemployment rate minus its lowest three-month average of the prior 12 months, using each month's figures as first published. It reached 0.50 within four months of the start of every recession since 1970, and twice without one: for a month in late 1976, and in 2024. It describes the job market now; it is not a forecast.",
+    },
     # ---- Prices -----------------------------------------------------------
     {
         "id": "cpi",
@@ -184,6 +214,66 @@ TILES = [
         "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": False,
                     "unit": "percent, year over year"},
         "note": "What renters pay across all leases, not just new ones, so it trails asking rents by about a year. Seasonally adjusted.",
+    },
+    # ---- Prices: behind "More numbers" (Nov 8) ------------------------------
+    {
+        "id": "medical_care",
+        "agency": "BLS",
+        "section": "Prices",
+        "more": True,
+        "title": "Medical care",
+        "subtitle": "Medical care prices (CPI), change from a year ago",
+        "series": "CPIMEDSL",
+        "params": {"units": "pc1", "observation_start": "1947-01-01"},
+        "freq": "m",
+        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": False,
+                    "unit": "percent, year over year"},
+        "note": "Doctors, hospitals, prescription drugs, other medical goods and health insurance, as households pay for them out of pocket and through premiums, seasonally adjusted. What employers pay toward premiums is not in it.",
+    },
+    {
+        # Not on FRED: fetched from the BLS public data API (see fetch_bls). Year-over-year change computed here.
+        "id": "car_insurance",
+        "agency": "BLS",
+        "provider": "bls",
+        "section": "Prices",
+        "more": True,
+        "title": "Car insurance",
+        "subtitle": "Motor vehicle insurance prices (CPI), change from a year ago",
+        "series": "CUUR0000SETE",
+        "params": {"units": "pc1", "observation_start": "1950-01-01"},
+        "freq": "m",
+        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": False,
+                    "unit": "percent, year over year"},
+        "note": "What households pay for auto insurance policies, priced for the same coverage over time. Not seasonally adjusted; the change from a year earlier is computed here from the BLS index.",
+    },
+    {
+        "id": "child_care",
+        "agency": "BLS",
+        "provider": "bls",
+        "section": "Prices",
+        "more": True,
+        "title": "Child care",
+        "subtitle": "Day care and preschool prices (CPI), change from a year ago",
+        "series": "CUUR0000SEEB03",
+        "params": {"units": "pc1", "observation_start": "1990-01-01"},
+        "freq": "m",
+        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": False,
+                    "unit": "percent, year over year"},
+        "note": "Tuition and fees at day care centers and preschools. Not seasonally adjusted; the change from a year earlier is computed here from the BLS index. Care by relatives and nannies is not included.",
+    },
+    {
+        "id": "used_cars",
+        "agency": "BLS",
+        "section": "Prices",
+        "more": True,
+        "title": "Used cars",
+        "subtitle": "Used car and truck prices (CPI), change from a year ago",
+        "series": "CUSR0000SETA02",
+        "params": {"units": "pc1", "observation_start": "1953-01-01"},
+        "freq": "m",
+        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": False,
+                    "unit": "percent, year over year", "clip": [-30, 50]},
+        "note": "Prices of used cars and trucks bought by households, seasonally adjusted, built largely from dealer sales data. A car sold privately between two households is not counted.",
     },
     # ---- Growth & rates ---------------------------------------------------
     {
@@ -225,6 +315,35 @@ TILES = [
         "display": {"scale": 1, "decimals": 2, "suffix": "%", "signed": False,
                     "unit": "percent"},
         "note": "History is the monthly average; the headline is the latest daily close.",
+    },
+    # ---- Growth & rates: behind "More numbers" (Nov 8) ----------------------
+    {
+        "id": "real_retail",
+        "agency": "Census Bureau and the St. Louis Fed",
+        "section": "Growth & rates",
+        "more": True,
+        "title": "Retail sales",
+        "subtitle": "Store and restaurant sales after inflation, change from a year ago",
+        "series": "RRSFS",
+        "params": {"units": "pc1", "observation_start": "1992-01-01"},
+        "freq": "m",
+        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": True,
+                    "unit": "percent, year over year", "clip": [-25, 35]},
+        "note": "Census Bureau retail and food services sales, adjusted for inflation by the St. Louis Fed using the CPI, seasonally adjusted. Retail is about a third of what households spend; services such as rent, health care and travel are not in it. The latest month is an advance estimate, revised twice.",
+    },
+    {
+        "id": "productivity_growth",
+        "agency": "BLS",
+        "section": "Growth & rates",
+        "more": True,
+        "title": "Productivity",
+        "subtitle": "Output per hour worked, change from a year ago, quarterly",
+        "series": "OPHNFB",
+        "params": {"units": "pc1", "observation_start": "1947-01-01"},
+        "freq": "q",
+        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": True,
+                    "unit": "percent, year over year"},
+        "note": "Nonfarm business sector, seasonally adjusted. Over long periods pay has tended to follow it, though not year to year. Also on the economic growth chart page as a companion line.",
     },
     # ---- Housing ----------------------------------------------------------
     {
@@ -283,6 +402,59 @@ TILES = [
                     "unit": "percent of loans"},
         "note": "Single-family mortgages on commercial banks' own books, by dollar amount: loans 30 or more days past due plus loans the bank has stopped counting interest on. Loans sold into Fannie Mae, Freddie Mac and Ginnie Mae securities, which include most FHA loans, are not counted, so this is a partial view. Seasonally adjusted; each quarter is published about two months after it ends.",
     },
+    # ---- Household finances (Nov 8) ---------------------------------------
+    {
+        "id": "saving_rate",
+        "agency": "BEA",
+        "section": "Household finances",
+        "title": "Saving rate",
+        "subtitle": "Share of after-tax income households save, monthly",
+        "series": "PSAVERT",
+        "params": {"observation_start": "1959-01-01"},
+        "freq": "m",
+        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": False,
+                    "unit": "percent of disposable income", "clip": [0, 20]},
+        "note": "Personal saving as a share of disposable personal income, seasonally adjusted. It is what is left after spending and interest, so paying down a loan counts as saving and capital gains do not. Revised often, sometimes by a point or more.",
+    },
+    {
+        "id": "card_delinquency",
+        "agency": "Federal Reserve Board",
+        "section": "Household finances",
+        "title": "Credit card delinquency",
+        "subtitle": "Share of credit card balances at banks 30 or more days behind, quarterly",
+        "series": "DRCCLACBS",
+        "params": {"observation_start": "1991-01-01"},
+        "freq": "q",
+        "display": {"scale": 1, "decimals": 2, "suffix": "%", "signed": False,
+                    "unit": "percent of balances"},
+        "note": "Credit card loans on commercial banks' books, by dollar amount, 30 or more days past due plus loans the bank has stopped counting interest on. Seasonally adjusted; each quarter is published about two months after it ends.",
+    },
+    {
+        "id": "debt_payments",
+        "agency": "Federal Reserve Board",
+        "section": "Household finances",
+        "title": "Debt payments",
+        "subtitle": "Mortgage and consumer loan payments as a share of after-tax income, quarterly",
+        "series": "TDSP",
+        "params": {"observation_start": "2005-01-01"},
+        "freq": "q",
+        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": False,
+                    "unit": "percent of disposable income"},
+        "note": "Required principal and interest on mortgages and consumer loans, against disposable personal income, seasonally adjusted. An estimate; the Federal Reserve revised the method in 2023 and now publishes it only from 2005, so its history is short.",
+    },
+    {
+        "id": "median_income",
+        "agency": "Census Bureau",
+        "section": "Household finances",
+        "title": "Median household income",
+        "subtitle": "Half of households earn more and half less, in today's dollars, yearly",
+        "series": "MEHOINUSA672N",
+        "params": {"observation_start": "1984-01-01"},
+        "freq": "a",
+        "display": {"scale": 1, "decimals": 0, "prefix": "$", "signed": False,
+                    "unit": "dollars, adjusted for inflation", "year": "calendar"},
+        "note": "From the Census Bureau's Current Population Survey, money income before taxes, adjusted for inflation by the Census Bureau (C-CPI-U). Each year posts the following September. Breaks in the survey in 2013 and 2017 make small year-to-year changes around them uncertain.",
+    },
     # ---- Government and trade ---------------------------------------------
     {
         "id": "deficit",
@@ -325,6 +497,53 @@ TILES = [
         "display": {"scale": 1000, "decimals": 1, "prefix": "$", "suffix": "B", "signed": True,
                     "unit": "billions of dollars", "clip": [-150000, 20000], "sense": "deficit"},
         "note": "Seasonally adjusted. Negative means the country bought more from abroad than it sold.",
+    },
+    # ---- Government and trade: behind "More numbers" (Nov 8) ----------------
+    {
+        # A computed tile: customs duties as a percent of the value of goods imported, both from the GDP accounts
+        # (quarterly, seasonally adjusted annual rates). Tariffs are charged on goods, so services are left out.
+        "id": "effective_tariff",
+        "agency": "BEA",
+        "section": "Government and trade",
+        "more": True,
+        "title": "Effective tariff rate",
+        "subtitle": "Customs duties collected as a share of the value of goods imported, quarterly",
+        "series": "B235RC1Q027SBEA",
+        "params": {},
+        "freq": "q",
+        "computed": {"op": "series_ratio", "a": "B235RC1Q027SBEA", "b": "A255RC1Q027SBEA", "k": 100, "start": "1959-01-01"},
+        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": False,
+                    "unit": "percent of goods imports"},
+        "note": "Computed: federal customs duties (B235RC1Q027SBEA) divided by imports of goods (A255RC1Q027SBEA), both from BEA's GDP accounts. The rate actually collected, after exemptions and trade deals, so it runs well below the rates announced on paper.",
+    },
+    {
+        "id": "interest_share",
+        "agency": "BEA",
+        "section": "Government and trade",
+        "more": True,
+        "title": "Interest share of revenue",
+        "subtitle": "Federal interest payments as a share of federal revenue, quarterly",
+        "series": "A091RC1Q027SBEA",
+        "params": {},
+        "freq": "q",
+        "computed": {"op": "series_ratio", "a": "A091RC1Q027SBEA", "b": "FGRECPT", "k": 100, "start": "1947-01-01"},
+        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": False,
+                    "unit": "percent of federal revenue"},
+        "note": "Computed: federal interest payments (A091RC1Q027SBEA) divided by federal current receipts (FGRECPT), both from BEA's GDP accounts at seasonally adjusted annual rates. Receipts include payroll taxes. A budget-year figure from the Treasury will differ somewhat.",
+    },
+    {
+        "id": "dollar",
+        "agency": "Federal Reserve Board",
+        "section": "Government and trade",
+        "more": True,
+        "title": "Value of the dollar",
+        "subtitle": "Broad trade-weighted dollar, change from a year ago, monthly average",
+        "series": "DTWEXBGS",
+        "params": {"units": "pc1", "frequency": "m", "aggregation_method": "avg", "observation_start": "2006-01-01"},
+        "freq": "m",
+        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": True,
+                    "unit": "percent, year over year"},
+        "note": "Against the currencies of the country's main trading partners, weighted by trade. A rise means the dollar buys more abroad. The index begins in 2006, so its history is short; the year-over-year change begins in 2007. Also on the trade balance chart page as a companion line.",
     },
     # ---- What things cost -------------------------------------------------
     # BLS average prices (collected for the CPI) and EIA's weekly pump survey.
@@ -463,6 +682,14 @@ TILES = [
         "note": "Not seasonally adjusted. BLS average price across U.S. cities, collected for the CPI; fresh whole broiler-fryers, priced per pound with bone and skin. Boneless breast is on the chart page. The chart shows the price as charged; the range and the comparison above it are adjusted for inflation.",
     },
 ]
+
+# The 15 numbers added Nov 8. Until launch they are fetched every run but written only to series-staged.json
+# (beside series.json, the same shape with every tile), which no page reads; series.json keeps the 30 tiles the
+# live pages were built for. LAUNCH: set SHOW_NEW_TILES = True, in the same upload as the new index.html and chart.html.
+NEW_TILES = {"prime_age_employment", "sahm_rule", "medical_care", "car_insurance", "child_care", "used_cars",
+             "real_retail", "productivity_growth", "saving_rate", "card_delinquency", "debt_payments", "median_income",
+             "effective_tariff", "interest_share", "dollar"}
+SHOW_NEW_TILES = False
 
 # ---------------------------------------------------------------------------
 # Companion series: shown only on the detail page (chart.html) as overlays on
@@ -1321,6 +1548,114 @@ def household_lines(tiles_out, companions_out, extras):
         lines["openings_ratio"] = (text, [{"series": "UNEMPLOY", "url": "https://fred.stlouisfed.org/series/UNEMPLOY"}])
     except Exception: pass
 
+    # ---- Nov 8: the household lines for the tiles added behind "More numbers" and in Household finances.
+    # Same rules as above: every figure comes from fetched data; a missing input drops the line.
+    def cpi_same_month(tid):
+        d = T[tid]["context"]["current"]["date"]
+        return {month_key(x): v for x, v in T["cpi"]["observations"]}.get(month_key(d)) if "cpi" in T else None
+    def updown(v, up="up", down="down"): return up if v >= 0 else down
+    try:
+        v, b = cur("prime_age_employment"), base("prime_age_employment")
+        txt = f"About {round(v)} of every 100 people aged 25 to 54 have a job."
+        if b is not None:
+            txt += f" In 2015{EN}19 it was about {round(b)}."
+        lines["prime_age_employment"] = (txt, [])
+    except Exception: pass
+    try:
+        v = cur("sahm_rule")
+        where = ("at its low of the past year" if round(v, 2) <= 0
+                 else f"{v:.2f} points above its low of the past year")
+        lines["sahm_rule"] = (f"Unemployment's three-month average is {where}; "
+                              f"the line that has come with recessions is 0.50.", [])
+    except Exception: pass
+    for tid in ("medical_care", "car_insurance", "child_care", "used_cars"):
+        try:
+            v = cur(tid)
+            if tid == "car_insurance":
+                txt = f"A policy that cost $1,500 a year ago costs about ${round(1500 * (1 + v / 100), -1):,.0f} now."
+            elif tid == "child_care":
+                txt = f"Care that cost $1,000 a month a year ago costs about ${round(1000 * (1 + v / 100)):,.0f} now."
+            elif tid == "used_cars":
+                txt = f"A used car that sold for $25,000 a year ago would sell for about ${round(25000 * (1 + v / 100), -2):,.0f} now."
+            else:
+                txt = f"Medical care that cost $100 a year ago costs ${100 + v:,.2f} now."
+            c = cpi_same_month(tid)
+            if c is not None:
+                txt += f" Prices overall rose {c:.1f}% over the same 12 months." if c >= 0 else f" Prices overall fell {abs(c):.1f}% over the same 12 months."
+            lines[tid] = (txt, [{"series": "CPIAUCSL", "url": "https://fred.stlouisfed.org/series/CPIAUCSL"}] if c is not None else [])
+        except Exception: pass
+    try:
+        v = cur("real_retail")
+        txt = (f"After taking out inflation, shoppers spent {abs(v):.1f}% {updown(v, 'more', 'less')} in stores and restaurants "
+               f"than a year earlier." if abs(v) >= 0.05 else
+               "After taking out inflation, shoppers spent about what they did a year earlier in stores and restaurants.")
+        b = base("real_retail")
+        if b is not None:
+            txt += f" The 2015{EN}19 average was {b:+.1f}% a year."
+        lines["real_retail"] = (txt, [])
+    except Exception: pass
+    try:
+        v, b = cur("productivity_growth"), base("productivity_growth")
+        txt = f"An hour of work produced {abs(v):.1f}% {updown(v, 'more', 'less')} than a year earlier."
+        if b is not None:
+            txt += f" In 2015{EN}19 it grew about {b:.1f}% a year."
+        lines["productivity_growth"] = (txt, [])
+    except Exception: pass
+    try:
+        v, b = cur("saving_rate"), base("saving_rate")
+        txt = f"Households saved about {round(v)}¢ of every dollar left after taxes."
+        if b is not None:
+            txt += f" In 2015{EN}19 it was about {round(b)}¢."
+        lines["saving_rate"] = (txt, [])
+    except Exception: pass
+    try:
+        v, b = cur("card_delinquency"), base("card_delinquency")
+        mx = T["card_delinquency"]["context"]["max"]
+        txt = f"About 1 in {round(100 / v)} dollars owed on bank credit cards is at least a month behind."
+        txt += f" At the peak, in {mx['date'][:4]}, it was about 1 in {round(100 / mx['value'])}"
+        txt += f"; in 2015{EN}19, about 1 in {round(100 / b)}." if b else "."
+        lines["card_delinquency"] = (txt, [])
+    except Exception: pass
+    try:
+        v = cur("debt_payments")
+        mx = T["debt_payments"]["context"]["max"]
+        txt = f"Mortgage and consumer-loan payments take about {round(v)}¢ of every dollar left after taxes."
+        txt += f" The most since 2005 was about {round(mx['value'])}¢, in {mx['date'][:4]}."
+        lines["debt_payments"] = (txt, [])
+    except Exception: pass
+    try:
+        ob = T["median_income"]["observations"]
+        y, v = ob[-1][0][:4], ob[-1][1]
+        v19 = dict((d[:4], x) for d, x in ob).get("2019")
+        txt = f"Half of households took in more than ${round(v, -1):,.0f} in {y} and half less."
+        if v19 is not None and y > "2019":
+            txt += f" In 2019 the middle household took in ${round(v19, -1):,.0f} in {y} dollars."
+        lines["median_income"] = (txt, [])
+    except Exception: pass
+    try:
+        v, b = cur("effective_tariff"), base("effective_tariff")
+        txt = f"Tariffs collected came to about {v:.1f}¢ on every dollar of goods brought into the country."
+        if b is not None:
+            txt += f" In 2015{EN}19 it was about {b:.1f}¢."
+        lines["effective_tariff"] = (txt, [])
+    except Exception: pass
+    try:
+        v, b = cur("interest_share"), base("interest_share")
+        txt = f"Of every dollar the federal government took in, about {round(v)}¢ went to interest on its debt."
+        if b is not None:
+            txt += f" In 2015{EN}19 it was about {round(b)}¢."
+        lines["interest_share"] = (txt, [])
+    except Exception: pass
+    try:
+        v = cur("dollar")
+        if abs(v) < 0.05:
+            txt = "The dollar buys about as much foreign currency as a year earlier."
+        else:
+            txt = (f"The dollar buys {abs(v):.1f}% {updown(v, 'more', 'less')} foreign currency than a year earlier, "
+                   f"which makes imports and trips abroad {updown(v, 'cheaper', 'dearer')} and exports {updown(v, 'dearer', 'cheaper')}.")
+        lines["dollar"] = (txt, [])
+    except Exception: pass
+
     for t in tiles_out:
         if t["id"] in lines:
             text, sources = lines[t["id"]]
@@ -1457,6 +1792,36 @@ def section_summaries(tiles_out):
         out["Housing"] = text
     except Exception as e:
         print(f"summary Housing skipped: {e}", file=sys.stderr, flush=True)
+
+    # Household finances (Nov 8): each clause its own try, so any one can drop alone.
+    try:
+        parts = []
+        try:
+            v = cur("saving_rate"); r = rank("saving_rate")
+            parts.append(f"Households saved {pct(v)} of their after-tax income in {month('saving_rate')}" + (f", {r}" if r else "") + ".")
+        except Exception as e:
+            print(f"summary Household: saving skipped: {e}", file=sys.stderr, flush=True)
+        try:
+            v = cur("card_delinquency"); r = rank("card_delinquency")
+            qn = ["first", "second", "third", "fourth"][(int(ctx("card_delinquency")["current"]["date"][5:7]) - 1) // 3]
+            parts.append(f"At banks, {pct(v, 2)} of credit card balances were at least a month behind in the {qn} quarter" + (f", {r}" if r else "") + ".")
+        except Exception as e:
+            print(f"summary Household: cards skipped: {e}", file=sys.stderr, flush=True)
+        try:
+            v = cur("debt_payments"); r = rank("debt_payments")
+            parts.append(f"Mortgage and loan payments took {pct(v)} of after-tax income" + (f", {r}" if r else "") + ".")
+        except Exception as e:
+            print(f"summary Household: payments skipped: {e}", file=sys.stderr, flush=True)
+        try:
+            v = cur("median_income"); y = ctx("median_income")["current"]["date"][:4]
+            rc = record("median_income"); r = rc or rank("median_income")
+            parts.append(f"The middle household took in ${v:,.0f} in {y}" + (f", {r}" if r else "") + ".")
+        except Exception as e:
+            print(f"summary Household: income skipped: {e}", file=sys.stderr, flush=True)
+        if parts:
+            out["Household finances"] = " ".join(parts)
+    except Exception as e:
+        print(f"summary Household skipped: {e}", file=sys.stderr, flush=True)
 
     # Government and trade
     try:
@@ -2013,6 +2378,89 @@ def get_series_info(series_id):
 
 
 # ---------------------------------------------------------------------------
+# BLS public data API (Nov 8): two CPI indexes that FRED does not carry (car insurance, child care).
+# A tile with "provider": "bls" is fetched here instead of from FRED. Needs BLS_API_KEY (free, from
+# data.bls.gov/registrationEngine/); with a key the API serves 20 years per request and 500 requests a day.
+# The year-over-year change ("units": "pc1") is computed here from the index. Fails soft: a BLS tile that
+# cannot be fetched is dropped with a message and the rest of the site publishes.
+# ---------------------------------------------------------------------------
+BLS_API = os.environ.get("BLS_API_BASE", "https://api.bls.gov/publicAPI/v2/timeseries/data/").rstrip("/") + "/"
+BLS_KEY = os.environ.get("BLS_API_KEY", "").strip()
+
+
+def bls_get_index(series_id, start_year, retries=3):
+    """[(YYYY-MM-01, value)] for a monthly BLS series, ascending, from start_year to this year."""
+    if not BLS_KEY:
+        raise RuntimeError("BLS_API_KEY is not set")
+    this_year = date.today().year
+    by_date = {}
+    y0 = start_year
+    while y0 <= this_year:
+        y1 = min(y0 + 19, this_year)
+        body = json.dumps({"seriesid": [series_id], "startyear": str(y0), "endyear": str(y1),
+                           "registrationkey": BLS_KEY}).encode("utf-8")
+        last_err = None
+        for attempt in range(retries):
+            try:
+                req = urllib.request.Request(BLS_API, data=body, headers={
+                    "Content-Type": "application/json", "User-Agent": "economyincontext.org fetcher"})
+                with urllib.request.urlopen(req, timeout=30) as resp:
+                    data = json.load(resp)
+                if data.get("status") != "REQUEST_SUCCEEDED":
+                    raise RuntimeError("; ".join(data.get("message") or []) or data.get("status"))
+                for o in data["Results"]["series"][0].get("data", []):
+                    per, val = o.get("period", ""), o.get("value", "")
+                    if not per.startswith("M") or per == "M13":       # M13 is the annual average
+                        continue
+                    try:
+                        by_date[f"{o['year']}-{per[1:]}-01"] = float(val)
+                    except ValueError:                                  # "-" marks a month not published
+                        continue
+                last_err = None
+                break
+            except Exception as e:
+                last_err = f"{type(e).__name__}: {e}"
+                time.sleep(2 * (attempt + 1))
+        if last_err:
+            raise RuntimeError(f"BLS {series_id} {y0}-{y1}: {last_err}")
+        y0 = y1 + 1
+        time.sleep(0.5)
+    return sorted(by_date.items())
+
+
+def yoy_percent(obs):
+    """Percent change from the same month a year earlier; months with no reading a year before are left out."""
+    by_month = {month_key(d): v for d, v in obs}
+    out = []
+    for d, v in obs:
+        prev = by_month.get(f"{int(d[:4]) - 1}{d[4:7]}")
+        if prev:
+            out.append((d, 100.0 * (v / prev - 1)))
+    return out
+
+
+def fetch_bls_tile(t):
+    """A BLS tile's history and a source block shaped like FRED's, for the page's source line."""
+    start = int(t["params"].get("observation_start", "1950-01-01")[:4])
+    idx = bls_get_index(t["series"], start - (1 if t["params"].get("units") == "pc1" else 0))
+    obs = yoy_percent(idx) if t["params"].get("units") == "pc1" else idx
+    obs = [(d, v) for d, v in obs if d >= t["params"].get("observation_start", "0000")]
+    if len(obs) < 3:
+        raise RuntimeError("not enough observations")
+    return obs, {
+        "series": t["series"],
+        "label": "BLS " + t["series"],
+        "url": f"https://data.bls.gov/timeseries/{t['series']}",
+        "fred_title": t["subtitle"],
+        "fred_units": "Index 1982-1984=100" if "SEEB03" not in t["series"] else "Index Dec 1990=100",
+        "frequency": "Monthly",
+        "seasonal_adjustment": "NSA",
+        "last_updated": date.today().isoformat(),
+        "transform": t["params"].get("units", "lin"),
+    }
+
+
+# ---------------------------------------------------------------------------
 # Context math
 # ---------------------------------------------------------------------------
 def to_date(s):
@@ -2303,7 +2751,8 @@ def compute_tile(spec, by_id):
         time.sleep(0.4)
         b = dict(get_observations(spec["b"], params))
         time.sleep(0.4)
-        out = [(d, v / b[d]) for d, v in a if b.get(d)]
+        k = spec.get("k", 1)                  # 100 for a percent (Nov 8: the tariff and interest-share tiles)
+        out = [(d, k * v / b[d]) for d, v in a if b.get(d)]
         if len(out) < 3:
             raise RuntimeError("inputs do not overlap")
         return out
@@ -2366,6 +2815,21 @@ def main():
         if "computed" in t:                     # built from other tiles once they are all fetched (below)
             tiles_out.append({"id": t["id"], "_spec": t})
             continue
+        if t.get("provider") == "bls":          # BLS public API, not FRED (Nov 8); fail soft
+            print(f"{t['id']:16s} {t['series']} (BLS)", flush=True)
+            try:
+                obs, source = fetch_bls_tile(t)
+            except Exception as e:
+                print(f"{t['id']:16s} BLS tile skipped: {e}", file=sys.stderr, flush=True)
+                continue
+            tiles_out.append({
+                "id": t["id"], "section": t["section"], **({"more": True} if t.get("more") else {}),
+                "agency": t.get("agency", ""), "title": t["title"], "subtitle": t["subtitle"], "note": t["note"],
+                "freq": t["freq"], "display": t["display"], "source": source, "headline": None,
+                "context": context_for(obs, t["freq"]),
+                "observations": [[d, round(v, 3)] for d, v in obs],
+            })
+            continue
         print(f"{t['id']:16s} {t['series']}", flush=True)
         obs = get_observations(t["series"], t["params"])
         if t.get("flip"):                       # shown with the sign people use (see the deficit tile)
@@ -2387,6 +2851,7 @@ def main():
         tiles_out.append({
             "id": t["id"],
             "section": t["section"],
+            **({"more": True} if t.get("more") else {}),   # behind its section's "More numbers" reveal (Nov 8)
             "agency": t.get("agency", ""),
             "title": t["title"],
             "subtitle": t["subtitle"],
@@ -2426,7 +2891,8 @@ def main():
             continue
         by_id[spec["id"]] = obs
         tiles_out[i] = {
-            "id": spec["id"], "section": spec["section"], "agency": spec.get("agency", ""),
+            "id": spec["id"], "section": spec["section"], **({"more": True} if spec.get("more") else {}),
+            "agency": spec.get("agency", ""),
             "title": spec["title"], "subtitle": spec["subtitle"], "note": spec["note"],
             "freq": spec["freq"], "display": spec["display"], "computed": spec["computed"],
             "source": {
@@ -2550,7 +3016,8 @@ def main():
     # Release calendar for the weekly article check: which releases came out and which are next.
     calendar = None
     try:
-        ids = [t["series"] for t in TILES] + [c["series"] for c in COMPANIONS] + [x["series"] for x in EXTRAS]
+        ids = ([t["series"] for t in TILES if t.get("provider") != "bls"] + [c["series"] for c in COMPANIONS]
+               + [x["series"] for x in EXTRAS])
         print("calendar        FRED release dates", flush=True)
         calendar = release_calendar(list(dict.fromkeys(ids)))
         print(f"  {len(calendar['releases'])} releases", flush=True)
@@ -2561,7 +3028,8 @@ def main():
         "generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "attribution": "Source: FRED, Federal Reserve Bank of St. Louis. Underlying data from "
                        "the Bureau of Labor Statistics, Bureau of Economic Analysis, Census Bureau, "
-                       "Energy Information Administration, Federal Reserve Board, Freddie Mac and the NBER.",
+                       "Energy Information Administration, Federal Reserve Board, Freddie Mac and the NBER. "
+                       "Car insurance and child care prices from the BLS public data API.",
         "baseline": {"label": "2015–19 average", "start": BASELINE_START.isoformat(),
                      "end": BASELINE_END.isoformat()},
         "recessions": recession_spans(rec),
@@ -2572,10 +3040,19 @@ def main():
     }
 
     os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
+    # Before launch (see SHOW_NEW_TILES): every tile goes to series-staged.json; series.json leaves out the new ones,
+    # and the summary of the section only they fill, so the live pages see exactly what they saw before.
+    staged_path = os.path.join(os.path.dirname(out_path) or ".", "series-staged.json")
+    with open(staged_path, "w", encoding="utf-8") as f:
+        json.dump(payload, f, separators=(",", ":"), ensure_ascii=False)
+    print(f"wrote {staged_path} ({os.path.getsize(staged_path)/1024:.0f} KB, {len(tiles_out)} indicators, staged)")
+    if not SHOW_NEW_TILES:
+        payload = dict(payload, tiles=[t for t in tiles_out if t["id"] not in NEW_TILES],
+                       summaries={k: v for k, v in summaries.items() if k != "Household finances"})
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(payload, f, separators=(",", ":"), ensure_ascii=False)
     size = os.path.getsize(out_path)
-    print(f"wrote {out_path} ({size/1024:.0f} KB, {len(tiles_out)} indicators)")
+    print(f"wrote {out_path} ({size/1024:.0f} KB, {len(payload['tiles'])} indicators)")
 
     # Companions go in their own file so the main page never downloads them.
     comp_path = os.path.join(os.path.dirname(out_path) or ".", "companions.json")
