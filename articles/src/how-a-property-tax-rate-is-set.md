@@ -12,6 +12,8 @@ order: 26
 
 In much of the country, the property tax rate is the last number decided, not the first. A local government decides how much it needs, the assessor decides what all the taxable property is worth, and the rate is roughly the one divided by the other. When values rise, the same rate brings in more money, so many states require local governments to calculate a lower rate, called the rollback rate, rolled-back rate or no-new-revenue rate, that would bring in about the same money from the same properties as last year. Adopting a rate above it counts as a tax increase in those states, even when the rate itself didn't change, and triggers notices, hearings or, in Texas, sometimes an election. The rollback rate holds the total steady, not any one bill: a home that gained value faster than the town's average still pays more, and so does any kind of property revalued in a year when the rest wasn't. [Part two](property-tax-limits-by-state.html) covers how the rules differ from state to state.
 
+To see what the rollback rate would mean for your own bill, [try the calculator below](#try-it).
+
 ## The analogy
 
 A property tax works like splitting a restaurant bill by how much each person ordered, except the table decides the size of the bill first. If everyone's order is suddenly marked up 8% and the bill stays the same, each person's share of it doesn't change and the "rate" per dollar ordered has to fall. The argument at budget time is about the size of the bill. The rate follows from it.
@@ -50,8 +52,8 @@ Three homes, each taxed on $200,000 last year. The rollback rate keeps the town'
 
 At the rollback rate the town collects the same from existing property, but the burden moves toward the homes and businesses that gained the most. That's why a homeowner can see a higher bill in a year when the council "rolled back" its rate, and why a neighbor's bill can fall in the same year. It is also why assessment caps, covered in part two, exist: they limit how fast one home's taxable value can rise, which a rollback rate doesn't do.
 
-<div class="rb-mount"><p class="rb-noscript">The calculator for this section, "Try it with your own bill," needs JavaScript. The table above shows the same arithmetic for three homes.</p></div>
-<script src="../assets/rollback.js?v=20261108"></script>
+<div class="rb-mount" id="try-it"><p class="rb-noscript">The calculator for this section, "Try it with your own bill," needs JavaScript. The table above shows the same arithmetic for three homes.</p></div>
+<script src="../assets/rollback.js?v=20261108b"></script>
 
 ## When only part of the town is revalued
 
@@ -116,4 +118,5 @@ The restaurant table decides its bill once. A local government decides each year
 - [Kem Gardner Policy Institute brief on Utah's truth in taxation, via Utah Business](https://www.utahbusiness.com/press-releases/2026/08/07/utah-truth-taxation-system-property-tax-system-kem-gardner-policy-institute/) (August 7, 2026); [Utah HB 236 (2026), enrolled](https://le.utah.gov/Session/2026/bills/enrolled/HB0236.pdf).
 - [Ohio Legislative Service Commission, Property Tax: The Triennial Update](https://www.lsc.ohio.gov/assets/organizations/legislative-service-commission/files/property-tax-the-triennial-update.pdf): staggered six-year reappraisals and three-year updates.
 - Cook County Assessor: [how often property is reassessed](https://www.cookcountyassessoril.gov/quick-information/how-often-my-property-reassessed); [the 2025 north suburban reassessment and appeals](https://www.cookcountyassessoril.gov/news/north-suburban-homeowners-see-slower-burden-shift-2025-reassessment).
+- [Florida Statutes, section 200.069](https://m.flsenate.gov/Statutes/200.069): what Florida's notice of proposed property taxes shows for each taxing authority. [Texas Comptroller, truth-in-taxation websites](https://comptroller.texas.gov/taxes/property-tax/truth-in-taxation/data-web.php): what each county's property tax website shows for each property; [Texas.gov, property tax transparency](https://www.texas.gov/living-in-texas/property-tax-transparency/): where to find your county's site.
 - The town and its numbers are made up to show the arithmetic.
