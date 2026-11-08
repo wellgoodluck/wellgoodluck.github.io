@@ -221,6 +221,9 @@ a.brand:hover .nm { text-decoration: underline; text-decoration-thickness: 1px; 
 .article .series-next { margin: 30px 0 0; padding: 8px 0 8px 14px; border-left: 2px solid var(--ink); font-size: 15px; line-height: 1.4; }
 .article .series-next p { margin: 0; }
 .article .series-next a { font-weight: 600; }
+/* Nov 8: the one-line pointer to the weekly digest after an article's opening section; same left rule as series-next, quieter */
+.article .digest-nudge { margin: 22px 0 26px; padding: 4px 0 4px 14px; border-left: 2px solid var(--hairline); font-size: 15px; line-height: 1.4; color: var(--ink-2); }
+.article .digest-nudge a { font-weight: 600; white-space: nowrap; }
 @media (max-width: 760px) { .article .series .series-parts a, .article .series .series-parts li[aria-current] { padding: 8px 14px 8px 9px; } }
 /* phones: the type scale's smaller steps for the page title, dek and the featured title (40 → 28, 19 → 17, 22 → 19) */
 @media (max-width: 760px) { .article h1 { font-size: 28px; } .article .dek { font-size: 17px; } }
@@ -393,7 +396,7 @@ h1, h2, h3, h4, .dek { text-wrap: balance; }
 @media print {
   :root { --page: #fff; --surface: #fff; }
   body { background: #fff; }
-  .site-menu, .secnav, .lead, .feed-link, .series-parts, .series-next, .signup-wrap, .rb-mount { display: none !important; }
+  .site-menu, .secnav, .lead, .feed-link, .series-parts, .series-next, .digest-nudge, .signup-wrap, .rb-mount { display: none !important; }
   .article .series { margin-top: 0; }
   .article figure.chart-embed, .article .figure, .article .table-scroll, .map { break-inside: avoid; }
   .article figure.chart-embed { width: 100%; }

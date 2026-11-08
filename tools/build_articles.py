@@ -613,6 +613,9 @@ def menu_for(a):
     return site_menu("articles")
 
 
+DIGEST_NUDGE = ('<p class="digest-nudge">New articles and charts arrive in one short email on Monday mornings. '
+                '<a href="#weekly">Get the weekly digest</a></p>\n')
+
 FOOT = """
 <div class="wrap signup-wrap">
   <section class="signup" id="weekly" aria-labelledby="weekly-h">
@@ -654,6 +657,11 @@ def render_article(a):
     page += f'<p class="dateline">{dates}{fresh_label(a)}</p>\n'
     page += series_box(a["slug"])
     body = md_to_html(a["body"])
+    if a.get("kind") != "page":                   # Nov 8: one line pointing to the digest box, after the opening section
+        first = body.find("<h2")                  # (In one sentence / The short version / The question ...), since most
+        second = body.find("<h2", first + 1) if first != -1 else -1   # phone readers never reach the box at the bottom.
+        if second != -1:                          # Template only: no article's date, updated: line, feed or sitemap entry changes.
+            body = body[:second] + DIGEST_NUDGE + body[second:]
     nxt = series_next(a["slug"])
     if nxt:
         for anchor in ('<h2 id="see-also">', '<h2 id="sources">'):
