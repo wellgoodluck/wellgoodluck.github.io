@@ -517,6 +517,30 @@ def fmt_date(s):
     return date(y, mo, d).strftime("%B %-d, %Y")
 
 
+# New / Revised labels (Nov 8): an article dated within LABEL_DAYS gets a "New" chip in the Featured teal wash; one
+# whose updated: date is, a quieter "Revised Nov 5". Nothing dated before LABEL_START is labeled. Written at build
+# time with its end date in data-until; a line of script in FOOT removes it on that day, so it never outlives a
+# weekend without a rebuild. Same rule as index.html (freshLabel) and chart.html.
+LABEL_START, LABEL_DAYS = "2026-11-01", 14
+
+
+def fresh_label(a):
+    from datetime import timedelta
+    today = date.today()
+    def until(s):
+        if not s or s < LABEL_START:
+            return None
+        y, mo, d = (int(x) for x in s.split("-"))
+        return date(y, mo, d) + timedelta(days=LABEL_DAYS)
+    new, rev = until(a.get("date")), until(a.get("updated") if a.get("updated") != a.get("date") else None)
+    if new and today < new:
+        return f' <span class="fresh" data-until="{new.isoformat()}">New</span>'
+    if rev and today < rev:
+        y, mo, d = (int(x) for x in a["updated"].split("-"))
+        return f' <span class="fresh rev" data-until="{rev.isoformat()}">Revised {date(y, mo, d).strftime("%b %-d")}</span>'
+    return ""
+
+
 _STAMPS = {}
 def asset_stamp(path):
     """A cache stamp for a stylesheet or script link: ?v= plus eight hex characters of the file's hash, so a
@@ -610,6 +634,7 @@ FOOT = """
     <p class="about-link"><a href="about.html">About this site, how it works, and every correction →</a></p>
   </div>
 </footer>
+<script>document.querySelectorAll('[data-until]').forEach(function (e) { if (new Date().toISOString().slice(0, 10) >= e.getAttribute('data-until')) e.remove(); });</script>
 <script data-goatcounter="https://economyincontext.goatcounter.com/count" async src="/assets/count.js"></script>
 </body>
 </html>
@@ -626,7 +651,7 @@ def render_article(a):
     dates = fmt_date(a["date"])
     if a.get("updated") and a["updated"] != a["date"]:
         dates += f' <span class="sep">·</span> updated {fmt_date(a["updated"])}'
-    page += f'<p class="dateline">{dates}</p>\n'
+    page += f'<p class="dateline">{dates}{fresh_label(a)}</p>\n'
     page += series_box(a["slug"])
     body = md_to_html(a["body"])
     nxt = series_next(a["slug"])
@@ -753,7 +778,7 @@ def render_index(articles):
         # date only once they have been updated, so a list of identical launch dates never reads as stale.
         out = '<ul class="article-list">\n'
         for a in items:
-            out += (f'<li><a href="{a["slug"]}.html"><span class="t">{inline(a["title"])}</span></a>'
+            out += (f'<li><a href="{a["slug"]}.html"><span class="t">{inline(a["title"])}</span>{fresh_label(a)}</a>'
                     + (f'<span class="d">{inline(a["dek"])}</span>' if a.get("dek") else "")
                     + (f'<span class="when">{fmt_date(a["date"])}</span>' if dated else updated_note(a)) + "</li>\n")
         return out + "</ul>\n"
@@ -763,7 +788,7 @@ def render_index(articles):
         out = '<ul class="compact-list">\n'
         for a in items:
             label, hook = a.get("label") or a["title"], a.get("hook") or ("" if a.get("label") else a.get("dek", ""))
-            out += (f'<li><a href="{a["slug"]}.html">{inline(label)}</a>'
+            out += (f'<li><a href="{a["slug"]}.html">{inline(label)}</a>{fresh_label(a)}'
                     + (f'<span class="h"><span class="sep" aria-hidden="true"> — </span>{inline(hook)}</span>' if hook else "")
                     + updated_note(a) + "</li>\n")
         return out + "</ul>\n"

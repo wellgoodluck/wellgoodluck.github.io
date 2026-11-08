@@ -468,6 +468,14 @@
   .mini .track { stroke: var(--range); stroke-width: 5; stroke-linecap: round; }
   .mini .now { fill: var(--series); stroke: var(--surface); stroke-width: 2; }
   .mini .avg { stroke: var(--ink-2); stroke-width: 2; }
+  /* New / Revised labels (Nov 8): the Featured card's teal wash, small caps-style text; Revised is outlined only.
+     Inline-block, so a link's underline never runs through it. Shown for 14 days (freshLabel). */
+  .fresh { display: inline-block; margin-left: 2px; padding: 0 6px; border: 1px solid var(--full-line); border-radius: 4px; background: var(--series-wash);
+    color: var(--full-ink); font-size: 11px; font-weight: 700; line-height: 17px; letter-spacing: 0.06em; text-transform: uppercase; vertical-align: 0.15em; white-space: nowrap; text-decoration: none; }
+  .fresh.rev { background: none; font-weight: 600; letter-spacing: 0; text-transform: none; font-size: 11.5px; }
+  .glance .t { display: flex; align-items: baseline; gap: 4px; min-width: 0; }
+  .glance .t .tn { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .glance .t .fresh { flex: none; }
   .mini .mid { stroke: var(--muted); stroke-width: 1.5; }
   .mini .now.off { fill: var(--surface); stroke: var(--series); stroke-width: 2.5; }   /* outside the range: a hollow dot pinned at the end */
   .mini .beyond { fill: var(--ink-2); }   /* the arrow is an annotation, in the tick's gray */
@@ -922,6 +930,21 @@
     return { tiles, wideId };
   }
 
+  // ---- New and Revised labels (Nov 8) --------------------------------------
+  // A tile whose "added" date (fetch_fred.py) is within LABEL_DAYS of today carries a small "New" chip in the Featured
+  // card's teal wash; one whose "revised" date is, a quieter "Revised Nov 5". Nothing dated before LABEL_START is
+  // labeled, so the launch-week pages don't all read as new. Worked out in the reader's browser, so a label leaves
+  // on its day, not at the next rebuild. The same rule is in chart.html and tools/build_articles.py.
+  const LABEL_START = '2026-11-01', LABEL_DAYS = 14;
+  function labelUntil(d) { if (!d || d < LABEL_START) return null; const x = parseDate(d); x.setUTCDate(x.getUTCDate() + LABEL_DAYS); return x; }
+  function freshLabel(t) {
+    const now = new Date(), a = labelUntil(t.added), r = labelUntil(t.revised);
+    if (a && now < a) return el('span', { class: 'fresh', text: 'New', title: 'Added ' + fmtPeriod(t.added, 'd', true) });
+    if (r && now < r) return el('span', { class: 'fresh rev', text: 'Revised ' + fmtPeriod(t.revised, 'd') });
+    return null;
+  }
+  function withLabel(t, nodes) { const f = freshLabel(t); return f ? nodes.concat([' ', f]) : nodes; }
+
   // ---- at a glance: one compact strip per indicator --------------------------
   // The same context and rules as each tile's strip (price tiles in today's dollars), without the labels.
   function miniStrip(t) {
@@ -973,7 +996,7 @@
         const hv = t.headline ? t.headline.value : c.current.value;
         const per = t.headline ? fmtPeriod(t.headline.date, 'd') : fmtPeriod(c.current.date, pf(t));
         const a = el('a', { class: 'row', href: '#i-' + t.id, 'aria-label': t.title + ': ' + fmtValue(hv, d) + ', ' + per + '. ' + contextSentence(t) });
-        a.appendChild(el('span', { class: 't', text: t.title }));
+        a.appendChild(el('span', { class: 't' }, withLabel(t, [el('span', { class: 'tn', text: t.title })])));   // the name shortens, the label stays
         a.appendChild(el('span', { class: 'v' }, [fmtValue(hv, d), el('span', { class: 'p', text: per })]));
         a.appendChild(miniStrip(t));
         grp.appendChild(a);
@@ -1193,7 +1216,7 @@
     const top = el('div', { class: 'tile-top' }), mid = el('div', { class: 'tile-chart' }), foot = el('div', { class: 'tile-foot' });
     tile.appendChild(top); tile.appendChild(mid); tile.appendChild(foot);
     // the title links to the chart page too; the button below is the keyboard path, so the title takes no tab stop
-    top.appendChild(el('h3', {}, [el('a', { class: 'tile-link', href: 'chart/' + t.id + '/', tabindex: '-1', text: t.title })]));
+    top.appendChild(el('h3', {}, withLabel(t, [el('a', { class: 'tile-link', href: 'chart/' + t.id + '/', tabindex: '-1', text: t.title })])));
     top.appendChild(el('p', { class: 'sub', text: t.subtitle }));
 
     const hv = t.headline ? t.headline.value : c.current.value;
@@ -1430,7 +1453,7 @@
     const cards = el('div', { class: 'cards' });
     cardTiles.forEach(t => {
       const r = reading(t), card = el('article', { class: 'card', id: 'c-' + t.id });
-      card.appendChild(el('div', { class: 'ch' }, [el('h3', {}, [el('a', { href: 'chart/' + t.id + '/', text: t.title })]), el('span', { class: 'per', text: fmtPeriod(r.date, r.freq) })]));
+      card.appendChild(el('div', { class: 'ch' }, [el('h3', {}, withLabel(t, [el('a', { href: 'chart/' + t.id + '/', text: t.title })])), el('span', { class: 'per', text: fmtPeriod(r.date, r.freq) })]));
       card.appendChild(el('p', { class: 'what', text: HOME_WHAT[t.id] || t.subtitle }));
       card.appendChild(el('p', { class: 'value', text: fmtValue(r.value, t.display) }));
       card.appendChild(buildStrip(t));
@@ -1462,7 +1485,7 @@
       g.appendChild(el('h3', { id: gid, text: s }));
       g.appendChild(el('ul', { 'aria-labelledby': gid }, data.tiles.filter(t => t.section === s).map(t => {
         const r = reading(t);
-        return el('li', {}, [el('a', { href: '?view=all#i-' + t.id }, [el('span', { class: 'n', text: t.title }), el('span', { class: 'v' }, [fmtValue(r.value, t.display) + ' ', el('span', { class: 'p', text: '· ' + shortPeriod(r, year) })])])]);
+        return el('li', {}, [el('a', { href: '?view=all#i-' + t.id }, [el('span', { class: 'n' }, withLabel(t, [t.title])), el('span', { class: 'v' }, [fmtValue(r.value, t.display) + ' ', el('span', { class: 'p', text: '· ' + shortPeriod(r, year) })])])]);
       })));
       panel.appendChild(g);
     });

@@ -46,6 +46,8 @@ API_KEY = os.environ.get("FRED_API_KEY", "").strip()
 #            tile spans both columns at the top of the section on desktop
 #            (index.html). Ignored when the count is even. An odd section with
 #            no flag widens its last tile.
+#   added    YYYY-MM-DD the tile first went live; revised: the date its definition last changed (not a data
+#            refresh). The pages show a "New" or "Revised" label for 14 days after it (Nov 8; index.html freshLabel).
 #   agency   who publishes the data, short form, from the series' Source on FRED; the
 #            charts' credit line reads "Data: <agency> via FRED · economyincontext.org"
 # ---------------------------------------------------------------------------
@@ -81,6 +83,7 @@ TILES = [
         # A computed tile (Nov 3): job openings divided by the number of unemployed, same month. Computed tiles
         # are built before the companions are fetched, so the "series_ratio" op fetches its two inputs itself.
         "id": "openings_ratio",
+        "added": "2026-11-03",
         "agency": "BLS",
         "section": "Jobs",
         "title": "Openings per job seeker",
@@ -121,6 +124,7 @@ TILES = [
     },
     {
         "id": "health_jobs",
+        "added": "2026-11-02",
         "agency": "BLS",
         "section": "Jobs",
         "title": "Health care jobs",
@@ -134,6 +138,7 @@ TILES = [
     },
     {
         "id": "newspaper_jobs",
+        "added": "2026-11-04",
         "agency": "BLS",
         "section": "Jobs",
         "title": "Newspaper jobs",
@@ -204,6 +209,7 @@ TILES = [
     },
     {
         "id": "rent",
+        "added": "2026-11-03",
         "agency": "BLS",
         "section": "Prices",
         "title": "Rent",
@@ -376,6 +382,7 @@ TILES = [
         # Nov 6: FHFA's purchase-only index (public domain on FRED), not Case-Shiller, which S&P does not allow
         # to be republished without permission (see the About page).
         "id": "home_prices",
+        "added": "2026-11-06",
         "agency": "FHFA",
         "section": "Housing",
         "title": "Home prices",
@@ -391,6 +398,7 @@ TILES = [
         # Nov 6, from a reader's suggestion. No free national foreclosure series is on FRED; this is the
         # longest free national read on missed mortgage payments.
         "id": "mortgage_delinquency",
+        "added": "2026-11-06",
         "agency": "Federal Reserve Board",
         "section": "Housing",
         "title": "Mortgage delinquency",
@@ -578,6 +586,7 @@ TILES = [
         # A computed tile (Nov 2): built from the two tiles above after they are fetched, not from a FRED
         # series of its own. "series" names the FRED page its source line links to; "computed" says how.
         "id": "drive_cost",
+        "added": "2026-11-02",
         "agency": "EIA and BLS",
         "section": "What things cost",
         "title": "Electric mile vs. gas mile",
@@ -592,6 +601,7 @@ TILES = [
     },
     {
         "id": "natural_gas",
+        "added": "2026-11-02",
         "agency": "BLS",
         "section": "What things cost",
         "title": "Natural gas",
@@ -631,6 +641,7 @@ TILES = [
     },
     {
         "id": "bread",
+        "added": "2026-11-02",
         "agency": "BLS",
         "section": "What things cost",
         "title": "Bread",
@@ -670,6 +681,7 @@ TILES = [
     },
     {
         "id": "chicken",
+        "added": "2026-11-02",
         "agency": "BLS",
         "section": "What things cost",
         "title": "Whole chicken",
@@ -2824,6 +2836,7 @@ def main():
                 continue
             tiles_out.append({
                 "id": t["id"], "section": t["section"], **({"more": True} if t.get("more") else {}),
+                **{k: t[k] for k in ("added", "revised") if k in t},
                 "agency": t.get("agency", ""), "title": t["title"], "subtitle": t["subtitle"], "note": t["note"],
                 "freq": t["freq"], "display": t["display"], "source": source, "headline": None,
                 "context": context_for(obs, t["freq"]),
@@ -2852,6 +2865,7 @@ def main():
             "id": t["id"],
             "section": t["section"],
             **({"more": True} if t.get("more") else {}),   # behind its section's "More numbers" reveal (Nov 8)
+            **{k: t[k] for k in ("added", "revised") if k in t},   # the New / Revised label (Nov 8)
             "agency": t.get("agency", ""),
             "title": t["title"],
             "subtitle": t["subtitle"],
@@ -2892,6 +2906,7 @@ def main():
         by_id[spec["id"]] = obs
         tiles_out[i] = {
             "id": spec["id"], "section": spec["section"], **({"more": True} if spec.get("more") else {}),
+            **{k: spec[k] for k in ("added", "revised") if k in spec},
             "agency": spec.get("agency", ""),
             "title": spec["title"], "subtitle": spec["subtitle"], "note": spec["note"],
             "freq": spec["freq"], "display": spec["display"], "computed": spec["computed"],

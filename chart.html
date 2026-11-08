@@ -59,6 +59,7 @@
     --frame: #c4c2b9;   /* the sides of framed boxes (the chart frame), Nov 6: the range bar's gray */
     --nav: #8a6100;     /* ochre: wayfinding only (the site menu), never data; as in index.html and site.css */
     --full-ink: #0b6b66;   /* the button's teal ink (Copy image, as the Subscribe button); as in index.html and site.css */
+    --series-wash: rgba(11, 122, 117, 0.10); --full-line: rgba(11, 122, 117, 0.45);   /* the New label, as in index.html (Nov 8) */
   }
   /* dark colors on screen only: printing from a browser in dark mode stays on the light tokens */
   @media screen and (prefers-color-scheme: dark) {
@@ -72,7 +73,7 @@
       --era-a: #3a3935; --era-b: #4a4944; --war: #5e5c57; --qe-up: #4a4944; --qe-down: #66645d;
       --range: #45443f;
       --frame: #45443f;
-      --nav: #d9a83a; --full-ink: #5cc8be;
+      --nav: #d9a83a; --full-ink: #5cc8be; --series-wash: rgba(43, 179, 168, 0.14); --full-line: rgba(43, 179, 168, 0.6);
     }
   }
   /* "Black and white, for print" (Use this chart): set for a moment while the image is drawn, with export-light. Lines
@@ -290,6 +291,9 @@
   .use button, .use select, .use input { font: inherit; }
   .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 16px; border: 1px solid var(--frame); border-radius: 4px; background: var(--surface); color: var(--ink); font-size: 15px; cursor: pointer; }
   .btn:hover { border-color: var(--ink); }
+  .fresh { display: inline-block; margin-left: 2px; padding: 0 7px; border: 1px solid var(--full-line); border-radius: 4px; background: var(--series-wash);
+    color: var(--full-ink); font-size: 13px; font-weight: 700; line-height: 22px; letter-spacing: 0.06em; text-transform: uppercase; vertical-align: 0.3em; white-space: nowrap; }
+  .fresh.rev { background: none; font-weight: 600; letter-spacing: 0; text-transform: none; }
   .btn.primary { background: var(--full-ink); border-color: var(--full-ink); color: var(--surface); font-weight: 600; }
   .btn.primary:hover { background: var(--ink); border-color: var(--ink); }
   .btn.small { min-height: 40px; padding: 0 12px; font-size: 13.5px; }
@@ -2762,6 +2766,14 @@
       setMeta('meta[name="description"]', t.title + ': ' + t.subtitle + '. ' + contextSentence(t) + ' Full history with optional overlays.');
     }
     document.getElementById('title').textContent = t.title;
+    // the New / Revised label (Nov 8): same rule as index.html freshLabel; never in an embed or an exported image
+    if (!state.embed) {
+      const LABEL_START = '2026-11-01', LABEL_DAYS = 14, now = new Date();
+      const until = d => { if (!d || d < LABEL_START) return null; const x = parseDate(d); x.setUTCDate(x.getUTCDate() + LABEL_DAYS); return x; };
+      const a = until(t.added), r = until(t.revised), h1 = document.getElementById('title');
+      if (a && now < a) h1.append(' ', el('span', { class: 'fresh', text: 'New', title: 'Added ' + fmtPeriod(t.added, 'd', true) }));
+      else if (r && now < r) h1.append(' ', el('span', { class: 'fresh rev', text: 'Revised ' + fmtPeriod(t.revised, 'd') }));
+    }
     document.getElementById('subtitle').textContent = t.subtitle;
     const ex = ((exData && exData.explainers) || {})[t.id];
     if (ex && !state.embed) {
