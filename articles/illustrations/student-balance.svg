@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 180" role="img" aria-labelledby="student-balance-t student-balance-d"><title id="student-balance-t">What a student owes when repayment starts</title><desc id="student-balance-d">A bar: $30,000 borrowed, $7,500 a year for four years in unsubsidized loans at 6.52%, plus about $5,900 of interest built up during school and the six-month grace period, so the first bill is figured on about $35,900.</desc>
+<text x="0" y="16" class="h">What you owe when repayment starts</text>
+<text x="0" y="36" class="s i2">$7,500 a year for four years, unsubsidized, at 6.52%</text>
+<rect x="0" y="54" width="299.104" height="40" rx="3" class="teal-fill"/>
+<text x="10" y="79" class="s rev">$30,000 borrowed</text>
+<defs><pattern id="sl-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" class="hatch-line"/></pattern></defs>
+<rect x="301.104" y="54" width="58.896" height="40" rx="3" class="" fill="url(#sl-hatch)"/>
+<rect x="301.604" y="54.5" width="57.896" height="39" rx="3" class="frame"/>
+<text x="360" y="116" text-anchor="end" class="s m">+ about $5,900 of interest</text>
+<text x="360" y="134" text-anchor="end" class="s i2">built up before the first payment</text>
+<line x1="0" y1="150" x2="360" y2="150" class="rule"/>
+<text x="0" y="174" class="m">First bill is figured on about $35,900</text>
+</svg>

@@ -96,6 +96,65 @@
           "label": "Limits by state"
         }
       ]
+    },
+    "money-traps": {
+      "title": "Money Traps",
+      "dek": "Thirteen short pages on the ways money leaks out of a household, especially a new one, from overdraft fees and card minimums to car loans, scams and student debt: how each trap works, what it costs in dollars, how to avoid it, and the policy fight around it.",
+      "landing": "money-traps",
+      "parts": [
+        {
+          "slug": "how-credit-scores-work",
+          "label": "Credit scores"
+        },
+        {
+          "slug": "overdraft-fees",
+          "label": "Overdraft fees"
+        },
+        {
+          "slug": "credit-card-minimum-payments",
+          "label": "Credit card minimums"
+        },
+        {
+          "slug": "buy-now-pay-later",
+          "label": "Buy now, pay later"
+        },
+        {
+          "slug": "payday-loans-and-paycheck-apps",
+          "label": "Payday loans and apps"
+        },
+        {
+          "slug": "credit-card-cash-advances",
+          "label": "Cash advances"
+        },
+        {
+          "slug": "long-car-loans",
+          "label": "Seven-year car loans"
+        },
+        {
+          "slug": "rent-to-own",
+          "label": "Rent-to-own"
+        },
+        {
+          "slug": "subscription-creep",
+          "label": "Subscriptions"
+        },
+        {
+          "slug": "finfluencers-and-investment-scams",
+          "label": "Finfluencers and scams"
+        },
+        {
+          "slug": "ads-that-sell-the-worry",
+          "label": "Ads that sell the worry"
+        },
+        {
+          "slug": "employer-retirement-match",
+          "label": "The employer match"
+        },
+        {
+          "slug": "student-loans",
+          "label": "Student loans"
+        }
+      ]
     }
   }
 }

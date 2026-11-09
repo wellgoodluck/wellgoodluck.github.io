@@ -9,7 +9,7 @@
 :root {
   color-scheme: light;
   --page: #f6f6f3; --surface: #ffffff; --ink: #1b1b1a; --ink-2: #5a5955; --muted: #72716b;
-  --hairline: #e3e2dc; --grid: #ebeae4; --series: #0b7a75; --focus: #0b7a75; --c1: #903a03; --c3: #b88e2f; --nav: #8a6100; --nav-wash: rgba(138, 97, 0, 0.09);
+  --hairline: #e3e2dc; --grid: #ebeae4; --series: #0b7a75; --focus: #0b7a75; --c1: #903a03; --c2: #5624c1; --c3: #b88e2f; --c4: #eb4ec8; --nav: #8a6100; --nav-wash: rgba(138, 97, 0, 0.09);
   --series-wash: rgba(11, 122, 117, 0.10); --full-ink: #0b6b66; --full-line: rgba(11, 122, 117, 0.45);   /* the Featured card and its pills, as on the almanac */
   --banner: #fff4d6; --banner-ink: #5a4300; --max: 1120px; --measure: 39em;   /* about 76 characters at 17px (was 42em, about 84) */
   --frame: #c4c2b9;   /* the sides of framed boxes (cards, chart frames), Nov 6: the range bar's gray; Featured keeps its teal */
@@ -19,7 +19,7 @@
   :root {
     color-scheme: dark;
     --page: #121211; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
-    --hairline: #2c2c2a; --grid: #262624; --series: #2bb3a8; --focus: #2bb3a8; --c1: #fb8304; --c3: #7c6713; --nav: #d9a83a; --nav-wash: rgba(217, 168, 58, 0.12);
+    --hairline: #2c2c2a; --grid: #262624; --series: #2bb3a8; --focus: #2bb3a8; --c1: #fb8304; --c2: #9980fe; --c3: #7c6713; --c4: #ba0f9b; --nav: #d9a83a; --nav-wash: rgba(217, 168, 58, 0.12);
     --series-wash: rgba(43, 179, 168, 0.14); --full-ink: #5cc8be; --full-line: rgba(43, 179, 168, 0.6); --banner: #3a2f10; --banner-ink: #f3dfa0;
     --frame: #45443f;
   }
@@ -117,6 +117,59 @@ a.brand:hover .nm { text-decoration: underline; text-decoration-thickness: 1px; 
 .figure .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; vertical-align: -1px; margin-right: 6px; background: var(--series); }
 .figure figcaption { margin: 8px 0 0; font-size: 13.5px; color: var(--ink-2); }
 .figure figcaption .src { color: var(--muted); }
+/* Illustrations ({{illustration}} in an article, Nov 9): hand-drawn SVGs from articles/illustrations/, inlined so they
+   take the page's font and both themes. Drawn on a 360-unit-wide viewBox, shown at most 430px wide (about 1.2x on
+   desktop, a little under 1x on phones), so 13-unit text is never below 11px. Only these classes color them: paper,
+   sheet and ink, Ink Secondary and Muted, Frame and Hairline, the teal for the reading or the money that matters, and
+   (Nov 9) the four companion colors for identity only. No judgment colors: a fee is marked by an ink tag and weight, never red. Fictional documents say so on their face. */
+.article figure.illo { margin: 24px 0 28px; max-width: 430px; }
+.illo svg { display: block; width: 100%; height: auto; overflow: visible; font-family: inherit; font-variant-numeric: tabular-nums; }
+.illo figcaption { margin: 8px 0 0; font-size: 13.5px; color: var(--ink-2); max-width: var(--measure); }
+.illo .bg { fill: var(--page); }
+.illo .sheet { fill: var(--surface); stroke: var(--frame); stroke-width: 1; }
+.illo .well { fill: var(--page); stroke: var(--hairline); stroke-width: 1; }
+.illo .rule { stroke: var(--hairline); stroke-width: 1; fill: none; }
+.illo .frame { stroke: var(--frame); stroke-width: 1; fill: none; }
+.illo .ink-line { stroke: var(--ink); stroke-width: 1.5; fill: none; }
+.illo .lead { stroke: var(--ink-2); stroke-width: 1; fill: none; stroke-dasharray: 2 3; }
+.illo .ink-fill { fill: var(--ink); }
+.illo .ink2-fill { fill: var(--ink-2); }
+.illo .range-fill { fill: var(--frame); }
+.illo .teal-fill { fill: var(--series); }
+.illo .wash { fill: var(--series-wash); }
+.illo .teal-line { stroke: var(--series); stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.illo .teal-rule { stroke: var(--series); stroke-width: 2; fill: none; }
+.illo .series-ring { fill: var(--series); stroke: var(--surface); stroke-width: 2; }
+/* Identity colors in illustrations (Nov 9): the chart page's four companion slots, for telling things apart only
+   (which plan, which line), never for judgment. Always paired with a second cue: a dash pattern, a label or a legend. */
+.illo .c1-line { stroke: var(--c1); stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.illo .c1-fill { fill: var(--c1); }
+.illo .c1-edge { fill: var(--surface); stroke: var(--c1); stroke-width: 2; }
+.illo .c2-line { stroke: var(--c2); stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.illo .c2-fill { fill: var(--c2); }
+.illo .c2-edge { fill: var(--surface); stroke: var(--c2); stroke-width: 2; }
+.illo .c3-line { stroke: var(--c3); stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.illo .c3-fill { fill: var(--c3); }
+.illo .c3-edge { fill: var(--surface); stroke: var(--c3); stroke-width: 2; }
+.illo .c4-line { stroke: var(--c4); stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.illo .c4-fill { fill: var(--c4); }
+.illo .c4-edge { fill: var(--surface); stroke: var(--c4); stroke-width: 2; }
+.illo .teal-edge { fill: var(--surface); stroke: var(--series); stroke-width: 2; }
+.illo .dashed { stroke-dasharray: 6 4; }
+.illo .dotted { stroke-dasharray: 1.5 4; stroke-linecap: round; }
+.illo .hatch-line { stroke: var(--ink-2); stroke-width: 1; }
+.illo text { fill: var(--ink); font-size: 14px; }
+.illo text.s { font-size: 13px; }
+.illo text.xs { font-size: 12.5px; }
+.illo text.h { font-size: 15px; font-weight: 700; }
+.illo text.big { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+.illo text.b, .illo tspan.b { font-weight: 700; }
+.illo text.m, .illo tspan.m { font-weight: 600; }
+.illo text.i2, .illo tspan.i2 { fill: var(--ink-2); }
+.illo text.mu, .illo tspan.mu { fill: var(--muted); }
+.illo text.rev, .illo tspan.rev { fill: var(--surface); font-weight: 700; }
+.illo text.teal, .illo tspan.teal { fill: var(--full-ink); font-weight: 700; }
+.illo text.cap { font-size: 12.5px; font-weight: 600; letter-spacing: 0.05em; fill: var(--ink-2); }
 @media (max-width: 760px) { .figure .row { grid-template-columns: minmax(0, 7.5em) minmax(0, 1fr); } }
 
 .article ul.sources { font-size: 15px; color: var(--ink-2); padding-left: 20px; }
@@ -217,6 +270,12 @@ a.brand:hover .nm { text-decoration: underline; text-decoration-thickness: 1px; 
 .article .series .series-parts .n { margin-right: 6px; border-color: var(--full-line); color: var(--full-ink); }
 .article .series .series-parts li[aria-current] { background: var(--series); border-color: var(--series); color: var(--surface); }
 .article .series .series-parts li[aria-current] .n { border-color: var(--surface); color: var(--surface); }
+/* A long series (more than 8 parts, Nov 9) folds its parts behind a wayfinding toggle, so the article starts on the first screen */
+.article .series details.series-all > summary { display: inline-flex; align-items: center; min-height: 44px; cursor: pointer; list-style: none; color: var(--nav); font-weight: 600; text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 5px; }
+.article .series details.series-all > summary::-webkit-details-marker { display: none; }
+.article .series details.series-all > summary:hover { color: var(--ink); text-decoration-color: var(--ink); }
+.article .series details.series-all[open] .more, .article .series details.series-all:not([open]) .less { display: none; }
+.article .series details.series-all .series-parts { margin-top: 4px; }
 .n { display: inline-block; min-width: 1.5em; height: 1.5em; line-height: calc(1.5em - 2px); margin-right: 3px; border: 1px solid var(--hairline); border-radius: 50%; text-align: center; font-size: 12.5px; font-weight: 600; color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .article .series-next { margin: 30px 0 0; padding: 8px 0 8px 14px; border-left: 2px solid var(--ink); font-size: 15px; line-height: 1.4; }
 .article .series-next p { margin: 0; }
@@ -421,9 +480,9 @@ h1, h2, h3, h4, .dek { text-wrap: balance; }
 @media print {
   :root { --page: #fff; --surface: #fff; }
   body { background: #fff; }
-  .site-menu, .secnav, .lead, .feed-link, .series-parts, .series-next, .digest-nudge, .signup-wrap, .rb-mount, .rb-sumwrap, .ku-share { display: none !important; }
+  .site-menu, .secnav, .lead, .feed-link, .series-parts, .series-all, .series-next, .digest-nudge, .signup-wrap, .rb-mount, .rb-sumwrap, .ku-share { display: none !important; }
   .article .series { margin-top: 0; }
-  .article figure.chart-embed, .article .figure, .article .table-scroll, .map { break-inside: avoid; }
+  .article figure.chart-embed, .article .figure, .article figure.illo, .article .table-scroll, .map { break-inside: avoid; }
   .article figure.chart-embed { width: 100%; }
   footer.about { padding-bottom: 0; }
   body::after { content: "economyincontext.org"; display: block; padding: 12px 16px 0; font-size: 12.5px; color: #555; }

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 220" role="img" aria-labelledby="card-three-ways-t card-three-ways-d"><title id="card-three-ways-t">Interest paid on $2,000 at 22.36%, three ways</title><desc id="card-three-ways-d">Paying only the minimum: about $2,651 in interest over 11 years and 8 months. Paying $100 a month: about $526 over 26 months. Paying $200 a month: about $234 over 12 months.</desc>
+<text x="0" y="16" class="h">Interest paid on $2,000 at 22.36%</text>
+<text x="0" y="36" class="s i2">No new charges; same card, three ways to pay</text>
+<text x="0" y="60" class="m">Only the minimum</text>
+<text x="360" y="60" text-anchor="end" class="s i2">11 yrs 8 mo</text>
+<rect x="0" y="68" width="290" height="18" rx="2" class="teal-fill"/>
+<text x="296" y="82" class="s b">$2,651</text>
+<text x="0" y="118" class="m">$100 a month</text>
+<text x="360" y="118" text-anchor="end" class="s i2">26 months</text>
+<rect x="0" y="126" width="57.5406" height="18" rx="2" class="teal-fill"/>
+<text x="63.5406" y="140" class="s b">$526</text>
+<text x="0" y="176" class="m">$200 a month</text>
+<text x="360" y="176" text-anchor="end" class="s i2">12 months</text>
+<rect x="0" y="184" width="25.5979" height="18" rx="2" class="teal-fill"/>
+<text x="31.5979" y="198" class="s b">$234</text>
+</svg>

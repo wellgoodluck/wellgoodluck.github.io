@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 546" role="img" aria-labelledby="subscriptions-statement-t subscriptions-statement-d"><title id="subscriptions-statement-t">A fictional month of card charges with the subscriptions shaded</title><desc id="subscriptions-statement-d">A month of twelve card charges. Seven renew every month: streaming service A $15.49, streaming service B $11.99, music $10.99, cloud storage $2.99, gym $29.99, phone game pass $6.99 and news app $9.99, a running total of $88.43 a month, $1,061 a year. The unused gym and the news app left from a free trial add up to $40 a month, about $480 a year.</desc>
+<rect x="0.5" y="0.5" width="359" height="476" rx="6" class="sheet"/>
+<text x="14" y="22" class="cap">FICTIONAL · FOR ILLUSTRATION</text>
+<text x="14" y="44" class="h">Card activity, one month</text>
+<text x="14" y="72" class="cap">CHARGE</text>
+<text x="250" y="72" text-anchor="end" class="cap">AMOUNT</text>
+<text x="346" y="72" text-anchor="end" class="cap">RUNNING</text>
+<line x1="14" y1="80" x2="346" y2="80" class="rule"/>
+<text x="18" y="106.5" class="s i2">Grocery store</text>
+<text x="250" y="106.5" text-anchor="end" class="s i2">$84.12</text>
+<rect x="10" y="118" width="340" height="21" rx="3" class="wash"/>
+<text x="18" y="133.5" class="s m">Streaming service A</text>
+<text x="250" y="133.5" text-anchor="end" class="s m">$15.49</text>
+<text x="346" y="133.5" text-anchor="end" class="s b">$15.49</text>
+<text x="18" y="160.5" class="s i2">Gas station</text>
+<text x="250" y="160.5" text-anchor="end" class="s i2">$41.30</text>
+<rect x="10" y="172" width="340" height="21" rx="3" class="wash"/>
+<text x="18" y="187.5" class="s m">Streaming service B</text>
+<text x="250" y="187.5" text-anchor="end" class="s m">$11.99</text>
+<text x="346" y="187.5" text-anchor="end" class="s b">$27.48</text>
+<rect x="10" y="199" width="340" height="21" rx="3" class="wash"/>
+<text x="18" y="214.5" class="s m">Music</text>
+<text x="250" y="214.5" text-anchor="end" class="s m">$10.99</text>
+<text x="346" y="214.5" text-anchor="end" class="s b">$38.47</text>
+<text x="18" y="241.5" class="s i2">Coffee shop</text>
+<text x="250" y="241.5" text-anchor="end" class="s i2">$5.75</text>
+<rect x="10" y="253" width="340" height="21" rx="3" class="wash"/>
+<text x="18" y="268.5" class="s m">Cloud storage</text>
+<text x="250" y="268.5" text-anchor="end" class="s m">$2.99</text>
+<text x="346" y="268.5" text-anchor="end" class="s b">$41.46</text>
+<rect x="10" y="280" width="340" height="21" rx="3" class="wash"/>
+<text x="18" y="295.5" class="s m">Gym</text>
+<text x="250" y="295.5" text-anchor="end" class="s m">$29.99</text>
+<text x="346" y="295.5" text-anchor="end" class="s b">$71.45</text>
+<text x="18" y="322.5" class="s i2">Pharmacy</text>
+<text x="250" y="322.5" text-anchor="end" class="s i2">$12.40</text>
+<rect x="10" y="334" width="340" height="21" rx="3" class="wash"/>
+<text x="18" y="349.5" class="s m">Phone game pass</text>
+<text x="250" y="349.5" text-anchor="end" class="s m">$6.99</text>
+<text x="346" y="349.5" text-anchor="end" class="s b">$78.44</text>
+<rect x="10" y="361" width="340" height="21" rx="3" class="wash"/>
+<text x="18" y="376.5" class="s m">News app</text>
+<text x="250" y="376.5" text-anchor="end" class="s m">$9.99</text>
+<text x="346" y="376.5" text-anchor="end" class="s b">$88.43</text>
+<text x="18" y="403.5" class="s i2">Restaurant</text>
+<text x="250" y="403.5" text-anchor="end" class="s i2">$38.60</text>
+<line x1="14" y1="414" x2="346" y2="414" class="ink-line"/>
+<text x="14" y="438" class="m">Repeats every month</text>
+<text x="346" y="440" text-anchor="end" class="big">$88.43</text>
+<text x="14" y="460" class="s i2">That's $1,061 a year.</text>
+<text x="0" y="502" class="s">Shaded: charges that renew on their own.</text>
+<text x="0" y="522" class="s i2">The gym (unused) and the news app (a free trial)</text>
+<text x="0" y="540" class="s i2">add up to $40 a month, about $480 a year.</text>
+</svg>

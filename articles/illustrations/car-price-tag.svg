@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 174" role="img" aria-labelledby="car-price-tag-t car-price-tag-d"><title id="car-price-tag-t">The front and back of a price tag for a seven-year car loan</title><desc id="car-price-tag-d">Front of the tag: $527 a month. Back of the tag: $44,229, 84 payments in all. That is the $35,000 car plus $9,229 in interest at 6.9%.</desc>
+<text x="0" y="16" class="h">The same 7-year loan, both sides of the tag</text>
+<path d="M22 34 L166 34 Q172 34 172 40 L172 132 Q172 138 166 138 L22 138 L0 86.0 Z" class="sheet"/><circle cx="18" cy="86" r="4" class="well"/>
+<text x="30" y="60" class="cap">FRONT</text>
+<text x="30" y="96" class="big">$527</text>
+<text x="30" y="118" class="s i2">a month</text>
+<path d="M208 34 L354 34 Q360 34 360 40 L360 132 Q360 138 354 138 L208 138 L186 86.0 Z" class="sheet"/><circle cx="204" cy="86" r="4" class="well"/>
+<text x="216" y="60" class="cap">BACK</text>
+<text x="216" y="96" class="big">$44,229</text>
+<text x="216" y="118" class="s i2">84 payments in all</text>
+<text x="0" y="166" class="s">$35,000 car + $9,229 interest, at 6.9%</text>
+</svg>

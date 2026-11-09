@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 286" role="img" aria-labelledby="pay-stub-match-t pay-stub-match-d"><title id="pay-stub-match-t">A fictional pay stub showing the employer match passed up</title><desc id="pay-stub-match-d">One paycheck on a $45,000 salary, paid every two weeks: gross pay $1,730.77; your 401(k) contribution at 3%, $51.92; the employer match, $25.96. The match you passed up: $25.96. Your employer matches 50% of what you put in, up to 6% of pay, so at 6% the match would be $51.92. $25.96 a paycheck is $675 a year.</desc>
+<rect x="0.5" y="0.5" width="359" height="252" rx="6" class="sheet"/>
+<text x="14" y="22" class="cap">FICTIONAL · FOR ILLUSTRATION</text>
+<text x="14" y="44" class="h">Pay stub, one paycheck</text>
+<text x="14" y="64" class="xs i2">$45,000 a year, paid every two weeks</text>
+<line x1="14" y1="74" x2="346" y2="74" class="rule"/>
+<text x="14" y="98" class="s">Gross pay</text>
+<text x="346" y="98" text-anchor="end" class="s b">$1,730.77</text>
+<line x1="14" y1="108" x2="346" y2="108" class="rule"/>
+<text x="14" y="128" class="s">401(k), you, 3%</text>
+<text x="346" y="128" text-anchor="end" class="s b">−$51.92</text>
+<line x1="14" y1="138" x2="346" y2="138" class="rule"/>
+<text x="14" y="158" class="s">Employer match</text>
+<text x="346" y="158" text-anchor="end" class="s b teal">+$25.96</text>
+<line x1="14" y1="168" x2="346" y2="168" class="rule"/>
+<rect x="14" y="176" width="156" height="20" rx="3" class="ink-fill"/><text x="92" y="190.5" text-anchor="middle" class="xs rev">MATCH YOU PASSED UP</text>
+<text x="346" y="191" text-anchor="end" class="s b">$25.96</text>
+<text x="14" y="222" class="xs i2">Your employer matches 50% of what you put in,</text>
+<text x="14" y="238" class="xs i2">up to 6% of pay. At 6%, the match is $51.92.</text>
+<text x="0" y="280" class="s m">$25.96 a paycheck is $675 a year.</text>
+</svg>

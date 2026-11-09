@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 340" role="img" aria-labelledby="payday-treadmill-t payday-treadmill-d"><title id="payday-treadmill-t">A $300 payday loan rolled over four times</title><desc id="payday-treadmill-d">Five two-week periods. In each of the first four you pay a $45 fee and still owe the $300. In the fifth you pay the $45 fee and the $300. Fees so far: $45, $90, $135, $180, $225. Ten weeks, $225 in fees, to borrow $300.</desc>
+<text x="0" y="16" class="h">A $300 payday loan, rolled over</text>
+<text x="0" y="36" class="s i2">$15 per $100, due every two weeks</text>
+<text x="0" y="76" class="s m">Weeks 1–2</text>
+<rect x="92.5" y="62.5" width="149" height="21" rx="2" class="frame"/>
+<text x="167" y="77.5" text-anchor="middle" class="xs i2">$300 still owed</text>
+<rect x="250" y="63" width="54" height="20" rx="3" class="ink-fill"/><text x="277" y="77.5" text-anchor="middle" class="xs rev">$45 fee</text>
+<text x="360" y="77.5" text-anchor="end" class="s b">$45</text>
+<line x1="0" y1="100" x2="360" y2="100" class="rule"/>
+<text x="0" y="128" class="s m">Weeks 3–4</text>
+<rect x="92.5" y="114.5" width="149" height="21" rx="2" class="frame"/>
+<text x="167" y="129.5" text-anchor="middle" class="xs i2">$300 still owed</text>
+<rect x="250" y="115" width="54" height="20" rx="3" class="ink-fill"/><text x="277" y="129.5" text-anchor="middle" class="xs rev">$45 fee</text>
+<text x="360" y="129.5" text-anchor="end" class="s b">$90</text>
+<line x1="0" y1="152" x2="360" y2="152" class="rule"/>
+<text x="0" y="180" class="s m">Weeks 5–6</text>
+<rect x="92.5" y="166.5" width="149" height="21" rx="2" class="frame"/>
+<text x="167" y="181.5" text-anchor="middle" class="xs i2">$300 still owed</text>
+<rect x="250" y="167" width="54" height="20" rx="3" class="ink-fill"/><text x="277" y="181.5" text-anchor="middle" class="xs rev">$45 fee</text>
+<text x="360" y="181.5" text-anchor="end" class="s b">$135</text>
+<line x1="0" y1="204" x2="360" y2="204" class="rule"/>
+<text x="0" y="232" class="s m">Weeks 7–8</text>
+<rect x="92.5" y="218.5" width="149" height="21" rx="2" class="frame"/>
+<text x="167" y="233.5" text-anchor="middle" class="xs i2">$300 still owed</text>
+<rect x="250" y="219" width="54" height="20" rx="3" class="ink-fill"/><text x="277" y="233.5" text-anchor="middle" class="xs rev">$45 fee</text>
+<text x="360" y="233.5" text-anchor="end" class="s b">$180</text>
+<line x1="0" y1="256" x2="360" y2="256" class="rule"/>
+<text x="0" y="284" class="s m">Weeks 9–10</text>
+<rect x="92" y="270" width="150" height="22" rx="2" class="teal-fill"/>
+<text x="167" y="285.5" text-anchor="middle" class="xs rev">$300 paid back</text>
+<rect x="250" y="271" width="54" height="20" rx="3" class="ink-fill"/><text x="277" y="285.5" text-anchor="middle" class="xs rev">$45 fee</text>
+<text x="360" y="285.5" text-anchor="end" class="s b">$225</text>
+<text x="360" y="50" text-anchor="end" class="cap">FEES SO FAR</text>
+<line x1="0" y1="312" x2="360" y2="312" class="ink-line"/>
+<text x="0" y="334" class="s m">Ten weeks, $225 in fees, to borrow $300.</text>
+</svg>

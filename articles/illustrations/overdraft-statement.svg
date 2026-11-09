@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 458" role="img" aria-labelledby="overdraft-statement-t overdraft-statement-d"><title id="overdraft-statement-t">A fictional day of checking activity with three overdraft fees</title><desc id="overdraft-statement-d">Starting balance $20. Lunch $18 leaves $2. Coffee $6 leaves minus $4, and a $35 overdraft fee makes it minus $39. A $9 movie rental makes it minus $48, and another $35 fee minus $83. Gas $30 makes it minus $113, and a third $35 fee minus $148. You owe the bank $148: the $43 you didn&#x27;t have, plus $105 in fees. The first fee was for being $4 short.</desc>
+<rect x="0.5" y="0.5" width="359" height="406" rx="6" class="sheet"/>
+<text x="14" y="22" class="cap">FICTIONAL · FOR ILLUSTRATION</text>
+<text x="14" y="44" class="h">Checking activity, Tuesday</text>
+<text x="14" y="72" class="cap">ITEM</text>
+<text x="244" y="72" text-anchor="end" class="cap">AMOUNT</text>
+<text x="346" y="72" text-anchor="end" class="cap">BALANCE</text>
+<line x1="14" y1="80" x2="346" y2="80" class="rule"/>
+<text x="14" y="108.5" class="i2">Starting balance</text>
+<text x="346" y="108.5" text-anchor="end">$20.00</text>
+<line x1="14" y1="119" x2="346" y2="119" class="rule"/>
+<text x="14" y="139.5">Lunch</text>
+<text x="244" y="139.5" text-anchor="end">−$18.00</text>
+<text x="346" y="139.5" text-anchor="end">$2.00</text>
+<line x1="14" y1="150" x2="346" y2="150" class="rule"/>
+<text x="14" y="170.5">Coffee</text>
+<text x="244" y="170.5" text-anchor="end">−$6.00</text>
+<text x="346" y="170.5" text-anchor="end">−$4.00</text>
+<line x1="14" y1="181" x2="346" y2="181" class="rule"/>
+<rect x="14" y="187" width="108" height="20" rx="3" class="ink-fill"/><text x="68" y="201.5" text-anchor="middle" class="xs rev">OVERDRAFT FEE</text>
+<text x="244" y="201.5" text-anchor="end" class="b">−$35.00</text>
+<text x="346" y="201.5" text-anchor="end" class="b">−$39.00</text>
+<line x1="14" y1="212" x2="346" y2="212" class="rule"/>
+<text x="14" y="232.5">Movie rental</text>
+<text x="244" y="232.5" text-anchor="end">−$9.00</text>
+<text x="346" y="232.5" text-anchor="end">−$48.00</text>
+<line x1="14" y1="243" x2="346" y2="243" class="rule"/>
+<rect x="14" y="249" width="108" height="20" rx="3" class="ink-fill"/><text x="68" y="263.5" text-anchor="middle" class="xs rev">OVERDRAFT FEE</text>
+<text x="244" y="263.5" text-anchor="end" class="b">−$35.00</text>
+<text x="346" y="263.5" text-anchor="end" class="b">−$83.00</text>
+<line x1="14" y1="274" x2="346" y2="274" class="rule"/>
+<text x="14" y="294.5">Gas</text>
+<text x="244" y="294.5" text-anchor="end">−$30.00</text>
+<text x="346" y="294.5" text-anchor="end">−$113.00</text>
+<line x1="14" y1="305" x2="346" y2="305" class="rule"/>
+<rect x="14" y="311" width="108" height="20" rx="3" class="ink-fill"/><text x="68" y="325.5" text-anchor="middle" class="xs rev">OVERDRAFT FEE</text>
+<text x="244" y="325.5" text-anchor="end" class="b">−$35.00</text>
+<text x="346" y="325.5" text-anchor="end" class="b">−$148.00</text>
+<line x1="14" y1="336" x2="346" y2="336" class="rule"/>
+<line x1="14" y1="336" x2="346" y2="336" class="ink-line"/>
+<text x="14" y="362" class="m">You owe the bank</text>
+<text x="346" y="366" text-anchor="end" class="big">$148.00</text>
+<text x="14" y="386" class="s i2">$43 you didn't have, plus $105 in fees</text>
+<text x="0" y="432" class="s">The first fee was for being $4 short.</text>
+<text x="0" y="452" class="s i2">Each fee is the same, whatever the amount.</text>
+</svg>

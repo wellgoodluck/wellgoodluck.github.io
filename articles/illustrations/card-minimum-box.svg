@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 388" role="img" aria-labelledby="card-minimum-box-t card-minimum-box-d"><title id="card-minimum-box-t">A fictional credit card statement with its minimum payment warning</title><desc id="card-minimum-box-d">A statement for a $2,000 balance at 22.36% with a $57.27 minimum payment. The minimum payment warning box says that paying only the minimum, it will be paid off in 12 years at a total of $4,651. Paying $77 a month, it will be paid off in 3 years at a total of $2,763, saving $1,888. Federal law has required this box since 2010; it rounds to the nearest year, and the exact figure is 11 years, 8 months.</desc>
+<rect x="0.5" y="0.5" width="359" height="304" rx="6" class="sheet"/>
+<text x="14" y="22" class="cap">FICTIONAL · FOR ILLUSTRATION</text>
+<text x="14" y="44" class="h">Card statement</text>
+<line x1="14" y1="56" x2="346" y2="56" class="rule"/>
+<text x="14" y="78" class="s i2">New balance</text>
+<text x="346" y="78" text-anchor="end" class="s m">$2,000.00</text>
+<text x="14" y="100" class="s i2">Minimum payment due</text>
+<text x="346" y="100" text-anchor="end" class="s m">$57.27</text>
+<text x="14" y="122" class="s i2">Interest rate (APR)</text>
+<text x="346" y="122" text-anchor="end" class="s m">22.36%</text>
+<rect x="14" y="136" width="332" height="156" rx="3" class="frame"/>
+<text x="24" y="156" class="s b">Minimum Payment Warning</text>
+<text x="24" y="174" class="xs i2">Paying only the minimum costs more in interest</text>
+<text x="24" y="190" class="xs i2">and takes longer.</text>
+<text x="24" y="216" class="cap">IF YOU PAY</text>
+<text x="154" y="216" class="cap">PAID OFF IN</text>
+<text x="336" y="216" text-anchor="end" class="cap">TOTAL PAID</text>
+<line x1="24" y1="224" x2="336" y2="224" class="rule"/>
+<text x="24" y="244" class="s">Only the minimum</text>
+<rect x="148" y="229" width="78" height="22" rx="3" class="wash"/>
+<text x="154" y="244" class="s b">12 years</text>
+<text x="336" y="244" text-anchor="end" class="s b">$4,651</text>
+<line x1="24" y1="254" x2="336" y2="254" class="rule"/>
+<text x="24" y="274" class="s">$77 a month</text>
+<text x="154" y="274" class="s">3 years</text>
+<text x="336" y="274" text-anchor="end" class="s">$2,763</text>
+<text x="336" y="288" text-anchor="end" class="xs i2">(saves $1,888)</text>
+<path d="M184 252 L184 326" class="lead"/>
+<text x="0" y="342" class="s">Federal law has required this box since 2010.</text>
+<text x="0" y="362" class="s i2">It rounds to the nearest year; the exact figure is</text>
+<text x="0" y="380" class="s i2">11 years, 8 months.</text>
+</svg>

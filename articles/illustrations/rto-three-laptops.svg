@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 172" role="img" aria-labelledby="rto-three-laptops-t rto-three-laptops-d"><title id="rto-three-laptops-t">Three laptops for the price of one rent-to-own laptop</title><desc id="rto-three-laptops-d">Three laptops at the $612 retail price cost $1,836, with $35.52 left over from the $1,871.52 that 48 rent-to-own payments cost for one laptop.</desc>
+<text x="0" y="16" class="h">What the rent-to-own total would buy</text>
+<rect x="10" y="40" width="80" height="52" rx="3" class="teal-fill"/><rect x="16" y="46" width="68" height="40" rx="1" class="sheet"/><path d="M0 102 L100 102 L92 94 L8 94 Z" class="teal-fill"/><text x="50" y="71" text-anchor="middle" class="s m">$612</text>
+<rect x="135" y="40" width="80" height="52" rx="3" class="teal-fill"/><rect x="141" y="46" width="68" height="40" rx="1" class="sheet"/><path d="M125 102 L225 102 L217 94 L133 94 Z" class="teal-fill"/><text x="175" y="71" text-anchor="middle" class="s m">$612</text>
+<rect x="258" y="40" width="80" height="52" rx="3" class="teal-fill"/><rect x="264" y="46" width="68" height="40" rx="1" class="sheet"/><path d="M248 102 L348 102 L340 94 L256 94 Z" class="teal-fill"/><text x="298" y="71" text-anchor="middle" class="s m">$612</text>
+<text x="0" y="132" class="m">3 laptops at retail: $1,836</text>
+<text x="360" y="132" text-anchor="end" class="s i2">+ $35.52 left</text>
+<line x1="0" y1="144" x2="360" y2="144" class="rule"/>
+<text x="0" y="166" class="s i2">48 rent-to-own payments: $1,871.52, for one</text>
+</svg>

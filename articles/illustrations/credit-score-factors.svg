@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 297" role="img" aria-labelledby="credit-score-factors-t credit-score-factors-d"><title id="credit-score-factors-t">What goes into a FICO score</title><desc id="credit-score-factors-d">A bar split into five parts: paying on time 35%, how much of your limits you use 30%, how long you&#x27;ve had credit 15%, new applications 10%, and the mix of credit types 10%. Not in the score: income, job, savings or checking balance.</desc>
+<text x="0" y="16" class="h">What goes into a FICO score</text>
+<text x="0" y="36" class="s i2">Approximate weights, out of 100%</text>
+<rect x="0" y="50" width="124" height="34" rx="3" class="teal-fill"/>
+<rect x="126" y="50" width="106" height="34" rx="3" class="c1-fill"/>
+<rect x="234" y="50" width="52" height="34" rx="3" class="c2-fill"/>
+<rect x="288" y="50" width="34" height="34" rx="3" class="c3-fill"/>
+<rect x="324" y="50" width="36" height="34" rx="3" class="c4-fill"/>
+<rect x="0" y="99" width="12" height="12" rx="2" class="teal-fill"/>
+<text x="20" y="110" class="m">35%</text>
+<text x="62" y="110">Paying on time</text>
+<line x1="0" y1="118" x2="360" y2="118" class="rule"/>
+<rect x="0" y="123" width="12" height="12" rx="2" class="c1-fill"/>
+<text x="20" y="134" class="m">30%</text>
+<text x="62" y="134">How much of your limits you use</text>
+<line x1="0" y1="142" x2="360" y2="142" class="rule"/>
+<rect x="0" y="147" width="12" height="12" rx="2" class="c2-fill"/>
+<text x="20" y="158" class="m">15%</text>
+<text x="62" y="158">How long you&#x27;ve had credit</text>
+<line x1="0" y1="166" x2="360" y2="166" class="rule"/>
+<rect x="0" y="171" width="12" height="12" rx="2" class="c3-fill"/>
+<text x="20" y="182" class="m">10%</text>
+<text x="62" y="182">New applications</text>
+<line x1="0" y1="190" x2="360" y2="190" class="rule"/>
+<rect x="0" y="195" width="12" height="12" rx="2" class="c4-fill"/>
+<text x="20" y="206" class="m">10%</text>
+<text x="62" y="206">Mix of credit types</text>
+<rect x="0.5" y="236" width="359" height="60" rx="6" class="well"/>
+<text x="14" y="260" class="cap">NOT IN THE SCORE</text>
+<text x="14" y="282" class="s">Income · job · savings · checking balance</text>
+</svg>

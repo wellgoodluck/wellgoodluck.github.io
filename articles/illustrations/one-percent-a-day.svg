@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 330" role="img" aria-labelledby="one-percent-a-day-t one-percent-a-day-d"><title id="one-percent-a-day-t">What 1% a day would do to $1,000 in a year</title><desc id="one-percent-a-day-d">A curve rising slowly and then steeply, from $1,000 on day 0 to about $37,800 on day 365, nearly 38 times the money. A dashed line for comparison: a 10% year, ending at $1,100. No legitimate investment reliably does anything close.</desc>
+<text x="0" y="16" class="h">$1,000 at "just 1% a day"</text>
+<text x="0" y="36" class="s i2">Compounded every day for a year</text>
+<line x1="44" y1="236" x2="350" y2="236" class="rule"/>
+<text x="38" y="240" text-anchor="end" class="xs mu">$0</text>
+<line x1="44" y1="191" x2="350" y2="191" class="rule"/>
+<text x="38" y="195" text-anchor="end" class="xs mu">$10K</text>
+<line x1="44" y1="146" x2="350" y2="146" class="rule"/>
+<text x="38" y="150" text-anchor="end" class="xs mu">$20K</text>
+<line x1="44" y1="101" x2="350" y2="101" class="rule"/>
+<text x="38" y="105" text-anchor="end" class="xs mu">$30K</text>
+<line x1="44" y1="56" x2="350" y2="56" class="rule"/>
+<text x="38" y="60" text-anchor="end" class="xs mu">$40K</text>
+<text x="44" y="254" class="xs mu">Day 0</text>
+<text x="119.452" y="254" text-anchor="middle" class="xs mu">90</text>
+<text x="194.904" y="254" text-anchor="middle" class="xs mu">180</text>
+<text x="270.356" y="254" text-anchor="middle" class="xs mu">270</text>
+<text x="350" y="254" text-anchor="end" class="xs mu">365</text>
+<path d="M44.0 231.5 L48.2 231.3 L52.4 231.0 L56.6 230.8 L60.8 230.5 L65.0 230.2 L69.2 229.9 L73.3 229.6 L77.5 229.3 L81.7 229.0 L85.9 228.6 L90.1 228.2 L94.3 227.8 L98.5 227.4 L102.7 227.0 L106.9 226.5 L111.1 226.0 L115.3 225.5 L119.5 225.0 L123.6 224.4 L127.8 223.8 L132.0 223.2 L136.2 222.6 L140.4 221.9 L144.6 221.1 L148.8 220.4 L153.0 219.6 L157.2 218.8 L161.4 217.9 L165.6 217.0 L169.8 216.0 L173.9 215.0 L178.1 213.9 L182.3 212.8 L186.5 211.6 L190.7 210.3 L194.9 209.0 L199.1 207.6 L203.3 206.2 L207.5 204.7 L211.7 203.1 L215.9 201.4 L220.1 199.6 L224.2 197.8 L228.4 195.8 L232.6 193.8 L236.8 191.6 L241.0 189.4 L245.2 187.0 L249.4 184.5 L253.6 181.9 L257.8 179.1 L262.0 176.2 L266.2 173.1 L270.4 169.9 L274.5 166.6 L278.7 163.0 L282.9 159.3 L287.1 155.4 L291.3 151.3 L295.5 147.0 L299.7 142.4 L303.9 137.6 L308.1 132.6 L312.3 127.3 L316.5 121.8 L320.7 116.0 L324.8 109.9 L329.0 103.4 L333.2 96.7 L337.4 89.5 L341.6 82.1 L345.8 74.2 L350.0 66.0 L350.0 66.0" class="teal-line"/>
+<line x1="44" y1="231.5" x2="350" y2="231.05" class="ink-line dashed"/>
+<circle cx="350.0" cy="66.0" r="4" class="series-ring"/>
+<text x="342" y="69.9765" text-anchor="end" class="s b">about $37,800</text>
+<line x1="0" y1="274" x2="18" y2="274" class="teal-line"/>
+<text x="24" y="278" class="xs">1% a day</text>
+<line x1="110" y1="274" x2="128" y2="274" class="ink-line dashed"/>
+<text x="134" y="278" class="xs">A 10% year, for comparison: $1,100</text>
+<text x="0" y="306" class="s">Nearly 38 times your money. No legitimate</text>
+<text x="0" y="324" class="s">investment reliably does anything close.</text>
+</svg>

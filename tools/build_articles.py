@@ -46,6 +46,14 @@ assets/site.css, so it follows the light and dark themes and reads at phone widt
     {{figure kind=stack title="Where a restaurant dollar goes" rows="Food=33;Labor=33;Everything else=29;Left over=5" fmt="{v}¢" caption="…"}}
     {{figure kind=pairs title="Fires per 10,000 vehicles" series="EVs;Other cars" rows="Sweden=0.45,7.5;Norway=0.55,3.9" caption="…"}}
 
+and one for a hand-drawn illustration kept as an SVG file in articles/illustrations/ (Nov 9), inlined so it
+picks up the page's font and both color themes from assets/site.css (.illo):
+
+    {{illustration name=overdraft-statement caption="One sentence that says what the picture shows."}}
+
+The SVG carries its own role="img", <title> and <desc> (the full text of the picture), and uses only the
+classes in site.css's illustration block, never colors of its own. A missing file prints a WARNING and draws nothing.
+
 kind=bars: one bar per row, one color, the value printed at each bar's tip. kind=stack: one
 whole split into its parts, up to six, each part's value printed on it, a legend of names.
 kind=pairs: two values per row, two colors, with a legend. fmt writes each value ({v} is the
@@ -58,7 +66,10 @@ label. Every part gets a series box under its dateline (the series title linking
 the parts, the current one unlinked) and a "Next in this series" line before See also; the index groups the parts
 under the series title where the first part would fall. A series with featured: YYYY-MM-DD becomes the Featured
 line by the same rule as an article (the newest date that has arrived wins; a series wins a tie), shown as the
-series title, its dek and the parts. A missing or unreadable file, or a part that isn't an article, only prints a
+series title, its dek and the parts. Optional landing: <slug> (Nov 9) names a page (usually kind: page) that
+introduces the series; the series box's title, the series' Latest entry, its group heading on the index and its
+Featured card then link there instead of to the index or part 1, and the landing page sits under Articles in the menu.
+A missing or unreadable file, or a part that isn't an article, only prints a
 line; the build never fails on it.
 
 The build also writes one page per chart (chart/<id>/index.html, from the copy of chart.html already in
@@ -197,6 +208,37 @@ def figure_directive(line):
             + (f"<figcaption>{cap}</figcaption>" if cap else "") + "</figure>")
 
 
+ILLO_DIR = os.path.join("articles", "illustrations")
+
+
+def illustration_directive(line):
+    """{{illustration name=<file> [caption=…]}} -> <figure class="illo"> holding articles/illustrations/<file>.svg,
+    inlined. Fail-soft: a bad name or a missing file prints a WARNING and leaves an HTML comment."""
+    m = re.match(r"^\{\{\s*illustration\s+(.*?)\s*\}\}$", line.strip())
+    if not m:
+        return None
+    attrs = {}
+    for tok in shlex.split(m.group(1)):
+        if "=" in tok:
+            k, v = tok.split("=", 1)
+            attrs[k] = v
+    name = attrs.get("name", "")
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", name):
+        print(f"illustration: WARNING skipped one with a bad name ({name!r})")
+        return "<!-- illustration skipped -->"
+    try:
+        with open(os.path.join(ILLO_DIR, name + ".svg"), encoding="utf-8") as f:
+            svg = f.read()
+    except OSError as e:
+        print(f"illustration: WARNING {name}.svg not drawn ({e})")
+        return f"<!-- illustration {name} missing -->"
+    svg = re.sub(r"<\?xml.*?\?>|<!--.*?-->", "", svg, flags=re.S)
+    svg = re.sub(r">\s+<", "><", svg.strip())                    # one line: the Markdown pass never sees it
+    cap = inline(attrs["caption"]) if attrs.get("caption") else ""
+    return (f'<figure class="illo" id="fig-{name}">{svg}'
+            + (f"<figcaption>{cap}</figcaption>" if cap else "") + "</figure>")
+
+
 def md_to_html(text):
     out, para, lst, in_sources = [], [], None, False
 
@@ -216,7 +258,7 @@ def md_to_html(text):
         line = raw.rstrip()
         if not line.strip():
             flush_para(); close_list(); continue
-        d = chart_directive(line) or figure_directive(line)
+        d = chart_directive(line) or figure_directive(line) or illustration_directive(line)
         if d:
             flush_para(); close_list(); out.append(d); continue
         if line.startswith("<") and not line.startswith("<a "):     # raw HTML block line
@@ -295,13 +337,15 @@ def featured_pick(articles, today=None, series=None):
 
 SERIES = []        # [{kind, slug, title, dek, featured, date, parts: [{slug, label, title}]}], from load_series()
 SERIES_OF = {}     # article slug -> (series, index of the part)
+LANDINGS = {}      # landing-page slug -> its series (Nov 9)
+SERIES_FOLD = 8    # a series box with more parts than this folds them behind "Show all N parts" (Nov 9)
 
 
 def load_series(articles, path=os.path.join("articles", "series.json")):
     """Read articles/series.json into SERIES and SERIES_OF. Fail-soft: a missing file means no series;
     a bad file, or a part that isn't a listed article, prints a line and is skipped."""
-    global SERIES, SERIES_OF
-    SERIES, SERIES_OF = [], {}
+    global SERIES, SERIES_OF, LANDINGS
+    SERIES, SERIES_OF, LANDINGS = [], {}, {}
     if not os.path.exists(path):
         return
     try:
@@ -325,8 +369,15 @@ def load_series(articles, path=os.path.join("articles", "series.json")):
         if len(parts) < 2 or not d.get("title"):
             print(f"series: {sid}: needs a title and at least two parts; skipped")
             continue
+        landing = d.get("landing", "")
+        if landing and landing not in by_slug:
+            print(f"series: {sid}: landing page {landing!r} is not an article; linking to the index instead")
+            landing = ""
         s = {"kind": "series", "slug": sid, "title": d["title"], "dek": d.get("dek", ""), "featured": d.get("featured", ""),
-             "picture": d.get("picture", ""), "date": max(by_slug[p["slug"]]["date"] for p in parts), "parts": parts}
+             "picture": d.get("picture", ""), "date": max(by_slug[p["slug"]]["date"] for p in parts), "parts": parts,
+             "landing": landing}
+        if landing:
+            LANDINGS[landing] = s
         SERIES.append(s)
         for i, p in enumerate(parts):
             SERIES_OF[p["slug"]] = (s, i)
@@ -342,10 +393,14 @@ def series_box(slug):
         (f'<li aria-current="page"><span class="n">{k + 1}</span> {inline(p["label"])}</li>' if k == i else
          f'<li><a href="{p["slug"]}.html" title="{html.escape(p["title"], quote=True)}"><span class="n">{k + 1}</span> {inline(p["label"])}</a></li>')
         for k, p in enumerate(s["parts"]))
+    parts = f'<ol class="series-parts" role="list">{items}</ol>'
+    if len(s["parts"]) > SERIES_FOLD:              # a long series folds its parts, so the article starts on the first screen (Nov 9)
+        parts = (f'<details class="series-all"><summary><span class="more">Show all {len(s["parts"])} parts</span>'
+                 f'<span class="less">Hide the parts</span></summary>{parts}</details>')
     return (f'<nav class="series" aria-label="Series: {html.escape(s["title"], quote=True)}">'
             f'<p class="series-name"><span class="series-label">Series, part {i + 1} of {len(s["parts"])}</span> '
-            f'<a href="./#series-{s["slug"]}">{inline(s["title"])}</a></p>'
-            f'<ol class="series-parts" role="list">{items}</ol></nav>\n')
+            f'<a href="{s["landing"] + ".html" if s.get("landing") else "./#series-" + s["slug"]}">{inline(s["title"])}</a></p>'
+            f'{parts}</nav>\n')
 
 
 def series_next(slug):
@@ -378,7 +433,7 @@ def featured_html(feat, link_prefix=""):
     """The Featured card on the articles index: an article (title, dek), or a series (title to part 1, dek, parts),
     with its picture at the foot when it has one."""
     dek = f'<p class="fdek">{inline(feat["dek"])}</p>' if feat.get("dek") else ""   # cut to two lines by site.css
-    url = f'{link_prefix}{feat["parts"][0]["slug"] if feat.get("kind") == "series" else feat["slug"]}.html'
+    url = f'{link_prefix}{(feat.get("landing") or feat["parts"][0]["slug"]) if feat.get("kind") == "series" else feat["slug"]}.html'
     svg = featured_picture(feat)
     pic = f'<a class="cthumb" href="{url}" aria-hidden="true" tabindex="-1">{svg}</a>' if svg else ""
     if feat.get("kind") == "series":
@@ -611,6 +666,8 @@ def menu_for(a):
         return site_menu("about", page=True)
     if a.get("kind") == "tool":
         return site_menu("tools", page=a.get("out") == "index")
+    if a["slug"] in LANDINGS:                       # a series' landing page sits under Articles (Nov 9)
+        return site_menu("articles")
     if a.get("kind") == "page":
         return site_menu("about")
     if a.get("kind") == "path":
@@ -900,7 +957,7 @@ def render_index(articles):
             if sr["slug"] in shown:
                 continue
             shown.add(sr["slug"])
-            a = {"slug": sr["parts"][0]["slug"], "title": sr["title"], "date": sr["date"],
+            a = {"slug": sr.get("landing") or sr["parts"][0]["slug"], "title": sr["title"], "date": sr["date"],
                  "dek": sr.get("dek") or f"A series in {len(sr['parts'])} parts."}
         merged.append(a)
     latest = merged
@@ -958,8 +1015,9 @@ def render_index(articles):
                     page += compact(run); run = []
                 parts = [by_slug[p["slug"]] for p in s["parts"]]
                 done.update(p["slug"] for p in s["parts"])
+                title = (f'<a href="{s["landing"]}.html">{inline(s["title"])}</a>' if s.get("landing") else inline(s["title"]))
                 page += (f'<section class="num-group series-group" id="series-{s["slug"]}"><h4><span class="series-label">Series</span> '
-                         f'{inline(s["title"])}</h4>' + compact(parts) + "</section>\n")
+                         f'{title}</h4>' + compact(parts) + "</section>\n")
             else:
                 run.append(a)
         if run:

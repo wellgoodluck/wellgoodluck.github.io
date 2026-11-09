@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 178" role="img" aria-labelledby="rto-price-tag-t rto-price-tag-d"><title id="rto-price-tag-t">The front and back of a rent-to-own price tag</title><desc id="rto-price-tag-d">Front of the tag: $38.99 a week. Back of the tag: 48 weeks to own, $1,871.52 in total, against a retail price of $612. The Federal Trade Commission has recommended showing shoppers the total cost while they shop.</desc>
+<text x="0" y="16" class="h">What a total-cost tag could look like</text>
+<text x="0" y="36" class="s i2">Total cost on the tag, not just the weekly price</text>
+<path d="M22 52 L166 52 Q172 52 172 58 L172 164 Q172 170 166 170 L22 170 L0 111.0 Z" class="sheet"/><circle cx="18" cy="111" r="4" class="well"/>
+<text x="30" y="78" class="cap">FRONT</text>
+<text x="30" y="116" class="big">$38.99</text>
+<text x="30" y="138" class="s i2">a week</text>
+<path d="M208 52 L354 52 Q360 52 360 58 L360 164 Q360 170 354 170 L208 170 L186 111.0 Z" class="sheet"/><circle cx="204" cy="111" r="4" class="well"/>
+<text x="216" y="78" class="cap">BACK</text>
+<text x="216" y="102" class="s">48 weeks to own</text>
+<text x="216" y="130" class="big">$1,871.52</text>
+<text x="216" y="152" class="s i2">Retail price $612</text>
+</svg>
