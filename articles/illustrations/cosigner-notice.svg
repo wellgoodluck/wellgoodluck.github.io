@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 496" role="img" aria-labelledby="cosigner-notice-t cosigner-notice-d"><title id="cosigner-notice-t">The federal Notice to Cosigner, excerpted, with three sentences marked</title><desc id="cosigner-notice-d">An excerpt of the Notice to Cosigner required by federal rule (16 CFR 444.3): You are being asked to guarantee this debt. Think carefully before you do. Marked 1: If the borrower doesn&#x27;t pay the debt, you will have to. Be sure you can afford to pay if you have to, and that you want to accept this responsibility. Marked 2: You may have to pay up to the full amount of the debt if the borrower does not pay. You may also have to pay late fees or collection costs, which increase this amount. Marked 3: The creditor can collect this debt from you without first trying to collect from the borrower. If this debt is ever in default, that fact may become a part of your credit record. Lenders such as auto dealers and finance companies must hand this to a co-signer as a separate page.</desc>
+<rect x="0.5" y="0.5" width="359" height="444" rx="6" class="sheet"/>
+<text x="14" y="22" class="cap">REQUIRED BY FEDERAL RULE · EXCERPT</text>
+<text x="14" y="46" class="h">Notice to Cosigner</text>
+<line x1="14" y1="58" x2="346" y2="58" class="rule"/>
+<text x="16" y="76" class="s">You are being asked to guarantee this</text>
+<text x="16" y="94" class="s">debt. Think carefully before you do.</text>
+<rect x="10" y="109" width="306" height="40" rx="3" class="wash"/>
+<circle cx="336" cy="131" r="11" class="ink-fill"/><text x="336" y="135.5" text-anchor="middle" class="xs rev">1</text>
+<text x="16" y="122" class="s b">If the borrower doesn&#x27;t pay the debt, you</text>
+<text x="16" y="140" class="s b">will have to.</text>
+<text x="16" y="168" class="s">Be sure you can afford to pay if you have</text>
+<text x="16" y="186" class="s">to, and that you want to accept this</text>
+<text x="16" y="204" class="s">responsibility.</text>
+<rect x="10" y="219" width="306" height="94" rx="3" class="wash"/>
+<circle cx="336" cy="268" r="11" class="ink-fill"/><text x="336" y="272.5" text-anchor="middle" class="xs rev">2</text>
+<text x="16" y="232" class="s b">You may have to pay up to the full amount</text>
+<text x="16" y="250" class="s b">of the debt if the borrower does not pay.</text>
+<text x="16" y="268" class="s b">You may also have to pay late fees or</text>
+<text x="16" y="286" class="s b">collection costs, which increase this</text>
+<text x="16" y="304" class="s b">amount.</text>
+<rect x="10" y="319" width="306" height="58" rx="3" class="wash"/>
+<circle cx="336" cy="350" r="11" class="ink-fill"/><text x="336" y="354.5" text-anchor="middle" class="xs rev">3</text>
+<text x="16" y="332" class="s b">The creditor can collect this debt from</text>
+<text x="16" y="350" class="s b">you without first trying to collect from</text>
+<text x="16" y="368" class="s b">the borrower.</text>
+<text x="16" y="396" class="s">If this debt is ever in default, that fact</text>
+<text x="16" y="414" class="s">may become a part of your credit record.</text>
+<text x="0" y="472" class="xs i2">Lenders such as auto dealers and finance companies must</text>
+<text x="0" y="488" class="xs i2">hand this to a co-signer as a separate page.</text>
+</svg>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 256" role="img" aria-labelledby="gig-payouts-t gig-payouts-d"><title id="gig-payouts-t">Where $20,000 of app payouts goes</title><desc id="gig-payouts-d">Delivery work in 2026, federal tax, single filer. Gig work only: car costs $5,000, self-employment tax $2,120, leaving $12,880 to spend. Gig work plus a $20,000 part-time job: car costs $5,000, tax $3,290, leaving $11,710. The app pays the whole $20,000; the tax is due in April unless you pay it as you go.</desc>
+<text x="0" y="16" class="h">Where $20,000 of app payouts goes</text>
+<text x="0" y="36" class="s i2">Delivery work in 2026, federal tax, single filer</text>
+<text x="0" y="62" class="m">Gig work only</text>
+<rect x="0" y="72" width="88" height="22" class="range-fill"/>
+<rect x="90" y="72" width="36.16" height="22" class="ink-fill"/>
+<rect x="128.16" y="72" width="231.84" height="22" class="teal-fill"/>
+<rect x="0" y="104" width="10" height="10" class="range-fill"/>
+<text x="16" y="114" class="xs">Car costs $5,000</text>
+<rect x="134" y="104" width="10" height="10" class="ink-fill"/>
+<text x="150" y="114" class="xs b">Tax $2,120</text>
+<rect x="238" y="104" width="10" height="10" class="teal-fill"/>
+<text x="254" y="114" class="xs">Yours $12,880</text>
+<text x="0" y="154" class="m">Gig work plus a $20,000 part-time job</text>
+<rect x="0" y="164" width="88" height="22" class="range-fill"/>
+<rect x="90" y="164" width="57.22" height="22" class="ink-fill"/>
+<rect x="149.22" y="164" width="210.78" height="22" class="teal-fill"/>
+<rect x="0" y="196" width="10" height="10" class="range-fill"/>
+<text x="16" y="206" class="xs">Car costs $5,000</text>
+<rect x="134" y="196" width="10" height="10" class="ink-fill"/>
+<text x="150" y="206" class="xs b">Tax $3,290</text>
+<rect x="238" y="196" width="10" height="10" class="teal-fill"/>
+<text x="254" y="206" class="xs">Yours $11,710</text>
+<text x="0" y="232" class="xs i2">The app pays the whole $20,000. The tax is due in April</text>
+<text x="0" y="248" class="xs i2">unless you pay it as you go.</text>
+</svg>

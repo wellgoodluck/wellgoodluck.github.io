@@ -99,7 +99,7 @@
     },
     "money-traps": {
       "title": "Money Traps",
-      "dek": "Thirteen short pages on the ways money leaks out of a household, especially a new one, from overdraft fees and card minimums to car loans, scams and student debt: how each trap works, what it costs in dollars, how to avoid it, and the policy fight around it.",
+      "dek": "Seventeen short pages on the ways money leaks out of a household, especially a new one, from overdraft fees and card minimums to car loans, scams, gig taxes, co-signing and student debt: how each trap works, what it costs in dollars, how to avoid it, and the policy fight around it.",
       "landing": "money-traps",
       "parts": [
         {
@@ -109,6 +109,10 @@
         {
           "slug": "overdraft-fees",
           "label": "Overdraft fees"
+        },
+        {
+          "slug": "payment-app-scams",
+          "label": "Payment app scams"
         },
         {
           "slug": "credit-card-minimum-payments",
@@ -147,12 +151,24 @@
           "label": "Ads that sell the worry"
         },
         {
+          "slug": "sports-betting-and-prediction-apps",
+          "label": "Sports betting"
+        },
+        {
+          "slug": "gig-work-taxes",
+          "label": "Gig work taxes"
+        },
+        {
           "slug": "employer-retirement-match",
           "label": "The employer match"
         },
         {
           "slug": "student-loans",
           "label": "Student loans"
+        },
+        {
+          "slug": "co-signing",
+          "label": "Co-signing"
         }
       ],
       "featured": "2026-11-09"

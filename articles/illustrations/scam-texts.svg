@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 562" role="img" aria-labelledby="scam-texts-t scam-texts-d"><title id="scam-texts-t">A fictional text thread from a fake bank fraud department, with three warning signs marked</title><desc id="scam-texts-d">A made-up text thread from &quot;Bank Fraud Dept.&quot;: an alert about a $1,240 charge asks for a YES or NO reply; after a NO, the messages say a fraud specialist will call and not to hang up (warning sign 1, pressure to act now), to move money to a safe account by sending it by Zelle to yourself at their number (sign 2: a real bank never asks this), and not to tell anyone at the branch (sign 3, secrecy, even from your own bank). The safe move: hang up and call the number on the back of your card.</desc>
+<rect x="0.5" y="0.5" width="359" height="382" rx="6" class="sheet"/>
+<text x="14" y="22" class="cap">FICTIONAL · FOR ILLUSTRATION</text>
+<text x="14" y="44" class="m">Bank Fraud Dept.</text>
+<text x="346" y="44" text-anchor="end" class="xs i2">Text message</text>
+<line x1="14" y1="54" x2="346" y2="54" class="rule"/>
+<rect x="14" y="66" width="232" height="61" rx="8" class="wash"/>
+<text x="24" y="84" class="s">ALERT: A $1,240 charge was</text>
+<text x="24" y="101" class="s">attempted on your card. Reply YES</text>
+<text x="24" y="118" class="s">if this was you, NO if not.</text>
+<rect x="298" y="139" width="48" height="27" rx="8" class="frame"/>
+<text x="322" y="157" text-anchor="middle" class="s b">NO</text>
+<rect x="14" y="178" width="232" height="61" rx="8" class="wash"/>
+<text x="24" y="196" class="s">A fraud specialist will call you</text>
+<text x="24" y="213" class="s">now. Stay on the line. Don&#x27;t hang</text>
+<text x="24" y="230" class="s">up.</text>
+<circle cx="330" cy="208.5" r="11" class="ink-fill"/><text x="330" y="213" text-anchor="middle" class="xs rev">1</text>
+<rect x="14" y="251" width="232" height="61" rx="8" class="wash"/>
+<text x="24" y="269" class="s">To protect your money, move it to</text>
+<text x="24" y="286" class="s">a safe account. Send it by Zelle</text>
+<text x="24" y="303" class="s">to yourself at this number.</text>
+<circle cx="330" cy="281.5" r="11" class="ink-fill"/><text x="330" y="286" text-anchor="middle" class="xs rev">2</text>
+<rect x="14" y="324" width="232" height="44" rx="8" class="wash"/>
+<text x="24" y="342" class="s">Don&#x27;t tell anyone at the branch.</text>
+<text x="24" y="359" class="s">They may be part of the fraud.</text>
+<circle cx="330" cy="346" r="11" class="ink-fill"/><text x="330" y="350.5" text-anchor="middle" class="xs rev">3</text>
+<circle cx="11" cy="407" r="11" class="ink-fill"/><text x="11" y="411.5" text-anchor="middle" class="xs rev">1</text>
+<text x="30" y="412" class="s">Pressure to act now, before you can check.</text>
+<circle cx="11" cy="437" r="11" class="ink-fill"/><text x="11" y="441.5" text-anchor="middle" class="xs rev">2</text>
+<text x="30" y="442" class="s">&quot;Move your money to keep it safe.&quot; A real</text>
+<text x="30" y="460" class="s i2">bank never asks this.</text>
+<circle cx="11" cy="485" r="11" class="ink-fill"/><text x="11" y="489.5" text-anchor="middle" class="xs rev">3</text>
+<text x="30" y="490" class="s">Secrecy, even from your own bank.</text>
+<text x="0" y="520" class="s b">Hang up and call the number on the back of</text>
+<text x="0" y="538" class="s b">your card.</text>
+</svg>

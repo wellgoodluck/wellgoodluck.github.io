@@ -1,6 +1,6 @@
 ---
 title: Money Traps
-dek: Thirteen short pages on the ways money leaks out of a household, especially a new one: how each trap works, what it costs in dollars, how to avoid it, and the policy fight around it.
+dek: Seventeen short pages on the ways money leaks out of a household, especially a new one: how each trap works, what it costs in dollars, how to avoid it, and the policy fight around it.
 date: 2026-11-09
 kind: page
 ---
@@ -24,6 +24,7 @@ Each page also has a picture drawn for the site. The statements, pay stubs and p
 ## Everyday banking
 
 - [The $35 Coffee](overdraft-fees.html): how a small purchase turns into an overdraft fee, and the one setting that stops it.
+- [Once You Hit Send](payment-app-scams.html): scams on Zelle, Venmo and Cash App, and why money you send yourself is hard to get back.
 - [Ten Dollars Here, Fifteen There](subscription-creep.html): subscriptions that renew on their own, and what they add up to.
 
 ## Borrowing
@@ -35,10 +36,16 @@ Each page also has a picture drawn for the site. The statements, pay stubs and p
 - [The Seven-Year Car Loan](long-car-loans.html): why a lower monthly payment can cost more.
 - [The $38.99-a-Week Laptop](rent-to-own.html): what rent-to-own costs by the time you own the thing.
 - [Borrowing for School](student-loans.html): the student loan choices that follow you, and the rules that changed in July 2026.
+- [Signing for Someone Else's Loan](co-signing.html): what co-signing really means, whether you're asked to co-sign or asking someone else.
 
 ## Spotting the pitch
 
 - [The Ad That Sells You the Worry](ads-that-sell-the-worry.html): ads that create the problem and then sell the cure, from supplements to debt relief, and the free version of each.
+- [The Bet Is Priced to Lose](sports-betting-and-prediction-apps.html): sports betting and prediction apps, and what the house edge adds up to.
+
+## Earning
+
+- [The Tax Bill Nobody Withheld](gig-work-taxes.html): delivery, rideshare and freelance apps, and the taxes nobody takes out.
 
 ## Investing and the long run
 

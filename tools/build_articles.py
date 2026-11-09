@@ -219,8 +219,11 @@ def illustration_directive(line):
     m = re.match(r"^\{\{\s*illustration\s+(.*?)\s*\}\}$", line.strip())
     if not m:
         return None
-    attrs = {}
-    for tok in shlex.split(m.group(1)):
+    attrs, inner = {}, m.group(1)
+    cm = re.search(r'\bcaption="(.*)"$', inner)            # the caption runs to the last quote, so it may quote words
+    if cm:                                                 # inside it (Nov 9 fix: shlex cut those captions short)
+        attrs["caption"], inner = cm.group(1), inner[:cm.start()]
+    for tok in shlex.split(inner):
         if "=" in tok:
             k, v = tok.split("=", 1)
             attrs[k] = v
@@ -727,6 +730,10 @@ def render_article(a):
     dates = fmt_date(a["date"])
     if a.get("updated") and a["updated"] != a["date"]:
         dates += f' <span class="sep">·</span> updated {fmt_date(a["updated"])}'
+    es = TRANSLATIONS.get(a["slug"])
+    if es:                                         # Nov 9: a Spanish version exists
+        dates += f' <span class="sep">·</span> <a href="../es/{es}.html" lang="es" hreflang="es">En español</a>'
+        page = page.replace('<link rel="canonical"', hreflang_tags(a["slug"], es) + '<link rel="canonical"', 1)
     page += f'<p class="dateline">{dates}{fresh_label(a)}</p>\n'
     page += series_box(a["slug"])
     body = md_to_html(a["body"])
@@ -781,6 +788,82 @@ def render_tool(a):
     page += FOOT
     page = _REL_HREF.sub(lambda m: f'href="../articles/{m.group(1)}"', page)
     return clean_chart_links(page, CHART_IDS) if clean_chart_links else page
+
+
+# ---------------------------------------------------------------------------
+# Spanish pages (Nov 9 pilot): articles/src/es/*.md with `kind: es`, built to /es/<slug>.html (`out: index` for /es/).
+# `translation_of: <English slug>` pairs a page with its English original: each links to the other under its dateline
+# and in hreflang tags. `reviewed: yes` once a bilingual person has read it (the page says which). The chrome is Spanish:
+# the menu (Spanish home, English), the date, the footer. Illustrations come from <name>-es.svg
+# (tools/make_money_traps_illustrations.py, ES). Not in the articles index, the feed or the series; in the sitemap.
+# ---------------------------------------------------------------------------
+TRANSLATIONS = {}          # English slug -> Spanish slug, filled by main() before any article is rendered
+MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre",
+         "diciembre"]
+
+
+def fecha(iso):
+    y, m, d = (int(x) for x in iso.split("-"))
+    return f"{d} de {MESES[m - 1]} de {y}"
+
+
+def es_name(a):
+    return a.get("out") or a["slug"]
+
+
+def hreflang_tags(en_slug, es_slug):
+    en = f"{SITE}/articles/{en_slug}.html"
+    es = f"{SITE}/es/" if es_slug == "index" else f"{SITE}/es/{es_slug}.html"
+    return (f'<link rel="alternate" hreflang="en" href="{en}">\n<link rel="alternate" hreflang="es" href="{es}">\n'
+            f'<link rel="alternate" hreflang="x-default" href="{en}">\n')
+
+
+FOOT_ES = """
+<footer class="about" lang="es">
+  <div class="wrap">
+    <p>Economy in Context explica las cifras de la economía de Estados Unidos en palabras sencillas: qué muestran, qué está claro y qué se discute, y quién lo discute. Cada número lleva a su fuente.</p>
+    <p class="reuse">Puede reutilizar estas páginas citando la fuente: Economy in Context (economyincontext.org). El texto y los dibujos tienen licencia <a href="https://creativecommons.org/licenses/by/4.0/deed.es" rel="license noopener">CC BY 4.0</a>.</p>
+    <p>El sitio no tiene anuncios, no usa cookies y no guarda nada que lo identifique; sí cuenta las visitas. Preguntas y correcciones, en español o en inglés: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+    <p class="about-link"><a href="/es/">Todas las páginas en español →</a></p>
+    <p class="about-link"><a href="/" lang="en">Economy in Context, in English →</a></p>
+  </div>
+</footer>
+<script>document.querySelectorAll('[data-until]').forEach(function (e) { if (new Date().toISOString().slice(0, 10) >= e.getAttribute('data-until')) e.remove(); });</script>
+<script data-goatcounter="https://economyincontext.goatcounter.com/count" async src="/assets/count.js"></script>
+</body>
+</html>
+"""
+
+
+def render_es(a):
+    desc = html.escape(a.get("dek", a["title"]), quote=True)
+    name = es_name(a)
+    canonical = f"{SITE}/es/" if name == "index" else f"{SITE}/es/{name}.html"
+    en = a.get("translation_of", "")
+    menu = ('<nav class="site-menu" aria-label="Sitio"><a href="/es/"' + (' aria-current="page"' if name == "index" else ' aria-current="true"')
+            + '>En español</a><a href="/" lang="en" hreflang="en">English</a></nav>')
+    page = HEAD.format(title=html.escape(a["title"]), desc=desc, canonical=canonical, css_v=asset_stamp("assets/site.css"), menu=menu)
+    page = page.replace('<html lang="en">', '<html lang="es">', 1).replace('<meta property="og:type"', '<meta property="og:locale" content="es_US">\n<meta property="og:type"', 1)
+    if en:
+        page = page.replace('<link rel="canonical"', hreflang_tags(en, name) + '<link rel="canonical"', 1)
+    page += '<main class="wrap article">\n<article>\n'
+    page += f'<h1>{inline(a["title"])}</h1>\n'
+    if a.get("dek"):
+        page += f'<p class="dek">{inline(a["dek"])}</p>\n'
+    if name != "index":
+        other = f' <span class="sep">·</span> <a href="../articles/{en}.html" lang="en" hreflang="en">Read it in English</a>' if en else ""
+        page += f'<p class="dateline">{fecha(a["date"])}{other}</p>\n'
+    page += md_to_html(a["body"])
+    if name != "index" and en:
+        note = ("Esta página es una traducción de la versión en inglés, revisada por una persona bilingüe."
+                if str(a.get("reviewed", "")).lower() == "yes" else
+                "Esta página es una traducción de la versión en inglés. Todavía no la ha revisado una persona bilingüe.")
+        page += f'<p class="es-note">{note} ¿Ve un error? Escríbanos a <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>\n'
+    page += "\n</article>\n</main>\n"
+    if 'class="table-scroll"' in page:
+        page += '<script src="../assets/tables.js' + asset_stamp("assets/tables.js") + '"></script>\n'
+    page += FOOT_ES
+    return page
 
 
 # The figures "Has It Kept Up With Prices?" reads (assets/keptup.js), as one small file: each series a start month and one
@@ -1166,6 +1249,22 @@ def main():
                 articles.append(a)
     tools = [a for a in articles if a.get("kind") == "tool"]            # Nov 8: built to /tools/, listed nowhere else
     articles = [a for a in articles if a.get("kind") != "tool"]
+    spanish = []                                            # Nov 9: articles/src/es/*.md, built to /es/
+    es_dir = os.path.join(SRC_DIR, "es")
+    if os.path.isdir(es_dir):
+        en_slugs = {x["slug"] for x in articles}
+        for name in sorted(os.listdir(es_dir)):
+            if name.endswith(".md"):
+                a = parse(os.path.join(es_dir, name))
+                if a["draft"] or a.get("kind") != "es":
+                    continue
+                t = a.get("translation_of", "")
+                if t and t not in en_slugs:
+                    print(f"es: {name}: translation_of {t!r} is not an article; not paired")
+                    a["translation_of"] = ""
+                elif t and es_name(a) != "index":
+                    TRANSLATIONS[t] = es_name(a)
+                spanish.append(a)
     articles.sort(key=lambda a: a["date"], reverse=True)
     load_series(articles)
     fixes = collect_corrections(articles)                   # the About page's log: <!--corrections--> on a line of its own
@@ -1187,10 +1286,17 @@ def main():
             with open(os.path.join(tools_dir, tool_name(a) + ".html"), "w", encoding="utf-8") as f:
                 f.write(render_tool(a))
             print(f"built tools/{tool_name(a)}.html")
+    if spanish:
+        es_out = os.path.join(out_root, "es")
+        os.makedirs(es_out, exist_ok=True)
+        for a in spanish:
+            with open(os.path.join(es_out, es_name(a) + ".html"), "w", encoding="utf-8") as f:
+                f.write(render_es(a))
+            print(f"built es/{es_name(a)}.html")
     write_tool_prices(out_root)
     write_explainers(out_root, articles)
     write_feed(out_dir, articles)
-    write_sitemap(out_root, articles, tools)
+    write_sitemap(out_root, articles, tools, spanish)
     if report is not None:
         print(figures.summarize(report))
         try:                                                # outside the published folder; read by the weekly check
@@ -1237,7 +1343,7 @@ def write_feed(out_dir, articles):
     print(f"built articles/feed.xml ({len(listed)} entries)")
 
 
-def write_sitemap(out_root, articles, tools=()):
+def write_sitemap(out_root, articles, tools=(), spanish=()):
     """sitemap.xml and robots.txt at the site root: the almanac, the chart index, one page per chart
     (those chart_pages wrote this build), the articles index and every article."""
     import json
@@ -1262,6 +1368,9 @@ def write_sitemap(out_root, articles, tools=()):
     urls.append((f"{SITE}/articles/", today, "weekly", "0.8"))
     for a in articles:
         urls.append((f"{SITE}/articles/{a['slug']}.html", a.get("updated") or a["date"], "monthly", "0.7"))
+    for a in spanish:                                           # Nov 9: the Spanish pages
+        name = es_name(a)
+        urls.append((f"{SITE}/es/" if name == "index" else f"{SITE}/es/{name}.html", a.get("updated") or a["date"], "monthly", "0.6"))
     xml = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for loc, mod, freq, pri in urls:
         xml.append(f"  <url><loc>{html.escape(loc, quote=True)}</loc><lastmod>{mod}</lastmod><changefreq>{freq}</changefreq><priority>{pri}</priority></url>")

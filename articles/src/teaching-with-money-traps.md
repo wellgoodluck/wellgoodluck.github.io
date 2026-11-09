@@ -30,6 +30,14 @@ Below, each page has two or three questions and one activity. Suggested order: s
 - Who benefits when overdraft coverage is "on" for debit cards? Who benefits when it's off?
 - **Activity:** Find the overdraft settings page for a real bank or credit union online, without logging in. What is the setting called, and what is the default?
 
+## Payment app scams: Once You Hit Send
+
+[Read the page](payment-app-scams.html)
+
+- Why can a credit card purchase be disputed when a payment app transfer usually can't?
+- Who should cover the loss when someone is tricked into sending money: the person, the bank or the app? Use the page's argument section.
+- **Activity:** Using the page's text-message picture, find the three warning signs, then write the one-sentence reply you'd give the "fraud department."
+
 ## Credit card minimums: The Minimum Payment Trap
 
 [Read the page](credit-card-minimum-payments.html)
@@ -102,6 +110,22 @@ Below, each page has two or three questions and one activity. Suggested order: s
 - When is a free trial actually free?
 - **Activity:** Pick one of the page's categories (supplements, debt relief, credit repair, Medicare plans, unclaimed money) and find the free or cheaper option the page names.
 
+## Sports betting: The Bet Is Priced to Lose
+
+[Read the page](sports-betting-and-prediction-apps.html)
+
+- Explain in your own words why someone who picks winners half the time still loses money over a season.
+- Should prediction apps follow the same age rules as sportsbooks? Make the case for each side.
+- **Activity:** Using the page's picture, work out what $10 a day would cost in a year on single bets and on four-pick parlays (half the page's figures).
+
+## Gig work taxes: The Tax Bill Nobody Withheld
+
+[Read the page](gig-work-taxes.html)
+
+- Why does someone who owes no income tax still owe tax on gig work?
+- Should app drivers be employees or independent contractors? List what each side gains and gives up.
+- **Activity:** If you earned $400 a week from deliveries, how much would you set aside each week at 20%? At 25%? What would that add up to by April?
+
 ## The employer match: The Free Money You Leave on the Table
 
 [Read the page](employer-retirement-match.html)
@@ -117,6 +141,14 @@ Below, each page has two or three questions and one activity. Suggested order: s
 - Why does a balance grow while a student is still in school?
 - The page describes rules that changed in July 2026. Who gains and who loses from the new limits?
 - **Activity:** Using the page's worked example, estimate the monthly payment on the balance at graduation, then compare it with a starting salary in a job you're interested in.
+
+## Co-signing: Signing for Someone Else's Loan
+
+[Read the page](co-signing.html)
+
+- What's the difference between co-signing and being an authorized user?
+- Using the page's picture of the federal notice, which of the three marked sentences would surprise most people, and why?
+- **Activity:** Write the questions you'd ask before co-signing for a friend's car loan, then compare them with the page's How to avoid it section.
 
 ## Going further
 

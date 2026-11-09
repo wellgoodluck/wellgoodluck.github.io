@@ -501,3 +501,5 @@ h1, h2, h3, h4, .dek { text-wrap: balance; }
 .fresh { display: inline-block; margin-left: 2px; padding: 0 6px; border: 1px solid var(--full-line); border-radius: 4px; background: var(--series-wash); color: var(--full-ink); font-size: 11px; font-weight: 700; line-height: 17px; letter-spacing: 0.06em; text-transform: uppercase; vertical-align: 0.15em; white-space: nowrap; text-decoration: none; }
 .fresh.rev { background: none; font-weight: 600; letter-spacing: 0; text-transform: none; font-size: 11.5px; }
 .article-list .t + .fresh { vertical-align: 0.35em; }
+/* Spanish pages (Nov 9 pilot): the translation note at the foot of a translated page */
+.article .es-note { margin: 28px 0 0; padding-top: 12px; border-top: 1px solid var(--hairline); font-size: 13.5px; color: var(--ink-2); }

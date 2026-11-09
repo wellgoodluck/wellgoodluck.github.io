@@ -14,7 +14,16 @@ def esc(s):
     return html.escape(str(s), quote=True)
 
 
+# Spanish versions (Nov 9 pilot): with LANG = "es", T() and write() swap each English string for its entry in ES
+# (keys are the strings exactly as the English drawing passes them) and write <name>-es.svg. A string with no entry
+# stays English, so check the output. Spanish runs longer: the Spanish runs may pass wider boxes (see SPANISH below).
+LANG = "en"
+ES = {}
+
+
 def T(x, y, s, cls="", anchor="start", extra=""):
+    if LANG == "es":
+        s = ES.get(s, s)
     a = "" if anchor == "start" else f' text-anchor="{anchor}"'
     c = f' class="{cls}"' if cls else ""
     return f'<text x="{x:g}" y="{y:g}"{a}{c}{extra}>{s}</text>'
@@ -48,6 +57,8 @@ def fictional(x, y, anchor="end"):
 
 
 def write(name, h, body, title, desc):
+    if LANG == "es":
+        name, title, desc = name + "-es", ES.get(title, title), ES.get(desc, desc)
     svg = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {h:g}" role="img" '
            f'aria-labelledby="{name}-t {name}-d">'
            f'<title id="{name}-t">{esc(title)}</title><desc id="{name}-d">{esc(desc)}</desc>\n'
@@ -107,20 +118,21 @@ def overdraft_statement():
     b.append(fictional(14, 22, "start"))
     b.append(T(14, 44, "Checking activity, Tuesday", "h"))
     b.append(T(14, 72, "ITEM", "cap"))
-    b.append(T(244, 72, "AMOUNT", "cap", "end"))
+    ax = 244 if LANG == "en" else 268          # the Spanish fee label is wider, so the amounts move right
+    b.append(T(ax, 72, "AMOUNT", "cap", "end"))
     b.append(T(W - 14, 72, "BALANCE", "cap", "end"))
     b.append(L(14, 80, W - 14, 80, "rule"))
     y = top
     for lab, amt, bal, fee in rows:
         cy = y + rh / 2 + 5
         if fee:
-            b.append(tag(14, y + 6, 108, 20, "OVERDRAFT FEE"))
-            b.append(T(244, cy, money(amt), "b", "end"))
+            b.append(tag(14, y + 6, 108 if LANG == "en" else 164, 20, "OVERDRAFT FEE"))
+            b.append(T(ax, cy, money(amt), "b", "end"))
             b.append(T(W - 14, cy, money(bal), "b", "end"))
         else:
             b.append(T(14, cy, tx(lab), "i2" if amt is None else ""))
             if amt is not None:
-                b.append(T(244, cy, money(amt), "", "end"))
+                b.append(T(ax, cy, money(amt), "", "end"))
             b.append(T(W - 14, cy, money(bal), "", "end"))
         y += rh
         b.append(L(14, y, W - 14, y, "rule"))
@@ -784,8 +796,212 @@ def four_borrowers():
           "cuts; Washington can borrow to fill the gap.")
 
 
+# ---------------------------------------------------------------- Money Traps parts 13-16 (Nov 9)
+import textwrap
+
+
+def numdot(x, y, n):
+    return f'<circle cx="{x:g}" cy="{y - 5:g}" r="11" class="ink-fill"/>' + T(x, y - 0.5, str(n), "xs rev", "middle")
+
+
+def betting_cost():
+    """Expected yearly loss on $20 a day ($7,300 wagered), picking winners half the time."""
+    b = []
+    rows = [("One game at a time, at −110", "4.5¢ per $1", 332), ("All bets, 2025 average", "about 10¢ per $1", 742),
+            ("Four-pick parlays", "17¢ per $1", 1240)]
+    b.append(T(0, 16, "What $20 a day of betting costs in a year", "h"))
+    b.append(T(0, 36, "Expected loss on $7,300 of bets, winning half of them", "s i2"))
+    y = 64
+    maxw = W - 74
+    for lab, rate, v in rows:
+        b.append(T(0, y + 4, tx(lab), "m"))
+        b.append(T(W, y + 4, tx(rate), "s i2", "end"))
+        w = maxw * v / 1240
+        b.append(R(0, y + 12, w, 18, "teal-fill", rx=2))
+        b.append(T(w + 6, y + 26, f"${round(v, -1):,.0f}", "s b"))
+        y += 58
+    b.append(T(0, y + 2, "These are averages. In any one year some bettors come", "xs i2"))
+    b.append(T(0, y + 18, "out ahead and many lose more; the more you bet, the", "xs i2"))
+    b.append(T(0, y + 34, "closer your results get to the average.", "xs i2"))
+    write("betting-cost", y + 42, b, "What $20 a day of betting costs in a year",
+          "Expected loss on $7,300 of bets, winning half of them. One game at a time at standard minus 110 "
+          "odds, about 4.5 cents per dollar: about $330. All bets at the 2025 average, about 10 cents per dollar: about "
+          "$740. Four-pick parlays, about 17 cents per dollar: about $1,240. These are averages; in any one year some "
+          "bettors come out ahead and many lose more, and the more you bet, the closer your results get to the average.")
+
+
+def gig_payouts():
+    """Where $20,000 of app payouts goes: car costs, federal tax, what's left to spend."""
+    b = []
+    b.append(T(0, 16, "Where $20,000 of app payouts goes", "h"))
+    b.append(T(0, 36, "Delivery work in 2026, federal tax, single filer", "s i2"))
+    cases = [("Gig work only", 5000, 2120), ("Gig work plus a $20,000 part-time job", 5000, 3290)]
+    y = 62
+    sc = W / 20000
+    for lab, car, tax in cases:
+        left = 20000 - car - tax
+        b.append(T(0, y, tx(lab), "m"))
+        x = 0
+        for v, cls in ((car, "range-fill"), (tax, "ink-fill"), (left, "teal-fill")):
+            b.append(R(x, y + 10, v * sc - (2 if cls != "teal-fill" else 0), 22, cls))
+            x += v * sc
+        yy = y + 52
+        b.append(R(0, yy - 10, 10, 10, "range-fill"))
+        b.append(T(16, yy, f"Car costs ${car:,}", "xs"))
+        b.append(R(134, yy - 10, 10, 10, "ink-fill"))
+        b.append(T(150, yy, f"Tax ${tax:,}", "xs b"))
+        b.append(R(238, yy - 10, 10, 10, "teal-fill"))
+        b.append(T(254, yy, f"Yours ${left:,}", "xs"))
+        y += 92
+    b.append(T(0, y - 14, "The app pays the whole $20,000. The tax is due in April", "xs i2"))
+    b.append(T(0, y + 2, "unless you pay it as you go.", "xs i2"))
+    write("gig-payouts", y + 10, b, "Where $20,000 of app payouts goes",
+          "Delivery work in 2026, federal tax, single filer. Gig work only: car costs $5,000, self-employment tax $2,120, "
+          "leaving $12,880 to spend. Gig work plus a $20,000 part-time job: car costs $5,000, tax $3,290, leaving $11,710. "
+          "The app pays the whole $20,000; the tax is due in April unless you pay it as you go.")
+
+
+def scam_texts():
+    """A fictional text thread from a fake bank fraud department, with four warning signs numbered."""
+    b = []
+    msgs = [("in", "ALERT: A $1,240 charge was attempted on your card. Reply YES if this was you, NO if not.", None),
+            ("out", "NO", None),
+            ("in", "A fraud specialist will call you now. Stay on the line. Don't hang up.", 1),
+            ("in", "To protect your money, move it to a safe account. Send it by Zelle to yourself at this number.", 2),
+            ("in", "Don't tell anyone at the branch. They may be part of the fraud.", 3)]
+    b_w = 232
+    rows = []
+    for side, text, n in msgs:
+        lines = textwrap.wrap(text, 34)
+        rows.append((side, lines, n))
+    h_card = 64 + sum(len(l) * 17 + 22 for _, l, _ in rows) + 4
+    b.append(R(0.5, 0.5, W - 1, h_card, "sheet", rx=6))
+    b.append(fictional(14, 22, "start"))
+    b.append(T(14, 44, "Bank Fraud Dept.", "m"))
+    b.append(T(W - 14, 44, "Text message", "xs i2", "end"))
+    b.append(L(14, 54, W - 14, 54, "rule"))
+    y = 66
+    for side, lines, n in rows:
+        hh = len(lines) * 17 + 10
+        if side == "in":
+            b.append(R(14, y, b_w, hh, "wash", rx=8))
+            for k, ln in enumerate(lines):
+                b.append(T(24, y + 18 + 17 * k, tx(ln), "s"))
+            if n:
+                b.append(numdot(W - 30, y + hh / 2 + 5, n))
+        else:
+            b.append(R(W - 14 - 48, y, 48, hh, "frame", rx=8))
+            b.append(T(W - 14 - 24, y + 18, tx(lines[0]), "s b", "middle"))
+        y += hh + 12
+    y = h_card + 30
+    flags = [(1, "Pressure to act now, before you can check."),
+             (2, "\"Move your money to keep it safe.\" A real bank never asks this."),
+             (3, "Secrecy, even from your own bank."),
+             (4, "Hang up and call the number on the back of your card.")]
+    for n, text in flags:
+        if n < 4:
+            b.append(numdot(11, y, n))
+        lines = textwrap.wrap(text, 44)
+        for k, ln in enumerate(lines):
+            b.append(T(30 if n < 4 else 0, y + 18 * k, tx(ln), "s" if (k == 0 and n < 4) else ("s b" if n == 4 else "s i2")))
+        y += 18 * len(lines) + 12
+    write("scam-texts", y - 6, b, "A fictional text thread from a fake bank fraud department, with three warning signs marked",
+          "A made-up text thread from \"Bank Fraud Dept.\": an alert about a $1,240 charge asks for a YES or NO reply; "
+          "after a NO, the messages say a fraud specialist will call and not to hang up (warning sign 1, pressure to act "
+          "now), to move money to a safe account by sending it by Zelle to yourself at their number (sign 2: a real bank "
+          "never asks this), and not to tell anyone at the branch (sign 3, secrecy, even from your own bank). The safe "
+          "move: hang up and call the number on the back of your card.")
+
+
+def cosigner_notice():
+    """The FTC's required Notice to Cosigner (16 CFR 444.3), excerpted, with three sentences marked. A real federal form,
+    so no FICTIONAL label."""
+    b = []
+    sents = [("You are being asked to guarantee this debt. Think carefully before you do.", None),
+             ("If the borrower doesn't pay the debt, you will have to.", 1),
+             ("Be sure you can afford to pay if you have to, and that you want to accept this responsibility.", None),
+             ("You may have to pay up to the full amount of the debt if the borrower does not pay. You may also have to "
+              "pay late fees or collection costs, which increase this amount.", 2),
+             ("The creditor can collect this debt from you without first trying to collect from the borrower.", 3),
+             ("If this debt is ever in default, that fact may become a part of your credit record.", None)]
+    blocks = [(textwrap.wrap(t, 42), n) for t, n in sents]
+    h_sheet = 70 + sum(len(l) * 18 + 10 for l, _ in blocks) + 8
+    b.append(R(0.5, 0.5, W - 1, h_sheet, "sheet", rx=6))
+    b.append(T(14, 22, "REQUIRED BY FEDERAL RULE · EXCERPT", "cap"))
+    b.append(T(14, 46, "Notice to Cosigner", "h"))
+    b.append(L(14, 58, W - 14, 58, "rule"))
+    y = 76
+    for lines, n in blocks:
+        hh = len(lines) * 18
+        if n:
+            b.append(R(10, y - 13, W - 54, hh + 4, "wash", rx=3))
+            b.append(numdot(W - 24, y + hh / 2 - 4, n))
+        for k, ln in enumerate(lines):
+            b.append(T(16, y + 18 * k, tx(ln), "s b" if n else "s"))
+        y += hh + 10
+    y = h_sheet + 28
+    b.append(T(0, y, "Lenders such as auto dealers and finance companies must", "xs i2"))
+    b.append(T(0, y + 16, "hand this to a co-signer as a separate page.", "xs i2"))
+    write("cosigner-notice", y + 24, b, "The federal Notice to Cosigner, excerpted, with three sentences marked",
+          "An excerpt of the Notice to Cosigner required by federal rule (16 CFR 444.3): You are being asked to guarantee "
+          "this debt. Think carefully before you do. Marked 1: If the borrower doesn't pay the debt, you will have to. Be "
+          "sure you can afford to pay if you have to, and that you want to accept this responsibility. Marked 2: You may "
+          "have to pay up to the full amount of the debt if the borrower does not pay. You may also have to pay late fees "
+          "or collection costs, which increase this amount. Marked 3: The creditor can collect this debt from you "
+          "without first trying to collect from the borrower. If this debt is ever in default, that fact may become a "
+          "part of your credit record. Lenders such as auto dealers and finance companies must hand this to a co-signer "
+          "as a separate page.")
+
+
+# ---------------------------------------------------------------- Spanish pilot (Nov 9): the overdraft page's two drawings
+ES.update({
+    "FICTIONAL · FOR ILLUSTRATION": "FICTICIO · SOLO DE EJEMPLO",
+    # overdraft-statement
+    "Starting balance": "Saldo inicial", "Lunch": "Almuerzo", "Coffee": "Café", "Movie rental": "Renta de película",
+    "Gas": "Gasolina", "OVERDRAFT FEE": "CARGO POR SOBREGIRO", "Checking activity, Tuesday": "Movimientos del martes",
+    "ITEM": "CONCEPTO", "AMOUNT": "MONTO", "BALANCE": "SALDO", "You owe the bank": "Le debe al banco",
+    "$43 you didn't have, plus $105 in fees": "$43 que no tenía, más $105 en cargos",
+    "The first fee was for being $4 short.": "El primer cargo fue porque le faltaban $4.",
+    "Each fee is the same, whatever the amount.": "Cada cargo es igual, sin importar el monto.",
+    "A fictional day of checking activity with three overdraft fees":
+        "Un día ficticio de movimientos en la cuenta de cheques, con tres cargos por sobregiro",
+    ("Starting balance $20. Lunch $18 leaves $2. Coffee $6 leaves minus $4, and a $35 overdraft fee makes it "
+     "minus $39. A $9 movie rental makes it minus $48, and another $35 fee minus $83. Gas $30 makes it minus $113, "
+     "and a third $35 fee minus $148. You owe the bank $148: the $43 you didn't have, plus $105 in fees. The first "
+     "fee was for being $4 short."):
+        ("Saldo inicial de $20. Un almuerzo de $18 deja $2. Un café de $6 deja menos $4, y un cargo por sobregiro de "
+         "$35 lo lleva a menos $39. Una renta de película de $9 lo lleva a menos $48, y otro cargo de $35 a menos $83. "
+         "Gasolina por $30 lo lleva a menos $113, y un tercer cargo de $35 a menos $148. Le debe al banco $148: los $43 "
+         "que no tenía, más $105 en cargos. El primer cargo fue porque le faltaban $4."),
+    # overdraft-opt-in
+    "Settings": "Configuración", "Overdraft coverage for debit card": "Cobertura de sobregiro para",
+    "and ATM transactions": "tarjeta de débito y cajeros", "Off": "No", "OFF": "NO", "ON": "SÍ",
+    "Not enough money? The purchase": "¿No le alcanza? La compra",
+    "is declined. No fee.": "se rechaza. Sin cargo.",
+    "The bank may pay it and charge an": "El banco puede pagarla y cobrarle",
+    "overdraft fee, often $35.": "un cargo por sobregiro, a menudo $35.",
+    "Checks and automatic bill payments aren't": "Los cheques y los pagos automáticos",
+    "covered by this switch.": "no dependen de este interruptor.",
+    "A fictional bank-app setting for overdraft coverage, switched off":
+        "Un ajuste ficticio de cobertura de sobregiro en la aplicación de un banco, desactivado",
+    ("A settings screen with the switch for overdraft coverage on debit card and ATM transactions turned off. "
+     "Off: if there isn't enough money, the purchase is declined, with no fee. On: the bank may pay it and charge "
+     "an overdraft fee, often $35. Checks and automatic bill payments aren't covered by this switch."):
+        ("Una pantalla de configuración con el interruptor de cobertura de sobregiro para tarjeta de débito y cajeros "
+         "automáticos desactivado. No: si no hay suficiente dinero, la compra se rechaza, sin cargo. Sí: el banco puede "
+         "pagarla y cobrarle un cargo por sobregiro, a menudo $35. Los cheques y los pagos automáticos no dependen de "
+         "este interruptor."),
+})
+SPANISH = (overdraft_statement, overdraft_optin)
+
+
 for fn in (credit_score_factors, overdraft_statement, overdraft_optin, card_minimum_box, card_three_ways, bnpl_calendar,
            payday_treadmill, cash_advance_timelines, car_balances, car_price_tag, rto_price_tag, rto_three_laptops,
            subs_statement, finfluencer_post, one_percent_curve, two_savers, pay_stub, student_balance, worry_ad,
-           four_borrowers):
+           four_borrowers, betting_cost, gig_payouts, scam_texts, cosigner_notice):
     fn()
+
+LANG = "es"
+for fn in SPANISH:
+    fn()
+LANG = "en"

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 280" role="img" aria-labelledby="betting-cost-t betting-cost-d"><title id="betting-cost-t">What $20 a day of betting costs in a year</title><desc id="betting-cost-d">Expected loss on $7,300 of bets, winning half of them. One game at a time at standard minus 110 odds, about 4.5 cents per dollar: about $330. All bets at the 2025 average, about 10 cents per dollar: about $740. Four-pick parlays, about 17 cents per dollar: about $1,240. These are averages; in any one year some bettors come out ahead and many lose more, and the more you bet, the closer your results get to the average.</desc>
+<text x="0" y="16" class="h">What $20 a day of betting costs in a year</text>
+<text x="0" y="36" class="s i2">Expected loss on $7,300 of bets, winning half of them</text>
+<text x="0" y="68" class="m">One game at a time, at −110</text>
+<text x="360" y="68" text-anchor="end" class="s i2">4.5¢ per $1</text>
+<rect x="0" y="76" width="76.5742" height="18" rx="2" class="teal-fill"/>
+<text x="82.5742" y="90" class="s b">$330</text>
+<text x="0" y="126" class="m">All bets, 2025 average</text>
+<text x="360" y="126" text-anchor="end" class="s i2">about 10¢ per $1</text>
+<rect x="0" y="134" width="171.139" height="18" rx="2" class="teal-fill"/>
+<text x="177.139" y="148" class="s b">$740</text>
+<text x="0" y="184" class="m">Four-pick parlays</text>
+<text x="360" y="184" text-anchor="end" class="s i2">17¢ per $1</text>
+<rect x="0" y="192" width="286" height="18" rx="2" class="teal-fill"/>
+<text x="292" y="206" class="s b">$1,240</text>
+<text x="0" y="240" class="xs i2">These are averages. In any one year some bettors come</text>
+<text x="0" y="256" class="xs i2">out ahead and many lose more; the more you bet, the</text>
+<text x="0" y="272" class="xs i2">closer your results get to the average.</text>
+</svg>
