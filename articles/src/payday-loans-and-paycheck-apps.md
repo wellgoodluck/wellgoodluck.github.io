@@ -34,6 +34,8 @@ After ten weeks, you've paid $225 in fees to borrow $300. The annual percentage 
 
 For comparison, the average credit card APR is about 22%, and a credit card cash advance ([how cash advances work](credit-card-cash-advances.html)) usually runs under 30%, plus a fee.
 
+[What a Payment Plan Really Costs](../tools/payment-plan-cost.html#k=payday) turns any loan fee into the yearly rate it works out to.
+
 ## How to avoid it
 
 **Call the people you owe first.** Many landlords, utilities and medical offices will set up a payment plan or push back a due date if you ask before it's late. That costs nothing.

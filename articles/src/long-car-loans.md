@@ -38,6 +38,8 @@ The seven-year loan saves $164 a month and costs $2,745 more in interest. After 
 
 Now suppose you trade that car in early and roll $6,884 of negative equity, the average for underwater trade-ins in the second quarter of this year, into a new loan. [Edmunds found buyers who did that](https://www.edmunds.com/press/q2-new-vehicle-purchases-with-negative-equity-trade-ins-hit-record-monthly-payments-and-interest-costs-edmunds-reports.html) had an average payment of $944 a month, compared with $777 for new-car buyers overall, and were projected to pay $16,270 in interest over the loan, compared with $9,811.
 
+[What a Car Loan Costs, by Length](../tools/car-loan-length.html) puts your own price and rate through the same comparison.
+
 ## How to avoid it
 
 **Shop the total price and the loan separately.** Get a loan offer from a credit union or bank before you visit the dealer. Then negotiate the car's price as if you're paying cash.

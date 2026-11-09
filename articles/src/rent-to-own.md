@@ -34,6 +34,8 @@ You'd pay about three times the retail price, enough to buy the same laptop thre
 
 {{illustration name=rto-three-laptops caption="The full rent-to-own price of one laptop would buy three at retail."}}
 
+[What a Payment Plan Really Costs](../tools/payment-plan-cost.html#k=rto) adds up any rent-to-own offer and shows the yearly rate it works out to.
+
 ## How to avoid it
 
 **Always multiply.** Payment amount times number of payments. Compare that number with the retail price online before you sign anything.

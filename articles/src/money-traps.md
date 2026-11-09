@@ -45,6 +45,15 @@ Each page also has a picture drawn for the site. The statements, pay stubs and p
 - [Investing Tips From Your Feed](finfluencers-and-investment-scams.html): finfluencers, hype, and the warning signs of a scam.
 - [The Free Money You Leave on the Table](employer-retirement-match.html): your employer's retirement match, and why starting early matters even more.
 
+## Tools for this series
+
+Four of the worked examples come with a tool that runs the same math on your own figures. Nothing you type is saved or sent anywhere.
+
+- [How Long Will It Take to Pay Off a Card?](/tools/card-payoff.html): payoff time and interest, against paying only the minimum.
+- [What a Car Loan Costs, by Length](/tools/car-loan-length.html): the payment, the interest and what you'd still owe, for four loan lengths.
+- [What a Payment Plan Really Costs](/tools/payment-plan-cost.html): rent-to-own, payday loans and pay in 4, as a total and a yearly rate.
+- [Are You Getting the Full Match?](/tools/employer-match.html): the match you get, the match you leave behind, and what it could grow to.
+
 ## For teachers
 
 Each page stands on its own and takes about five minutes to read. The series box at the top of each page gives a suggested reading order, but the pages can be taught in any order. The writing and pictures are free to reuse with credit under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); the figures on each page link to their sources.

@@ -451,6 +451,14 @@ h1, h2, h3, h4, .dek { text-wrap: balance; }
 .ku .rb-res dt .ku-sub { display: block; margin-top: 1px; font-size: 13.5px; color: var(--ink-2); }
 .ku .ku-share { margin: 16px 0 0; }
 .ku .ku-copied { margin: 6px 0 0; font-size: 14px; overflow-wrap: anywhere; }
+/* Nov 9: the Money Traps tools (.mt, assets/moneytools.js) reuse the calculator box and .ku's layout; the car loan table fits 320px phones */
+.mt .ku-kinds { margin-top: 2px; }
+.mt .rb-pair { margin-bottom: 0; }
+.mt .rb-warn { margin: 0 0 10px; }
+.mt .rb-pair { align-items: end; }   /* boxes line up when one label wraps and the other doesn't */
+.mt .rb-err + .rb-dnote { margin-top: 10px; }
+@media (max-width: 359px) { .mt .ku-kinds { display: grid; grid-template-columns: 1fr 1fr; } .mt .ku-kinds button + button { border-left: 0; } .mt .ku-kinds button:nth-child(even) { border-left: 1px solid var(--hairline); } .mt .ku-kinds button:nth-child(n+3) { border-top: 1px solid var(--hairline); } }   /* the four plan kinds as two rows on the smallest phones */
+@media (max-width: 360px) { .mt .rb-t th, .mt .rb-t td { padding-left: 6px; } }
 .article .tools-list { margin: 8px 0 0; padding: 0; list-style: none; }
 .article .tools-list li { margin: 0; padding: 4px 0 14px; border-bottom: 1px solid var(--hairline); }
 .article .tools-list li:first-child { border-top: 1px solid var(--hairline); }

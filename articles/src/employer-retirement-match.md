@@ -51,6 +51,8 @@ Ten extra years of contributions, $40,500 in all, nearly double the result. In f
 
 These examples assume a flat salary and a steady 6% return. Real returns go up and down from year to year, nobody can promise any rate, and in practice salaries and contributions usually rise over a career. The point is the shape, not the exact numbers: early dollars have the most time to grow.
 
+[Are You Getting the Full Match?](../tools/employer-match.html) checks your own pay and your plan's formula.
+
 ## How to avoid it
 
 **Find your match formula.** It's in your benefits materials or on your plan's website. Look for "matches X% of contributions up to Y% of pay."
