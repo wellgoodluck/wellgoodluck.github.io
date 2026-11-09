@@ -342,7 +342,7 @@ TILES = [
         "freq": "m",
         "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": True,
                     "unit": "percent, year over year", "clip": [-25, 35]},
-        "note": "Census Bureau retail and food services sales, adjusted for inflation by the St. Louis Fed using the CPI, seasonally adjusted. Retail is about a third of what households spend; services such as rent, health care and travel are not in it. The latest month is an advance estimate, revised twice.",
+        "note": "Census Bureau retail and food services sales, adjusted for inflation by the St. Louis Fed using the CPI, seasonally adjusted. Retail and food services sales equal about two-fifths of consumer spending by dollars, though the two don't line up exactly; services such as rent, health care and travel are not in it. The latest month is an advance estimate, revised twice.",
     },
     {
         "id": "productivity_growth",
@@ -459,7 +459,7 @@ TILES = [
         "freq": "q",
         "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": False,
                     "unit": "percent of disposable income"},
-        "note": "Required principal and interest on mortgages and consumer loans, against disposable personal income, seasonally adjusted. An estimate; the Federal Reserve revised the method in 2023 and now publishes it only from 2005, so its history is short.",
+        "note": "Required principal and interest on mortgages and consumer loans, against disposable personal income, seasonally adjusted. An estimate; the Federal Reserve moved it to a method built on credit bureau records with its 2024 releases and now publishes it only from 2005, so its history is short.",
     },
     {
         "id": "median_income",

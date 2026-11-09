@@ -3,6 +3,8 @@ title: Tariffs, and Who Pays
 dek: A tariff is collected from the American company that imports the goods. Who ends up paying it, that company, its customers or the foreign seller, depends on who can walk away, and the evidence from 2018 and 2025 points mostly in one direction.
 date: 2026-10-29
 kind: concept
+explains: effective_tariff
+explains_hook: what was actually collected, and who ends up paying
 label: Tariffs
 hook: who writes the check, and who ends up paying
 order: 7

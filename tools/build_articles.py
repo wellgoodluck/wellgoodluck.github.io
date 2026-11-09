@@ -1158,6 +1158,15 @@ def write_explainers(out_root, articles):
             continue
         for tid in tile_ids(a):
             ex[tid] = {"url": f"articles/{a['slug']}.html", "title": a["title"], "hook": a.get("hook", "")}
+    # explains: (Nov 9) links a tile to an article without a tile: line, so the article keeps its place on the index
+    # (an idea page stays under The ideas, a timely piece under Latest). A tile: line elsewhere wins. explains_hook:
+    # is the link text when the article's own hook doesn't fit the tile, or it has none.
+    for a in articles:
+        if a.get("kind") == "page":
+            continue
+        for tid in [x.strip() for x in a.get("explains", "").split(",") if x.strip()]:
+            ex.setdefault(tid, {"url": f"articles/{a['slug']}.html", "title": a["title"],
+                                "hook": a.get("explains_hook") or a.get("hook", "")})
     feat, nxt = featured_pick(articles)
     if feat and feat.get("kind") == "series":
         url = f"articles/{feat.get('landing') or feat['parts'][0]['slug']}.html"

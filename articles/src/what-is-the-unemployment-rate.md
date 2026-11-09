@@ -4,7 +4,7 @@ dek: A headcount of people looking for work, taken from 60,000 households. It is
 date: 2026-10-28
 updated: 2026-10-29
 kind: concept
-tile: unemployment
+tile: unemployment, prime_age_employment
 label: Unemployment rate
 hook: who it doesn't count
 ---

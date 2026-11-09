@@ -5,6 +5,8 @@ date: 2026-10-28
 updated: 2026-10-30
 kind: concept
 tile: deficit, debt
+explains: interest_share
+explains_hook: what interest on the debt costs, and why it lags rates
 label: The deficit and the debt
 hook: this year's borrowing versus all the years added up
 ---

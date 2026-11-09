@@ -1213,7 +1213,41 @@ def fig_chicken_rank(D):
     return _grocery_rank(D, "chicken")
 
 
+
+def _yoy_words(D, sid):
+    """A tile shown as the change from a year ago, in words: "up 1.5%", "down 5.0%", "about unchanged" (Nov 9:
+    four prices inside inflation, retail sales). Rounds to one decimal first, so "up 0.0%" can't happen."""
+    v = round(D.get(sid)["obs"][-1][1], 1)
+    if v > 0:
+        return f"up {v:.1f}%", []
+    if v < 0:
+        return f"down {abs(v):.1f}%", []
+    return "about unchanged", []
+
+
+def fig_used_cars_yoy(D):
+    return _yoy_words(D, "used_cars")
+
+
+def fig_car_insurance_yoy(D):
+    return _yoy_words(D, "car_insurance")
+
+
+def fig_medical_care_yoy(D):
+    return _yoy_words(D, "medical_care")
+
+
+def fig_child_care_yoy(D):
+    return _yoy_words(D, "child_care")
+
+
+def fig_real_retail_yoy(D):
+    return _yoy_words(D, "real_retail")
+
+
 FIGS = {
+    "used_cars_yoy": fig_used_cars_yoy, "car_insurance_yoy": fig_car_insurance_yoy, "medical_care_yoy": fig_medical_care_yoy,
+    "child_care_yoy": fig_child_care_yoy, "real_retail_yoy": fig_real_retail_yoy,
     "claims_low": fig_claims_low,
     "continuing_claims": fig_continuing_claims,
     "pension_3000_2019": fig_pension_3000_2019,

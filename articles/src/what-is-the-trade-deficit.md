@@ -4,6 +4,8 @@ dek: The country buys more from abroad than it sells, and has every year since 1
 date: 2026-10-28
 kind: concept
 tile: trade
+explains: dollar
+explains_hook: what a stronger dollar does to imports and exports
 label: Trade deficit
 hook: why it isn't a score
 ---

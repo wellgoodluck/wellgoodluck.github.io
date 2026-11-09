@@ -3,6 +3,7 @@ title: What a Recession Is, and Why Nobody Can Tell You When One Starts
 dek: The official call comes from a committee of economists, months after the fact, and "two quarters of falling GDP" is a rule of thumb it doesn't use. Before the call there are warning lights. Since 2022 all three have gone off, and no recession followed.
 date: 2026-10-29
 kind: concept
+explains: sahm_rule
 label: Recessions
 hook: who calls one, and the warning lights before the call
 order: 8

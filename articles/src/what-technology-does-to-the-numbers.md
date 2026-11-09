@@ -3,6 +3,8 @@ title: What Technology Does to the Numbers, and When
 dek: Steam, electricity, computers and now AI have all arrived the same way: a surge of investment, a long wait, and then a productivity line that moves. The wait is the part nobody prices in.
 date: 2026-10-28
 updated: 2026-11-09
+explains: productivity_growth
+explains_hook: why output per hour is where a new technology finally shows
 ---
 
 ## The pattern
