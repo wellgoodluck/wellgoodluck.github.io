@@ -26,6 +26,8 @@ Social Security rises once a year by a cost-of-living adjustment computed from a
 
 From 2019 to 2026 the adjustments added up to about 29%. Over roughly the same stretch, rent in the price index rose about {{fig rent_since_2019 else="36%"}} through {{fig rent_month else="September 2026"}} ([CUSR0000SEHA](https://fred.stlouisfed.org/series/CUSR0000SEHA)). The 3.6% adjustment paid from January 2027 brings benefits to about 33.5% above 2019, still short. {{check fig:rent_since_2019_pct > 34 "rent since 2019 above Social Security's adjustments through January 2027 (33.5%); if not, rewrite this paragraph"}} {{due 2027-10-15 "SSA announces the 2028 COLA: update the cumulative 29% / 33.5% figures"}} [You're retired on a fixed income](you-are-retired-on-a-fixed-income.html) explains how the adjustment is computed and why it arrives a year late.
 
+{{chart id=rent range=10y ov=rent_2019,ss_benefit_2019,prices_2019_rent height=720 caption="Rent as a change from a year ago (top); below, rent, a Social Security benefit raised only by its cost-of-living adjustments, and prices overall, each with its 2019 average set to 100. The benefit steps up each January and catches rent briefly; rent has stayed above it since March 2023. Medicare premiums taken out of the check are not subtracted."}}
+
 Older renters feel housing costs far more than older homeowners, many of whom have paid off their mortgages. Harvard's Joint Center for Housing Studies, using the Census Bureau's 2024 American Community Survey, found that 58% of renters 65 and older spent more than 30% of their income on housing, and more than 60% of renters 80 and older did.
 
 ## The paperwork wall
