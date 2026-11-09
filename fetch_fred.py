@@ -1150,6 +1150,19 @@ COMPANIONS = [
     {"id": "home_price_level", "label": "FHFA purchase-only house price index, level", "for": [], "series": "HPIPONM226S",
      "params": {"observation_start": "1991-01-01"}, "freq": "m",
      "why": "Used for home prices since 2019 on the home prices tile (Nov 6), and for home prices as reported and as an index on its chart page."},
+    # Not seasonally adjusted levels for the "Has It Kept Up With Prices?" tool (Nov 8): BLS's own CPI Inflation
+    # Calculator and BLS annual averages use the not seasonally adjusted CPI-U, these figures are never revised (seasonal
+    # factors are, every February), and they reach back further. BLS series, all tagged Public Domain: Citation Requested
+    # on FRED (checked Nov 8, 2026). Offered on no chart; read only by tools/build_articles.py for data/tool-prices.json.
+    {"id": "cpi_nsa", "label": "CPI-U, all items, U.S. city average, not seasonally adjusted, index", "for": [],
+     "series": "CPIAUCNS", "params": {"observation_start": "1913-01-01"}, "freq": "m",
+     "why": "Prices in the Has It Kept Up With Prices? tool."},
+    {"id": "rent_nsa", "label": "CPI-U, rent of primary residence, not seasonally adjusted, index", "for": [],
+     "series": "CUUR0000SEHA", "params": {"observation_start": "1914-12-01"}, "freq": "m",
+     "why": "Rent in the Has It Kept Up With Prices? tool."},
+    {"id": "pay_nsa", "label": "Average hourly earnings, production and nonsupervisory workers, not seasonally adjusted, dollars",
+     "for": [], "series": "CEU0500000008", "params": {"observation_start": "1964-01-01"}, "freq": "m",
+     "why": "Pay in the Has It Kept Up With Prices? tool."},
     # Levels kept only for "Show it as" on the chart pages (chart.html SHOW_AS), offered as no companion line (Nov 6):
     # each tile's own form is a change, and these are the levels it is the change of. BLS and BEA series, all tagged
     # Public Domain: Citation Requested on FRED (checked Nov 6, 2026).
