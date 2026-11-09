@@ -115,6 +115,7 @@
   .site-menu a { display: inline-flex; align-items: center; min-height: 44px; color: var(--nav); font-size: 15px; font-weight: 600; text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 5px; white-space: nowrap; }
   .site-menu a:hover { color: var(--ink); text-decoration-color: var(--ink); }
   .site-menu a[aria-current] { color: var(--ink); }
+  @media (max-width: 899px) { .site-menu a.m-wide { display: none; } }   /* Nov 8: Tools only where five items fit on one row */
   .masthead h1 a.home { color: inherit; text-decoration: none; display: inherit; align-items: inherit; }   /* in the full view the lockup leads home */
   /* the latest readings as plain HTML, written at build time; the script replaces them with the tiles */
   .static-figures { padding: 0 0 24px; max-width: 46em; }
@@ -544,6 +545,11 @@
   .explainer { margin: 8px 0 0; font-size: 13.5px; }
   .explainer a { color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--hairline); }
   .explainer a:hover { color: var(--ink); border-color: var(--ink); }
+  @media (max-width: 760px) {   /* Nov 8: 44px tap boxes for the stacked tile links and the card's links */
+    .explainer { margin: 0; }
+    .explainer a { display: block; padding: 12px 0; border-bottom: 0; text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 4px; }
+    .chart-try .fhow a { display: inline-block; padding: 12px 0; }
+  }
 
   /* Chart ----------------------------------------------------------------- */
   .chart-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin: 18px 0 4px; }
@@ -631,7 +637,7 @@
 
 <header class="masthead" id="top">
   <div class="wrap">
-    <div class="title-row"><h1 class="brand" id="brand"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M25 14H15V50H25"/><path d="M39 14H49V50H39"/><circle cx="32" cy="32" r="8.5"/></svg><span>Economy <span class="bl">in Context</span><span aria-hidden="true">.</span></span></h1><nav class="site-menu" aria-label="Site"><a href="?view=all" id="menu-numbers">The numbers</a><a href="./#your-situation">Your situation</a><a href="articles/">Articles</a><a href="articles/about.html">About</a></nav></div>
+    <div class="title-row"><h1 class="brand" id="brand"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M25 14H15V50H25"/><path d="M39 14H49V50H39"/><circle cx="32" cy="32" r="8.5"/></svg><span>Economy <span class="bl">in Context</span><span aria-hidden="true">.</span></span></h1><nav class="site-menu" aria-label="Site"><a href="?view=all" id="menu-numbers">The numbers</a><a href="./#your-situation">Your situation</a><a href="tools/" class="m-wide">Tools</a><a href="articles/">Articles</a><a href="articles/about.html">About</a></nav></div>
     <p class="tagline">The main numbers on the U.S. economy, each shown against its own history.</p>
     <p class="updated full-only" id="updated"></p>
     <p class="coming full-only" id="coming" hidden></p>
@@ -672,7 +678,7 @@
 
 <footer class="wrap home-foot home-only" id="home-foot">
   <div class="frel" id="frel" hidden></div>
-  <p class="links"><a href="articles/how-this-site-is-paid-for.html">How this site is paid for</a><span class="sep" aria-hidden="true">·</span><a href="articles/about.html">About this site</a></p>
+  <p class="links"><a href="tools/">Tools</a><span class="sep" aria-hidden="true">·</span><a href="articles/how-this-site-is-paid-for.html">How this site is paid for</a><span class="sep" aria-hidden="true">·</span><a href="articles/about.html">About this site</a></p>
   <p class="lic">Charts and writing are free to reuse under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Data is credited to its agency on every chart.</p>
 </footer>
 <footer class="about full-only">
@@ -1237,6 +1243,9 @@
     if (t.household && t.household.text) top.appendChild(el('p', { class: 'household', text: t.household.text }));
     const ex = (data.explainers || {})[t.id];
     if (ex) top.appendChild(el('p', { class: 'explainer' }, [el('a', { href: ex.url, text: 'In plain words: ' + (ex.hook || ex.title) + ' →' })]));
+    // Nov 8: the tiles a tool answers link to it, opening the tool on the matching kind (#k=…; read by assets/keptup.js)
+    const TOOL_LINK = { pay: ['pay', 'Check your own pay against prices'], cpi: ['other', 'What an amount from another year is worth now'], rent: ['rent', 'Check your own rent against prices'] };
+    if (TOOL_LINK[t.id]) top.appendChild(el('p', { class: 'explainer' }, [el('a', { href: 'tools/kept-up.html#k=' + TOOL_LINK[t.id][0], text: TOOL_LINK[t.id][1] + ' →' })]));
 
     mid.appendChild(buildChart(t, data.recessions, wide));
 
@@ -1533,7 +1542,8 @@
     if (cp && cp.text && cp.url) {
       const text = el('div', { class: 'ctext' },
         [el('span', { class: 'flabel', text: 'Make your own chart' }), el('a', { class: 'ftitle', href: cp.url, text: cp.title || cp.link || 'See the chart' }), ' →',
-         el('p', { class: 'fdek', text: cp.text }), el('p', { class: 'fhow', text: MAKE_YOUR_OWN })]);
+         el('p', { class: 'fdek', text: cp.text }), el('p', { class: 'fhow', text: MAKE_YOUR_OWN }),
+         el('p', { class: 'fhow' }, ['More tools: ', el('a', { href: 'tools/kept-up.html', text: 'Has It Kept Up With Prices?' }), ' · ', el('a', { href: 'tools/', text: 'All tools' })])]);   // Nov 8
       const thumb = pic(cp.svg, cp.url);
       lead.push(el('aside', { class: 'chart-try', 'aria-label': 'Make your own chart' }, thumb ? [text, thumb] : [text]));
     }

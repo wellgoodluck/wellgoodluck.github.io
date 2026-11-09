@@ -25,6 +25,8 @@ What that average hides is the spread. Through 2023 the lowest-paid quarter of w
 
 {{chart id=cpi range=10y ov=wages,real_wages,cpi_rent caption="Inflation, wage growth, and the difference between them (real wage growth), with the rent line for comparison. Where the real line is below zero, the typical paycheck bought less than a year earlier."}}
 
+[Has It Kept Up With Prices?](../tools/kept-up.html#k=pay) puts your own pay next to the same price figures.
+
 ## The unemployment rate is your leverage
 
 When the rate is low, employers compete for workers; when it is high, workers compete for jobs. The clearest evidence is what happens to people who switch: in 2022, with unemployment at 3.5%, job-switchers got raises about two points larger than people who stayed, and the share of workers quitting hit a record. From mid-2024 to mid-2025, with the rate near 4.2% and hiring at its slowest pace outside a recession in more than a decade, the switcher premium closed entirely; it has since reopened to about its 2019 size, but in {{v quits_rate period else="August 2026"}} {{fig quits_vs_2019 else="about a fifth fewer workers quit than in a typical month of 2019"}}. Nothing about the rate itself changed much. What changed was how easy it was to leave.

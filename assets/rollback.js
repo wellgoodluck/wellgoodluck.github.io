@@ -257,16 +257,16 @@
     place();
   }
   function announce(t) { clearTimeout(timer); timer = setTimeout(function () { $("rb-live").textContent = t; }, 700); }
-  /* Show the summary while the calculator's top is well on screen and its first result isn't yet. */
+  /* Show the summary while the calculator's top is well on screen and its results are below the bar. */
   var queued = false;
   function place() {
     if (queued) return; queued = true;
     requestAnimationFrame(function () {
       queued = false;
-      var H = window.innerHeight, top = $("rb-h").getBoundingClientRect().top,
-          fig = !$("rb-unk").hidden ? $("rb-tb").querySelector("tr") : $("rb-a"),
-          figTop = fig ? fig.getBoundingClientRect().top : -1;
-      $("rb-sum").classList.toggle("off", !(top < H - 90 && figTop > H - 64));
+      /* shown only while the bar is stuck to the bottom of the screen, i.e. while the results are below it (Nov 8: it
+         could float mid-screen for a short stretch of scrolling) */
+      var H = window.innerHeight, top = $("rb-h").getBoundingClientRect().top, stuck = $("rb-sum").parentNode.getBoundingClientRect().top >= H - 1;
+      $("rb-sum").classList.toggle("off", !(top < H - 90 && stuck));
     });
   }
   window.addEventListener("scroll", place, { passive: true });

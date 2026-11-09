@@ -27,6 +27,8 @@ Two other things about the formula. The index is for wage earners, who spend les
 
 {{chart id=cpi range=10y ov=price_level,fed_target height=720 caption="Inflation (top) and the price level (below, 2019 = 100). A pension without a COLA is a horizontal line on the lower chart; Social Security steps up each January to roughly where the line was the previous autumn."}}
 
+[Has It Kept Up With Prices?](../tools/kept-up.html#k=benefit) puts your own pension or other benefit next to the same price figures.
+
 ## The Fed, through your cash
 
 Savings accounts, money market funds and short-term Treasury bills follow the Fed funds rate within days of a decision, in both directions. From 2009 to 2015 and again in 2020–21, cash earned nothing while prices rose; from 2023 on it has earned a real return for the first time since 2007. The Fed's September 2026 hike, its only one this year, raised it again. That makes the Fed's decisions the most immediate number on this page for anyone holding cash, with one caveat: the large traditional banks barely passed the increases on, and the gap between an account paying 0.01% and one paying near the Fed funds rate is a choice of bank, not a market condition. [The Fed funds rate](what-is-the-fed-funds-rate.html) has the order in which everything else follows. {{check real_fed_funds.value > 0 "cash earns a real return"}} {{due 2026-12-10 "FOMC decision of December 9: 'its only one this year'"}}

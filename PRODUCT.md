@@ -40,6 +40,7 @@ Success is a reader who leaves able to place the number they came with, and who 
 - Changes reach the site through manual uploads to the repository; there is no automated deploy from an assistant.
 - The site is published without a byline under its own identity. Nothing on it may identify the person who runs it: no personal accounts, no career or local detail, no links to personal profiles.
 - Page views are counted without cookies (GoatCounter); the privacy wording on the site must change if counting changes.
+- Tools (Nov 8, at /tools/) may take a reader's own figures when they ask for raw figures and do the math, give estimates and never advice, keep everything in the page (nothing stored or sent; nothing in the address bar unless the reader asks for a link, and then only after "#"), and show their method with every outside number linked to its source. Results are plain sentences from fixed templates; example figures follow the national data, so an example never shows a gain or loss the data don't.
 - The weekly email (Nov 4) is opt-in and sent through Buttondown (newsletter EconomyInContext), which keeps the addresses; no open or click tracking, no UTM tags on links. The footers and How This Site Is Paid For say so; change them if any of that changes.
 
 ## Brand Commitments

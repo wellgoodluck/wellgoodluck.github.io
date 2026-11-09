@@ -29,6 +29,8 @@ The index has a second housing line, "owners' equivalent rent," an estimate of w
 
 {{chart id=cpi range=10y ov=cpi_rent,cpi_shelter,wages caption="Headline inflation with the rent line and the full shelter line (rent plus owners' equivalent rent) beside it, and wage growth for comparison. Rent peaked a year after asking rents did, and came down a year after them too."}}
 
+[Has It Kept Up With Prices?](../tools/kept-up.html#k=rent) puts your own rent next to the same price figures.
+
 ## Mortgage rates, though you don't have one
 
 Two ways. First, who is in the market with you. When mortgage rates doubled in 2022, the people who would have bought their first home stayed renters, and first-time buyers' share of purchases fell to its lowest on record. Those households are competing for the same apartments you are. Second, who leaves. Owners holding 3% mortgages don't sell, which keeps the ownership door narrow and the rental market full. Neither effect shows up in the rent index for a year, but both are visible in [the mortgage rate](what-is-the-mortgage-rate.html) today, which is why it is worth a renter's attention.

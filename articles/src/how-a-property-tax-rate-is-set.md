@@ -53,7 +53,7 @@ Three homes, each taxed on $200,000 last year. The rollback rate keeps the town'
 At the rollback rate the town collects the same from existing property, but the burden moves toward the homes and businesses that gained the most. That's why a homeowner can see a higher bill in a year when the council "rolled back" its rate, and why a neighbor's bill can fall in the same year. It is also why assessment caps, covered in part two, exist: they limit how fast one home's taxable value can rise, which a rollback rate doesn't do.
 
 <div class="rb-mount" id="try-it"><p class="rb-noscript">The calculator for this section, "Try it with your own bill," needs JavaScript. The table above shows the same arithmetic for three homes.</p></div>
-<script src="../assets/rollback.js?v=20261108b"></script>
+<script src="../assets/rollback.js?v=20261108c"></script>
 
 ## When only part of the town is revalued
 

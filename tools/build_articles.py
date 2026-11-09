@@ -589,16 +589,19 @@ HEAD = """<!doctype html>
 </header>
 """
 
-# The site menu (Batch B, Nov 6), the same as the home page's and the chart pages': The numbers, Your situation, Articles,
-# About. `here` names the item for the page (aria-current="page") or the part of the site it belongs to (aria-current="true").
+# The site menu (Batch B, Nov 6), the same as the home page's and the chart pages': The numbers, Your situation, Tools,
+# Articles, About. `here` names the item for the page (aria-current="page") or the part of the site it belongs to
+# (aria-current="true"). Tools (Nov 8) carries class m-wide: shown at 900px and wider only, where five items fit on one row
+# in the home page's masthead; phones reach Tools from footers, the home page card, tiles and the household pages.
 MENU = [("numbers", "/?view=all", "The numbers"), ("situation", "/#your-situation", "Your situation"),
-        ("articles", "/articles/", "Articles"), ("about", "/articles/about.html", "About")]
+        ("tools", "/tools/", "Tools"), ("articles", "/articles/", "Articles"), ("about", "/articles/about.html", "About")]
 
 
 def site_menu(here=None, page=False):
     cur = ' aria-current="page"' if page else ' aria-current="true"'
     return ('<nav class="site-menu" aria-label="Site">'
-            + "".join(f'<a href="{u}"{cur if k == here else ""}>{t}</a>' for k, u, t in MENU) + "</nav>")
+            + "".join(f'<a href="{u}"{' class="m-wide"' if k == "tools" else ""}{cur if k == here else ""}>{t}</a>'
+                      for k, u, t in MENU) + "</nav>")
 
 
 def menu_for(a):
@@ -606,6 +609,8 @@ def menu_for(a):
     household paths, Articles for the rest."""
     if a["slug"] == "about":
         return site_menu("about", page=True)
+    if a.get("kind") == "tool":
+        return site_menu("tools", page=a.get("out") == "index")
     if a.get("kind") == "page":
         return site_menu("about")
     if a.get("kind") == "path":
@@ -634,6 +639,7 @@ FOOT = """
     <p>Articles on this site aim to lay out what the figures show, what is settled, what is argued about and by whom. Every number links to its source where one exists, and corrections are noted on the article. The charts are live from the almanac and update as agencies publish.</p>
     <p class="reuse">Free to reuse with credit: Economy in Context (economyincontext.org). The charts and writing here are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Credit the data to its source, named on each chart.</p>
     <p>This site has no ads and no agenda beyond putting the numbers in context. It sets no cookies and keeps nothing that identifies you; it does count page views. The optional weekly email is sent through Buttondown, which keeps the addresses for that and nothing else. It is paid for by the person who runs it, out of pocket; <a href="how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+    <p class="about-link"><a href="/tools/">Tools: put your own figures next to the national numbers →</a></p>
     <p class="about-link"><a href="about.html">About this site, how it works, and every correction →</a></p>
   </div>
 </footer>
@@ -676,6 +682,88 @@ def render_article(a):
         page += '<script src="../assets/tables.js' + asset_stamp("assets/tables.js") + '"></script>\n'
     page += FOOT
     return clean_chart_links(page, CHART_IDS) if clean_chart_links else page
+
+
+# ---------------------------------------------------------------------------
+# Tools (Nov 8): reader tools at /tools/, from articles/src files with `kind: tool` (`out: index` for the Tools page
+# itself). Built like an article but with no dateline, digest line or series box, left out of the articles index, the
+# feed and the series, and listed in the sitemap. A tool page sits one folder down like an article, so ../assets works;
+# relative links meant for /articles/ (the footer's, and the body's) are pointed there. Links that must stay put are
+# written root-relative (/tools/…, /chart/, /data/…). The repo's tools/ folder is these build scripts, never published.
+# ---------------------------------------------------------------------------
+_REL_HREF = re.compile(r'href="(?!(?:/|#|https?:|mailto:|\.\./))([^"]+)"')
+
+
+def tool_name(a):
+    return a.get("out") or a["slug"]
+
+
+def render_tool(a):
+    desc = html.escape(a.get("dek", a["title"]), quote=True)
+    name = tool_name(a)
+    canonical = f"{SITE}/tools/" if name == "index" else f"{SITE}/tools/{name}.html"
+    page = HEAD.format(title=html.escape(a["title"]), desc=desc, canonical=canonical, css_v=asset_stamp("assets/site.css"), menu=menu_for(a))
+    page += '<main class="wrap article tool-page">\n<article>\n'
+    page += f'<h1>{inline(a["title"])}</h1>\n'
+    if a.get("dek"):
+        page += f'<p class="dek">{inline(a["dek"])}</p>\n'
+    page += md_to_html(a["body"])
+    page += "\n</article>\n</main>\n"
+    if 'class="table-scroll"' in page:
+        page += '<script src="../assets/tables.js' + asset_stamp("assets/tables.js") + '"></script>\n'
+    page += FOOT
+    page = _REL_HREF.sub(lambda m: f'href="../articles/{m.group(1)}"', page)
+    return clean_chart_links(page, CHART_IDS) if clean_chart_links else page
+
+
+# The figures "Has It Kept Up With Prices?" reads (assets/keptup.js), as one small file: each series a start month and one
+# value per month (null for a month with no reading, such as October 2025 for most BLS series). The not seasonally
+# adjusted series are the ones BLS's own CPI calculator uses (fetch_fred.py *_nsa companions, Nov 8); if one is missing the
+# seasonally adjusted series stands in, labeled as such, and with neither the file isn't written (the tool says so).
+TOOL_SERIES = {
+    "cpi": [("cpi_nsa", "CPIAUCNS", "Consumer Price Index for All Urban Consumers, all items, U.S. city average, not seasonally adjusted"),
+            ("cpi_index", "CPIAUCSL", "Consumer Price Index for All Urban Consumers, all items, U.S. city average, seasonally adjusted")],
+    "pay": [("pay_nsa", "CEU0500000008", "Average hourly earnings, production and nonsupervisory workers, not seasonally adjusted"),
+            ("pay_level", "AHETPI", "Average hourly earnings, production and nonsupervisory workers, seasonally adjusted")],
+    "rent": [("rent_nsa", "CUUR0000SEHA", "Consumer Price Index, rent of primary residence, not seasonally adjusted"),
+             ("rent_level", "CUSR0000SEHA", "Consumer Price Index, rent of primary residence, seasonally adjusted")],
+}
+
+
+def write_tool_prices(out_root):
+    path = os.path.join("data", "companions.json")
+    try:
+        raw = json.load(open(path, encoding="utf-8"))
+    except Exception as e:                                      # noqa: BLE001
+        print(f"tools: WARNING data/tool-prices.json not written ({e})")
+        return
+    comp = raw.get("companions", raw)
+    by_id = comp if isinstance(comp, dict) else {c.get("id"): c for c in comp}
+    out = {"generated": raw.get("generated")}
+    for key, choices in TOOL_SERIES.items():
+        for cid, series, label in choices:
+            obs = (by_id.get(cid) or {}).get("observations") or []
+            if len(obs) < 24:
+                continue
+            vals = {o[0][:7]: o[1] for o in obs}
+            y, m = map(int, obs[0][0][:7].split("-"))
+            y1, m1 = map(int, obs[-1][0][:7].split("-"))
+            v = []
+            while (y, m) <= (y1, m1):
+                v.append(vals.get(f"{y:04d}-{m:02d}"))
+                m += 1
+                if m == 13:
+                    y, m = y + 1, 1
+            out[key] = {"series": series, "label": label, "start": obs[0][0][:7], "v": v,
+                        "url": f"https://fred.stlouisfed.org/series/{series}"}
+            break
+    if "cpi" not in out:
+        print("tools: WARNING no price series; data/tool-prices.json not written")
+        return
+    os.makedirs(os.path.join(out_root, "data"), exist_ok=True)
+    with open(os.path.join(out_root, "data", "tool-prices.json"), "w", encoding="utf-8") as f:
+        json.dump(out, f, separators=(",", ":"))
+    print("tools: data/tool-prices.json (" + ", ".join(f"{k} {out[k]['series']} from {out[k]['start']}" for k in TOOL_SERIES if k in out) + ")")
 
 
 # ---------------------------------------------------------------------------
@@ -1005,6 +1093,8 @@ def main():
                     a["body"] = re.sub(r"\s*\{\{\s*(?:check|due)\s+.*?\}\}", "", a["body"])
                     a["body"] = re.sub(r"\{\{\s*(?:v|fig)\s+.*?\}\}", "", a["body"])
                 articles.append(a)
+    tools = [a for a in articles if a.get("kind") == "tool"]            # Nov 8: built to /tools/, listed nowhere else
+    articles = [a for a in articles if a.get("kind") != "tool"]
     articles.sort(key=lambda a: a["date"], reverse=True)
     load_series(articles)
     fixes = collect_corrections(articles)                   # the About page's log: <!--corrections--> on a line of its own
@@ -1019,9 +1109,17 @@ def main():
     with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
         f.write(render_index(articles))
     print(f"built articles/index.html ({len(articles)} articles)")
+    if tools:
+        tools_dir = os.path.join(out_root, "tools")
+        os.makedirs(tools_dir, exist_ok=True)
+        for a in tools:
+            with open(os.path.join(tools_dir, tool_name(a) + ".html"), "w", encoding="utf-8") as f:
+                f.write(render_tool(a))
+            print(f"built tools/{tool_name(a)}.html")
+    write_tool_prices(out_root)
     write_explainers(out_root, articles)
     write_feed(out_dir, articles)
-    write_sitemap(out_root, articles)
+    write_sitemap(out_root, articles, tools)
     if report is not None:
         print(figures.summarize(report))
         try:                                                # outside the published folder; read by the weekly check
@@ -1068,7 +1166,7 @@ def write_feed(out_dir, articles):
     print(f"built articles/feed.xml ({len(listed)} entries)")
 
 
-def write_sitemap(out_root, articles):
+def write_sitemap(out_root, articles, tools=()):
     """sitemap.xml and robots.txt at the site root: the almanac, the chart index, one page per chart
     (those chart_pages wrote this build), the articles index and every article."""
     import json
@@ -1087,6 +1185,9 @@ def write_sitemap(out_root, articles):
                     urls.append((f"{SITE}/chart.html?id={t['id']}", today, "daily", "0.8"))
             except Exception as e:                              # a bad data file must not break the build
                 print(f"sitemap: skipped chart pages ({e})")
+    for a in tools:                                             # Nov 8: the Tools page and each tool
+        name = tool_name(a)
+        urls.append((f"{SITE}/tools/" if name == "index" else f"{SITE}/tools/{name}.html", a.get("updated") or a["date"], "monthly", "0.7"))
     urls.append((f"{SITE}/articles/", today, "weekly", "0.8"))
     for a in articles:
         urls.append((f"{SITE}/articles/{a['slug']}.html", a.get("updated") or a["date"], "monthly", "0.7"))
