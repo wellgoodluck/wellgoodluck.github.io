@@ -330,8 +330,8 @@ def cash_advance_timelines():
         return x0 + (x1 - x0) * day / 60
     b.append(T(0, 16, "The same $500, two ways, over 60 days", "h"))
     # purchase
-    y = 62
-    b.append(T(0, y - 14, "AS A PURCHASE, PAID IN FULL", "cap"))
+    y = 76
+    b.append(T(0, y - 32, "AS A PURCHASE, PAID IN FULL", "cap"))
     b.append(R(X(0), y, X(55) - X(0), 14, "wash"))
     b.append(L(X(0), y + 7, X(60), y + 7, "ink-line"))
     for d, lab in [(0, "Buy"), (30, "Statement"), (55, "Paid")]:
@@ -340,8 +340,8 @@ def cash_advance_timelines():
     b.append(T(X(27), y - 8, "grace period: no interest", "xs teal", "middle"))
     b.append(T(W, y + 54, "Cost: $0", "m", "end"))
     # advance
-    y = 168
-    b.append(T(0, y - 14, "AS A CASH ADVANCE", "cap"))
+    y = 196
+    b.append(T(0, y - 40, "AS A CASH ADVANCE", "cap"))
     # interest wedge growing from day 0
     b.append(f'<defs><pattern id="ca-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" class="hatch-line"/></pattern></defs>')
     b.append(P(f"M{X(0)} {y + 7} L{X(60)} {y - 9} L{X(60)} {y + 7} Z", "", ' fill="url(#ca-hatch)"'))
@@ -350,7 +350,7 @@ def cash_advance_timelines():
     b.append(L(X(60), y - 2, X(60), y + 16, "ink-line"))
     b.append(tag(X(0), y + 22, 104, 20, "$25 fee, day 1"))
     b.append(T(X(60), y + 37, "Paid", "xs i2", "end"))
-    b.append(T(X(36), y - 8, "interest from day 1", "xs i2", "middle"))
+    b.append(T(X(30), y - 16, "interest from day 1", "xs i2", "middle"))
     b.append(T(W, y + 62, "Cost: about $50", "m", "end"))
     b.append(T(0, y + 62, "5% fee + 29.99% APR", "xs i2"))
     write("cash-advance-timelines", y + 70, b, "A $500 purchase versus a $500 cash advance over 60 days",
