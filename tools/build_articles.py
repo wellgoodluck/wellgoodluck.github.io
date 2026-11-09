@@ -32,6 +32,9 @@ Each source file starts with a front-matter block:
     picture: health_jobs range=10y   (optional: the picture on the Featured card while this article is featured:
                                   a tile id and, optionally, the view's range and ov, as in a chart page's address;
                                   drawn like the Make your own chart picture. For a series, picture in series.json.)
+    teaser: what a town gets from a new business   (optional, Nov 9: the few words after the title on the home page's
+                                  one-line Featured strip, lower case, no closing period; without one the strip shows
+                                  the title alone. For a series, teaser in series.json.)
     ---
 
 then Markdown. Supported: # ## ### headings, paragraphs, **bold**, *italic*,
@@ -381,8 +384,8 @@ def load_series(articles, path=os.path.join("articles", "series.json")):
             print(f"series: {sid}: landing page {landing!r} is not an article; linking to the index instead")
             landing = ""
         s = {"kind": "series", "slug": sid, "title": d["title"], "dek": d.get("dek", ""), "featured": d.get("featured", ""),
-             "picture": d.get("picture", ""), "date": max(by_slug[p["slug"]]["date"] for p in parts), "parts": parts,
-             "landing": landing}
+             "picture": d.get("picture", ""), "teaser": d.get("teaser", ""),
+             "date": max(by_slug[p["slug"]]["date"] for p in parts), "parts": parts, "landing": landing}
         if landing:
             LANDINGS[landing] = s
         SERIES.append(s)
@@ -708,7 +711,7 @@ FOOT = """
   <div class="wrap">
     <p>Articles on this site aim to lay out what the figures show, what is settled, what is argued about and by whom. Every number links to its source where one exists, and corrections are noted on the article. The charts are live from the almanac and update as agencies publish.</p>
     <p class="reuse">Free to reuse with credit: Economy in Context (economyincontext.org). The charts and writing here are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Credit the data to its source, named on each chart.</p>
-    <p>This site has no ads and no agenda beyond putting the numbers in context. It sets no cookies and keeps nothing that identifies you; it does count page views. The optional weekly email is sent through Buttondown, which keeps the addresses for that and nothing else. It is paid for by the person who runs it, out of pocket; <a href="how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+    <p>This site has no ads and no agenda beyond putting the numbers in context. It sets no cookies and keeps nothing that identifies you; it does count page views, and clicks on a few links on the home page. The optional weekly email is sent through Buttondown, which keeps the addresses for that and nothing else. It is paid for by the person who runs it, out of pocket; <a href="how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
     <p class="about-link"><a href="/tools/">Tools: put your own figures next to the national numbers →</a></p>
     <p class="about-link"><a href="about.html">About this site, how it works, and every correction →</a></p>
   </div>
@@ -1181,6 +1184,8 @@ def write_explainers(out_root, articles):
         svg = featured_picture(feat)
         if svg:
             featured["svg"] = svg
+        if feat.get("teaser"):                    # the home page's Featured strip (Nov 9)
+            featured["teaser"] = feat["teaser"].strip().rstrip(".")
     os.makedirs(os.path.join(out_root, "data"), exist_ok=True)
     with open(os.path.join(out_root, "data", "explainers.json"), "w", encoding="utf-8") as f:
         json.dump({"note": "Written by tools/build_articles.py from the tile: line of each Plain words page, "

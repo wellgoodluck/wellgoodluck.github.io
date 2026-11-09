@@ -410,8 +410,17 @@
   .igrp .v { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
   .igrp .v .p { color: var(--muted); }
 
-  /* the lead on the home page: on the page background, after the index */
+  /* the lead on the home page: on the page background, after Your situation (Nov 9: was after the index) */
   .h-lead .lead { margin: 0; }
+  /* the Featured strip (Nov 9): one line under In short that points to what the Featured card holds further down, so
+     the feature is in the first screen; the card's teal wash and border, sized to its words, the whole line one link */
+  .fstrip { margin: 18px 0 0; }
+  .fstrip a { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; max-width: 100%; box-sizing: border-box; min-height: 44px; padding: 10px 14px; border: 1px solid var(--full-line); border-radius: 6px; background: var(--series-wash); color: var(--ink); text-decoration: none; font-size: 15.5px; line-height: 1.4; text-wrap: pretty; }
+  .fstrip .flabel { font-size: 12.5px; font-weight: 600; color: var(--full-ink); text-transform: uppercase; letter-spacing: 0.06em; }
+  .fstrip .st { font-weight: 700; text-decoration: underline; text-decoration-color: var(--full-line); text-underline-offset: 3px; }
+  .fstrip a:hover .st { text-decoration-color: var(--ink); }
+  .fstrip .tz { color: var(--ink-2); }
+  @media (max-width: 760px) { .fstrip { margin-top: 14px; } .fstrip a { display: flex; } }
   /* the home page's footer: the release list (phones), two links, the license line */
   /* the home page's reading guide (Nov 6): the full view's own paragraphs, trimmed to what the home page shows */
   .home-guide { padding-top: 30px; scroll-margin-top: 8px; }
@@ -647,7 +656,7 @@
   @media print {
     :root { --page: #fff; --surface: #fff; }
     body { background: #fff; }
-    .secnav, .site-menu, .ranges, a.full, .htop, details.table, .tip, .banner, .view-switch, .featured, .tile-more > summary { display: none !important; }
+    .secnav, .site-menu, .ranges, a.full, .htop, details.table, .tip, .banner, .view-switch, .featured, .fstrip, .tile-more > summary { display: none !important; }
     .glance { break-inside: avoid; }
     .masthead .updated .htr, .masthead .coming, .to-glance, .skip { display: none !important; }
     .tile { break-inside: avoid; }
@@ -723,7 +732,7 @@
     <p><strong>Articles</strong> explain each number in plain words, follow the numbers to five kinds of household, and take up what is argued about. Each number links to its own explainer, and all of them are linked from the top of the page.</p>
     <p id="attribution"></p>
     <p class="reuse">Free to reuse with credit: Economy in Context (economyincontext.org). The charts and writing here are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Credit the data to its source, named on each chart.</p>
-    <p>This site has no ads and no agenda beyond putting the numbers in context. It sets no cookies and keeps nothing that identifies you; it does count page views. The optional weekly email is sent through Buttondown, which keeps the addresses for that and nothing else. It is paid for by the person who runs it, out of pocket; <a href="articles/how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+    <p>This site has no ads and no agenda beyond putting the numbers in context. It sets no cookies and keeps nothing that identifies you; it does count page views, and clicks on a few links on the home page. The optional weekly email is sent through Buttondown, which keeps the addresses for that and nothing else. It is paid for by the person who runs it, out of pocket; <a href="articles/how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
     <p><a href="articles/about.html">About this site, where the numbers come from, and every correction →</a></p>
   </div>
 </footer>
@@ -1517,6 +1526,17 @@
     if (para && para.length) sec.appendChild(upd);
     main.appendChild(sec);
 
+    // the Featured strip (Nov 9): the feature in the first screen; the card itself sits after Your situation. Under In
+    // short on desktop; above it on phones, where the four rows fill the first screen and a strip under them falls at
+    // the fold. It moves when the window crosses the breakpoint, so reading order always matches what is on screen.
+    const strip = featuredStrip(data.featured);
+    if (strip) {
+      track(strip, 'home-strip', 'Home: Featured strip');
+      const place = () => { if (DESKTOP.matches) sec.after(strip); else sec.before(strip); };
+      place();
+      if (DESKTOP.addEventListener) DESKTOP.addEventListener('change', place); else DESKTOP.addListener(place);
+    }
+
     // Six numbers for a household
     const six = el('section', { class: 'h-sec', id: 'numbers', 'aria-labelledby': 'six-h' });
     six.appendChild(band('six-h', 'Six numbers for a household'));
@@ -1532,6 +1552,7 @@
       card.appendChild(el('p', { class: 'context', text: contextSentence(t) }));
       if (adjusted(t)) card.appendChild(el('p', { class: 'asch', text: 'Price as charged; the range is in today’s dollars.' }));
       card.appendChild(seeChart(t));
+      track(card, 'home-cards', 'Home: the six cards');
       cards.appendChild(card);
     });
     six.appendChild(cards);
@@ -1542,8 +1563,17 @@
     const paths = el('section', { class: 'h-sec', id: 'your-situation', 'aria-labelledby': 'paths-h' });
     paths.appendChild(band('paths-h', 'Your situation', 'Pick the one closest to yours for a short guide to the numbers that matter most.'));
     paths.appendChild(el('ul', { class: 'paths' }, HOME_PATHS.map(([label, url]) => el('li', {}, [el('a', { class: 'wf', href: url, text: label })]))));
+    track(paths, 'home-situation', 'Home: Your situation');
     main.appendChild(paths);
     main.appendChild(topLink());
+
+    // Featured and Make your own chart (Nov 9: moved up from after All N numbers, which is a lookup list)
+    if (lead.length) {
+      lead.forEach(c => { if (c.classList.contains('featured')) track(c, 'home-featured', 'Home: Featured card');
+                          else if (c.classList.contains('chart-try')) track(c, 'home-make-chart', 'Home: Make your own chart'); });
+      main.appendChild(el('section', { class: 'h-sec h-lead', 'aria-label': 'Featured, and a chart to make your own' }, [el('div', { class: 'lead' }, lead)]));
+      main.appendChild(topLink());
+    }
 
     // All the numbers: one row each, grouped as on the almanac, each a link to its tile on ?view=all
     const n = data.tiles.length;
@@ -1586,11 +1616,9 @@
     main.appendChild(all);
     main.appendChild(topLink());
 
-    // Featured and Make your own chart
-    if (lead.length) {
-      main.appendChild(el('section', { class: 'h-sec h-lead', 'aria-label': 'Featured, and a chart to make your own' }, [el('div', { class: 'lead' }, lead)]));
-      main.appendChild(topLink());
-    }
+    // the click counts: count.js binds the named links once when it loads, which can come before or after this
+    // render; binding again here covers the other order (it skips links it has already bound)
+    if (window.goatcounter && typeof window.goatcounter.bind_events === 'function') window.goatcounter.bind_events();
 
     // the footer's release list (phones)
     const fr = document.getElementById('frel');
@@ -1603,6 +1631,21 @@
   }
 
   // ---- the lead -------------------------------------------------------------
+  // The click counts (Nov 9): every link inside `root` is counted by GoatCounter under one name, home page only, so the
+  // counts say which part of the page was used, not which link. Nothing about the reader is added to what a page view sends.
+  function track(root, name, title) {
+    root.querySelectorAll('a').forEach(a => { a.dataset.goatcounterClick = name; a.dataset.goatcounterTitle = title; });
+  }
+  // The Featured strip (Nov 9): label, title and the feature's teaser (explainers.json featured.teaser, from the teaser:
+  // line of the article or series; without one, the title alone), the whole line one link to the feature
+  function featuredStrip(f) {
+    if (!f || !f.url || !f.title) return null;
+    const isSeries = Array.isArray(f.parts) && f.parts.filter(p => p && p.url && p.label).length > 1;
+    const words = [el('span', { class: 'st', text: f.title })];
+    if (typeof f.teaser === 'string' && f.teaser) words.push(el('span', { class: 'tz', text: ': ' + f.teaser }));
+    words.push(' →');
+    return el('p', { class: 'fstrip' }, [el('a', { href: f.url }, [el('span', { class: 'flabel', text: isSeries ? 'Featured series' : 'Featured' }), ' ', el('span', {}, words)])]);
+  }
   function leadCards(data) {
     // The lead: two cards side by side (stacked on phones), above everything else in main. Left, the featured article or
     // series (explainers.json, written by the articles build) on a teal card; right, Make your own chart on the sheet. Each ends

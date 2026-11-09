@@ -10,7 +10,8 @@ history. Live at [economyincontext.org](https://economyincontext.org).
   third-party request is the page-view count to GoatCounter
   (`assets/count.js`, a copy of GoatCounter's script, ISC license, from
   arp242/goatcounter commit c031008); it stores no IP addresses and skips
-  framed pages, so chart embeds aren't counted.
+  framed pages, so chart embeds aren't counted. Since Nov 9 the home page also
+  counts clicks on five of its parts (`data-goatcounter-click`; see DESIGN.md).
 - `chart.html` is the detail page: one indicator at full size, with optional
   overlays. Each indicator has its own page, `/chart/unemployment/`, written at
   publish time by `tools/chart_pages.py` from `chart.html` with a title and link

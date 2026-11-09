@@ -1,5 +1,5 @@
 {
-  "note": "Series of articles, read by tools/build_articles.py. Each series lists its parts in reading order (slug = the file name in articles/src without .md, label = the short name shown in the series box). Optional featured: YYYY-MM-DD makes the whole series the Featured line from that date, by the same rule as an article's featured: line (the newest date that has arrived wins; a series wins a tie). Optional picture: a tile id with an optional range and ov (\"health_jobs range=10y\"), the picture on the Featured card while the series is featured.",
+  "note": "Series of articles, read by tools/build_articles.py. Each series lists its parts in reading order (slug = the file name in articles/src without .md, label = the short name shown in the series box). Optional featured: YYYY-MM-DD makes the whole series the Featured line from that date, by the same rule as an article's featured: line (the newest date that has arrived wins; a series wins a tie). Optional picture: a tile id with an optional range and ov (\"health_jobs range=10y\"), the picture on the Featured card while the series is featured. Optional teaser (Nov 9): the few words after the title on the home page's one-line Featured strip, lower case, no closing period.",
   "series": {
     "health-care": {
       "title": "Health care: what it costs, who gains, who lobbies",
@@ -101,6 +101,7 @@
       "title": "Money Traps",
       "dek": "Seventeen short pages on the ways money leaks out of a household, especially a new one, from overdraft fees and card minimums to car loans, scams, gig taxes, co-signing and student debt: how each trap works, what it costs in dollars, how to avoid it, and the policy fight around it.",
       "landing": "money-traps",
+      "teaser": "short pages on how money leaks out of a household",
       "parts": [
         {
           "slug": "how-credit-scores-work",
