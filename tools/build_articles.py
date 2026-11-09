@@ -27,6 +27,8 @@ Each source file starts with a front-matter block:
                                   the Featured line at the top of the almanac and the articles index.
                                   The newest date that has arrived wins, so featuring another article
                                   needs only a later date on it; a future date schedules it.)
+    menu: articles               (optional, Nov 9: which menu item a page sits under, articles, about or situation;
+                                 a kind: page sits under About otherwise)
     picture: health_jobs range=10y   (optional: the picture on the Featured card while this article is featured:
                                   a tile id and, optionally, the view's range and ov, as in a chart page's address;
                                   drawn like the Make your own chart picture. For a series, picture in series.json.)
@@ -674,6 +676,8 @@ def menu_for(a):
         return site_menu("tools", page=a.get("out") == "index")
     if a["slug"] in LANDINGS:                       # a series' landing page sits under Articles (Nov 9)
         return site_menu("articles")
+    if a.get("menu") in ("articles", "about", "situation"):   # front matter `menu:` places a page by hand (Nov 9: the teaching page)
+        return site_menu(a["menu"])
     if a.get("kind") == "page":
         return site_menu("about")
     if a.get("kind") == "path":

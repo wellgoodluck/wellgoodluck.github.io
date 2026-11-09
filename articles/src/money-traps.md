@@ -58,6 +58,8 @@ Four of the worked examples come with a tool that runs the same math on your own
 
 Each page stands on its own and takes about five minutes to read. The series box at the top of each page gives a suggested reading order, but the pages can be taught in any order. The writing and pictures are free to reuse with credit under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); the figures on each page link to their sources.
 
+[Teaching With Money Traps](teaching-with-money-traps.html) has discussion questions and a short activity for each page. For families, [You're Helping a Young Person With Money](you-are-helping-a-young-person-with-money.html) walks through the traps in the order they arrive.
+
 ## See also
 
 - [Why the Government Is Not a Household, and What It Is Instead](government-is-not-a-household.html): how debt works differently for a family and for the federal government.
