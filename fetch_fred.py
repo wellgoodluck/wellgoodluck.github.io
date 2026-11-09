@@ -154,6 +154,7 @@ TILES = [
     # almanac and in All N numbers; it is otherwise a tile like any other (its own chart page, rank and range).
     {
         "id": "prime_age_employment",
+        "added": "2026-11-09",   # launch day; the New label runs 14 days from here
         "agency": "BLS",
         "section": "Jobs",
         "more": True,
@@ -168,6 +169,7 @@ TILES = [
     },
     {
         "id": "sahm_rule",
+        "added": "2026-11-09",   # launch day; the New label runs 14 days from here
         "agency": "Claudia Sahm via FRED",
         "section": "Jobs",
         "more": True,
@@ -224,6 +226,7 @@ TILES = [
     # ---- Prices: behind "More numbers" (Nov 8) ------------------------------
     {
         "id": "medical_care",
+        "added": "2026-11-09",   # launch day; the New label runs 14 days from here
         "agency": "BLS",
         "section": "Prices",
         "more": True,
@@ -239,6 +242,7 @@ TILES = [
     {
         # Not on FRED: fetched from the BLS public data API (see fetch_bls). Year-over-year change computed here.
         "id": "car_insurance",
+        "added": "2026-11-09",   # launch day; the New label runs 14 days from here
         "agency": "BLS",
         "provider": "bls",
         "section": "Prices",
@@ -254,6 +258,7 @@ TILES = [
     },
     {
         "id": "child_care",
+        "added": "2026-11-09",   # launch day; the New label runs 14 days from here
         "agency": "BLS",
         "provider": "bls",
         "section": "Prices",
@@ -269,6 +274,7 @@ TILES = [
     },
     {
         "id": "used_cars",
+        "added": "2026-11-09",   # launch day; the New label runs 14 days from here
         "agency": "BLS",
         "section": "Prices",
         "more": True,
@@ -325,6 +331,7 @@ TILES = [
     # ---- Growth & rates: behind "More numbers" (Nov 8) ----------------------
     {
         "id": "real_retail",
+        "added": "2026-11-09",   # launch day; the New label runs 14 days from here
         "agency": "Census Bureau and the St. Louis Fed",
         "section": "Growth & rates",
         "more": True,
@@ -339,6 +346,7 @@ TILES = [
     },
     {
         "id": "productivity_growth",
+        "added": "2026-11-09",   # launch day; the New label runs 14 days from here
         "agency": "BLS",
         "section": "Growth & rates",
         "more": True,
@@ -413,6 +421,7 @@ TILES = [
     # ---- Household finances (Nov 8) ---------------------------------------
     {
         "id": "saving_rate",
+        "added": "2026-11-09",   # launch day; the New label runs 14 days from here
         "agency": "BEA",
         "section": "Household finances",
         "title": "Saving rate",
@@ -426,6 +435,7 @@ TILES = [
     },
     {
         "id": "card_delinquency",
+        "added": "2026-11-09",   # launch day; the New label runs 14 days from here
         "agency": "Federal Reserve Board",
         "section": "Household finances",
         "title": "Credit card delinquency",
@@ -439,6 +449,7 @@ TILES = [
     },
     {
         "id": "debt_payments",
+        "added": "2026-11-09",   # launch day; the New label runs 14 days from here
         "agency": "Federal Reserve Board",
         "section": "Household finances",
         "title": "Debt payments",
@@ -452,6 +463,7 @@ TILES = [
     },
     {
         "id": "median_income",
+        "added": "2026-11-09",   # launch day; the New label runs 14 days from here
         "agency": "Census Bureau",
         "section": "Household finances",
         "title": "Median household income",
@@ -511,6 +523,7 @@ TILES = [
         # A computed tile: customs duties as a percent of the value of goods imported, both from the GDP accounts
         # (quarterly, seasonally adjusted annual rates). Tariffs are charged on goods, so services are left out.
         "id": "effective_tariff",
+        "added": "2026-11-09",   # launch day; the New label runs 14 days from here
         "agency": "BEA",
         "section": "Government and trade",
         "more": True,
@@ -526,6 +539,7 @@ TILES = [
     },
     {
         "id": "interest_share",
+        "added": "2026-11-09",   # launch day; the New label runs 14 days from here
         "agency": "BEA",
         "section": "Government and trade",
         "more": True,
@@ -541,6 +555,7 @@ TILES = [
     },
     {
         "id": "dollar",
+        "added": "2026-11-09",   # launch day; the New label runs 14 days from here
         "agency": "Federal Reserve Board",
         "section": "Government and trade",
         "more": True,
@@ -701,7 +716,7 @@ TILES = [
 NEW_TILES = {"prime_age_employment", "sahm_rule", "medical_care", "car_insurance", "child_care", "used_cars",
              "real_retail", "productivity_growth", "saving_rate", "card_delinquency", "debt_payments", "median_income",
              "effective_tariff", "interest_share", "dollar"}
-SHOW_NEW_TILES = False
+SHOW_NEW_TILES = True
 
 # ---------------------------------------------------------------------------
 # Companion series: shown only on the detail page (chart.html) as overlays on

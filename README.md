@@ -50,14 +50,21 @@ history. Live at [economyincontext.org](https://economyincontext.org).
   `FRED_API_KEY` (a free key from fredaccount.stlouisfed.org/apikeys).
 
 To add or change an indicator, edit the `TILES` list at the top of
-`fetch_fred.py`. The page reads whatever the JSON contains. Companion series
+`fetch_fred.py`. The page reads whatever the JSON contains. A tile with
+`"more": True` sits behind its section's "More numbers" reveal on the almanac
+and in All N numbers; everything else about it (chart page, rank, range) is the
+same. A tile with `"provider": "bls"` is fetched from the BLS public data API
+instead of FRED (car insurance and child care, which FRED does not carry); it
+needs a second repository secret, `BLS_API_KEY` (free, from
+data.bls.gov/registrationEngine/). Without that secret those tiles are skipped
+and the rest of the site publishes. Companion series
 are the `COMPANIONS` and `DERIVED` lists in the same file. Eras and events are
 edited in `tools/make_overlays.py`; party-control lanes need a two-line update
 every other January after a new Congress is seated.
 
 ## Data
 
-Source: FRED, Federal Reserve Bank of St. Louis. Underlying data from the
+Source: FRED, Federal Reserve Bank of St. Louis, and for two price indexes the BLS public data API. Underlying data from the
 Bureau of Labor Statistics, Bureau of Economic Analysis, Census Bureau, Federal
 Reserve Board, Freddie Mac and the National Bureau of Economic Research. All
 figures are the current vintage and are subject to revision by the agencies.

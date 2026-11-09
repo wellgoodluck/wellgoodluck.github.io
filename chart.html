@@ -597,6 +597,20 @@
     gas: SA_PRICE('Dollars a gallon'), milk: SA_PRICE('Dollars a gallon'), electricity: SA_PRICE('Cents a kilowatt-hour'), natural_gas: SA_PRICE('Dollars a therm'),
     eggs: SA_PRICE('Dollars a dozen'), bread: SA_PRICE('Dollars a pound'), coffee: SA_PRICE('Dollars a pound'), ground_beef: SA_PRICE('Dollars a pound'), chicken: SA_PRICE('Dollars a pound'),
     drive_cost: { measure: 'share', own: 'level', level: 'self', own_: 'Percent of a gas mile’s cost, as reported' },
+    // Nov 8, the numbers behind "More numbers" and Household finances. A change from a year ago whose level is not on the
+    // site yet takes SA_INDEX with no level, so "As reported" and the index show "not available yet".
+    prime_age_employment: { measure: 'share', own: 'level', level: 'self', own_: 'Percent with a job, as reported' },
+    sahm_rule: { measure: 'rate', own: 'level', level: 'self', own_: 'Points, as reported' },
+    medical_care: SA_INDEX(null, '1982–84'), car_insurance: SA_INDEX(null, '1982–84'), child_care: SA_INDEX(null, 'December 1990'), used_cars: SA_INDEX(null, '1982–84'),
+    real_retail: { measure: 'growth', own: 'yoy', level: null, own_: 'Change from a year ago' },
+    productivity_growth: SA_INDEX(null, '2017'),
+    saving_rate: { measure: 'share', own: 'level', level: 'self', own_: 'Percent of income, as reported' },
+    card_delinquency: { measure: 'share', own: 'level', level: 'self', own_: 'Percent of balances, as reported' },
+    debt_payments: { measure: 'share', own: 'level', level: 'self', own_: 'Percent of income, as reported' },
+    median_income: { measure: 'growth', own: 'level', level: 'self', own_: 'Dollars, as reported (already in today’s dollars)' },
+    effective_tariff: { measure: 'share', own: 'level', level: 'self', own_: 'Percent of goods imports, as reported' },
+    interest_share: { measure: 'share', own: 'level', level: 'self', own_: 'Percent of revenue, as reported' },
+    dollar: SA_INDEX(null, 'January 2006'),
   };
   const FORM_ORDER = ['yoy', 'level', 'real', 'index'];
   const FORM_LABEL = { yoy: 'Change from a year ago', level: 'As reported', real: 'In today’s dollars', index: 'Index, 100 at the start of the view' };
@@ -812,7 +826,9 @@
   // dollar axes show whole dollars or full cents ($2.50, not $2.5)
   function axisDecimals(step, d) { const k = decimalsFor(step, d.scale); return d.prefix === '$' && !d.suffix && k === 1 ? 2 : k; }
   // "Data: BLS via FRED · economyincontext.org"; tiles without an agency credit the FRED series
-  function creditLine(t, drawn) { const more = otherCredits(drawn, 'credit'); return 'Data: ' + (t.agency ? t.agency + ' via FRED' : 'FRED (' + t.source.series + ')') + (more.length ? '; ' + more.join('; ') : '') + ' · economyincontext.org'; }
+  // a tile fetched from an agency directly (Nov 8: the BLS public data API) has a source label that does not start with FRED
+  function notFred(t) { return !!(t.source && t.source.label && !/^FRED /.test(t.source.label)); }
+  function creditLine(t, drawn) { const more = otherCredits(drawn, 'credit'); return 'Data: ' + (t.agency ? t.agency + (notFred(t) ? '' : ' via FRED') : 'FRED (' + t.source.series + ')') + (more.length ? '; ' + more.join('; ') : '') + ' · economyincontext.org'; }
   // the credit line, shortened only when it wouldn't fit the chart's width (a phone with a second source on): a long
   // agency name gives way to a shorter one before anything else does
   const CREDIT_SHORT = { 'Federal Reserve Board': ['Federal Reserve', 'Fed'] };
@@ -2406,7 +2422,7 @@
         : F.key === 'index' ? 'Index: 100 at ' + fmtPeriod(F.base[0], pf(t), true) + ', the first reading in view; every reading divided by that one, times 100'
         : 'As reported: the level FRED publishes';
       const lines = [csvQ(name + span + ', from Economy in Context: ' + SITE + chartPath(t.id, F.own ? '' : 'as=' + F.key)),
-        csvQ('Data: ' + (t.agency ? t.agency + ' via ' : '') + 'FRED series ' + series.join(', ') + ', retrieved ' + String(ctx.data.generated || '').slice(0, 10)
+        csvQ('Data: ' + (notFred(t) ? t.agency + ' series ' + t.source.series + ' (public data API)' + (series.length > 1 ? '; FRED series ' + series.slice(1).join(', ') : '') : (t.agency ? t.agency + ' via ' : '') + 'FRED series ' + series.join(', ')) + ', retrieved ' + String(ctx.data.generated || '').slice(0, 10)
           + (d.flipped ? '. Sign flipped from FRED: a deficit is positive here, negative in ' + t.series : '')
           + (others.length ? '; ' + others.join('; ') + ' (' + otherComps.map(o => o.source.series).join(', ') + ')' : ''))]
         .concat(notices.map(n => csvQ(n))).concat(made ? [csvQ(made + '.')] : []).concat(['',
@@ -2679,7 +2695,7 @@
       const F = ctx.form(), head = F.name && F.label.startsWith(F.name) ? F.label : (F.name || t.title) + formName();
       return head + (others.length ? ' and ' + listWords(others) : '') + (c ? ' compared with ' + lowerFirst(c.label) : '') + ', ' + fmtPeriod(v.first, pf(t), true) + ' to ' + fmtPeriod(v.last, pf(t), true);
     }
-    function credit() { const more = otherCredits(seriesOn(), 'creditLong'); return (t.agency ? t.agency + ' via FRED' : 'FRED (' + t.source.series + ')') + (more.length ? '; ' + more.join('; ') : ''); }
+    function credit() { const more = otherCredits(seriesOn(), 'creditLong'); return (t.agency ? t.agency + (notFred(t) ? '' : ' via FRED') : 'FRED (' + t.source.series + ')') + (more.length ? '; ' + more.join('; ') : ''); }
     function syncCite() {
       if (!ctx.view) return;
       const name = chartName(), url = permalink(), now = new Date(), through = fmtPeriod(ctx.view.last, pf(t), true);
@@ -2895,7 +2911,7 @@
 
     left.appendChild(el('p', { class: 'note', text: t.note }));
     const src = el('p', { class: 'source' });
-    src.appendChild(document.createTextNode('Source: ')); src.appendChild(el('a', { href: t.source.url, rel: 'noopener', text: 'FRED ' + t.source.series }));
+    src.appendChild(document.createTextNode('Source: ')); src.appendChild(el('a', { href: t.source.url, rel: 'noopener', text: t.source.label || ('FRED ' + t.source.series) }));
     if (t.headline) { src.appendChild(document.createTextNode(' and ')); src.appendChild(el('a', { href: t.headline.url, rel: 'noopener', text: t.headline.series })); }
     // a form drawn from another series names it too: "Source: FRED A191RL1Q225SBEA; real GDP from FRED GDPC1, updated …" (Nov 6 ruling)
     const srcLvl = el('span', { class: 'src-level' }); src.appendChild(srcLvl);

@@ -194,7 +194,7 @@
   .sections-nav a:hover { color: var(--ink); border-bottom-color: var(--nav); }
   .sections-nav a[aria-current] { color: var(--ink); border-bottom-color: var(--nav); }
   /* jumps land below the sticky nav; --nav-h is its measured height */
-  main, section.group, .tile, .glance, #how-to-read { scroll-margin-top: calc(var(--nav-h, 48px) + 8px); }
+  main, section.group, .tile, .glance, #how-to-read, details.more-nums { scroll-margin-top: calc(var(--nav-h, 48px) + 8px); }
   .skip { position: absolute; left: 8px; top: -60px; z-index: 10; padding: 10px 14px; background: var(--ink); color: var(--surface); font-size: 13.5px; font-weight: 600; text-decoration: none; border-radius: 4px; }
   .skip:focus { top: 8px; }
   .sec-head { display: flex; justify-content: space-between; align-items: baseline; gap: 4px 16px; flex-wrap: wrap; margin: 0 0 14px; }
@@ -474,6 +474,27 @@
   .mini .track { stroke: var(--range); stroke-width: 5; stroke-linecap: round; }
   .mini .now { fill: var(--series); stroke: var(--surface); stroke-width: 2; }
   .mini .avg { stroke: var(--ink-2); stroke-width: 2; }
+  /* More numbers (Nov 8): the tiles flagged "more" sit behind a reveal under their section's tiles, in All N numbers and on
+     the almanac. The control is the articles index's "Show N earlier pieces ↓": an ochre wayfinding link with a 2px underline
+     and no triangle, 44px tall; open, it reads "Fewer numbers ↑". In At a glance a section's hidden tiles are one row naming
+     them, which opens the reveal below. Open or closed is remembered per section on this device (localStorage), nothing more. */
+  details.more-nums > summary { cursor: pointer; display: inline-flex; align-items: center; min-height: 44px; list-style: none; font-size: 15px; font-weight: 600; color: var(--nav);
+    text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  details.more-nums > summary::-webkit-details-marker { display: none; }
+  details.more-nums > summary:hover { color: var(--ink); text-decoration-color: var(--ink); }
+  details.more-nums[open] > summary .more, details.more-nums:not([open]) > summary .less { display: none; }
+  details.tiles-more { margin: 10px 0 0; }
+  details.tiles-more[open] > summary { margin-bottom: 12px; }
+  .igrp li.more-cell { display: flex; align-items: center; border-bottom: 0; }
+  .igrp .more-btn { min-height: 52px; padding: 0; border: 0; background: none; font: inherit; font-size: 14.5px; font-weight: 600; color: var(--nav); cursor: pointer; text-align: left;
+    text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .igrp .more-btn:hover { color: var(--ink); text-decoration-color: var(--ink); }
+  @media print { .igrp li.more-li[hidden] { display: list-item !important; } .igrp li.more-cell { display: none; } }
+  .glance a.more-row { grid-column: 1 / -1; display: block; min-height: 44px; padding: 11px 0 6px; border-top: 1px solid var(--hairline); font-size: 14px; color: var(--ink-2); text-decoration: none; }
+  .glance a.more-row .mr-n { font-weight: 600; color: var(--nav); text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .glance a.more-row .mr-a { color: var(--nav); }
+  .glance a.more-row:hover .mr-n, .glance a.more-row:hover .mr-a { color: var(--ink); text-decoration-color: var(--ink); }
+  @media print { details.more-nums > summary, .glance a.more-row { display: none; } }
   /* New / Revised labels (Nov 8): the Featured card's teal wash, small caps-style text; Revised is outlined only.
      Inline-block, so a link's underline never runs through it. Shown for 14 days (freshLabel). */
   .fresh { display: inline-block; margin-left: 2px; padding: 0 6px; border: 1px solid var(--full-line); border-radius: 4px; background: var(--series-wash);
@@ -931,14 +952,41 @@
   // ---- a section's tiles, in display order --------------------------------
   // An odd section gives one tile the full row: the one flagged display.wide (set in fetch_fred.py), moved to
   // the top of the section, or else the last tile. An even section ignores the flag. The overview uses the same order.
-  function sectionTiles(data, s) {
-    let tiles = data.tiles.filter(t => t.section === s), wideId = null;
+  // A section's tiles in two sets (Nov 8): the headline tiles, and the ones flagged "more" in fetch_fred.py, which sit
+  // behind the section's "More numbers" reveal. Each set gets its own wide tile when its count is odd.
+  function withWide(list) {
+    let tiles = list, wideId = null;
     if (tiles.length % 2 === 1) {
       const flagged = tiles.find(t => t.display.wide);
       if (flagged) { wideId = flagged.id; tiles = [flagged].concat(tiles.filter(t => t !== flagged)); }
       else wideId = tiles[tiles.length - 1].id;
     }
     return { tiles, wideId };
+  }
+  function sectionTiles(data, s) {
+    const all = data.tiles.filter(t => t.section === s);
+    const head = withWide(all.filter(t => !t.more)), more = withWide(all.filter(t => t.more));
+    return { tiles: head.tiles, wideId: head.wideId, more: more.tiles, moreWideId: more.wideId };
+  }
+  // The reveal: the articles index's "Show N earlier pieces ↓" pattern, an ochre link with no triangle (DESIGN.md).
+  // Its open or closed state is remembered per section on this device, for the reader's convenience only.
+  function secId(s) { return 's-' + s.toLowerCase().replace(/[^a-z]+/g, '-'); }
+  const MORE_KEY = 'eic-more:';
+  function moreState(key) { try { return localStorage.getItem(MORE_KEY + key) === '1'; } catch (e) { return false; } }
+  function saveMore(key, open) { try { if (open) localStorage.setItem(MORE_KEY + key, '1'); else localStorage.removeItem(MORE_KEY + key); } catch (e) { /* storage off: the reveal still works */ } }
+  function revealDetails(cls, key, label, body, id) {
+    const det = el('details', Object.assign({ class: 'more-nums ' + cls }, id ? { id } : {}));
+    det.appendChild(el('summary', {}, [el('span', { class: 'more', text: label + ' ↓' }), el('span', { class: 'less', text: 'Fewer numbers ↑' })]));
+    det.appendChild(body);
+    if (moreState(key)) det.open = true;
+    det.addEventListener('toggle', () => saveMore(key, det.open));
+    return det;
+  }
+  // a link to a tile behind a closed reveal opens the reveal first, so the page has something to land on
+  function openFor(target) {
+    let opened = false;
+    for (let x = target; x; x = x.parentElement) if (x.tagName === 'DETAILS' && x.classList.contains('more-nums') && !x.open) { x.open = true; opened = true; }
+    return opened;     // a reveal just opened lays out its tiles first; the caller waits a frame before scrolling
   }
 
   // ---- New and Revised labels (Nov 8) --------------------------------------
@@ -954,6 +1002,8 @@
     if (r && now < r) return el('span', { class: 'fresh rev', text: 'Revised ' + fmtPeriod(t.revised, 'd') });
     return null;
   }
+  // " · 2 new" on a reveal that hides labeled numbers, so they are not missed behind it
+  function newCount(list) { const k = list.filter(t => freshLabel(t)).length; return k ? ' · ' + k + ' new' : ''; }
   function withLabel(t, nodes) { const f = freshLabel(t); return f ? nodes.concat([' ', f]) : nodes; }
 
   // ---- at a glance: one compact strip per indicator --------------------------
@@ -1002,6 +1052,7 @@
       const { tiles } = sectionTiles(data, s);
       const grp = el('div', { class: 'grp' });
       grp.appendChild(el('h3', {}, [s, tiles.every(adjusted) ? el('span', { class: 'adj', text: ' · range in today’s dollars' }) : '']));
+      const { more } = sectionTiles(data, s);
       tiles.forEach(t => {
         const c = t.context, d = t.display;
         const hv = t.headline ? t.headline.value : c.current.value;
@@ -1012,6 +1063,12 @@
         a.appendChild(miniStrip(t));
         grp.appendChild(a);
       });
+      if (more.length) {
+        const mid = 'more-' + secId(s);
+        const a = el('a', { class: 'more-row', href: '#' + mid }, [el('span', { class: 'mr-n', text: '+' + more.length + ' more' + newCount(more) + ': ' }), more.map(t => t.title).join(', '), el('span', { class: 'mr-a', text: ' ↓' })]);
+        a.addEventListener('click', () => { const d = document.getElementById(mid); if (d) d.open = true; });
+        grp.appendChild(a);
+      }
       cols.appendChild(grp);
     });
     g.appendChild(cols);
@@ -1260,7 +1317,7 @@
     more.appendChild(el('p', { class: 'note', text: t.note }));
     const src = el('p', { class: 'source' });
     src.appendChild(document.createTextNode('Source: '));
-    src.appendChild(el('a', { href: t.source.url, rel: 'noopener', text: 'FRED ' + t.source.series }));
+    src.appendChild(el('a', { href: t.source.url, rel: 'noopener', text: t.source.label || ('FRED ' + t.source.series) }));
     if (t.headline) { src.appendChild(document.createTextNode(' and ')); src.appendChild(el('a', { href: t.headline.url, rel: 'noopener', text: t.headline.series })); }
     ((t.household && t.household.sources) || []).forEach(x => { src.appendChild(document.createTextNode(', ')); src.appendChild(el('a', { href: x.url, rel: 'noopener', text: x.series })); });
     src.appendChild(document.createTextNode(', updated ' + (t.source.last_updated || '').slice(0, 10)));
@@ -1498,10 +1555,31 @@
       const g = el('div', { class: 'igrp' });
       const gid = 'g-' + s.toLowerCase().replace(/[^a-z]+/g, '-');
       g.appendChild(el('h3', { id: gid, text: s }));
-      g.appendChild(el('ul', { 'aria-labelledby': gid }, data.tiles.filter(t => t.section === s).map(t => {
+      const row = t => {
         const r = reading(t);
         return el('li', {}, [el('a', { href: '?view=all#i-' + t.id }, [el('span', { class: 'n' }, withLabel(t, [t.title])), el('span', { class: 'v' }, [fmtValue(r.value, t.display) + ' ', el('span', { class: 'p', text: '· ' + shortPeriod(r, year) })])])]);
-      })));
+      };
+      const inSec = data.tiles.filter(t => t.section === s);
+      const ul = el('ul', { 'aria-labelledby': gid }, inSec.filter(t => !t.more).map(row));
+      const more = inSec.filter(t => t.more);
+      if (more.length) {
+        // the reveal takes the grid's next free cell, and the rows it opens flow into the same grid (denser than a row
+        // of its own); the button moves after them and reads "Fewer numbers ↑"
+        const extra = more.map(t => { const li = row(t); li.classList.add('more-li'); li.hidden = true; return li; });
+        extra.forEach(li => ul.appendChild(li));
+        const key = 'home-' + gid;
+        const btn = el('button', { type: 'button', class: 'more-btn', 'aria-expanded': 'false' });
+        const set = open => {
+          extra.forEach(li => { li.hidden = !open; });
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+          btn.textContent = open ? 'Fewer numbers ↑' : 'More numbers (' + more.length + ')' + newCount(more) + ' ↓';
+          btn.setAttribute('aria-label', open ? 'Fewer numbers in ' + s : more.length + ' more numbers in ' + s + ': ' + more.map(t => t.title).join(', '));
+        };
+        btn.addEventListener('click', () => { const open = btn.getAttribute('aria-expanded') !== 'true'; set(open); saveMore(key, open); if (open) extra[0].querySelector('a').focus(); });
+        ul.appendChild(el('li', { class: 'more-cell' }, [btn]));
+        set(moreState(key));
+      }
+      g.appendChild(ul);
       panel.appendChild(g);
     });
     all.appendChild(panel);
@@ -1597,7 +1675,7 @@
     if (hasGlance) main.appendChild(el('div', { class: 'detail-break', id: 'in-detail' }, [el('h2', { text: 'The numbers in detail' }),
       el('p', { text: 'Each indicator with its full chart, its history and what it means for a household. Pick a section above, or read on.' })]));
     sections.forEach(s => {
-      const id = 's-' + s.toLowerCase().replace(/[^a-z]+/g, '-');
+      const id = secId(s);
       nav.appendChild(el('li', {}, [el('a', { href: '#' + id, text: s })]));
       const sec = el('section', { class: 'group', id });
       const head = el('div', { class: 'sec-head' }, [el('h2', { text: s })]);
@@ -1607,9 +1685,14 @@
       const sum = data.summaries && typeof data.summaries[s] === 'string' ? data.summaries[s] : '';
       if (sum) sec.appendChild(el('p', { class: 'in-short' }, [el('strong', { text: 'In short: ' }), sum]));
       const grid = el('div', { class: 'grid' });
-      const { tiles, wideId } = sectionTiles(data, s);
+      const { tiles, wideId, more, moreWideId } = sectionTiles(data, s);
       tiles.forEach(t => grid.appendChild(buildTile(t, data, t.id === wideId)));
       sec.appendChild(grid);
+      if (more.length) {
+        const mg = el('div', { class: 'grid' });
+        more.forEach(t => mg.appendChild(buildTile(t, data, t.id === moreWideId)));
+        sec.appendChild(revealDetails('tiles-more', id, 'More numbers (' + more.length + ')' + newCount(more), mg, 'more-' + id));
+      }
       main.appendChild(sec);
     });
     // wayfinding: the nav stays at the top (sticky); the section whose top has passed under it is marked aria-current
@@ -1643,11 +1726,18 @@
     if (DESKTOP.addEventListener) DESKTOP.addEventListener('change', () => syncMore(DESKTOP.matches)); else DESKTOP.addListener(() => syncMore(DESKTOP.matches));
     window.addEventListener('beforeprint', () => syncMore(true));
     window.addEventListener('afterprint', () => syncMore(DESKTOP.matches));
-    // tiles render after the data loads, so a link to a section or tile has nothing to land on at first
-    if (location.hash.length > 1) {
+    // tiles render after the data loads, so a link to a section or tile has nothing to land on at first; a tile behind
+    // a closed "More numbers" reveal opens it first (links from chart pages and All N numbers)
+    const land = () => {
+      if (location.hash.length < 2) return;
       const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
-      if (target) requestAnimationFrame(() => target.scrollIntoView());
-    }
+      if (target) { const opened = openFor(target); requestAnimationFrame(() => opened ? requestAnimationFrame(() => target.scrollIntoView()) : target.scrollIntoView()); }
+    };
+    land();
+    window.addEventListener('hashchange', land);
+    // print shows every tile
+    window.addEventListener('beforeprint', () => document.querySelectorAll('details.more-nums').forEach(x => { x.dataset.wasOpen = x.open ? '1' : ''; x.open = true; }));
+    window.addEventListener('afterprint', () => document.querySelectorAll('details.more-nums').forEach(x => { x.open = x.dataset.wasOpen === '1'; }));
   }
 
   // The explainer map (indicator id -> its Plain words page) is written by the articles
