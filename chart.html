@@ -110,8 +110,9 @@
   .site-menu a { display: inline-flex; align-items: center; min-height: 44px; color: var(--nav); font-size: 15px; font-weight: 600; text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 5px; white-space: nowrap; }
   .site-menu a:hover { color: var(--ink); text-decoration-color: var(--ink); }
   .site-menu a[aria-current] { color: var(--ink); }
-  @media (max-width: 389px), (min-width: 761px) and (max-width: 899px) { .site-menu a.m-wide { display: none; } }   /* Nov 8: Tools shows where five items fit on one row: phones 390–760px (at 14px, 10px gaps) and 900px up; under 390 and in the 761–899 band, where the home masthead puts the menu beside the lockup, it stays hidden */
-@media (min-width: 390px) and (max-width: 760px) { nav.site-menu { gap: 0 10px; } nav.site-menu a { font-size: 14px; } }   /* nav. raises specificity over the phone .site-menu rules that come later */
+  @media (max-width: 389px) { .site-menu a.m-wide { display: none; } }   /* Nov 8: Tools shows from 390px up, where five items fit on one row; under 390 four fit and five don't */
+@media (max-width: 760px) { nav.site-menu { gap: 0 10px; } nav.site-menu a { font-size: 14px; } }   /* phones: 14px type, 10px gaps; nav. raises specificity over the phone .site-menu rules that come later */
+@media (max-width: 340px) { nav.site-menu a { font-size: 13px; } }   /* 320–340px phones: 13px keeps four items on one row */
   a.brand { display: inline-flex; align-items: center; min-height: 44px; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.1; color: var(--ink); text-decoration: none; white-space: nowrap; }
   a.brand .bl { font-weight: 400; color: var(--ink-2); }
   a.brand:hover .nm { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
@@ -123,7 +124,7 @@
     .site-menu { width: 100%; gap: 0 14px; }
     a.brand { font-size: 20px; }
   }
-  @media (max-width: 340px) { a.brand { font-size: 19px; } .site-menu { gap: 0 11px; } .site-menu a { font-size: 14px; } }   /* 320px phones: one line each */
+  @media (max-width: 340px) { a.brand { font-size: 19px; } }   /* 320px phones: the lockup on one line (the menu's 320px size is with the Tools rule above) */
   /* the crumb: back to this number's row in the full view, then the page you are on */
   .crumb { font-size: 13.5px; color: var(--ink-2); margin: 0 0 6px; }
   .crumb a { display: inline-block; padding: 6px 0; color: var(--nav); font-weight: 600; text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 3px; }
