@@ -2,7 +2,7 @@
 title: What Technology Does to the Numbers, and When
 dek: Steam, electricity, computers and now AI have all arrived the same way: a surge of investment, a long wait, and then a productivity line that moves. The wait is the part nobody prices in.
 date: 2026-10-28
-updated: 2026-10-29
+updated: 2026-11-09
 ---
 
 ## The pattern
@@ -31,7 +31,7 @@ The dot-com bubble sits in the middle of that stretch, and the sequence matters.
 
 By the same measures, the AI wave is in its investment phase. Spending on AI-specific data centers, chips and networking reached roughly 0.8% of GDP in early 2026, with all computing infrastructure near 1.5%, about double its share in the 2010s, and it has been the largest single contributor to growth in business investment for two years. That is the dot-com shape: the building is visible in GDP now, as the fiber was.
 
-The productivity line is where the question sits. Output per hour rose about 2.2% over the year to mid-2026, better than the 2010s average but inside the range of ordinary cyclical swings, and the Bureau of Labor Statistics does not and cannot attribute any of it to a technology. The pattern of the earlier waves says that is normal: a decade or more between the investment and the reorganization, with the gains arriving when work is rebuilt around the tool, not when the tool is bought. It also says the gains, when they come, do not announce which technology produced them. {{due 2026-11-05 "Q3 productivity: the 2.2% over the year to mid-2026"}}
+The productivity line is where the question sits. Output per hour rose [2.1% over the year to the third quarter of 2026](https://www.bls.gov/news.release/archives/prod2_11052026.htm), better than the 2010s average but inside the range of ordinary cyclical swings, and the Bureau of Labor Statistics does not and cannot attribute any of it to a technology. The pattern of the earlier waves says that is normal: a decade or more between the investment and the reorganization, with the gains arriving when work is rebuilt around the tool, not when the tool is bought. It also says the gains, when they come, do not announce which technology produced them. {{due 2026-12-08 "Q3 Productivity and Costs (revised): the 2.1% over the year to the third quarter"}}
 
 Two things are different this time, and both are argued below. The investment is concentrated in a handful of companies rather than spread across an industry, which makes the financing bubble, if it is one, more concentrated too. And the technology's claimed effect is on the kind of work, office and professional, that the earlier waves mostly left alone.
 
@@ -51,7 +51,7 @@ Two things are different this time, and both are argued below. The investment is
 
 ## Sources
 
-- [BLS, Productivity and Costs](https://www.bls.gov/productivity/), the quarterly release; [FRED: Nonfarm business labor productivity (OPHNFB)](https://fred.stlouisfed.org/series/OPHNFB), the companion on the chart.
+- [BLS, Productivity and Costs](https://www.bls.gov/productivity/), the quarterly release, and its [third-quarter 2026 preliminary release](https://www.bls.gov/news.release/archives/prod2_11052026.htm) (November 5, 2026); [FRED: Nonfarm business labor productivity (OPHNFB)](https://fred.stlouisfed.org/series/OPHNFB), the companion on the chart.
 - [Epoch AI, "Data center buildout share of US GDP"](https://epoch.ai/data-insights/ai-datacenter-share-gdp), the investment estimates for early 2026.
 - [Paul David, "The Dynamo and the Computer" (American Economic Review, 1990)](https://www.jstor.org/stable/2006600), the forty-year lag.
 - [Robert Allen, "Engels' pause" (Explorations in Economic History, 2009)](https://doi.org/10.1016/j.eeh.2009.04.004), the fifty-year lag.

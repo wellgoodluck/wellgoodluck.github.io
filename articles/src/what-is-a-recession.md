@@ -6,6 +6,7 @@ kind: concept
 label: Recessions
 hook: who calls one, and the warning lights before the call
 order: 8
+updated: 2026-11-09
 ---
 
 ## In one sentence
@@ -56,7 +57,7 @@ Because the official call comes so late, people watch indicators that have turne
 
 {{chart id=claims range=50y caption="New jobless claims, four-week average, with recessions shaded. Each recession starts with a rise; so do several false alarms."}}
 
-**The yield curve: what bond buyers expect.** The 10-year Treasury yield minus the 3-month yield is normally positive, because lenders want more to tie money up for longer. When it falls below zero, an "inverted" curve, bond buyers expect the Fed to cut rates, usually because they expect a slowdown. The Federal Reserve Bank of New York turns the spread into a probability of recession twelve months ahead. On September 2026's spread it gave 12.8% for September 2027; on the spring 2023 spread its formula gave about 70%. Since the daily series begins in 1982, the curve first inverted 11 to 23 months before each of the four recession peaks, and gave one false alarm, five days in 1998. Then came the inversion of 2022–24: from October 25, 2022 to December 12, 2024, 534 trading days, by far the longest in the series (the next, in 2006–07, lasted 217), and as deep as −1.89 points on May 4, 2023. It dipped below zero briefly several times in 2025. On October 29, 2026 it stood at +0.80 points. {{due 2026-11-07 "New York Fed's monthly recession probability (the 12.8% above)"}} The almanac's line is the monthly average, computed from the Fed's 10-year and 3-month yields; FRED publishes the daily series as T10Y3M.
+**The yield curve: what bond buyers expect.** The 10-year Treasury yield minus the 3-month yield is normally positive, because lenders want more to tie money up for longer. When it falls below zero, an "inverted" curve, bond buyers expect the Fed to cut rates, usually because they expect a slowdown. The Federal Reserve Bank of New York turns the spread into a probability of recession twelve months ahead. On October 2026's spread it gave 12.4% for October 2027; on the spring 2023 spread its formula gave about 70%. Since the daily series begins in 1982, the curve first inverted 11 to 23 months before each of the four recession peaks, and gave one false alarm, five days in 1998. Then came the inversion of 2022–24: from October 25, 2022 to December 12, 2024, 534 trading days, by far the longest in the series (the next, in 2006–07, lasted 217), and as deep as −1.89 points on May 4, 2023. It dipped below zero briefly several times in 2025. On October 29, 2026 it stood at +0.80 points. {{due 2026-12-07 "New York Fed's monthly recession probability (the 12.4% above)"}} The almanac's line is the monthly average, computed from the Fed's 10-year and 3-month yields; FRED publishes the daily series as T10Y3M.
 
 {{chart id=ten_year range=50y ov=ten_minus_3m height=720 caption="The 10-year Treasury yield, with the 10-year minus 3-month spread in the panel underneath. Below the zero line, the curve is inverted."}}
 
