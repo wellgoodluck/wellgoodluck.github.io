@@ -2084,6 +2084,44 @@ def home_summary(tiles_out, today=None):
     return {"paragraph": merged, "rows": rows, "order": order}
 
 
+# Social Security cost-of-living adjustments (Nov 9), typed from SSA's table at
+# https://www.ssa.gov/oact/cola/colaseries.html (checked Nov 9, 2026). Keyed by the year SSA lists, which is the year
+# the COLA takes effect: 1975-1982 with benefits payable for June (received in July), from 1983 with benefits payable
+# for December (received the following January). 1999 is the 2.5% fixed by Public Law 106-554. Add one line each
+# October when SSA announces the next COLA (the 2027 COLA, effective December 2026, is the 2026 row).
+SS_COLA = {
+    1975: 8.0, 1976: 6.4, 1977: 5.9, 1978: 6.5, 1979: 9.9, 1980: 14.3, 1981: 11.2, 1982: 7.4, 1983: 3.5,
+    1984: 3.5, 1985: 3.1, 1986: 1.3, 1987: 4.2, 1988: 4.0, 1989: 4.7, 1990: 5.4, 1991: 3.7, 1992: 3.0,
+    1993: 2.6, 1994: 2.8, 1995: 2.6, 1996: 2.9, 1997: 2.1, 1998: 1.3, 1999: 2.5, 2000: 3.5, 2001: 2.6,
+    2002: 1.4, 2003: 2.1, 2004: 2.7, 2005: 4.1, 2006: 3.3, 2007: 2.3, 2008: 5.8, 2009: 0.0, 2010: 0.0,
+    2011: 3.6, 2012: 1.7, 2013: 1.5, 2014: 1.7, 2015: 0.0, 2016: 0.3, 2017: 2.0, 2018: 2.8, 2019: 1.6,
+    2020: 1.3, 2021: 5.9, 2022: 8.7, 2023: 3.2, 2024: 2.5, 2025: 2.8, 2026: 3.6,
+}
+
+
+def cola_index(through, base_start, base_end):
+    """A Social Security benefit that rose by each COLA, by the month the higher check arrives, from January 1975
+    through the month `through` (YYYY-MM-DD), rebased to the mean of base_start..base_end = 100. [(date, value)]"""
+    steps = {}
+    for y, pct in SS_COLA.items():
+        when = f"{y}-07" if y <= 1982 else f"{y + 1}-01"   # the month the higher check is received
+        steps[when] = 1 + pct / 100
+    out, level, y, m = [], 1.0, 1975, 1
+    end = through[:7]
+    while f"{y:04d}-{m:02d}" <= end:
+        key = f"{y:04d}-{m:02d}"
+        level *= steps.get(key, 1.0)
+        out.append((key + "-01", level))
+        m += 1
+        if m == 13:
+            y, m = y + 1, 1
+    base = [v for d, v in out if base_start <= d <= base_end]
+    if not base:
+        raise RuntimeError("base window empty")
+    b = mean(base)
+    return [(d, 100.0 * v / b) for d, v in out]
+
+
 DERIVED = [
     {
         "id": "payrolls_3mo",
@@ -2203,6 +2241,32 @@ DERIVED = [
         "op": "scale", "a": "layoffs_rate", "k": 1, "freq": "m",
         "why": "Involuntary separations as a share of employment (JOLTS, JTSLDR), the monthly counterpart of weekly jobless claims. Different scale: percent of employment.",
         "panel": "group:turnover", "panel_title": "Share of workers, each month", "display": {"scale": 1, "decimals": 1, "suffix": "%"},
+    },
+    # Rent against a Social Security benefit and prices overall, all 2019 = 100, in one shared sub-panel under the
+    # rent chart (Nov 9; the Asked to Move page). The benefit line steps up once a year from the typed COLA table.
+    {
+        "id": "rent_2019",
+        "label": "Rent, 2019 average = 100",
+        "for": ["rent"],
+        "op": "rebase", "a": "rent_level", "base_start": "2019-01-01", "base_end": "2019-12-31", "freq": "m",
+        "why": "The rent index itself (CUSR0000SEHA), so its rise since 2019 can be set against a benefit that rises with the COLA. Different scale: 2019 average = 100.",
+        "panel": "group:rent_vs_ss", "panel_title": "2019 average = 100", "display": {"scale": 1, "decimals": 1, "suffix": ""},
+    },
+    {
+        "id": "ss_benefit_2019",
+        "label": "A Social Security benefit (COLAs only), 2019 average = 100",
+        "for": ["rent"],
+        "op": "cola_index", "a": "rent_level", "base_start": "2019-01-01", "base_end": "2019-12-31", "freq": "m",
+        "why": "A benefit that rose by each year's cost-of-living adjustment and nothing else, stepping up in the month the higher check arrives (January since 1984). From SSA's published COLAs; Medicare premiums taken out of the check are not subtracted. Different scale: 2019 average = 100.",
+        "panel": "group:rent_vs_ss", "panel_title": "2019 average = 100", "display": {"scale": 1, "decimals": 1, "suffix": ""},
+    },
+    {
+        "id": "prices_2019_rent",
+        "label": "Prices overall (CPI), 2019 average = 100",
+        "for": ["rent"],
+        "op": "scale", "a": "price_level", "k": 1, "freq": "m",
+        "why": "The whole consumer price index on the same footing, for comparison: rent above this line has risen faster than prices in general. Different scale: 2019 average = 100.",
+        "panel": "group:rent_vs_ss", "panel_title": "2019 average = 100", "display": {"scale": 1, "decimals": 1, "suffix": ""},
     },
 ]
 # Each price tile also gets its inflation-adjusted line on the detail page: the same
@@ -2746,6 +2810,9 @@ def derive(spec, by_id):
         return monthly_average(a)
     if spec["op"] == "scale":
         return [(d, v * spec["k"]) for d, v in a]
+    if spec["op"] == "cola_index":
+        # typed COLAs (SS_COLA), on a monthly grid ending with input a's latest month
+        return cola_index(a[-1][0], spec["base_start"], spec["base_end"])
     raise RuntimeError(f"unknown op {spec['op']}")
 
 
