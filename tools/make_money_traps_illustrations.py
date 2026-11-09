@@ -734,7 +734,58 @@ def worry_ad():
           "These statements have not been evaluated by the Food and Drug Administration\u201d, the real product.")
 
 
+# ---------------------------------------------------------------- four levels of debt (Plain words, Nov 9)
+def four_borrowers():
+    """Four columns, one per borrower; identity edges on the headers (with the name as the second cue)."""
+    b = []
+    cw = W / 4
+    cx = [cw * i + cw / 2 for i in range(4)]
+    b.append(T(0, 16, "Four kinds of borrower", "h"))
+    b.append(T(0, 36, "Same word, debt, with different rules at each level", "s i2"))
+    heads = [("Household", "c1-edge"), ("City", "c2-edge"), ("State", "c3-edge"), ("Washington", "teal-edge")]
+    y = 52
+    for (h, edge), x in zip(heads, cx):
+        b.append(R(x - cw / 2 + 3, y, cw - 6, 26, edge, rx=4))
+        b.append(T(x, y + 17.5, h, "s m", "middle"))
+    def row(y, cap, cells):
+        b.append(L(0, y - 18, W, y - 18, "rule"))
+        b.append(T(0, y, cap, "cap"))
+        for x, c in zip(cx, cells):
+            lines = c if isinstance(c, tuple) else (c,)
+            for k, ln in enumerate(lines):
+                cls = ("s b" if k == 0 else "xs i2")
+                b.append(T(x, y + 24 + 16 * k, ln, cls, "middle"))
+    row(108, "DOES IT ISSUE THE MONEY IT OWES?", ["No", "No", "No", ("Yes", "it owes dollars")])
+    row(176, "CAN IT GO BANKRUPT?", ["Yes", ("Yes", "if its state", "allows it"), "No", ("No", "can't be forced", "to default")])
+    row(260, "MUST IT BALANCE ITS BUDGET?", [("Over time", "loans end"), ("Yes", "day-to-day", "budget"), ("Yes", "day-to-day", "budget"), "No"])
+    y = 344
+    b.append(L(0, y - 18, W, y - 18, "rule"))
+    b.append(T(0, y, "IN A RECESSION", "cap"))
+    ay0, ay1 = y + 16, y + 52
+    for i, x in enumerate(cx):
+        if i < 3:
+            b.append(L(x, ay0, x, ay1, "ink-line"))
+            b.append(P(f"M{x - 6:g} {ay1 - 8:g} L{x:g} {ay1:g} L{x + 6:g} {ay1 - 8:g}", "ink-line"))
+            b.append(T(x, ay1 + 20, "Cuts back", "s b", "middle"))
+        else:
+            b.append(L(x, ay1, x, ay0, "teal-line"))
+            b.append(P(f"M{x - 6:g} {ay0 + 8:g} L{x:g} {ay0:g} L{x + 6:g} {ay0 + 8:g}", "teal-line"))
+            b.append(T(x, ay1 + 20, "Borrows more", "s b", "middle"))
+    y = ay1 + 52
+    b.append(T(0, y, "Cities and states must balance their day-to-day", "xs i2"))
+    b.append(T(0, y + 16, "budgets, so a recession forces cuts. Washington", "xs i2"))
+    b.append(T(0, y + 32, "can borrow to fill the gap.", "xs i2"))
+    write("four-borrowers", y + 40, b, "Four kinds of borrower: a household, a city, a state and Washington",
+          "A comparison in four columns. Does it issue the money it owes? Household no, city no, state no, Washington yes, "
+          "because it owes dollars. Can it go bankrupt? Household yes; city yes, if its state allows it; state no; "
+          "Washington no, it can't be forced to default. Must it balance its budget? Household over time, because loans "
+          "end; city and state yes, their day-to-day budgets; Washington no. In a recession: household, city and state cut "
+          "back; Washington borrows more. Cities and states must balance their day-to-day budgets, so a recession forces "
+          "cuts; Washington can borrow to fill the gap.")
+
+
 for fn in (credit_score_factors, overdraft_statement, overdraft_optin, card_minimum_box, card_three_ways, bnpl_calendar,
            payday_treadmill, cash_advance_timelines, car_balances, car_price_tag, rto_price_tag, rto_three_laptops,
-           subs_statement, finfluencer_post, one_percent_curve, two_savers, pay_stub, student_balance, worry_ad):
+           subs_statement, finfluencer_post, one_percent_curve, two_savers, pay_stub, student_balance, worry_ad,
+           four_borrowers):
     fn()

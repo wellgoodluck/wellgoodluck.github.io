@@ -16,7 +16,7 @@ A household borrows against a finite working life and has to pay the loan off; t
 
 The one everyone uses first: a family that spends more than it earns is heading for trouble, and so is a government. It is wrong in four ways that matter.
 
-A household retires. Its income stops and its debt comes due against savings. The government's income is the tax base, which grows with the economy and has no retirement date, so the debt is never "due" the way a mortgage is; it is rolled over, continuously, as it has been since 1790.
+A household retires. Its income stops and its debt comes due against savings. The government's income is the tax base, which grows with the economy and has no retirement date, so the debt is never "due" the way a mortgage is; it is rolled over, continuously, as it has been for almost all of the country's history; the one exception came in 1835, when the debt was briefly paid off, and borrowing resumed within a few years.
 
 A household can't tax. Its income is what employers pay it. The government's is what it decides to collect, within what voters will stand for, and that is a very different kind of ceiling.
 
