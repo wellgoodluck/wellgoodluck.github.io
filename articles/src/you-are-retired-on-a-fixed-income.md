@@ -65,6 +65,7 @@ The benefit is indexed, which almost no private income is. Cash and bonds finall
 - [Real vs. nominal](real-vs-nominal.html): why a fixed dollar amount shrinks.
 - [The Fed funds rate](what-is-the-fed-funds-rate.html) and [the 10-year yield](what-is-the-10-year-yield.html): the two rates your savings follow.
 - [You own with a fixed mortgage](you-own-with-a-fixed-mortgage.html): the house.
+- [Asked to move after years in place](asked-to-move.html): if you rent, what a move costs on a fixed income.
 
 ## Sources
 

@@ -71,6 +71,7 @@ Renters are the one group fully insulated from the two costs that have hit owner
 - [Housing starts](what-are-housing-starts.html): the supply side, two years early.
 - [Mortgage rates](what-is-the-mortgage-rate.html): why they decide who you're bidding against.
 - [Real vs. nominal](real-vs-nominal.html): the paycheck subtraction.
+- [Asked to move after years in place](asked-to-move.html): why a long tenancy's rent resets when it ends, and how to weigh an offer to leave.
 
 ## Sources
 

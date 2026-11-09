@@ -754,6 +754,11 @@ def val_rent_minus_prices(D):
     return round(rent * 100) - round(prices * 100)
 
 
+def val_rent_since_2019_pct(D):
+    """Rent since the 2019 average, in whole percent as printed (for checks; Nov 9, asked-to-move)."""
+    return round(_pay_prices_rent(D)[3] * 100)
+
+
 def fig_rent_verdict(D):
     d, pay, prices, rent = _pay_prices_rent(D)
     pay_r, prices_r, rent_r = (round(x * 100) for x in (pay, prices, rent))
@@ -1259,6 +1264,7 @@ VALUES = {      # usable on the left of a check as fig:<name>
     "rent_minus_prices": val_rent_minus_prices, "unemployed_vs_2019": val_unemployed_vs_2019,
     "real_raise_sep2019": val_real_raise_sep2019, "openings_vs_2019": val_openings_vs_2019,
     "fafh_gap": val_fafh_gap, "fafh_since_2019_pct": val_fafh_since_2019_pct,
+    "rent_since_2019_pct": val_rent_since_2019_pct,
     "ev_saving": val_ev_saving, "ev_ratio": val_ev_ratio,
 }
 
