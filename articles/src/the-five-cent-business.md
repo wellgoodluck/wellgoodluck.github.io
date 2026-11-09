@@ -6,7 +6,7 @@ kind: concept
 label: Restaurant economics
 hook: where the dollar on the check goes, and how a five-cent margin shapes the menu
 order: 13
-featured: 2026-11-15
+featured: 2026-11-23
 ---
 
 ## In one sentence

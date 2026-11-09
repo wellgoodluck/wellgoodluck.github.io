@@ -339,6 +339,8 @@ SERIES = []        # [{kind, slug, title, dek, featured, date, parts: [{slug, la
 SERIES_OF = {}     # article slug -> (series, index of the part)
 LANDINGS = {}      # landing-page slug -> its series (Nov 9)
 SERIES_FOLD = 8    # a series box with more parts than this folds them behind "Show all N parts" (Nov 9)
+FEATURED_PARTS = 4  # a featured series with a landing page and more than SERIES_FOLD parts shows its first few parts and
+                    # then "All N parts", linking to the landing page, so the Featured card stays short (Nov 9)
 
 
 def load_series(articles, path=os.path.join("articles", "series.json")):
@@ -437,11 +439,15 @@ def featured_html(feat, link_prefix=""):
     svg = featured_picture(feat)
     pic = f'<a class="cthumb" href="{url}" aria-hidden="true" tabindex="-1">{svg}</a>' if svg else ""
     if feat.get("kind") == "series":
+        shown, more = feat["parts"], ""
+        if feat.get("landing") and len(shown) > SERIES_FOLD:
+            shown = shown[:FEATURED_PARTS]
+            more = f'<p class="fmore"><a href="{url}">All {len(feat["parts"])} parts</a> →</p>'
         parts = "".join(f'<li><a href="{link_prefix}{p["slug"]}.html" title="{html.escape(p["title"], quote=True)}"><span class="n">{k + 1}</span> {inline(p["label"])}</a></li>'
-                        for k, p in enumerate(feat["parts"]))
+                        for k, p in enumerate(shown))
         return (f'<aside class="featured featured-series" aria-label="Featured series"><div class="ctext"><span class="flabel">Featured series</span>'
                 f'<a class="ftitle" href="{url}">{inline(feat["title"])}</a> →{dek}'
-                f'<ol class="fparts" role="list">{parts}</ol></div>{pic}</aside>\n')
+                f'<ol class="fparts" role="list">{parts}</ol>{more}</div>{pic}</aside>\n')
     return (f'<aside class="featured" aria-label="Featured article"><div class="ctext"><span class="flabel">Featured</span>'
             f'<a class="ftitle" href="{url}">{inline(feat["title"])}</a> →{dek}</div>{pic}</aside>\n')
 
@@ -1067,9 +1073,12 @@ def write_explainers(out_root, articles):
             ex[tid] = {"url": f"articles/{a['slug']}.html", "title": a["title"], "hook": a.get("hook", "")}
     feat, nxt = featured_pick(articles)
     if feat and feat.get("kind") == "series":
-        featured = {"url": f"articles/{feat['parts'][0]['slug']}.html", "title": feat["title"], "dek": feat.get("dek", ""),
-                    "series": feat["slug"],
-                    "parts": [{"url": f"articles/{p['slug']}.html", "label": p["label"], "title": p["title"]} for p in feat["parts"]]}
+        url = f"articles/{feat.get('landing') or feat['parts'][0]['slug']}.html"
+        shown = feat["parts"][:FEATURED_PARTS] if feat.get("landing") and len(feat["parts"]) > SERIES_FOLD else feat["parts"]
+        featured = {"url": url, "title": feat["title"], "dek": feat.get("dek", ""), "series": feat["slug"],
+                    "parts": [{"url": f"articles/{p['slug']}.html", "label": p["label"], "title": p["title"]} for p in shown]}
+        if len(shown) < len(feat["parts"]):        # the home card ends "All N parts →" (index.html reads `more`)
+            featured["more"] = {"url": url, "label": f"All {len(feat['parts'])} parts"}
     else:
         featured = {"url": f"articles/{feat['slug']}.html", "title": feat["title"], "dek": feat.get("dek", "")} if feat else None
     if featured:

@@ -260,6 +260,8 @@
   .featured .fparts a:hover { border-color: var(--full-ink); color: var(--ink); }
   .featured .fparts .n { display: inline-block; min-width: 1.5em; height: 1.5em; line-height: calc(1.5em - 2px); margin-right: 6px; border: 1px solid var(--full-line); border-radius: 50%; text-align: center; font-size: 12.5px; font-weight: 600; color: var(--full-ink); font-variant-numeric: tabular-nums; }
   @media (max-width: 760px) { .featured .fparts a { padding: 8px 14px 8px 9px; } }
+  .featured .fmore { margin: 10px 0 0; font-weight: 600; }
+  .featured .fmore a { display: inline-block; padding: 11px 0; margin: -11px 0; color: var(--full-ink); }   /* 44px tap height */
   /* the pictures: the view's lines, no axes, at the foot of each card; each repeats its title's link */
   .featured .cthumb, .chart-try .cthumb { display: block; flex: none; margin-top: auto; padding-top: 12px; }
   .featured .thumb, .chart-try .thumb { display: block; width: 100%; height: 56px; overflow: visible; }
@@ -1536,7 +1538,8 @@
         [el('span', { class: 'flabel', text: isSeries ? 'Featured series' : 'Featured' }), el('a', { class: 'ftitle', href: f.url, text: f.title }), ' →']
           .concat(f.dek ? [el('p', { class: 'fdek', text: f.dek })] : [])   // an explainers.json from before Nov 1 has no dek
           .concat(isSeries ? [el('ol', { class: 'fparts', role: 'list' }, parts.map((p, i) =>
-            el('li', {}, [el('a', { href: p.url, title: p.title || p.label }, [el('span', { class: 'n', text: String(i + 1) }), ' ' + p.label])])))] : []));
+            el('li', {}, [el('a', { href: p.url, title: p.title || p.label }, [el('span', { class: 'n', text: String(i + 1) }), ' ' + p.label])])))] : [])
+          .concat(isSeries && f.more && f.more.url && f.more.label ? [el('p', { class: 'fmore' }, [el('a', { href: f.more.url, text: f.more.label }), ' →'])] : []));   // a long series: its first parts, then All N parts (Nov 9)
       const thumb = pic(f.svg, f.url);
       lead.push(el('aside', { class: 'featured', 'aria-label': isSeries ? 'Featured series' : 'Featured article' }, thumb ? [text, thumb] : [text]));
     }
