@@ -51,7 +51,7 @@
     },
     "main-street": {
       "title": "Who Owns Main Street",
-      "dek": "Seven pages, read in order: how private equity and corporate groups bought vet clinics, dental offices and eye practices, usually keeping the local name; why pharmacies changed hands differently; who owns the plumbing, heating and electrical companies and who makes the equipment they install; and where the money from all of it goes.",
+      "dek": "Eight pages, read in order: how private equity and corporate groups bought vet clinics, dental offices and eye practices, usually keeping the local name; why pharmacies changed hands differently; who owns the plumbing, heating and electrical companies and who makes the equipment they install; who owns the farms, and the few companies that sell farmers their seed and fertilizer and buy what they raise; and where the money from all of it goes.",
       "parts": [
         {
           "slug": "who-owns-the-vet",
@@ -76,6 +76,10 @@
         {
           "slug": "who-makes-the-equipment",
           "label": "The equipment makers"
+        },
+        {
+          "slug": "who-owns-the-farm",
+          "label": "Farms"
         },
         {
           "slug": "where-the-money-goes",

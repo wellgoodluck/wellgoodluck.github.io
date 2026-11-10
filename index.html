@@ -252,6 +252,8 @@
   .featured .fdek, .chart-try .fdek { margin: 4px 0 0; color: var(--ink-2); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
   .chart-try .fdek { -webkit-line-clamp: 3; }
   .chart-try .fhow { margin: 6px 0 0; color: var(--ink-2); font-size: 13.5px; }   /* the fixed how-to line under the prompt */
+  .chart-try .tool-links { display: inline-block; }   /* Nov 10: the two tool links wrap below "More tools:" as a unit, so "· All tools" never sits alone */
+  .chart-try .tool-links .nw { white-space: nowrap; }   /* if even the unit can't fit (320px), the dot stays on the first link's line */
   @media (max-width: 760px) { .featured .fdek, .chart-try .fdek { -webkit-line-clamp: 3; } }
   /* A featured series: the parts in reading order under the dek, as numbered pill buttons */
   .featured .fparts { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 10px; }
@@ -1671,7 +1673,7 @@
       const text = el('div', { class: 'ctext' },
         [el('span', { class: 'flabel', text: 'Make your own chart' }), el('a', { class: 'ftitle', href: cp.url, text: cp.title || cp.link || 'See the chart' }), ' →',
          el('p', { class: 'fdek', text: cp.text }), el('p', { class: 'fhow', text: MAKE_YOUR_OWN }),
-         el('p', { class: 'fhow' }, ['More tools: ', el('a', { href: 'tools/kept-up.html', text: 'Has It Kept Up With Prices?' }), ' · ', el('a', { href: 'tools/', text: 'All tools' })])]);   // Nov 8
+         el('p', { class: 'fhow' }, ['More tools: ', el('span', { class: 'tool-links' }, [el('span', { class: 'nw' }, [el('a', { href: 'tools/kept-up.html', text: 'Has It Kept Up With Prices?' }), ' ·']), ' ', el('a', { href: 'tools/', text: 'All tools' })])])]);   // Nov 8; links grouped Nov 10
       const thumb = pic(cp.svg, cp.url);
       lead.push(el('aside', { class: 'chart-try', 'aria-label': 'Make your own chart' }, thumb ? [text, thumb] : [text]));
     }
