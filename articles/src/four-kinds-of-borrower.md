@@ -6,6 +6,7 @@ kind: concept
 label: Four kinds of borrower
 hook: a household, a city, a state and Washington
 order: 41
+updated: 2026-11-10
 ---
 
 ## In one sentence
@@ -22,7 +23,7 @@ The last row is the one most people never hear. When a recession hits, cities an
 
 ## A household
 
-American households owe about $18.8 trillion, and about 70% of it is mortgages. The rest is auto loans, student loans, credit cards and other debt. (These are the New York Fed's figures for the second quarter of 2026; the third-quarter update comes out November 10.)
+American households owe about $19.1 trillion, and about 70% of it is mortgages. The rest is auto loans, student loans, credit cards and other debt. (These are the New York Fed's figures for the third quarter of 2026.)
 
 A household's debt has a natural end. You borrow against a working life that will stop, so the loans have to be paid off before then. That's why the household rule of thumb is about **good debt and bad debt**: borrowing for something that lasts and pays you back over time, like a home or an education, can make sense; borrowing for everyday bills usually means trouble. The [Money Traps](money-traps.html) series is about the second kind.
 
@@ -68,7 +69,7 @@ Both are describing the same mechanics; they disagree about where the limits are
 
 ## Sources
 
-- [Federal Reserve Bank of New York, Household Debt and Credit Report, Q2 2026 (August 11, 2026)](https://www.newyorkfed.org/newsevents/news/research/2026/20260811)
+- [Federal Reserve Bank of New York, Household Debt and Credit Report, Q3 2026 (November 10, 2026; total $19.105 trillion, mortgages $13.374 trillion)](https://www.newyorkfed.org/newsevents/news/research/2026/20261110)
 - [Federal Reserve, Financial Accounts of the United States (Z.1), September 11, 2026 release (state and local government debt, $3.82 trillion, Q2 2026)](https://www.federalreserve.gov/releases/z1/current/z1.pdf)
 - [Municipal Securities Rulemaking Board, "Municipal Bond Basics" (what bonds pay for; maturities)](https://msrb.org/sites/default/files/2023-11/Municipal-Bond-Basics.pdf)
 - [U.S. Courts, "Chapter 9: Bankruptcy Basics"](https://www.uscourts.gov/court-programs/bankruptcy/bankruptcy-basics/chapter-9-bankruptcy-basics)

@@ -479,7 +479,7 @@
   .glance a.row:hover .t { text-decoration: underline; text-decoration-color: var(--muted); text-underline-offset: 3px; }
   .glance .t { grid-area: t; font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .glance .v { grid-area: v; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .glance .v .p { color: var(--muted); font-size: 12.5px; margin-left: 6px; }
+  .glance .v .p { color: var(--muted); font-size: 12.5px; margin-left: 2px; }   /* Nov 10: a space now precedes it (Label in Name); 2px + the space keeps the old gap */
   .glance .mini { grid-area: s; margin: 2px 0 0; min-height: 16px; }
   .glance .mini svg { display: block; width: 100%; height: 16px; overflow: visible; }
   .mini .track { stroke: var(--range); stroke-width: 5; stroke-linecap: round; }
@@ -1069,9 +1069,11 @@
         const c = t.context, d = t.display;
         const hv = t.headline ? t.headline.value : c.current.value;
         const per = t.headline ? fmtPeriod(t.headline.date, 'd') : fmtPeriod(c.current.date, pf(t));
-        const a = el('a', { class: 'row', href: '#i-' + t.id, 'aria-label': t.title + ': ' + fmtValue(hv, d) + ', ' + per + '. ' + contextSentence(t) });
+        const fl = freshLabel(t);   // Nov 10: the accessible name begins with exactly the visible text (WCAG 2.5.3, Label in Name)
+        const a = el('a', { class: 'row', href: '#i-' + t.id, 'aria-label': [t.title, fl && fl.textContent, fmtValue(hv, d), per].filter(Boolean).join(' ') + '. ' + contextSentence(t) });
         a.appendChild(el('span', { class: 't' }, withLabel(t, [el('span', { class: 'tn', text: t.title })])));   // the name shortens, the label stays
-        a.appendChild(el('span', { class: 'v' }, [fmtValue(hv, d), el('span', { class: 'p', text: per })]));
+        a.appendChild(document.createTextNode(' '));
+        a.appendChild(el('span', { class: 'v' }, [fmtValue(hv, d), ' ', el('span', { class: 'p', text: per })]));
         a.appendChild(miniStrip(t));
         grp.appendChild(a);
       });
@@ -1607,7 +1609,7 @@
           extra.forEach(li => { li.hidden = !open; });
           btn.setAttribute('aria-expanded', open ? 'true' : 'false');
           btn.textContent = open ? 'Fewer numbers ↑' : 'More numbers (' + more.length + ')' + newCount(more) + ' ↓';
-          btn.setAttribute('aria-label', open ? 'Fewer numbers in ' + s : more.length + ' more numbers in ' + s + ': ' + more.map(t => t.title).join(', '));
+          btn.setAttribute('aria-label', open ? 'Fewer numbers in ' + s : 'More numbers (' + more.length + ')' + newCount(more) + ' in ' + s + ': ' + more.map(t => t.title).join(', '));   // Nov 10: starts with the visible text (Label in Name)
         };
         btn.addEventListener('click', () => { const open = btn.getAttribute('aria-expanded') !== 'true'; set(open); saveMore(key, open); if (open) extra[0].querySelector('a').focus(); });
         ul.appendChild(el('li', { class: 'more-cell' }, [btn]));
