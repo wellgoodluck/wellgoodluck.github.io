@@ -59,6 +59,7 @@
     --full-ink: #0b6b66;
     --full-line: rgba(11, 122, 117, 0.45);
     --range: #c4c2b9;    /* the typical-range bar: darker than a hairline, because it carries meaning */
+    --nav-band: #805a00; /* ochre on the Hairline band (Nov 10): 4.8:1 there, where --nav is 4.27:1; same hue, 6.2:1 on white */
     --frame: #c4c2b9;    /* the sides of framed boxes (tiles, cards, the index panel, chart frames), Nov 6; Featured keeps its teal */
     --max: 1120px;
   }
@@ -86,6 +87,7 @@
       --full-line: rgba(43, 179, 168, 0.6);
       --range: #45443f;
       --frame: #45443f;
+      --nav-band: #d9a83a;   /* the dark ochre already passes on the dark band (6.4:1) */
     }
   }
 
@@ -305,6 +307,11 @@
   /* wayfinding links on the home page: ochre with the 2px underline, 44px tall */
   a.wf { display: inline-flex; align-items: center; min-height: 44px; color: var(--nav); font-size: 15px; font-weight: 600; text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 3px; }
   a.wf:hover { color: var(--ink); text-decoration-color: var(--ink); }
+  /* a link at the right end of a section band (Nov 10: All N numbers' link to the full view): the band's ochre, and a 44px
+     tap box drawn past the text so the band keeps its height */
+  .band a.band-link { position: relative; min-height: 0; margin-left: auto; color: var(--nav-band); text-decoration-color: var(--nav-band); }
+  .band a.band-link::after { content: ''; position: absolute; left: -6px; right: -6px; top: 50%; height: 44px; transform: translateY(-50%); }
+  .band a.band-link:hover { color: var(--ink); text-decoration-color: var(--ink); }
   /* ↑ Top: phones only, after each section from Six numbers on */
   .htop { display: none; margin: 0; text-align: right; }
   .htop a { font-size: 13.5px; }
@@ -401,7 +408,8 @@
   .allintro p { margin: 0; font-size: 14px; color: var(--ink-2); }
   .ipanel { background: var(--surface); border: var(--ip-border, 1px) solid var(--frame); border-radius: 6px; padding: 14px var(--ip-pad-x, 18px) 18px; }
   .igrp + .igrp { margin-top: 14px; }
-  .igrp h3 { margin: 0; padding: 5px var(--grp-pad-x, 10px); background: var(--hairline); border-radius: 3px; font-size: 13.5px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: 0.07em; }
+  .igrp .gbar { padding: 0 var(--grp-pad-x, 10px); }
+  .igrp h3 { margin: 0; padding: 5px 0; font-size: 13.5px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: 0.07em; }
   .igrp ul { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 16px; margin: 0; padding: 0 0 0 calc(var(--grp-pad-x, 10px) + var(--row-indent, 14px)); list-style: none; }   /* rows hang past the group label */
   @media (max-width: 999px) { .igrp ul { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   @media (max-width: 760px) { .igrp ul { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ipanel { padding: 12px var(--ip-pad-x, 12px) 14px; } }
@@ -459,15 +467,16 @@
      the row names under it (the old 12.5px Muted label read as the quietest text in the block). The band is the hairline
      gray, not a tint: ochre is for wayfinding and teal for readings. The band stands in for the first row's hairline. */
   .glance .grp { break-inside: avoid; margin: 0 0 24px; }
-  .glance h3 { margin: 0; padding: 5px 10px; background: var(--hairline); border-radius: 3px; font-size: 13.5px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: 0.07em; }
+  .glance .gbar { padding: 0 10px; }
+  .glance h3 { margin: 0; padding: 5px 0; font-size: 13.5px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: 0.07em; }
   .glance h3 .adj { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--ink-2); }
-  .glance h3 + a.row { border-top: 0; }
+  .glance .gbar + a.row { border-top: 0; }
   /* Desktop (Nov 5, option D of four): each group is a full-width band with its rows in columns under it, two columns
      from 720px (where every name and date fits) and three from 1000px, read across then down. The newspaper columns it replaces stacked the groups, so
      the bands landed at uneven heights once they were bands (a reader called it staggered). */
   @media (min-width: 720px) {
     .glance .grp { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; margin-bottom: 18px; }
-    .glance .grp h3 { grid-column: 1 / -1; }
+    .glance .grp .gbar { grid-column: 1 / -1; }
     .glance .grp a.row:nth-of-type(-n+2) { border-top: 0; }
   }
   @media (min-width: 1000px) {
@@ -485,10 +494,10 @@
   .mini .track { stroke: var(--range); stroke-width: 5; stroke-linecap: round; }
   .mini .now { fill: var(--series); stroke: var(--surface); stroke-width: 2; }
   .mini .avg { stroke: var(--ink-2); stroke-width: 2; }
-  /* More numbers (Nov 8): the tiles flagged "more" sit behind a reveal under their section's tiles, in All N numbers and on
-     the almanac. The control is the articles index's "Show N earlier pieces ↓": an ochre wayfinding link with a 2px underline
-     and no triangle, 44px tall; open, it reads "Fewer numbers ↑". In At a glance a section's hidden tiles are one row naming
-     them, which opens the reveal below. Open or closed is remembered per section on this device (localStorage), nothing more. */
+  /* More numbers (Nov 8): the tiles flagged "more" sit behind a reveal under their section's tiles on the almanac. The
+     control is the articles index's "Show N earlier pieces ↓": an ochre wayfinding link with a 2px underline and no
+     triangle, 44px tall; open, it reads "Fewer numbers ↑". All N numbers and At a glance show theirs in place from the
+     group bar (Nov 10, Group bars below). Open or closed is remembered per section on this device (localStorage), nothing more. */
   details.more-nums > summary { cursor: pointer; display: inline-flex; align-items: center; min-height: 44px; list-style: none; font-size: 15px; font-weight: 600; color: var(--nav);
     text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 3px; }
   details.more-nums > summary::-webkit-details-marker { display: none; }
@@ -496,16 +505,25 @@
   details.more-nums[open] > summary .more, details.more-nums:not([open]) > summary .less { display: none; }
   details.tiles-more { margin: 10px 0 0; }
   details.tiles-more[open] > summary { margin-bottom: 12px; }
-  .igrp li.more-cell { display: flex; align-items: center; border-bottom: 0; }
-  .igrp .more-btn { min-height: 52px; padding: 0; border: 0; background: none; font: inherit; font-size: 14.5px; font-weight: 600; color: var(--nav); cursor: pointer; text-align: left;
-    text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 3px; }
-  .igrp .more-btn:hover { color: var(--ink); text-decoration-color: var(--ink); }
-  @media print { .igrp li.more-li[hidden] { display: list-item !important; } .igrp li.more-cell { display: none; } }
-  .glance a.more-row { grid-column: 1 / -1; display: block; min-height: 44px; padding: 11px 0 6px; border-top: 1px solid var(--hairline); font-size: 14px; color: var(--ink-2); text-decoration: none; }
-  .glance a.more-row .mr-n { font-weight: 600; color: var(--nav); text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 3px; }
-  .glance a.more-row .mr-a { color: var(--nav); }
-  .glance a.more-row:hover .mr-n, .glance a.more-row:hover .mr-a { color: var(--ink); text-decoration-color: var(--ink); }
-  @media print { details.more-nums > summary, .glance a.more-row { display: none; } }
+  /* Group bars (Nov 10): in All N numbers and At a glance the group's name sits left on the Hairline band and its More
+     control right: "More (n)", a New label when a hidden number carries one (not on phones, where it would wrap the
+     longer names), and a chevron that turns over when open, where it reads "Less". The chevron means "opens here"; the
+     site's ↓ means "further down the page". The control's 44px tap box reaches 10px above the band and 4px below it,
+     into the gap over the band and the first row's top padding, so the band keeps its 30px height. */
+  .gbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 12px; min-height: 30px; background: var(--hairline); border-radius: 3px; }
+  .bar-more { position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 30px; margin-left: auto; padding: 0; border: 0; background: none;
+    font: inherit; font-size: 14.5px; font-weight: 600; line-height: 1.2; color: var(--nav-band); cursor: pointer; white-space: nowrap; }
+  .bar-more::after { content: ''; position: absolute; left: -8px; right: -8px; top: -10px; bottom: -4px; }
+  .bar-more .bm-t { text-decoration: underline; text-decoration-color: var(--nav-band); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  .bar-more:hover, .bar-more:hover .bm-t { color: var(--ink); text-decoration-color: var(--ink); }
+  .bar-more .fresh { margin: 0; background: linear-gradient(var(--series-wash), var(--series-wash)), var(--surface); }   /* the wash over Sheet: 5.5:1, where over the band it is 4.34:1 */
+  .bar-more .chev { flex: none; width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.15s; }
+  .bar-more[aria-expanded="true"] .chev { transform: rotate(180deg); }
+  @media (prefers-reduced-motion: reduce) { .bar-more .chev { transition: none; } }
+  @media (max-width: 760px) { .bar-more .fresh { display: none; } }
+  @media print { .igrp li.more-li[hidden] { display: list-item !important; } .bar-more { display: none; } }
+  .glance a.row[hidden] { display: none; }
+  @media print { details.more-nums > summary { display: none; } }
   /* New / Revised labels (Nov 8): the Featured card's teal wash, small caps-style text; Revised is outlined only.
      Inline-block, so a link's underline never runs through it. Shown for 14 days (freshLabel). */
   .fresh { display: inline-block; margin-left: 2px; padding: 0 6px; border: 1px solid var(--full-line); border-radius: 4px; background: var(--series-wash);
@@ -994,6 +1012,33 @@
     det.addEventListener('toggle', () => saveMore(key, det.open));
     return det;
   }
+  // The bar control (Nov 10): All N numbers (home) and At a glance (full view) show a section's hidden numbers in place,
+  // from a control at the right end of the group's bar. `rows` are the hidden rows, already in the list. Open or closed
+  // is remembered per key on this device, like the reveal. The chevron stays one element so it can turn over.
+  function barMore(sec, more, rows, key) {
+    const btn = el('button', { type: 'button', class: 'bar-more', 'aria-expanded': 'false' });
+    const k = more.filter(t => freshLabel(t)).length;
+    const txt = el('span', { class: 'bm-t' });
+    const chip = k ? el('span', { class: 'fresh', text: 'New' }) : null;
+    const chev = svgEl('svg', { class: 'chev', viewBox: '0 0 12 12', 'aria-hidden': 'true', focusable: 'false' });
+    chev.appendChild(svgEl('polyline', { points: '2,4 6,8 10,4' }));
+    btn.appendChild(txt); btn.appendChild(chev);
+    const set = open => {
+      rows.forEach(r => { r.hidden = !open; });
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      txt.textContent = open ? 'Less' : 'More (' + more.length + ')';
+      if (chip) { if (open) chip.remove(); else btn.insertBefore(chip, chev); }
+      // the name starts with the visible words (WCAG 2.5.3) and adds the section and what is hidden
+      btn.setAttribute('aria-label', open ? 'Less, in ' + sec : 'More (' + more.length + ')' + (k ? ' new' : '') + ', in ' + sec + ': ' + more.map(t => t.title).join(', '));
+    };
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') !== 'true';
+      set(open); saveMore(key, open);
+      if (open) { const f = rows[0].matches('a') ? rows[0] : rows[0].querySelector('a'); if (f) f.focus(); }
+    });
+    set(moreState(key));
+    return btn;
+  }
   // a link to a tile behind a closed reveal opens the reveal first, so the page has something to land on
   function openFor(target) {
     let opened = false;
@@ -1063,9 +1108,10 @@
     sections.forEach(s => {
       const { tiles } = sectionTiles(data, s);
       const grp = el('div', { class: 'grp' });
-      grp.appendChild(el('h3', {}, [s, tiles.every(adjusted) ? el('span', { class: 'adj', text: ' · range in today’s dollars' }) : '']));
+      const bar = el('div', { class: 'gbar' }, [el('h3', {}, [s, tiles.every(adjusted) ? el('span', { class: 'adj', text: ' · range in today’s dollars' }) : ''])]);
+      grp.appendChild(bar);
       const { more } = sectionTiles(data, s);
-      tiles.forEach(t => {
+      const glanceRow = t => {
         const c = t.context, d = t.display;
         const hv = t.headline ? t.headline.value : c.current.value;
         const per = t.headline ? fmtPeriod(t.headline.date, 'd') : fmtPeriod(c.current.date, pf(t));
@@ -1075,13 +1121,14 @@
         a.appendChild(document.createTextNode(' '));
         a.appendChild(el('span', { class: 'v' }, [fmtValue(hv, d), ' ', el('span', { class: 'p', text: per })]));
         a.appendChild(miniStrip(t));
-        grp.appendChild(a);
-      });
+        return a;
+      };
+      tiles.forEach(t => grp.appendChild(glanceRow(t)));
       if (more.length) {
-        const mid = 'more-' + secId(s);
-        const a = el('a', { class: 'more-row', href: '#' + mid }, [el('span', { class: 'mr-n', text: '+' + more.length + ' more' + newCount(more) + ': ' }), more.map(t => t.title).join(', '), el('span', { class: 'mr-a', text: ' ↓' })]);
-        a.addEventListener('click', () => { const d = document.getElementById(mid); if (d) d.open = true; });
-        grp.appendChild(a);
+        // Nov 10: shown in place from the bar (was a "+N more: …" row that jumped to the section's reveal below); a row's
+        // link still opens that reveal when its tile sits behind it (openFor)
+        const extra = more.map(t => { const a = glanceRow(t); a.classList.add('more-li'); grp.appendChild(a); return a; });
+        bar.appendChild(barMore(s, more, extra, 'glance-' + secId(s)));
       }
       cols.appendChild(grp);
     });
@@ -1584,13 +1631,16 @@
     // All the numbers: one row each, grouped as on the almanac, each a link to its tile on ?view=all
     const n = data.tiles.length;
     const all = el('section', { class: 'h-sec', id: 'all-numbers', 'aria-labelledby': 'all-h' });
-    all.appendChild(band('all-h', 'All ' + n + ' numbers'));
-    all.appendChild(el('div', { class: 'allintro in-band' }, [el('p', { text: 'Heard a number on the news? Find it here.' }), el('a', { class: 'wf', href: '?view=all', text: 'See all ' + n + ' on one page, with charts →' })]));
+    const ab = band('all-h', 'All ' + n + ' numbers');
+    ab.appendChild(el('a', { class: 'wf band-link', href: '?view=all', text: 'All on one page, with charts →' }));   // Nov 10: moved into the band
+    all.appendChild(ab);
+    all.appendChild(el('div', { class: 'allintro in-band' }, [el('p', { text: 'Heard a number on the news? Find it here.' })]));
     const panel = el('div', { class: 'ipanel' });
     sections.forEach(s => {
       const g = el('div', { class: 'igrp' });
       const gid = 'g-' + s.toLowerCase().replace(/[^a-z]+/g, '-');
-      g.appendChild(el('h3', { id: gid, text: s }));
+      const bar = el('div', { class: 'gbar' }, [el('h3', { id: gid, text: s })]);
+      g.appendChild(bar);
       const row = t => {
         const r = reading(t);
         return el('li', {}, [el('a', { href: '?view=all#i-' + t.id }, [el('span', { class: 'n' }, withLabel(t, [t.title])), el('span', { class: 'v' }, [fmtValue(r.value, t.display) + ' ', el('span', { class: 'p', text: '· ' + shortPeriod(r, year) })])])]);
@@ -1599,21 +1649,9 @@
       const ul = el('ul', { 'aria-labelledby': gid }, inSec.filter(t => !t.more).map(row));
       const more = inSec.filter(t => t.more);
       if (more.length) {
-        // the reveal takes the grid's next free cell, and the rows it opens flow into the same grid (denser than a row
-        // of its own); the button moves after them and reads "Fewer numbers ↑"
-        const extra = more.map(t => { const li = row(t); li.classList.add('more-li'); li.hidden = true; return li; });
-        extra.forEach(li => ul.appendChild(li));
-        const key = 'home-' + gid;
-        const btn = el('button', { type: 'button', class: 'more-btn', 'aria-expanded': 'false' });
-        const set = open => {
-          extra.forEach(li => { li.hidden = !open; });
-          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-          btn.textContent = open ? 'Fewer numbers ↑' : 'More numbers (' + more.length + ')' + newCount(more) + ' ↓';
-          btn.setAttribute('aria-label', open ? 'Fewer numbers in ' + s : 'More numbers (' + more.length + ')' + newCount(more) + ' in ' + s + ': ' + more.map(t => t.title).join(', '));   // Nov 10: starts with the visible text (Label in Name)
-        };
-        btn.addEventListener('click', () => { const open = btn.getAttribute('aria-expanded') !== 'true'; set(open); saveMore(key, open); if (open) extra[0].querySelector('a').focus(); });
-        ul.appendChild(el('li', { class: 'more-cell' }, [btn]));
-        set(moreState(key));
+        // Nov 10: the control sits in the group's bar (barMore); the hidden rows flow into the same grid after the others
+        const extra = more.map(t => { const li = row(t); li.classList.add('more-li'); ul.appendChild(li); return li; });
+        bar.appendChild(barMore(s, more, extra, 'home-' + gid));
       }
       g.appendChild(ul);
       panel.appendChild(g);
