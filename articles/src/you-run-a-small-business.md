@@ -4,6 +4,7 @@ dek: You borrow at the Fed's rate plus three, hire in the same market the jobs r
 date: 2026-10-28
 kind: path
 order: 5
+updated: 2026-11-10
 ---
 
 ## What reaches you, in order
@@ -42,6 +43,15 @@ Consumer spending is two-thirds of GDP, and most of it goes through businesses y
 
 A five-year term loan on a building or major equipment taken in 2021 at 4% came up for renewal in 2026 at 8% or more, and commercial real estate loans have been renewing on those terms since 2023. The Fed cycle lane on the chart shows where in the sequence a renewal falls: the first moves of a cutting cycle lower prime immediately but reach long-term loan pricing through the 10-year, which can lag or go the other way, as in late 2024. A renewal that lands in a hiking cycle is a different loan from one that lands in a cutting cycle, whatever the business did in between.
 
+## If your business is a farm
+
+A farm is a small business with two differences: most of what it sells is priced on world markets, and much of what it buys comes from a few suppliers. [You run a farm](you-run-a-farm.html) follows the farm numbers in full; in short, the order runs like this:
+
+1. **Crop and cattle prices**, every day, set by world markets and by the few buyers described in [The Name on the Label](who-owns-the-farm.html). Much of the crop leaves the country: about 85% of U.S. cotton in the 2025–26 marketing year and 38% of the winter wheat ([Gigafact, from USDA data](https://gigafact.org/fact-briefs/is-about-80-of-the-cotton-and-40-of-the-winter-wheat-raised-in-the-united-states-exported/)).
+2. **The dollar and trade policy**, through those exports: a stronger [dollar](../chart.html?id=dollar) makes U.S. crops cost more abroad. In December 2025, citing trade disruptions and higher production costs, the department announced $12 billion in aid, $11 billion of it for row-crop farmers; livestock was not included ([Holland & Knight](https://www.hklaw.com/en/insights/publications/2025/12/usda-releases-details-of-long-awaited-farm-aid-package)).
+3. **The Fed funds rate**, through operating loans, the credit that carries a crop from planting to sale. Banks' farm operating loans averaged 6.66% in the third quarter of 2026, down from a year earlier but about 3.5 points higher than in 2020 ([farmdoc daily](https://farmdocdaily.illinois.edu/wp-content/uploads/2026/10/fdd102926.pdf)).
+4. **Natural gas**, months later, as the price of nitrogen fertilizer: it can be up to 90% of the cost of making ammonia ([Oklahoma State University Extension](https://extension.okstate.edu/fact-sheets/causes-of-fertilizer-price-volatility)). The almanac's [natural gas](../chart.html?id=natural_gas) number is what households pay, not what fertilizer plants pay, so read it for direction, not as a fertilizer price.
+
 ## Where you come out ahead
 
 You can reprice. A worker waits a year for a raise and a retiree waits for January; a business changes the sign on the door. In 2021–23 that is how small firms survived a 20% rise in costs. You can also hire faster than a large employer when the market loosens, and you are the first to feel a cutting cycle through prime. Against that: you float on prime while your biggest competitors locked in 2021 rates, your margins absorb cost increases before prices can catch up, and a loan renewal can land on the wrong side of a Fed cycle through no fault of the business.
@@ -60,6 +70,8 @@ You can reprice. A worker waits a year for a raise and a retiree waits for Janua
 - [Jobless claims](what-are-jobless-claims.html) and [the unemployment rate](what-is-the-unemployment-rate.html): the hiring market.
 - [Inflation](what-is-inflation.html): costs on one side, customers on the other.
 - [You work for a wage](you-work-for-a-wage.html): your employees' side of the same numbers.
+- [You run a farm](you-run-a-farm.html): the same numbers, and the farm ones, for a farm.
+- [The Name on the Label](who-owns-the-farm.html): who owns the farms, and the few companies that sell to farmers and buy from them.
 
 ## Sources
 
@@ -67,4 +79,5 @@ You can reprice. A worker waits a year for a raise and a retiree waits for Janua
 - [NFIB, Small Business Economic Trends](https://www.nfib.com/surveys/small-business-economic-trends/), the monthly survey of problems and hiring conditions.
 - [Federal Reserve, Small Business Credit Survey](https://www.fedsmallbusiness.org/), borrowing and credit conditions by firm size.
 - [Federal Reserve Board, Senior Loan Officer Opinion Survey](https://www.federalreserve.gov/data/sloos.htm), lending standards for small firms.
+- Farms: [Gigafact, on cotton and wheat exports](https://gigafact.org/fact-briefs/is-about-80-of-the-cotton-and-40-of-the-winter-wheat-raised-in-the-united-states-exported/) (May 19, 2026, from USDA ERS data); [Holland & Knight, on USDA's December 2025 aid package](https://www.hklaw.com/en/insights/publications/2025/12/usda-releases-details-of-long-awaited-farm-aid-package) (December 11, 2025); [Mashange, farmdoc daily, on farm lending in Q3 2026](https://farmdocdaily.illinois.edu/wp-content/uploads/2026/10/fdd102926.pdf) (October 29, 2026); [Kenkel, Oklahoma State University Extension, Causes of Fertilizer Price Volatility](https://extension.okstate.edu/fact-sheets/causes-of-fertilizer-price-volatility).
 - [WilmerHale, "Supreme Court Strikes Down IEEPA Tariffs" (Feb. 20, 2026)](https://www.wilmerhale.com/insights/publications/20260220-supreme-court-strikes-down-ieepa-tariffs-what-now), what was struck and what remained.

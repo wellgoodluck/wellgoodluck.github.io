@@ -131,6 +131,7 @@ Sand doesn't bargain; farmers and packers do, and the companies in the neck sell
 
 ## See also
 
+- [You run a farm](you-run-a-farm.html): which of the almanac's numbers reach a farm, in what order.
 - [What sets the price of groceries](what-sets-grocery-prices.html): how much of a grocery price reaches the farm, and the beef packer dispute in detail.
 - [The name on the box](who-makes-the-equipment.html): who makes the equipment in American homes, part 6 of this series.
 - [Where the money goes](where-the-money-goes.html): who supplies the money behind the buying, the last part of this series.
