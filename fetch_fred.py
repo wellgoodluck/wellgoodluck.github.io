@@ -708,6 +708,111 @@ TILES = [
                     "unit": "dollars per pound", "adjust": "cpi"},
         "note": "Not seasonally adjusted. BLS average price across U.S. cities, collected for the CPI; fresh whole broiler-fryers, priced per pound with bone and skin. Boneless breast is on the chart page. The chart shows the price as charged; the range and the comparison above it are adjusted for inflation.",
     },
+    # ---- Farm prices (staged Nov 10) ----------------------------------------
+    # Fetched every run but kept out of series.json until SHOW_FARM_TILES is True (see below). "soft": a tile
+    # that fails to fetch is dropped with a message and the run goes on. Crop prices are the IMF's monthly
+    # benchmarks (Primary Commodity Prices), converted from dollars per metric ton to the unit farmers use.
+    {
+        "id": "corn",
+        "soft": True,
+        "agency": "IMF",
+        "section": "Farm prices",
+        "title": "Corn",
+        "subtitle": "U.S. No. 2 yellow at Gulf of Mexico export ports, price per bushel, monthly",
+        "series": "PMAIZMTUSDM",
+        "params": {"observation_start": "1992-01-01"},
+        "freq": "m",
+        "display": {"scale": 39.3679, "decimals": 2, "prefix": "$", "signed": False,
+                    "unit": "dollars per bushel", "csv_unit": "dollars per metric ton", "adjust": "cpi"},
+        "note": "The IMF's benchmark corn price: U.S. No. 2 yellow, prompt shipment, free on board at Gulf of Mexico ports, from USDA's Grain and Feed Market News; a monthly average, converted from dollars per metric ton at 39.37 bushels a ton. A local elevator's price differs from this export-port price by location, season and freight. Not seasonally adjusted. The chart shows the price as charged; the range and the comparison above it are adjusted for inflation.",
+    },
+    {
+        "id": "soybeans",
+        "soft": True,
+        "agency": "IMF",
+        "section": "Farm prices",
+        "title": "Soybeans",
+        "subtitle": "Chicago futures, nearest contract, price per bushel, monthly",
+        "series": "PSOYBUSDM",
+        "params": {"observation_start": "1992-01-01"},
+        "freq": "m",
+        "display": {"scale": 36.7437, "decimals": 2, "prefix": "$", "signed": False,
+                    "unit": "dollars per bushel", "csv_unit": "dollars per metric ton", "adjust": "cpi"},
+        "note": "The IMF's benchmark soybean price: the Chicago Board of Trade futures contract nearest to delivery, No. 2 yellow; a monthly average, converted from dollars per metric ton at 36.74 bushels a ton. A local elevator's price differs from the futures price by location, season and freight. Not seasonally adjusted. The chart shows the price as charged; the range and the comparison above it are adjusted for inflation.",
+    },
+    {
+        "id": "cattle",
+        "soft": True,
+        "agency": "BLS",
+        "section": "Farm prices",
+        "title": "Cattle",
+        "subtitle": "Prices for slaughter steers and heifers, producer price index, change from a year ago, monthly",
+        "series": "WPU013101",
+        "params": {"units": "pc1", "observation_start": "1960-01-01"},
+        "freq": "m",
+        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": True,
+                    "unit": "percent, year over year"},
+        "note": "The BLS producer price index for slaughter steers and heifers, the fed cattle sold to packers: what sellers are paid, as an index, so the tile shows its change from a year earlier. Not seasonally adjusted. Calves and feeder cattle, which most cow-calf farms sell, usually move in the same direction but by different amounts.",
+    },
+    {
+        "id": "fertilizer",
+        "soft": True,
+        "agency": "BLS",
+        "section": "Farm prices",
+        "title": "Nitrogen fertilizer",
+        "subtitle": "Producer price index for nitrogen fertilizer makers, change from a year ago, monthly",
+        "series": "PCU325311325311",
+        "params": {"units": "pc1", "observation_start": "1976-12-01"},
+        "freq": "m",
+        "display": {"scale": 1, "decimals": 1, "suffix": "%", "signed": True,
+                    "unit": "percent, year over year"},
+        "note": "The BLS producer price index for nitrogenous fertilizer manufacturing: what makers of ammonia, urea and other nitrogen fertilizers are paid, as an index, so the tile shows its change from a year earlier. Not seasonally adjusted. What a farmer pays at the dealer follows it with a lag and adds freight and the dealer's costs.",
+    },
+    {
+        "id": "wheat",
+        "soft": True,
+        "more": True,
+        "agency": "IMF",
+        "section": "Farm prices",
+        "title": "Wheat",
+        "subtitle": "U.S. No. 1 hard red winter at Kansas City, price per bushel, monthly",
+        "series": "PWHEAMTUSDM",
+        "params": {"observation_start": "1992-01-01"},
+        "freq": "m",
+        "display": {"scale": 36.7437, "decimals": 2, "prefix": "$", "signed": False,
+                    "unit": "dollars per bushel", "csv_unit": "dollars per metric ton", "adjust": "cpi"},
+        "note": "The IMF's benchmark wheat price: U.S. No. 1 hard red winter, ordinary protein, Kansas City, from USDA's Grain and Feed Market News; a monthly average, converted from dollars per metric ton at 36.74 bushels a ton. Other classes of wheat, and local elevators, price differently. Not seasonally adjusted. The chart shows the price as charged; the range and the comparison above it are adjusted for inflation.",
+    },
+    {
+        "id": "cotton",
+        "soft": True,
+        "more": True,
+        "agency": "IMF",
+        "section": "Farm prices",
+        "title": "Cotton",
+        "subtitle": "World price, the Cotlook A index, cents per pound, monthly",
+        "series": "PCOTTINDUSDM",
+        "params": {"observation_start": "1992-01-01"},
+        "freq": "m",
+        "display": {"scale": 1, "decimals": 0, "suffix": "¢", "signed": False,
+                    "unit": "cents per pound", "adjust": "cpi"},
+        "note": "The IMF's benchmark cotton price: the Cotlook A index, compiled by Cotton Outlook, the average of the cheapest five of a set of internationally traded cottons (Middling 1-3/32 inch); a monthly average. U.S. growers sell against New York futures and local terms, which move with it but not by the same amounts. Not seasonally adjusted. The chart shows the price as charged; the range and the comparison above it are adjusted for inflation.",
+    },
+    {
+        "id": "diesel",
+        "soft": True,
+        "more": True,
+        "agency": "EIA",
+        "section": "Farm prices",
+        "title": "Diesel",
+        "subtitle": "No. 2 diesel, U.S. average pump price per gallon, weekly",
+        "series": "GASDESW",
+        "params": {"observation_start": "1994-03-21"},
+        "freq": "w",
+        "display": {"scale": 1, "decimals": 2, "prefix": "$", "signed": False,
+                    "unit": "dollars per gallon", "adjust": "cpi"},
+        "note": "Not seasonally adjusted. EIA's weekly survey of retail stations, on-highway diesel, taxes included. Diesel a farm burns off the road is exempt from the federal fuel tax in this price, so a farm pays less than this, though it moves with it. The chart shows the price as charged; the range and the comparison above it are adjusted for inflation.",
+    },
 ]
 
 # The 15 numbers added Nov 8. Until launch they are fetched every run but written only to series-staged.json
@@ -717,6 +822,11 @@ NEW_TILES = {"prime_age_employment", "sahm_rule", "medical_care", "car_insurance
              "real_retail", "productivity_growth", "saving_rate", "card_delinquency", "debt_payments", "median_income",
              "effective_tariff", "interest_share", "dollar"}
 SHOW_NEW_TILES = True
+
+# The Farm prices section (staged Nov 10), the same way: fetched every run and written to series-staged.json, kept out
+# of series.json and its summary until LAUNCH: set SHOW_FARM_TILES = True, in the same upload as the pages that show it.
+FARM_TILES = {"corn", "soybeans", "cattle", "fertilizer", "wheat", "cotton", "diesel"}
+SHOW_FARM_TILES = False
 
 # ---------------------------------------------------------------------------
 # Companion series: shown only on the detail page (chart.html) as overlays on
@@ -2939,13 +3049,19 @@ def main():
             })
             continue
         print(f"{t['id']:16s} {t['series']}", flush=True)
-        obs = get_observations(t["series"], t["params"])
-        if t.get("flip"):                       # shown with the sign people use (see the deficit tile)
-            obs = [(d, -v) for d, v in obs]
-        time.sleep(0.4)
-        info = get_series_info(t["series"])
-        time.sleep(0.4)
-        ctx = context_for(obs, t["freq"])
+        try:
+            obs = get_observations(t["series"], t["params"])
+            if t.get("flip"):                   # shown with the sign people use (see the deficit tile)
+                obs = [(d, -v) for d, v in obs]
+            time.sleep(0.4)
+            info = get_series_info(t["series"])
+            time.sleep(0.4)
+            ctx = context_for(obs, t["freq"])
+        except Exception as e:
+            if not t.get("soft"):               # the original tiles still fail the run, as before
+                raise
+            print(f"{t['id']:16s} skipped (soft): {e}", file=sys.stderr, flush=True)   # Nov 10
+            continue
 
         headline = None
         if "latest" in t:
@@ -3156,9 +3272,11 @@ def main():
     with open(staged_path, "w", encoding="utf-8") as f:
         json.dump(payload, f, separators=(",", ":"), ensure_ascii=False)
     print(f"wrote {staged_path} ({os.path.getsize(staged_path)/1024:.0f} KB, {len(tiles_out)} indicators, staged)")
-    if not SHOW_NEW_TILES:
-        payload = dict(payload, tiles=[t for t in tiles_out if t["id"] not in NEW_TILES],
-                       summaries={k: v for k, v in summaries.items() if k != "Household finances"})
+    hidden = (set() if SHOW_NEW_TILES else NEW_TILES) | (set() if SHOW_FARM_TILES else FARM_TILES)
+    hidden_sections = (set() if SHOW_NEW_TILES else {"Household finances"}) | (set() if SHOW_FARM_TILES else {"Farm prices"})
+    if hidden:
+        payload = dict(payload, tiles=[t for t in tiles_out if t["id"] not in hidden],
+                       summaries={k: v for k, v in summaries.items() if k not in hidden_sections})
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(payload, f, separators=(",", ":"), ensure_ascii=False)
     size = os.path.getsize(out_path)
