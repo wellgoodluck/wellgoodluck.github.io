@@ -597,6 +597,11 @@
     gas: SA_PRICE('Dollars a gallon'), milk: SA_PRICE('Dollars a gallon'), electricity: SA_PRICE('Cents a kilowatt-hour'), natural_gas: SA_PRICE('Dollars a therm'),
     eggs: SA_PRICE('Dollars a dozen'), bread: SA_PRICE('Dollars a pound'), coffee: SA_PRICE('Dollars a pound'), ground_beef: SA_PRICE('Dollars a pound'), chicken: SA_PRICE('Dollars a pound'),
     drive_cost: { measure: 'share', own: 'level', level: 'self', own_: 'Percent of a gas mile’s cost, as reported' },
+    // Nov 10, Farm prices: crop prices and diesel as charged and in today's dollars; the two producer price indexes as a
+    // change from a year ago, their levels not on the site.
+    corn: SA_PRICE('Dollars a bushel'), soybeans: SA_PRICE('Dollars a bushel'), wheat: SA_PRICE('Dollars a bushel'),
+    cotton: SA_PRICE('Cents a pound'), diesel: SA_PRICE('Dollars a gallon'),
+    cattle: SA_INDEX(null, '1982'), fertilizer: SA_INDEX(null, 'December 1979'),
     // Nov 8, the numbers behind "More numbers" and Household finances. A change from a year ago whose level is not on the
     // site yet takes SA_INDEX with no level, so "As reported" and the index show "not available yet".
     prime_age_employment: { measure: 'share', own: 'level', level: 'self', own_: 'Percent with a job, as reported' },

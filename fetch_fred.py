@@ -714,6 +714,7 @@ TILES = [
     # benchmarks (Primary Commodity Prices), converted from dollars per metric ton to the unit farmers use.
     {
         "id": "corn",
+        "added": "2026-11-10",
         "soft": True,
         "agency": "IMF",
         "section": "Farm prices",
@@ -728,6 +729,7 @@ TILES = [
     },
     {
         "id": "soybeans",
+        "added": "2026-11-10",
         "soft": True,
         "agency": "IMF",
         "section": "Farm prices",
@@ -742,6 +744,7 @@ TILES = [
     },
     {
         "id": "cattle",
+        "added": "2026-11-10",
         "soft": True,
         "agency": "BLS",
         "section": "Farm prices",
@@ -756,6 +759,7 @@ TILES = [
     },
     {
         "id": "fertilizer",
+        "added": "2026-11-10",
         "soft": True,
         "agency": "BLS",
         "section": "Farm prices",
@@ -770,6 +774,7 @@ TILES = [
     },
     {
         "id": "wheat",
+        "added": "2026-11-10",
         "soft": True,
         "more": True,
         "agency": "IMF",
@@ -785,6 +790,7 @@ TILES = [
     },
     {
         "id": "cotton",
+        "added": "2026-11-10",
         "soft": True,
         "more": True,
         "agency": "IMF",
@@ -800,6 +806,7 @@ TILES = [
     },
     {
         "id": "diesel",
+        "added": "2026-11-10",
         "soft": True,
         "more": True,
         "agency": "EIA",
@@ -824,9 +831,9 @@ NEW_TILES = {"prime_age_employment", "sahm_rule", "medical_care", "car_insurance
 SHOW_NEW_TILES = True
 
 # The Farm prices section (staged Nov 10), the same way: fetched every run and written to series-staged.json, kept out
-# of series.json and its summary until LAUNCH: set SHOW_FARM_TILES = True, in the same upload as the pages that show it.
+# of series.json and its summary while SHOW_FARM_TILES is False. Launched Nov 10 with the You Run a Farm path.
 FARM_TILES = {"corn", "soybeans", "cattle", "fertilizer", "wheat", "cotton", "diesel"}
-SHOW_FARM_TILES = False
+SHOW_FARM_TILES = True
 
 # ---------------------------------------------------------------------------
 # Companion series: shown only on the detail page (chart.html) as overlays on
@@ -1615,6 +1622,13 @@ def household_lines(tiles_out, companions_out, extras):
         "bread": ("A pound costs", "a pound", 1),
         "chicken": ("A pound costs", "a pound", 1),
     }
+    price_lines.update({   # Farm prices (Nov 10): the same template, in the quantities a farm sells or buys
+        "corn": ("At the Gulf, 1,000 bushels bring", "the same 1,000 bushels", 1000 / 39.3679),
+        "soybeans": ("On Chicago futures, 1,000 bushels bring", "the same 1,000 bushels", 1000 / 36.7437),
+        "wheat": ("At Kansas City, 1,000 bushels bring", "the same 1,000 bushels", 1000 / 36.7437),
+        "cotton": ("At the world price, a 480-pound bale brings", "a bale", 4.8),
+        "diesel": ("At the pump, 100 gallons cost", "the same 100 gallons", 100),
+    })
     for tid, (opening, noun, qty) in price_lines.items():
         if tid not in T:
             continue
@@ -1805,6 +1819,23 @@ def household_lines(tiles_out, companions_out, extras):
                    f"which makes imports and trips abroad {updown(v, 'cheaper', 'dearer')} and exports {updown(v, 'dearer', 'cheaper')}.")
         lines["dollar"] = (txt, [])
     except Exception: pass
+
+    # Farm prices (Nov 10): the two indexes, as a change from a year ago, then the change the year before.
+    farm_index = {"cattle": "Fed cattle sold for", "fertilizer": "Nitrogen fertilizer makers were paid"}
+    for tid, opening in farm_index.items():
+        if tid not in T:
+            continue
+        try:
+            v, ya = cur(tid), year_ago(tid)
+            txt = (f"{opening} about the same as a year earlier" if abs(v) < 0.5 else
+                   f"{opening} {abs(v):.1f}% {updown(v, 'more', 'less')} than a year earlier")
+            if ya is not None:
+                txt += (", after little change the year before." if abs(ya) < 0.5 else
+                        f", after {'a rise' if ya > 0 else 'a fall'} of {abs(ya):.1f}% the year before.")
+            else:
+                txt += "."
+            lines[tid] = (txt, [])
+        except Exception: pass
 
     for t in tiles_out:
         if t["id"] in lines:
@@ -2010,6 +2041,34 @@ def section_summaries(tiles_out):
         if text: out["What things cost"] = text
     except Exception as e:
         print(f"summary What things cost skipped: {e}", file=sys.stderr, flush=True)
+
+    # Farm prices (Nov 10): the crop prices and diesel after inflation, by the same bins, then the two indexes.
+    try:
+        goods = [("corn", "corn"), ("soybeans", "soybeans"), ("wheat", "wheat"), ("cotton", "cotton"), ("diesel", "diesel")]
+        high, low, ordinary = [], [], []
+        for tid, name in goods:
+            if tid not in T: continue
+            pb = ctx(tid)["percentile_below"]
+            (high if pb >= 85 else low if pb <= 15 else ordinary).append(name)
+        def lst(xs): return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
+        def be(xs): return "are" if len(xs) > 1 else "is"
+        parts = []
+        if high: parts.append(f"{lst(high)} {be(high)} near the highest since {since(high[0]) if len(high) == 1 else 'their records here began'}")
+        if low: parts.append(f"{lst(low)} {be(low)} near the lowest since {since(low[0]) if len(low) == 1 else 'their records here began'}")
+        if ordinary: parts.append(f"{lst(ordinary)} {be(ordinary)} ordinary")
+        text = ("After inflation, " + lst(parts) + ".") if parts else ""
+        idx = []
+        for tid, name in (("cattle", "cattle prices"), ("fertilizer", "nitrogen fertilizer")):
+            if tid not in T: continue
+            v = cur(tid)
+            idx.append(f"{name} {'are' if tid == 'cattle' else 'is'} " + ("about where they were a year ago" if tid == "cattle" and abs(v) < 0.5 else
+                       "about where it was a year ago" if abs(v) < 0.5 else f"{'up' if v > 0 else 'down'} {abs(v):.1f}% from a year ago"))
+        if idx:
+            sent = lst(idx)
+            text += (" " if text else "") + sent[0].upper() + sent[1:] + "."
+        if text: out["Farm prices"] = text
+    except Exception as e:
+        print(f"summary Farm prices skipped: {e}", file=sys.stderr, flush=True)
     return out
 
 
@@ -3254,7 +3313,7 @@ def main():
         "generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "attribution": "Source: FRED, Federal Reserve Bank of St. Louis. Underlying data from "
                        "the Bureau of Labor Statistics, Bureau of Economic Analysis, Census Bureau, "
-                       "Energy Information Administration, Federal Reserve Board, Freddie Mac and the NBER. "
+                       "Energy Information Administration, Federal Reserve Board, Freddie Mac, the NBER and the International Monetary Fund. "
                        "Car insurance and child care prices from the BLS public data API.",
         "baseline": {"label": "2015–19 average", "start": BASELINE_START.isoformat(),
                      "end": BASELINE_END.isoformat()},
