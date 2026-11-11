@@ -1367,8 +1367,9 @@
     const ex = (data.explainers || {})[t.id];
     if (ex) top.appendChild(el('p', { class: 'explainer' }, [el('a', { href: ex.url, text: 'In plain words: ' + (ex.hook || ex.title) + ' →' })]));
     // Nov 8: the tiles a tool answers link to it, opening the tool on the matching kind (#k=…; read by assets/keptup.js)
-    const TOOL_LINK = { pay: ['pay', 'Check your own pay against prices'], cpi: ['other', 'What an amount from another year is worth now'], rent: ['rent', 'Check your own rent against prices'] };
-    if (TOOL_LINK[t.id]) top.appendChild(el('p', { class: 'explainer' }, [el('a', { href: 'tools/kept-up.html#k=' + TOOL_LINK[t.id][0], text: TOOL_LINK[t.id][1] + ' →' })]));
+    const TOOL_LINK = { pay: ['pay', 'Check your own pay against prices'], cpi: ['other', 'What an amount from another year is worth now'], rent: ['rent', 'Check your own rent against prices'],
+      mortgage: [null, 'Try your own loan', 'tools/rate-change-payment.html'] };   // Nov 11: a third entry is a tool of its own
+    if (TOOL_LINK[t.id]) top.appendChild(el('p', { class: 'explainer' }, [el('a', { href: TOOL_LINK[t.id][2] || 'tools/kept-up.html#k=' + TOOL_LINK[t.id][0], text: TOOL_LINK[t.id][1] + ' →' })]));
 
     mid.appendChild(buildChart(t, data.recessions, wide));
 

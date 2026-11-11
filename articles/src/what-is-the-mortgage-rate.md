@@ -61,6 +61,7 @@ A markup on a wholesale price assumes the wholesale price sits still. The 10-yea
 - [Rate vs. level](rate-vs-level.html): why "the Fed cut" and "rates are high" are both true.
 - [You're buying a home](you-are-buying-a-home.html): how the rate reaches a buyer, along with the price, the cash to close and the bills that follow.
 - [Sell it or rent it out](sell-it-or-rent-it-out.html): what changes when an owner keeps a low-rate house as a rental.
+- [What a rate change does to a payment](../tools/rate-change-payment.html): your own loan at this rate, and a point either side.
 - The almanac's [mortgage rate](../chart.html?id=mortgage) with every overlay.
 
 ## Sources

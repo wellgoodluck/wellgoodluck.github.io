@@ -1,5 +1,5 @@
-/* The Money Traps tools (Nov 9, 2026; revised after review): one script for four calculators, each mounted on
-   <div class="mt-mount" data-tool="card|car|plan|match">. Nothing the reader types is stored or sent; the page makes no
+/* The Money Traps tools (Nov 9, 2026; revised after review) and the payment tool (Nov 11): one script for five
+   calculators, each mounted on <div class="mt-mount" data-tool="card|car|plan|match|rate">. Nothing the reader types is stored or sent; the page makes no
    requests. A link with the numbers is built only when the reader asks for one, and it carries them after "#", which
    browsers never send to a server. Styles: the shared calculator box (.rb, .ku layout) in assets/site.css, plus .mt. */
 (function () {
@@ -284,6 +284,70 @@
     }
   };
 
+
+  /* 5. What a rate change does to a payment (Nov 11). The starting rates are Freddie Mac's weekly averages, written onto
+     the mount by tools/build_articles.py (data-r30, data-y30, data-r15, data-y15, data-week), so the page still makes no
+     requests. The loan-length switch appears only when the 15-year average is there. */
+  var RD = (function () {
+    var g = function (k) { var x = parseFloat(mount.getAttribute(k)); return isFinite(x) && x > 0 ? x : null; };
+    return { 30: { r: g("data-r30"), y: g("data-y30") }, 15: { r: g("data-r15"), y: g("data-y15") }, wk: mount.getAttribute("data-week") || "" };
+  })();
+  function rate2(x) { return x.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 3 }) + "%"; }   /* 6.5 prints as 6.50% */
+  function pmt(L, a, n) { var r = a / 1200; return r ? L * r / (1 - Math.pow(1 + r, -n)) : L / n; }
+  function carries(p, a, n) { var r = a / 1200; return r ? p * (1 - Math.pow(1 + r, -n)) / r : p * n; }
+  T.rate = {
+    h: "Your loan at this rate, and a point either side",
+    fields: [
+      { id: "mt-hp", key: "h", label: "Home price", pre: "$", ex: 400000, name: "the home price", cls: "rb-wide" },
+      { id: "mt-dn", key: "d", label: "Down payment", ex: 20, name: "the down payment",
+        say: function (x) { return $("mt-du").value === "p" ? pc(x) : cash(x); },
+        post: '<select id="mt-du" aria-label="Down payment in percent or in dollars"><option value="p">% of the price</option><option value="d">dollars</option></select>' },
+      { id: "mt-rt", key: "r", label: "Interest rate", post: "%", ex: RD[30].r, name: "the rate", say: rate2, hint: "The yearly rate on the loan." }
+    ],
+    selects: [{ id: "mt-du", key: "u", name: "percent or dollars" }].concat(RD[15].r ? [{ id: "mt-term", key: "t", name: "the loan length" }] : []),
+    form: function () {
+      var F = this.fields;
+      return field(F[0]) + field(F[1]) + (RD[15].r ? select("mt-term", "Loan length", [["30", "30 years"], ["15", "15 years"]]) : "") + field(F[2]);
+    },
+    notes: '<p class="rb-note">This is principal and interest only. It leaves out property tax, homeowner\'s insurance, mortgage insurance and any homeowners\' association dues, which are usually collected with the payment. It is arithmetic, not a quote or advice; a lender\'s offer depends on your credit, the loan type and the points you pay.</p>',
+    term: function () { var el = $("mt-term"); return el ? Number(el.value) : 30; },
+    init: function (calc) {
+      var F = this.fields, me = this, cur = 30;
+      /* keep: the numbers came from a link, so the rate box is left alone */
+      me.sync = function (keep) {
+        var t = me.term(), held = parse($("mt-rt").value) === RD[cur].r;   /* the rate follows the loan length only while it is still the average */
+        F[2].ex = RD[t].r; cur = t;
+        if (RD[t].r && RD.wk) $("mt-rt-h").textContent = "Starts at Freddie Mac's average for a " + t + "-year fixed loan, week ending " + RD.wk + ".";
+        if (held && !keep && RD[t].r) $("mt-rt").value = RD[t].r.toFixed(2);
+        calc();
+      };
+      if ($("mt-term")) $("mt-term").addEventListener("change", function () { me.sync(false); });
+    },
+    run: function (v) {
+      var P = v["mt-hp"], d = v["mt-dn"], a = v["mt-rt"], pctDown = $("mt-du").value === "p", t = this.term(), n = t * 12;
+      if (P == null || !(P > 0) || P > MAX) return { err: "Enter the home price in dollars, up to $100 million.", f: "mt-hp" };
+      if (d == null) d = 0;
+      if (isNaN(d) || d < 0) return { err: "Enter the down payment, or leave it blank for none.", f: "mt-dn" };
+      var D = pctDown ? P * d / 100 : d;
+      if (D >= P) return { err: "The down payment covers the whole price, so there's nothing to borrow.", f: "mt-dn" };
+      if (a == null || isNaN(a) || a < 0 || a > 25) return { err: "Enter the rate as a yearly percent under 25, like " + (RD[t].r || 7).toFixed(2) + ".", f: "mt-rt" };
+      var L = P - D, p = pmt(L, a, n), lo = a - 1, hi = a + 1, isAvg = a === RD[t].r;
+      var lead = "On a " + t + "-year loan of " + money(L) + ", principal and interest at " + rate2(a) + " is about " + money(p) + " a month.";
+      var rows = "", say = "";
+      if (lo >= 0) { rows += row("One point lower, at " + rate2(lo), money(pmt(L, lo, n)) + " a month"); say += " One point lower, at " + rate2(lo) + ", it would be about " + money(pmt(L, lo, n)) + "."; }
+      rows += row("One point higher, at " + rate2(hi), money(pmt(L, hi, n)) + " a month"); say += " One point higher, at " + rate2(hi) + ", about " + money(pmt(L, hi, n)) + ".";
+      if (isAvg && RD[t].y) rows += row("At the average a year ago, " + rate2(RD[t].y), money(pmt(L, RD[t].y, n)) + " a month");
+      var same = "The same " + money(p) + " a month would carry a loan of about " + hundreds(carries(p, hi, n)) + " at " + rate2(hi) +
+        (lo >= 0 ? " and about " + hundreds(carries(p, lo, n)) + " at " + rate2(lo) : "") + ".";
+      var total = a > 0 ? "Over " + t + " years, interest at " + rate2(a) + " adds up to about " + hundreds(p * n - L) + ", on top of the " + money(L) + " borrowed." : "";
+      var w = [decCheck("mt-rt", a, 25)];
+      if (D < 0.2 * P) w.push("With less than 20% down, a conventional loan usually requires mortgage insurance, which this figure leaves out.");
+      return { lead: lead, sum: t + " years at " + rate2(a) + ": " + money(p) + " a month",
+        res: '<dl class="rb-res">' + rows + '</dl><p class="rb-dnote">' + same + "</p>" + (total ? '<p class="rb-dnote">' + total + "</p>" : ""),
+        warn: w.filter(Boolean).join(" "), spoken: lead + say };
+    }
+  };
+
   /* ---------- wiring ---------- */
   var Tool = T[which];
   if (!Tool) return;
@@ -313,7 +377,7 @@
     var blanks = ex.filter(function (f) { return exOf(f) == null; }).every(holdsEx);
     var sel = !Tool.kinds || ($("mt-freq").value === Tool.kinds[kind].freq && $("mt-first").value === Tool.kinds[kind].first);
     var all = left.length === ex.filter(function (f) { return exOf(f) != null; }).length && blanks && sel;
-    return { all: all, left: left.map(function (f) { return nameOf(f) + " (" + (f.pre ? cash(exOf(f)) : f.post ? pc(exOf(f)) : exOf(f)) + ")"; }) };
+    return { all: all, left: left.map(function (f) { return nameOf(f) + " (" + (f.say ? f.say(exOf(f)) : f.pre ? cash(exOf(f)) : f.post ? pc(exOf(f)) : exOf(f)) + ")"; }) };
   }
   function mark(R) { var el = $(R.f); el.setAttribute("aria-invalid", "true"); el.setAttribute("aria-describedby", ((el.getAttribute("aria-describedby") || "") + " mt-e").trim()); if (R.open && $("mt-more")) $("mt-more").open = true; }
   function calc() {
@@ -374,7 +438,7 @@
     laterLabel();
     return true;
   }
-  window.addEventListener("hashchange", function () { if (fromHash()) calc(); });
+  window.addEventListener("hashchange", function () { if (fromHash()) { if (Tool.sync) Tool.sync(true); else calc(); } });
   $("mt-copy").addEventListener("click", function () {
     var u = link(), out = $("mt-copied");
     var fallback = function () { out.innerHTML = '<label for="mt-link">Copy this link:</label> <input type="text" id="mt-link" readonly>'; $("mt-link").value = u; $("mt-link").focus(); $("mt-link").select(); };
@@ -390,5 +454,6 @@
   }
   Tool.fields.forEach(function (f) { show(f.id, exOf(f)); });
   laterLabel();
-  fromHash(); calc(); clearTimeout(timer);
+  if (Tool.init) Tool.init(calc);                                  /* Nov 11: a tool can set itself up once its boxes exist */
+  var linked = fromHash(); if (Tool.sync) Tool.sync(linked); else calc(); clearTimeout(timer);
 })();

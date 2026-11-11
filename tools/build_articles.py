@@ -777,6 +777,49 @@ def tool_name(a):
     return a.get("out") or a["slug"]
 
 
+def rate_tool_attrs():
+    """Nov 11: the payment tool's starting rates, written onto its mount at every build: the latest 30-year weekly
+    average and the one 52 weeks earlier (the mortgage tile, data/series.json), and the same pair for the 15-year
+    average (companion mortgage_15yr, data/companions.json) when it is there and dated the same week. Fail-soft:
+    whatever can't be read is left off, and assets/moneytools.js copes (no 15-year figure, no loan-length switch)."""
+    from datetime import date as _d
+
+    def pair(obs):
+        obs = [o for o in obs if o[1] is not None]
+        last = obs[-1]
+        d0 = _d.fromisoformat(last[0][:10])
+        ago = min(obs, key=lambda o: abs((d0 - _d.fromisoformat(o[0][:10])).days - 364))
+        year = ago[1] if abs((d0 - _d.fromisoformat(ago[0][:10])).days - 364) <= 4 else None
+        return d0, last[1], year
+
+    out, note = "", []
+    try:
+        with open(os.path.join("data", "series.json"), encoding="utf-8") as f:
+            tiles = json.load(f).get("tiles", [])
+        d30, r30, y30 = pair(next(t for t in tiles if t.get("id") == "mortgage")["observations"])
+    except Exception as e:                                      # noqa: BLE001
+        print(f"tools: WARNING payment tool has no starting rate ({e})")
+        return ""
+    out += f' data-r30="{r30:g}" data-week="{d30:%B} {d30.day}, {d30.year}"' + (f' data-y30="{y30:g}"' if y30 else "")
+    note.append(f"30-year {r30:g} ({d30.isoformat()}), a year ago {y30 if y30 else 'n/a'}")
+    try:
+        with open(os.path.join("data", "companions.json"), encoding="utf-8") as f:
+            raw = json.load(f)
+        comp = raw.get("companions", raw)
+        c15 = comp.get("mortgage_15yr") if isinstance(comp, dict) else next((c for c in comp if c.get("id") == "mortgage_15yr"), None)
+        if not c15:
+            raise RuntimeError("mortgage_15yr isn't in data/companions.json yet")
+        d15, r15, y15 = pair(c15["observations"])
+        if abs((d15 - d30).days) > 1:
+            raise RuntimeError(f"15-year figure is for {d15.isoformat()}, not {d30.isoformat()}")
+        out += f' data-r15="{r15:g}"' + (f' data-y15="{y15:g}"' if y15 else "")
+        note.append(f"15-year {r15:g}, a year ago {y15 if y15 else 'n/a'}")
+    except Exception as e:                                      # noqa: BLE001
+        note.append(f"no 15-year figure ({e}); the loan-length switch stays hidden")
+    print("tools: payment tool rates: " + "; ".join(note))
+    return out
+
+
 def render_tool(a):
     desc = html.escape(a.get("dek", a["title"]), quote=True)
     name = tool_name(a)
@@ -786,7 +829,10 @@ def render_tool(a):
     page += f'<h1>{inline(a["title"])}</h1>\n'
     if a.get("dek"):
         page += f'<p class="dek">{inline(a["dek"])}</p>\n'
-    page += md_to_html(a["body"])
+    body = a["body"]
+    if 'data-tool="rate"' in body:                                # Nov 11: the payment tool's starting rates
+        body = body.replace('data-tool="rate"', 'data-tool="rate"' + rate_tool_attrs(), 1)
+    page += md_to_html(body)
     page += "\n</article>\n</main>\n"
     if 'class="table-scroll"' in page:
         page += '<script src="../assets/tables.js' + asset_stamp("assets/tables.js") + '"></script>\n'

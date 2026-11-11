@@ -1125,6 +1125,15 @@ COMPANIONS = [
         "why": "Used to compute the mortgage spread.",
     },
     {
+        "id": "mortgage_15yr",                      # Nov 11: the payment tool's 15-year starting rate (tools/build_articles.py reads it)
+        "label": "15-year mortgage rate, weekly average",
+        "for": [],
+        "series": "MORTGAGE15US",
+        "params": {"observation_start": "2024-01-01"},
+        "freq": "w",
+        "why": "Used by the payment tool for its 15-year starting rate.",
+    },
+    {
         "id": "uempmed",
         "label": "Median weeks unemployed",
         "for": ["unemployment"],
