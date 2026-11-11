@@ -139,7 +139,7 @@ def chart_directive(line):
 
 
 def figure_directive(line):
-    """{{figure kind=bars|stack|pairs title=… rows="a=1;b=2" [series="x;y"] [fmt="{v}"] [caption=…] [source=…]}}
+    """{{figure kind=bars|stack|pairs title=… rows="a=1;b=2" [series="x;y"] [fmt="{v}" or "{v,}"] [caption=…] [source=…]}}
     → a <figure class="figure fig-<kind>"> in plain HTML. Numbers are the author's; nothing is fetched."""
     m = re.match(r"^\{\{\s*figure\s+(.*?)\s*\}\}$", line.strip())
     if not m:
@@ -158,6 +158,8 @@ def figure_directive(line):
         return float(x.replace(",", "").replace("$", ""))
     shown = {}                                              # each value is printed as the author wrote it
     def show(v):
+        if "{v,}" in fmt:                                   # Nov 11: {v,} prints the value with thousands separators (21,840)
+            return fmt.replace("{v,}", f"{v:,.0f}")
         return fmt.replace("{v}", shown.get(v, ("%g" % v)))
     rows = []
     for item in attrs["rows"].split(";"):
@@ -711,7 +713,7 @@ FOOT = """
   <div class="wrap">
     <p>Articles on this site aim to lay out what the figures show, what is settled, what is argued about and by whom. Every number links to its source where one exists, and corrections are noted on the article. The charts are live from the almanac and update as agencies publish.</p>
     <p class="reuse">Free to reuse with credit: Economy in Context (economyincontext.org). The charts and writing here are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Credit the data to its source, named on each chart.</p>
-    <p>This site has no ads and no agenda beyond putting the numbers in context. It sets no cookies and keeps nothing that identifies you; it does count page views, and clicks on a few links on the home page. The optional weekly email is sent through Buttondown, which keeps the addresses for that and nothing else. It is paid for by the person who runs it, out of pocket; <a href="how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+    <p>This site has no ads and no agenda beyond putting the numbers in context. It explains how things work. It is not tax, legal or financial advice. It sets no cookies and keeps nothing that identifies you; it does count page views, and clicks on a few links on the home page. The optional weekly email is sent through Buttondown, which keeps the addresses for that and nothing else. It is paid for by the person who runs it, out of pocket; <a href="how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
     <p class="about-link"><a href="/tools/">Tools: put your own figures next to the national numbers →</a></p>
     <p class="about-link"><a href="about.html">About this site, how it works, and every correction →</a></p>
   </div>

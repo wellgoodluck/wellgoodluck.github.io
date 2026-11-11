@@ -61,6 +61,8 @@ Nearly everywhere, which is why the arguments below are mostly about whether tha
 - [Mortgage rates](what-is-the-mortgage-rate.html): why the Fed can't lower them, and the lock-in effect.
 - [Inflation](what-is-inflation.html): where insurance sits in the index and where property tax doesn't.
 - [Real vs. nominal](real-vs-nominal.html): the shrinking-ruler version of your payment.
+- [What homeowner's insurance costs](what-homeowners-insurance-costs.html): one of the two parts of the payment that aren't fixed.
+- [Sell it or rent it out](sell-it-or-rent-it-out.html): what changes if you move and keep the house.
 
 ## Sources
 

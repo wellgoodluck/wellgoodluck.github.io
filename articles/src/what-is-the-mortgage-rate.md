@@ -59,6 +59,8 @@ A markup on a wholesale price assumes the wholesale price sits still. The 10-yea
 - [The 10-year Treasury yield](what-is-the-10-year-yield.html): the wholesale price.
 - [The Fed funds rate](what-is-the-fed-funds-rate.html): what the Fed does control, and how slowly it reaches here.
 - [Rate vs. level](rate-vs-level.html): why "the Fed cut" and "rates are high" are both true.
+- [You're buying a home](you-are-buying-a-home.html): how the rate reaches a buyer, along with the price, the cash to close and the bills that follow.
+- [Sell it or rent it out](sell-it-or-rent-it-out.html): what changes when an owner keeps a low-rate house as a rental.
 - The almanac's [mortgage rate](../chart.html?id=mortgage) with every overlay.
 
 ## Sources

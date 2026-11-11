@@ -1,6 +1,6 @@
 ---
 title: Tools
-dek: Put your own figures next to the national numbers. Nothing you type is saved or sent anywhere.
+dek: Put your own figures next to the national numbers. Nothing you type is saved or sent anywhere. The results are estimates, not advice.
 date: 2026-11-08
 kind: tool
 out: index

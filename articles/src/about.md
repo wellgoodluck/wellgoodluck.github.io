@@ -2,7 +2,7 @@
 title: About This Site
 dek: What it is, who is behind it, where the numbers come from, how the articles are written, and every correction made so far.
 date: 2026-11-03
-updated: 2026-11-06
+updated: 2026-11-11
 kind: page
 ---
 
@@ -39,7 +39,7 @@ The articles follow a few rules, applied to every topic and every side:
 - Every number links to its source. A figure that updates with the data is filled in from the almanac at publication and kept current; a figure tied to a date says so.
 - An indicator's track record names its false alarms as well as its hits.
 - Every analogy says where it breaks.
-- No advice, no endorsements, no villains, and no byline.
+- No advice, no endorsements, no villains, and no byline. That covers tax, legal and financial questions too: the pages describe how the rules work, not what anyone should do.
 - Articles on contested or political subjects get a second, separate fact-check of every figure and claim against the primary sources before they are published.
 
 Charts that show who held the presidency or Congress carry a line saying what that comparison can and cannot show. The site does not offer a "which party did better" button; [one article](indexed-to-inauguration.html) explains why, and does the comparison with its method stated.
