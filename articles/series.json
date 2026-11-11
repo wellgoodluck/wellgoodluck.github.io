@@ -105,6 +105,20 @@
         }
       ]
     },
+    "debt": {
+      "title": "Debt: four kinds of borrower, and why Washington isn't a household",
+      "dek": "Two pages, read in order: how borrowing works for a household, a city, a state and the federal government, and which of them has to cut back when a recession hits; then the four ways the family-budget comparison fails for Washington, and why a business that never closes is the better one.",
+      "parts": [
+        {
+          "slug": "four-kinds-of-borrower",
+          "label": "Four kinds of borrower"
+        },
+        {
+          "slug": "government-is-not-a-household",
+          "label": "Not a household"
+        }
+      ]
+    },
     "money-traps": {
       "title": "Money Traps",
       "dek": "Seventeen short pages on the ways money leaks out of a household, especially a new one, from overdraft fees and card minimums to car loans, scams, gig taxes, co-signing and student debt: how each trap works, what it costs in dollars, how to avoid it, and the policy fight around it.",

@@ -62,7 +62,7 @@ classes in site.css's illustration block, never colors of its own. A missing fil
 kind=bars: one bar per row, one color, the value printed at each bar's tip. kind=stack: one
 whole split into its parts, up to six, each part's value printed on it, a legend of names.
 kind=pairs: two values per row, two colors, with a legend. fmt writes each value ({v} is the
-number as given). The figure's accessible name lists every value, so nothing is color-only.
+number as given; {v,} prints it with thousands separators, fmt="${v,}" giving $21,840). The figure's accessible name lists every value, so nothing is color-only.
 
 Anything under `## Sources`, up to the next heading, is rendered as a sources list.
 
@@ -992,13 +992,17 @@ def render_map():
     ys = [60, 200, 340, 480]               # row centers
     pos = [(lx, ys[0]), (lx, ys[1]), (lx, ys[2]), (lx, ys[3]),
            (rx, ys[3]), (rx, ys[2]), (rx, ys[1]), (rx, ys[0])]
-    out = [f'<svg viewBox="0 0 {W} {H}" role="img" aria-labelledby="map-title">',
+    # Nov 11: role="group", not "img": an img role hides the eight links inside it from screen readers (axe
+    # nested-interactive). The arrows and lag labels are drawing only, so they sit in an aria-hidden group;
+    # the title still describes the loop, and each stop is a link read by its own name.
+    out = [f'<svg viewBox="0 0 {W} {H}" role="group" aria-labelledby="map-title">',
            '<title id="map-title">How the indicators push on each other: Fed funds to the 10-year yield, '
            'to mortgage rates, to housing starts, to construction jobs, to jobs added, to wages, to inflation, '
            'and back to the Fed.</title>',
            '<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">'
            '<path d="M0,0 L10,5 L0,10 z"/></marker></defs>']
     n = len(pos)
+    out.append('<g aria-hidden="true">')
     for i in range(n):
         (x1, y1), (x2, y2) = pos[i], pos[(i + 1) % n]
         lag = MAP_LAGS[i]
@@ -1018,6 +1022,7 @@ def render_map():
             words = lag.split(", ")
             for k, w in enumerate(words):                      # one or two short lines above the arrow
                 out.append(f'<text class="lag" x="{(x1 + x2) / 2}" y="{y1 - 10 - (len(words) - 1 - k) * 14}" text-anchor="middle">{html.escape(w)}</text>')
+    out.append('</g>')
     for (label, href), (x, y) in zip(MAP_NODES, pos):
         out.append(f'<a class="node" href="{href}"><rect x="{x - bw / 2}" y="{y - bh / 2}" width="{bw}" height="{bh}" rx="6"/>'
                    f'<text x="{x}" y="{y + 5}" text-anchor="middle">{html.escape(label)}</text></a>')
