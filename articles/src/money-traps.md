@@ -1,6 +1,6 @@
 ---
 title: Money Traps
-dek: Seventeen short pages on the ways money leaks out of a household, especially a new one: how each trap works, what it costs in dollars, how to avoid it, and the policy fight around it.
+dek: Twenty-one short pages on the ways money leaks out of a household, especially a new one: how each trap works, what it costs in dollars, how to avoid it, and the policy fight around it.
 date: 2026-11-09
 kind: page
 ---
@@ -20,12 +20,15 @@ Each page also has a picture drawn for the site. The statements, pay stubs and p
 ## Start here
 
 - [The Score You Didn't Know You Had](how-credit-scores-work.html): what goes into a credit score, what doesn't, and how to check yours for free. Several of the pages below come back to it.
+- [The $400 Surprise](emergency-cushion.html): why a few hundred dollars set aside keeps a car repair from turning into fees and high-rate loans. Several of the pages below are what happens without it.
 
-## Everyday banking
+## Everyday banking and spending
 
 - [The $35 Coffee](overdraft-fees.html): how a small purchase turns into an overdraft fee, and the one setting that stops it.
+- [The Charge You Never Noticed](reading-your-statements.html): billing errors and stolen cards, the 60-day deadlines, and why a credit card protects you better than a debit card.
 - [Once You Hit Send](payment-app-scams.html): scams on Zelle, Venmo and Cash App, and why money you send yourself is hard to get back.
 - [Ten Dollars Here, Fifteen There](subscription-creep.html): subscriptions that renew on their own, and what they add up to.
+- [Where Did the Raise Go?](lifestyle-creep.html): how spending rises to swallow every raise, and the habit that lets savings grow too.
 
 ## Borrowing
 
@@ -36,7 +39,11 @@ Each page also has a picture drawn for the site. The statements, pay stubs and p
 - [The Seven-Year Car Loan](long-car-loans.html): why a lower monthly payment can cost more.
 - [The $38.99-a-Week Laptop](rent-to-own.html): what rent-to-own costs by the time you own the thing.
 - [Borrowing for School](student-loans.html): the student loan choices that follow you, and the rules that changed in July 2026.
+
+## When someone else's name is on it
+
 - [Signing for Someone Else's Loan](co-signing.html): what co-signing really means, whether you're asked to co-sign or asking someone else.
+- [In Someone Else's Name](money-in-one-name.html): when one partner handles all the money, and what the other needs in their own name.
 
 ## Spotting the pitch
 

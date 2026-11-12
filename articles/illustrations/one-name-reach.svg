@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 392" role="img" aria-labelledby="one-name-reach-t one-name-reach-d"><title id="one-name-reach-t">What Alex can use the week after Sam dies, in an illustrative household</title><desc id="one-name-reach-d">Use now: joint checking, $3,200, which passes to Alex. Not yet: savings in Sam&#x27;s name only, $18,000, which waits for the estate; the credit card in Sam&#x27;s name only, closed, with no card ever in Alex&#x27;s name; the 401(k), $140,000, which is Alex&#x27;s after weeks of paperwork. Set up differently, with a beneficiary on the savings and a card in Alex&#x27;s own name: $21,200 usable that week, and a credit history of Alex&#x27;s own.</desc>
+<text x="0" y="16" class="h">The week after: what Alex can use</text>
+<text x="0" y="36" class="s i2">Sam handled the money. Most of it was in Sam's name.</text>
+<rect x="0.5" y="54.5" width="359" height="52" rx="4" class="sheet"/>
+<rect x="10" y="64" width="74" height="18" rx="3" class="ink-fill"/><text x="47" y="77.5" text-anchor="middle" class="xs rev">USE NOW</text>
+<text x="94" y="78" class="s b">Joint checking</text>
+<text x="350" y="78" text-anchor="end" class="s b">$3,200</text>
+<text x="94" y="97" class="xs i2">Passes to Alex</text>
+<rect x="0.5" y="114.5" width="359" height="52" rx="4" class="well"/>
+<rect x="10" y="124" width="74" height="18" rx="3" class="ink2-fill"/><text x="47" y="137.5" text-anchor="middle" class="xs rev">NOT YET</text>
+<text x="94" y="138" class="s b">Savings, Sam only</text>
+<text x="350" y="138" text-anchor="end" class="s b">$18,000</text>
+<text x="94" y="157" class="xs i2">Waits for the estate</text>
+<rect x="0.5" y="174.5" width="359" height="52" rx="4" class="well"/>
+<rect x="10" y="184" width="74" height="18" rx="3" class="ink2-fill"/><text x="47" y="197.5" text-anchor="middle" class="xs rev">NOT YET</text>
+<text x="94" y="198" class="s b">Credit card, Sam only</text>
+<text x="94" y="217" class="xs i2">Closed; Alex never had a card</text>
+<rect x="0.5" y="234.5" width="359" height="52" rx="4" class="well"/>
+<rect x="10" y="244" width="74" height="18" rx="3" class="ink2-fill"/><text x="47" y="257.5" text-anchor="middle" class="xs rev">NOT YET</text>
+<text x="94" y="258" class="s b">401(k)</text>
+<text x="350" y="258" text-anchor="end" class="s b">$140,000</text>
+<text x="94" y="277" class="xs i2">Alex&#x27;s, after weeks of paperwork</text>
+<line x1="0" y1="300" x2="360" y2="300" class="rule"/>
+<text x="0" y="320" class="s">Set up differently, with a beneficiary on</text>
+<text x="0" y="338" class="s">the savings and a card in Alex's own name:</text>
+<text x="0" y="366" class="big">$21,200</text>
+<text x="108" y="366" class="s i2">usable that week, and a credit</text>
+<text x="108" y="384" class="s i2">history of Alex's own.</text>
+</svg>

@@ -67,6 +67,8 @@ These examples assume a flat salary and a steady 6% return. Real returns go up a
 
 **No plan at work?** You can open an IRA on your own at most brokerages. [The 2026 limit for 401(k) contributions is $24,500](https://www.irs.gov/newsroom/401k-limit-increases-to-24500-for-2026-ira-limit-increases-to-7500); the IRA limit is $7,500.
 
+Raising your contribution each time you get a raise is the easiest way to get there; see [Where Did the Raise Go?](lifestyle-creep.html).
+
 ## The bigger picture
 
 The biggest gap isn't people skipping the match. It's people without a plan at all. In March 2026, [72% of private-industry workers had access to a retirement plan at work](https://www.bls.gov/opub/ted/2026/retirement-benefits-were-available-to-72-percent-of-private-industry-workers-in-march-2026.htm), and 52% participated, according to the Bureau of Labor Statistics.

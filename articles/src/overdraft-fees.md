@@ -48,6 +48,8 @@ Banks differ. Some cap how many overdraft fees they charge per day, some don't c
 
 **If it happens, ask for a refund.** Call and ask, especially if it's your first time. Banks often waive a fee for customers who ask.
 
+Checking your statement each month catches overdraft fees and other surprises early; [The Charge You Never Noticed](reading-your-statements.html) explains the deadlines.
+
 ## The bigger picture
 
 Overdraft fees have been a long-running fight in Washington.

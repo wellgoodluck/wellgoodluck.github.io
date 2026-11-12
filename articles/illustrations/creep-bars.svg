@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 314" role="img" aria-labelledby="creep-bars-t creep-bars-d"><title id="creep-bars-t">Same pay, two habits: year-10 spending and saving for Taylor and Jordan</title><desc id="creep-bars-d">Both earn $58,715 in year 10 after ten 3% raises. Taylor spends $56,953 and saves $1,761. Jordan, who saved half of every raise, spends $50,508 and saves $8,207. Saved after ten years at a 6% return: Taylor about $20,100, Jordan about $56,400. Jordan&#x27;s spending still rose about $6,900 over the ten years.</desc>
+<text x="0" y="16" class="h">Same pay, same raises, year 10</text>
+<text x="0" y="36" class="s i2">$58,715 a year. Jordan saved half of every raise.</text>
+<text x="0" y="64" class="m">Taylor</text>
+<rect x="0" y="72" width="349.197" height="20" class="range-fill"/>
+<rect x="349.197" y="72" width="10.8034" height="20" class="teal-fill"/>
+<text x="0" y="110" class="s">Spends $56,953</text>
+<text x="360" y="110" text-anchor="end" class="s b">Saves $1,761</text>
+<text x="0" y="138" class="m">Jordan</text>
+<rect x="0" y="146" width="309.68" height="20" class="range-fill"/>
+<rect x="309.68" y="146" width="50.3197" height="20" class="teal-fill"/>
+<text x="0" y="184" class="s">Spends $50,508</text>
+<text x="360" y="184" text-anchor="end" class="s b">Saves $8,207</text>
+<line x1="0" y1="202" x2="360" y2="202" class="rule"/>
+<text x="0" y="224" class="m">Saved after 10 years, at a 6% return</text>
+<text x="0" y="252" class="s">Taylor</text>
+<rect x="60" y="238" width="78.4043" height="18" rx="2" class="teal-fill"/>
+<text x="144.404" y="252" class="s b">$20,100</text>
+<text x="0" y="282" class="s">Jordan</text>
+<rect x="60" y="268" width="220" height="18" rx="2" class="teal-fill"/>
+<text x="286" y="282" class="s b">$56,400</text>
+<text x="0" y="306" class="xs i2">Jordan's spending still rose about $6,900 over the ten years.</text>
+</svg>

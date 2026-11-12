@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 306" role="img" aria-labelledby="cushion-costs-t cushion-costs-d"><title id="cushion-costs-t">What a $400 car repair costs beyond the $400, four ways</title><desc id="cushion-costs-d">A $400 car repair with $100 in checking. Overdrawing the debit card, with four overdraft fees: $140. A payday loan for the $300 you&#x27;re short, kept eight weeks: $180 in fees. A credit card at 22%, paying $50 a month: about $37 in interest. Your own savings: $0. Fees and rates are illustrative; some banks charge less for an overdraft, or nothing.</desc>
+<text x="0" y="16" class="h">A $400 car repair, with $100 in checking</text>
+<text x="0" y="36" class="s i2">What it costs beyond the $400</text>
+<text x="0" y="62" class="m">Overdraft, four fees</text>
+<rect x="0" y="70" width="217.778" height="18" rx="2" class="teal-fill"/>
+<text x="223.778" y="84" class="s b">$140</text>
+<text x="0" y="118" class="m">Payday loan for $300, kept 8 weeks</text>
+<rect x="0" y="126" width="280" height="18" rx="2" class="teal-fill"/>
+<text x="286" y="140" class="s b">$180</text>
+<text x="0" y="174" class="m">Credit card at 22%, $50 a month</text>
+<rect x="0" y="182" width="57.5556" height="18" rx="2" class="teal-fill"/>
+<text x="63.5556" y="196" class="s b">about $37</text>
+<text x="0" y="230" class="m">Your own savings</text>
+<line x1="0" y1="238" x2="0" y2="256" class="ink-line"/>
+<text x="6" y="252" class="s b">$0</text>
+<text x="0" y="282" class="xs i2">Fees and rates are illustrative; some banks charge</text>
+<text x="0" y="298" class="xs i2">less for an overdraft, or nothing.</text>
+</svg>

@@ -48,6 +48,8 @@ For comparison, the average credit card APR is about 22%, and a credit card cash
 
 **If you're in the military,** federal law [caps the rate on most consumer loans to servicemembers and their families at 36%](https://www.law.cornell.edu/uscode/text/10/987).
 
+The best protection is a small cushion of your own; [The $400 Surprise](emergency-cushion.html) shows how to build one.
+
 ## The bigger picture
 
 Payday lending is regulated mostly by states, and the rules vary enormously. Some states effectively ban payday loans by capping rates; others allow fees well above $15 per $100.

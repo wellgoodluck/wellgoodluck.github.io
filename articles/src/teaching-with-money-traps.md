@@ -22,6 +22,14 @@ Below, each page has two or three questions and one activity. Suggested order: s
 - Why might a lender care how much of your card limit you use, not just whether you pay?
 - **Activity:** Using the page's picture, rank the five factors by weight. Then list one action a new borrower could take for each.
 
+## A $400 cushion: The $400 Surprise
+
+[Read the page](emergency-cushion.html)
+
+- More than one adult in three told the Federal Reserve they wouldn't cover a $400 surprise with cash or its equivalent. What would most people your age do instead, and which page in this series describes it?
+- Should employers help workers build emergency savings, or is that a household's own business?
+- **Activity:** Using the page's worked example, pick a weekly amount you could save and work out how many weeks it takes to reach $400 and $1,000.
+
 ## Overdraft fees: The $35 Coffee
 
 [Read the page](overdraft-fees.html)
@@ -29,6 +37,14 @@ Below, each page has two or three questions and one activity. Suggested order: s
 - In the worked example, the fees cost more than the shortfall. Why does a bank charge the same fee whether you're $4 short or $40 short?
 - Who benefits when overdraft coverage is "on" for debit cards? Who benefits when it's off?
 - **Activity:** Find the overdraft settings page for a real bank or credit union online, without logging in. What is the setting called, and what is the default?
+
+## Reading statements: The Charge You Never Noticed
+
+[Read the page](reading-your-statements.html)
+
+- Why does a stolen debit card hurt more than a stolen credit card, even when the law caps what you owe?
+- The 60-day clock starts when the statement is sent, not when you read it. Is that fair? Who should carry the risk of an unread statement?
+- **Activity:** Take a month of your own (or a made-up) statement and sort every line into four groups: recognized, recurring, fees, don't know. Look up anything in the last group.
 
 ## Payment app scams: Once You Hit Send
 
@@ -94,6 +110,14 @@ Below, each page has two or three questions and one activity. Suggested order: s
 - Who should be responsible for reminding you before a free trial turns paid: you, the company or the law?
 - **Activity:** List every subscription in your household you can think of, with its monthly price. Total it for a year. (Students can estimate; no real accounts needed.)
 
+## Lifestyle creep: Where Did the Raise Go?
+
+[Read the page](lifestyle-creep.html)
+
+- Name three spending choices that are reasonable on their own but add up to a new monthly baseline.
+- The life-cycle model says young people can sensibly spend more now and save later. When does that hold, and when doesn't it?
+- **Activity:** Starting from a $45,000 salary and a 3% raise, decide what share of the raise to save. Compare your saving rate after five raises with the page's Taylor and Jordan.
+
 ## Finfluencers and scams: Investing Tips From Your Feed
 
 [Read the page](finfluencers-and-investment-scams.html)
@@ -149,6 +173,14 @@ Below, each page has two or three questions and one activity. Suggested order: s
 - What's the difference between co-signing and being an authorized user?
 - Using the page's picture of the federal notice, which of the three marked sentences would surprise most people, and why?
 - **Activity:** Write the questions you'd ask before co-signing for a friend's car loan, then compare them with the page's How to avoid it section.
+
+## Money in one name: In Someone Else's Name
+
+[Read the page](money-in-one-name.html)
+
+- What's the difference between a joint account and being an authorized user, and what happens to each if the account holder dies?
+- Should a spouse have to sign before retirement money leaves a 401(k)? Make the case each side made to the GAO.
+- **Activity:** Make the one-page list the page describes for a made-up household: each account, whose name it's in, the beneficiary, and who can reach it.
 
 ## Going further
 

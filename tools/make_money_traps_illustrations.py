@@ -953,6 +953,146 @@ def cosigner_notice():
           "as a separate page.")
 
 
+# ---------------------------------------------------------------- Nov 11: four more parts
+def statement_marked():
+    """Fictional credit card statement with a duplicate, a $1 test charge and a refund that never posted."""
+    b = []
+    rows = [("Oct 2", "Grocery Mart", "$64.18", None), ("Oct 3", "Fitness Club", "$29.00", None),
+            ("Oct 3", "Fitness Club", "$29.00", 1), ("Oct 7", "Online order", "$112.40", None),
+            ("Oct 9", "ZQX*SVC 8831", "$1.00", 2)]
+    top = 90
+    rh = 30
+    h_sheet = top + rh * len(rows) + 64
+    b.append(R(0.5, 0.5, W - 1, h_sheet, "sheet", rx=6))
+    b.append(fictional(14, 22, "start"))
+    b.append(T(14, 44, "Card statement, closing Oct 15", "h"))
+    b.append(T(14, 72, "DATE", "cap"))
+    b.append(T(70, 72, "DESCRIPTION", "cap"))
+    b.append(T(W - 50, 72, "AMOUNT", "cap", "end"))
+    b.append(L(14, 80, W - 14, 80, "rule"))
+    y = top
+    for d, desc, amt, n in rows:
+        cy = y + rh / 2 + 5
+        if n:
+            b.append(R(10, y + 3, W - 20, rh - 6, "wash", rx=3))
+            b.append(numdot(W - 26, cy + 1, n))
+        b.append(T(14, cy, d, "s i2"))
+        b.append(T(70, cy, tx(desc), "b" if n else ""))
+        b.append(T(W - 50, cy, amt, "b" if n else "", "end"))
+        y += rh
+        b.append(L(14, y, W - 14, y, "rule"))
+    b.append(R(10, y + 10, W - 20, 40, "wash", rx=3))
+    b.append(numdot(W - 26, y + 36, 3))
+    b.append(T(14, y + 27, "Not here: the $86.00 refund from", "s b"))
+    b.append(T(14, y + 43, "your Oct 1 return", "s b"))
+    yy = h_sheet + 26
+    notes = [(1, "Charged twice: a billing error."), (2, "A $1 charge you don't know: thieves test"),
+             (None, "cards this way. Call the card company now."), (3, "A refund that never posted is a billing error too.")]
+    for n, line in notes:
+        if n:
+            b.append(numdot(11, yy + 1, n))
+        b.append(T(30, yy, tx(line), "s"))
+        yy += 22
+    b.append(T(0, yy + 6, "To dispute them under federal law, a written", "s i2"))
+    b.append(T(0, yy + 24, "notice must reach the card company by Dec 14,", "s i2"))
+    b.append(T(0, yy + 42, "60 days after the Oct 15 statement.", "s i2"))
+    write("statement-marked", yy + 50, b, "A fictional credit card statement with three problems marked",
+          "A fictional card statement closing October 15: Grocery Mart $64.18; Fitness Club $29.00; Fitness Club $29.00 "
+          "again, marked 1, charged twice, a billing error; Online order $112.40; ZQX*SVC 8831 $1.00, marked 2, a $1 "
+          "charge you don't know, the way thieves test cards, so call the card company now. Marked 3: the $86.00 refund "
+          "from an October 1 return isn't on the statement, which is a billing error too. To dispute any of them under "
+          "federal law, the written notice must reach the card company by December 14, 60 days after October 15.")
+
+
+def cushion_costs():
+    """What a $400 repair costs beyond the $400, four ways to pay."""
+    b = []
+    b.append(T(0, 16, "A $400 car repair, with $100 in checking", "h"))
+    b.append(T(0, 36, "What it costs beyond the $400", "s i2"))
+    rows = [("Overdraft, four fees", "$140", 140), ("Payday loan for $300, kept 8 weeks", "$180", 180),
+            ("Credit card at 22%, $50 a month", "about $37", 37), ("Your own savings", "$0", 0)]
+    y = 58
+    maxw = W - 80
+    for lab, val, v in rows:
+        b.append(T(0, y + 4, tx(lab), "m"))
+        w = maxw * v / 180
+        if v:
+            b.append(R(0, y + 12, w, 18, "teal-fill", rx=2))
+        else:
+            b.append(L(0, y + 12, 0, y + 30, "ink-line"))
+        b.append(T(w + 6, y + 26, val, "s b"))
+        y += 56
+    b.append(T(0, y, "Fees and rates are illustrative; some banks charge", "xs i2"))
+    b.append(T(0, y + 16, "less for an overdraft, or nothing.", "xs i2"))
+    write("cushion-costs", y + 24, b, "What a $400 car repair costs beyond the $400, four ways",
+          "A $400 car repair with $100 in checking. Overdrawing the debit card, with four overdraft fees: $140. A payday "
+          "loan for the $300 you're short, kept eight weeks: $180 in fees. A credit card at 22%, paying $50 a month: about $37 in interest. Your "
+          "own savings: $0. Fees and rates are illustrative; some banks charge less for an overdraft, or nothing.")
+
+
+def one_name_reach():
+    """Sam and Alex's accounts: what Alex can reach the week after Sam dies."""
+    b = []
+    b.append(T(0, 16, "The week after: what Alex can use", "h"))
+    b.append(T(0, 36, "Sam handled the money. Most of it was in Sam's name.", "s i2"))
+    rows = [("Joint checking", "$3,200", "Passes to Alex", True),
+            ("Savings, Sam only", "$18,000", "Waits for the estate", False),
+            ("Credit card, Sam only", "", "Closed; Alex never had a card", False),
+            ("401(k)", "$140,000", "Alex's, after weeks of paperwork", False)]
+    y = 54
+    for title, amt, note, now in rows:
+        b.append(R(0.5, y + 0.5, W - 1, 52, "sheet" if now else "well", rx=4))
+        b.append(tag(10, y + 10, 74, 18, "USE NOW" if now else "NOT YET", "ink-fill" if now else "ink2-fill"))
+        b.append(T(94, y + 24, tx(title), "s b"))
+        if amt:
+            b.append(T(W - 10, y + 24, amt, "s b", "end"))
+        b.append(T(94, y + 43, tx(note), "xs i2"))
+        y += 60
+    yy = y + 10
+    b.append(L(0, yy - 4, W, yy - 4, "rule"))
+    b.append(T(0, yy + 16, "Set up differently, with a beneficiary on", "s"))
+    b.append(T(0, yy + 34, "the savings and a card in Alex's own name:", "s"))
+    b.append(T(0, yy + 62, "$21,200", "big"))
+    b.append(T(108, yy + 62, "usable that week, and a credit", "s i2"))
+    b.append(T(108, yy + 80, "history of Alex's own.", "s i2"))
+    write("one-name-reach", yy + 88, b, "What Alex can use the week after Sam dies, in an illustrative household",
+          "Use now: joint checking, $3,200, which passes to Alex. Not yet: savings in Sam's name only, $18,000, which "
+          "waits for the estate; the credit card in Sam's name only, closed, with no card ever in Alex's name; the "
+          "401(k), $140,000, which is Alex's after weeks of paperwork. Set up differently, with a beneficiary on the "
+          "savings and a card in Alex's own name: $21,200 usable that week, and a credit history of Alex's own.")
+
+
+def creep_bars():
+    """Year-10 spend vs. save for Taylor and Jordan, and what each has saved."""
+    b = []
+    b.append(T(0, 16, "Same pay, same raises, year 10", "h"))
+    b.append(T(0, 36, "$58,715 a year. Jordan saved half of every raise.", "s i2"))
+    y = 60
+    for name, spend, save in (("Taylor", 56953, 1761), ("Jordan", 50508, 8207)):
+        b.append(T(0, y + 4, name, "m"))
+        ws = W * spend / 58715
+        b.append(R(0, y + 12, ws, 20, "range-fill"))
+        b.append(R(ws, y + 12, W - ws, 20, "teal-fill"))
+        b.append(T(0, y + 50, f"Spends ${spend:,}", "s"))
+        b.append(T(W, y + 50, f"Saves ${save:,}", "s b", "end"))
+        y += 74
+    b.append(L(0, y - 6, W, y - 6, "rule"))
+    b.append(T(0, y + 16, "Saved after 10 years, at a 6% return", "m"))
+    y += 30
+    for name, v in (("Taylor", 20100), ("Jordan", 56400)):
+        w = (W - 140) * v / 56400
+        b.append(T(0, y + 14, name, "s"))
+        b.append(R(60, y, w, 18, "teal-fill", rx=2))
+        b.append(T(60 + w + 6, y + 14, f"${v:,}", "s b"))
+        y += 30
+    b.append(T(0, y + 8, "Jordan's spending still rose about $6,900 over the ten years.", "xs i2"))
+    write("creep-bars", y + 16, b, "Same pay, two habits: year-10 spending and saving for Taylor and Jordan",
+          "Both earn $58,715 in year 10 after ten 3% raises. Taylor spends $56,953 and saves $1,761. Jordan, who saved "
+          "half of every raise, spends $50,508 and saves $8,207. Saved after ten years at a 6% return: Taylor about "
+          "$20,100, Jordan about $56,400. Jordan's spending still rose about $6,900 over the ten years.")
+
+
+
 # ---------------------------------------------------------------- Spanish pilot (Nov 9): the overdraft page's two drawings
 ES.update({
     "FICTIONAL · FOR ILLUSTRATION": "FICTICIO · SOLO DE EJEMPLO",
@@ -998,7 +1138,8 @@ SPANISH = (overdraft_statement, overdraft_optin)
 for fn in (credit_score_factors, overdraft_statement, overdraft_optin, card_minimum_box, card_three_ways, bnpl_calendar,
            payday_treadmill, cash_advance_timelines, car_balances, car_price_tag, rto_price_tag, rto_three_laptops,
            subs_statement, finfluencer_post, one_percent_curve, two_savers, pay_stub, student_balance, worry_ad,
-           four_borrowers, betting_cost, gig_payouts, scam_texts, cosigner_notice):
+           four_borrowers, betting_cost, gig_payouts, scam_texts, cosigner_notice, statement_marked, cushion_costs,
+           one_name_reach, creep_bars):
     fn()
 
 LANG = "es"

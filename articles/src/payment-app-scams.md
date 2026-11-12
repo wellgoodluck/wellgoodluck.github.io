@@ -52,6 +52,8 @@ The ticket costs the same in every row. What changes is whether anyone has to gi
 
 **Act fast if it happens.** Contact your bank and the app right away, file a report at ReportFraud.ftc.gov, and if someone else sent the money, even using a code you were tricked into sharing, say so: that's what triggers your rights under Regulation E. You can also file a complaint with the Consumer Financial Protection Bureau.
 
+For purchases from strangers, a credit card's dispute rights are stronger than a debit card's or an app's; [The Charge You Never Noticed](reading-your-statements.html) explains why.
+
 ## The bigger picture
 
 People reported losing $15.9 billion to fraud in 2025, according to the FTC, a record and up from $12.5 billion in 2024; bank transfers and payments accounted for the most money lost of any payment method. People 29 and under reported losing nearly $500 million, according to FTC figures cited by the Federal Reserve. Real losses are higher, because most fraud is never reported.

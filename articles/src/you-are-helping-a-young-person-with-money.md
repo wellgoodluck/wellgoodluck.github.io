@@ -11,13 +11,14 @@ hook: the traps that arrive at each age, and what to set up early
 
 Money trouble rarely starts with one big mistake. It starts with a default setting, a small fee or an easy payment, usually the first time a young person handles something alone. The traps arrive in a fairly predictable order, and each has a short page in the [Money Traps](money-traps.html) series.
 
-1. **A first bank account**, often in the teens. The traps: [overdraft fees](overdraft-fees.html), which can turn a $6 purchase into a $35 charge; [payment app scams](payment-app-scams.html), where money sent by Venmo or Zelle is usually gone; and [subscriptions](subscription-creep.html) that renew on their own.
-2. **A first paycheck.** From a regular job, taxes come out automatically. From delivery, rideshare or freelance apps, [nothing is withheld](gig-work-taxes.html), and the bill arrives in April.
+1. **A first bank account**, often in the teens. The traps: [overdraft fees](overdraft-fees.html), which can turn a $6 purchase into a $35 charge; [payment app scams](payment-app-scams.html), where money sent by Venmo or Zelle is usually gone; and [subscriptions](subscription-creep.html) that renew on their own. It's also the time to build the habit of [reading every statement](reading-your-statements.html), because the deadlines to dispute a charge start when it's sent.
+2. **A first paycheck.** From a regular job, taxes come out automatically. From delivery, rideshare or freelance apps, [nothing is withheld](gig-work-taxes.html), and the bill arrives in April. This is also the moment to start [a small emergency cushion](emergency-cushion.html), and, with each raise after, to keep [lifestyle creep](lifestyle-creep.html) from taking all of it.
 3. **A first credit card**, at 18 (before 21, only with their own income) or earlier as an authorized user on yours. The traps: [what goes into a credit score](how-credit-scores-work.html), [paying only the minimum](credit-card-minimum-payments.html), and [buy now, pay later](buy-now-pay-later.html) plans that stack up.
 4. **A first car.** A [seven-year loan](long-car-loans.html) lowers the payment and raises the total.
 5. **A first apartment**, with the costs of furnishing it and the temptation of [rent-to-own](rent-to-own.html) or a [payday loan](payday-loans-and-paycheck-apps.html) when money runs short. This is also when someone may ask you to [co-sign](co-signing.html) a lease or a loan.
 6. **College**, and the [student loan choices](student-loans.html) that follow them for decades.
 7. **The feed, all along:** [investing tips from strangers](finfluencers-and-investment-scams.html), [ads that sell the worry](ads-that-sell-the-worry.html), and [sports betting and prediction apps](sports-betting-and-prediction-apps.html), some of which, including the largest, Kalshi, accept users at 18 even in states where the sportsbook age is 21.
+8. **Moving in with someone.** When couples combine money, one person often ends up handling it all. Each should keep [an account and a card in their own name](money-in-one-name.html).
 
 ## Three things you can set up early
 
