@@ -211,6 +211,34 @@
         }
       ],
       "featured": "2026-11-09"
+    },
+    "money-basics": {
+      "title": "Money Basics",
+      "dek": "Five short pages on how money works before anything goes wrong: what comes out of a paycheck, how a checking account really works, a first budget, where savings sits and what it earns, and compound interest in both directions. A companion to Money Traps.",
+      "landing": "money-basics",
+      "teaser": "short pages on how money works, before the traps",
+      "parts": [
+        {
+          "slug": "your-first-paycheck",
+          "label": "Your first paycheck"
+        },
+        {
+          "slug": "how-a-checking-account-works",
+          "label": "Checking accounts"
+        },
+        {
+          "slug": "a-first-budget",
+          "label": "A first budget"
+        },
+        {
+          "slug": "how-saving-works",
+          "label": "How saving works"
+        },
+        {
+          "slug": "compound-interest",
+          "label": "Compound interest"
+        }
+      ]
     }
   }
 }

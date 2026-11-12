@@ -17,6 +17,10 @@ Most money trouble doesn't start with one big decision. It starts with small cha
 
 Each page also has a picture drawn for the site. The statements, pay stubs and posts in them are made up, and say so on their face.
 
+## New to all of this?
+
+[Money Basics](money-basics.html) is a shorter companion series that covers the ground first: your first paycheck, how a checking account works, a first budget, how saving works, and compound interest.
+
 ## Start here
 
 - [The Score You Didn't Know You Had](how-credit-scores-work.html): what goes into a credit score, what doesn't, and how to check yours for free. Several of the pages below come back to it.
@@ -76,5 +80,6 @@ Each page stands on its own and takes about five minutes to read. The series box
 
 ## See also
 
+- [Money Basics](money-basics.html): five short pages on how money works before anything goes wrong.
 - [Why the Government Is Not a Household, and What It Is Instead](government-is-not-a-household.html): how debt works differently for a family and for the federal government.
 - [Has It Kept Up With Prices?](/tools/kept-up.html): check whether a paycheck, a benefit or a rent has kept pace with inflation.

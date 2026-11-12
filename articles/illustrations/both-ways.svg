@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 348" role="img" aria-labelledby="both-ways-t both-ways-d"><title id="both-ways-t">$2,000 over ten years, saved at 4% and owed at 22.36%</title><desc id="both-ways-d">Two lines from the same $2,000. Saved at 4% a year, it grows to about $2,080 after one year, $2,433 after five and $2,960 after ten. Owed on a credit card at 22.36% and never paid down, it grows to about $2,501 after one year, $6,115 after five and $18,699 after ten. Real cards require payments; this shows what compounding does to any part left unpaid.</desc>
+<text x="0" y="16" class="h">The same $2,000, both ways</text>
+<text x="0" y="36" class="s i2">Saved at 4%, or owed on a card at 22.36%</text>
+<line x1="54" y1="236" x2="290" y2="236" class="rule"/>
+<text x="48" y="240" text-anchor="end" class="xs mu">$0</text>
+<line x1="54" y1="191" x2="290" y2="191" class="rule"/>
+<text x="48" y="195" text-anchor="end" class="xs mu">$5K</text>
+<line x1="54" y1="146" x2="290" y2="146" class="rule"/>
+<text x="48" y="150" text-anchor="end" class="xs mu">$10K</text>
+<line x1="54" y1="101" x2="290" y2="101" class="rule"/>
+<text x="48" y="105" text-anchor="end" class="xs mu">$15K</text>
+<line x1="54" y1="56" x2="290" y2="56" class="rule"/>
+<text x="48" y="60" text-anchor="end" class="xs mu">$20K</text>
+<text x="54" y="254" text-anchor="middle" class="xs mu">0</text>
+<text x="101.2" y="254" text-anchor="middle" class="xs mu">2</text>
+<text x="148.4" y="254" text-anchor="middle" class="xs mu">4</text>
+<text x="195.6" y="254" text-anchor="middle" class="xs mu">6</text>
+<text x="242.8" y="254" text-anchor="middle" class="xs mu">8</text>
+<text x="290" y="254" text-anchor="middle" class="xs mu">10</text>
+<text x="172" y="272" text-anchor="middle" class="xs mu">Years</text>
+<path d="M54.0 218.0 L77.6 217.3 L101.2 216.5 L124.8 215.8 L148.4 214.9 L172.0 214.1 L195.6 213.2 L219.2 212.3 L242.8 211.4 L266.4 210.4 L290.0 209.4" class="teal-line"/>
+<path d="M54.0 218.0 L77.6 213.5 L101.2 207.9 L124.8 200.8 L148.4 192.0 L172.0 181.0 L195.6 167.2 L219.2 149.9 L242.8 128.4 L266.4 101.4 L290.0 67.7" class="c3-line dashed"/>
+<text x="296" y="71.7103" class="s b">$18,699</text>
+<text x="296" y="87.7103" class="xs">owed</text>
+<text x="296" y="199.356" class="s b">$2,960</text>
+<text x="296" y="215.356" class="xs">saved</text>
+<line x1="0" y1="294" x2="18" y2="294" class="teal-line"/>
+<text x="24" y="298" class="xs">Saved at 4%</text>
+<line x1="130" y1="294" x2="148" y2="294" class="c3-line dashed"/>
+<text x="154" y="298" class="xs">Owed at 22.36%, never paid</text>
+<text x="0" y="324" class="xs i2">Real cards require payments; this shows what</text>
+<text x="0" y="340" class="xs i2">compounding does to any part left unpaid.</text>
+</svg>

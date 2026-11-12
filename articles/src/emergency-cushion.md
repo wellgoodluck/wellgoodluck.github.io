@@ -60,6 +60,8 @@ Building the cushion takes a while, but less than most people think: $20 a week 
 
 **If you have high-rate debt too,** build the starter cushion first, then put extra money toward the debt. Without the cushion, the next surprise goes right back on the card.
 
+[The 0.38% Account](how-saving-works.html) explains where to keep it and why the rate matters.
+
 ## The bigger picture
 
 Policymakers have tried to bring emergency saving into the workplace. The SECURE 2.0 Act of 2022 created two options for employers' retirement plans, both available since 2024:

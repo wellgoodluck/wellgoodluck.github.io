@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 426" role="img" aria-labelledby="two-balances-t two-balances-d"><title id="two-balances-t">One fictional week: what a banking app shows against what&#x27;s really left</title><desc id="two-balances-d">Monday, a $350 rent check is mailed: the app shows $420, really left $70. Tuesday, $40 of gas with a $100 pump hold: app $320, really left $30. Wednesday, $60 of groceries: app $260, really left minus $30. Thursday, the landlord cashes the check: app minus $90, really left minus $30. Friday, the gas hold drops to the real $40: both minus $30. The app catches up on Thursday; your own count knew on Monday that the week&#x27;s limit was $70.</desc>
+<text x="0" y="16" class="h">One week, two balances</text>
+<text x="0" y="36" class="s i2">A $350 rent check is mailed Monday</text>
+<rect x="0" y="48" width="12" height="12" rx="2" class="range-fill"/>
+<text x="18" y="58" class="xs">Your app shows</text>
+<rect x="140" y="48" width="12" height="12" rx="2" class="teal-fill"/>
+<text x="158" y="58" class="xs">What's really left</text>
+<text x="0" y="92" class="s">Monday: rent check mailed</text>
+<line x1="64" y1="97" x2="64" y2="128" class="ink-line"/>
+<rect x="64" y="100" width="220" height="11" class="range-fill"/>
+<text x="360" y="110" text-anchor="end" class="xs">$420</text>
+<rect x="64" y="114" width="36.6667" height="11" class="teal-fill"/>
+<text x="360" y="124" text-anchor="end" class="xs b">$70</text>
+<text x="0" y="150" class="s">Tuesday: $40 of gas, $100 hold</text>
+<line x1="64" y1="155" x2="64" y2="186" class="ink-line"/>
+<rect x="64" y="158" width="167.619" height="11" class="range-fill"/>
+<text x="360" y="168" text-anchor="end" class="xs">$320</text>
+<rect x="64" y="172" width="15.7143" height="11" class="teal-fill"/>
+<text x="360" y="182" text-anchor="end" class="xs b">$30</text>
+<text x="0" y="208" class="s">Wednesday: $60 of groceries</text>
+<line x1="64" y1="213" x2="64" y2="244" class="ink-line"/>
+<rect x="64" y="216" width="136.19" height="11" class="range-fill"/>
+<text x="360" y="226" text-anchor="end" class="xs">$260</text>
+<rect x="48.2857" y="230" width="15.7143" height="11" class="teal-fill"/>
+<text x="360" y="240" text-anchor="end" class="xs b">−$30</text>
+<text x="0" y="266" class="s">Thursday: landlord cashes the check</text>
+<line x1="64" y1="271" x2="64" y2="302" class="ink-line"/>
+<rect x="16.8571" y="274" width="47.1429" height="11" class="range-fill"/>
+<text x="360" y="284" text-anchor="end" class="xs">−$90</text>
+<rect x="48.2857" y="288" width="15.7143" height="11" class="teal-fill"/>
+<text x="360" y="298" text-anchor="end" class="xs b">−$30</text>
+<text x="0" y="324" class="s">Friday: gas hold drops to $40</text>
+<line x1="64" y1="329" x2="64" y2="360" class="ink-line"/>
+<rect x="48.2857" y="332" width="15.7143" height="11" class="range-fill"/>
+<text x="360" y="342" text-anchor="end" class="xs">−$30</text>
+<rect x="48.2857" y="346" width="15.7143" height="11" class="teal-fill"/>
+<text x="360" y="356" text-anchor="end" class="xs b">−$30</text>
+<text x="64" y="374" text-anchor="middle" class="xs mu">$0</text>
+<text x="0" y="402" class="xs i2">The app catches up on Thursday. Your own count</text>
+<text x="0" y="418" class="xs i2">knew on Monday that the week's limit was $70.</text>
+</svg>

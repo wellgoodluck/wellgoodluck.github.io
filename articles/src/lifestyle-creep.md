@@ -53,6 +53,8 @@ Jordan's spending still grew every single year, from $43,650 to $50,508, a raise
 
 **Know what you're aiming for.** [An emergency cushion](emergency-cushion.html) first, [the full employer match](employer-retirement-match.html), and then a saving rate that climbs a little with each raise.
 
+[A First Budget That Survives the Month](a-first-budget.html) is a place to start.
+
 ## The bigger picture
 
 Americans saved [3.8% of their after-tax income in September 2026](https://www.bea.gov/news/2026/personal-income-and-outlays-september-2026), according to the Bureau of Economic Analysis, [the lowest since October 2022](https://fred.stlouisfed.org/series/PSAVERT). That figure is for the whole country, not any one household, but it shows how thin the margin is for many families.

@@ -14,6 +14,8 @@ The pages, pictures and tools are free to use, print and share with credit under
 
 Below, each page has two or three questions and one activity. Suggested order: start with credit scores, since several other pages build on it, then take them in any order.
 
+For students who are new to all of it, the five [Money Basics](money-basics.html) pages come first; their questions are at the end of this page.
+
 ## Credit scores: The Score You Didn't Know You Had
 
 [Read the page](how-credit-scores-work.html)
@@ -181,6 +183,46 @@ Below, each page has two or three questions and one activity. Suggested order: s
 - What's the difference between a joint account and being an authorized user, and what happens to each if the account holder dies?
 - Should a spouse have to sign before retirement money leaves a 401(k)? Make the case each side made to the GAO.
 - **Activity:** Make the one-page list the page describes for a made-up household: each account, whose name it's in, the beneficiary, and who can reach it.
+
+## Your first paycheck: Where Did the Rest of It Go?
+
+[Read the page](your-first-paycheck.html)
+
+- Social Security and Medicare come out of every paycheck, but income tax withholding can be zero. Why are they treated differently?
+- Is a big tax refund good news? What does it mean about the year's paychecks?
+- **Activity:** Using the page's worked example, recompute the take-home pay for 20 hours a week instead of 30. Which lines change, and which stay the same percentage?
+
+## Checking accounts: The Balance Your App Shows
+
+[Read the page](how-a-checking-account-works.html)
+
+- Why can a bank let you spend a deposited check before it knows the check is good?
+- Who should carry the risk when a check you deposited turns out to be fake: you, your bank, or the bank the check was drawn on?
+- **Activity:** Redo the page's week with a running balance of your own. On which day would you have known to stop spending?
+
+## A first budget: A First Budget That Survives the Month
+
+[Read the page](a-first-budget.html)
+
+- The 50/30/20 rule's authors and its critics disagree about whether savings should come first or last. Make each side's case.
+- Which of your own or your family's costs are irregular? How would you plan for them?
+- **Activity:** Build a one-month budget for the page's $2,689 take-home pay with a rent that's realistic where you live. What share do needs take?
+
+## How saving works: The 0.38% Account
+
+[Read the page](how-saving-works.html)
+
+- Why might a large bank pay 0.01% on savings when an online bank pays 4%? Why do customers stay?
+- What does FDIC insurance protect against, and what doesn't it? Use the Synapse example.
+- **Activity:** Look up the savings rate at two real banks or credit unions, without logging in. Using the page's table, work out the difference on $1,000 over five years.
+
+## Compound interest: Interest on Interest
+
+[Read the page](compound-interest.html)
+
+- Use the rule of 72: how long does money take to double at 3%, 6% and 12%? How long does a card balance at 24% take?
+- Why does starting ten years earlier matter more than putting in more later?
+- **Activity:** On a sheet of paper, track $100 at 10% a year for five years, with simple interest and with compound interest. Where do the two lines separate?
 
 ## Going further
 

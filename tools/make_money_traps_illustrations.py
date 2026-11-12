@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the Money Traps illustrations (Nov 9) as SVG files in articles/illustrations/. Not run by the workflows:
+"""Generate the Money Traps (Nov 9) and Money Basics (Nov 12) illustrations as SVG files in articles/illustrations/. Not run by the workflows:
 run it by hand after changing a figure here (python3 tools/make_money_traps_illustrations.py), then upload the SVGs.
 Every color comes from the classes in assets/site.css's illustration block (the companion colors for identity only); nothing here sets a color.
 viewBox width is 360; text never smaller than 12.5 units."""
@@ -1092,6 +1092,173 @@ def creep_bars():
           "$20,100, Jordan about $56,400. Jordan's spending still rose about $6,900 over the ten years.")
 
 
+# ---------------------------------------------------------------- Money Basics (Nov 12)
+def stub_split():
+    """Money Basics 1: a $900 paycheck and where it goes."""
+    b = []
+    rows = [("Gross pay (60 hours × $15)", "$900.00", ""), ("Social Security (6.2%)", "−$55.80", "c1-fill"),
+            ("Medicare (1.45%)", "−$13.05", "c2-fill"), ("Federal income tax", "−$28.08", "c3-fill")]
+    sh = 214
+    b.append(R(0.5, 0.5, W - 1, sh, "sheet", rx=6))
+    b.append(fictional(14, 22, "start"))
+    b.append(T(14, 44, "Pay stub, one paycheck", "h"))
+    b.append(T(14, 64, "$15 an hour, paid every two weeks", "xs i2"))
+    b.append(L(14, 74, W - 14, 74, "rule"))
+    y = 98
+    for k, v, c in rows:
+        if c:
+            b.append(R(14, y - 10, 10, 10, c, rx=2))
+        b.append(T(30 if c else 14, y, tx(k), "s"))
+        b.append(T(W - 14, y, v, "s b", "end"))
+        b.append(L(14, y + 10, W - 14, y + 10, "rule"))
+        y += 26
+    b.append(R(14, y - 10, 10, 10, "teal-fill", rx=2))
+    b.append(T(30, y + 1, "Take-home pay", "m"))
+    b.append(T(W - 14, y + 1, "$803.07", "m", "end"))
+    b.append(L(14, y + 11, W - 14, y + 11, "ink-line"))
+    y = sh + 22
+    b.append(T(0, y, "The same $900 as one bar", "s b"))
+    y += 12
+    x = 0
+    for v, cls in ((55.80, "c1-fill"), (13.05, "c2-fill"), (28.08, "c3-fill"), (803.07, "teal-fill")):
+        w = W * v / 900
+        b.append(R(x, y, w - (1 if cls != "teal-fill" else 0), 24, cls))
+        x += w
+    b.append(T(0, y + 44, "$96.93 taken out", "xs"))
+    b.append(T(W, y + 44, "$803.07 to your account", "xs b", "end"))
+    write("stub-split", y + 50, b, "A fictional pay stub: where a $900 paycheck goes",
+          "One paycheck at $15 an hour, 60 hours, paid every two weeks, single, no state income tax. Gross pay $900.00. "
+          "Social Security, 6.2%: $55.80. Medicare, 1.45%: $13.05. Federal income tax withheld: $28.08. Take-home pay: "
+          "$803.07. Shown again as one bar: $96.93 taken out, $803.07 to your account.")
+
+
+def two_balances():
+    """Money Basics 2: what the app shows against what's really left, Monday to Friday."""
+    b = []
+    b.append(T(0, 16, "One week, two balances", "h"))
+    b.append(T(0, 36, "A $350 rent check is mailed Monday", "s i2"))
+    ly = 58
+    b.append(R(0, ly - 10, 12, 12, "range-fill", rx=2)); b.append(T(18, ly, "Your app shows", "xs"))
+    b.append(R(140, ly - 10, 12, 12, "teal-fill", rx=2)); b.append(T(158, ly, "What's really left", "xs"))
+    days = [("Monday: rent check mailed", 420, 70), ("Tuesday: $40 of gas, $100 hold", 320, 30),
+            ("Wednesday: $60 of groceries", 260, -30), ("Thursday: landlord cashes the check", -90, -30),
+            ("Friday: gas hold drops to $40", -30, -30)]
+    z, sc = 64, 220 / 420
+    y0 = 80
+    y = y0
+    for lab, app, real in days:
+        b.append(T(0, y + 12, tx(lab), "s"))
+        b.append(L(z, y + 17, z, y + 48, "ink-line"))
+        for i, (v, cls) in enumerate(((app, "range-fill"), (real, "teal-fill"))):
+            by = y + 20 + i * 14
+            w = abs(v) * sc
+            b.append(R(z if v >= 0 else z - w, by, w, 11, cls))
+            b.append(T(W, by + 10, money(v, False), "xs b" if cls == "teal-fill" else "xs", "end"))
+        y += 58
+    b.append(T(z, y + 4, "$0", "xs mu", "middle"))
+    b.append(T(0, y + 32, "The app catches up on Thursday. Your own count", "xs i2"))
+    b.append(T(0, y + 48, "knew on Monday that the week's limit was $70.", "xs i2"))
+    write("two-balances", y + 56, b, "One fictional week: what a banking app shows against what's really left",
+          "Monday, a $350 rent check is mailed: the app shows $420, really left $70. Tuesday, $40 of gas with a $100 "
+          "pump hold: app $320, really left $30. Wednesday, $60 of groceries: app $260, really left minus $30. "
+          "Thursday, the landlord cashes the check: app minus $90, really left minus $30. Friday, the gas hold drops "
+          "to the real $40: both minus $30. The app catches up on Thursday; your own count knew on Monday that the "
+          "week's limit was $70.")
+
+
+def budget_bar():
+    """Money Basics 3: the same $2,689 of take-home pay, living alone and with a roommate."""
+    b = []
+    b.append(T(0, 16, "$2,689 a month take-home, two ways", "h"))
+    b.append(T(0, 36, "$18 an hour, full time", "s i2"))
+    parts = (("Fixed bills", "c1-fill"), ("Set aside", "c2-fill"), ("Flexible", "c3-fill"), ("Savings", "teal-fill"))
+    y = 58
+    for name, vals, note in (("Living alone", (1560, 115, 770, 244), "Savings $244 a month, 9%"),
+                             ("With a roommate", (1060, 115, 770, 744), "Savings $744 a month, 28%")):
+        b.append(T(0, y + 4, name, "m"))
+        x = 0
+        for v, (pn, cls) in zip(vals, parts):
+            w = W * v / 2689
+            b.append(R(x, y + 12, w - (1 if cls != "teal-fill" else 0), 22, cls))
+            x += w
+        b.append(T(0, y + 52, f"Fixed bills ${vals[0]:,}", "xs"))
+        b.append(T(W, y + 52, note, "xs b", "end"))
+        y += 80
+    lx = [0, 96, 180, 262]
+    for (pn, cls), xx in zip(parts, lx):
+        b.append(R(xx, y - 10, 12, 12, cls, rx=2)); b.append(T(xx + 18, y, pn, "xs"))
+    b.append(L(0, y + 14, W, y + 14, "rule"))
+    b.append(T(0, y + 36, "Splitting the rent frees $500 a month,", "s"))
+    b.append(T(0, y + 54, "more than the whole eating-out line.", "s"))
+    write("budget-bar", y + 62, b, "The same $2,689 of monthly take-home pay, living alone and with a roommate",
+          "Living alone: fixed bills $1,560, set aside for irregular costs $115, flexible spending $770, savings $244 a "
+          "month, 9%. With a roommate: fixed bills $1,060, set aside $115, flexible $770, savings $744 a month, 28%. "
+          "Splitting the rent frees $500 a month, more than the whole eating-out line.")
+
+
+def rate_gap():
+    """Money Basics 4: $100 a month for five years at 0.38% and at 4%."""
+    b = []
+    b.append(T(0, 16, "$100 a month for five years", "h"))
+    b.append(T(0, 36, "$6,000 put in, at two savings rates", "s i2"))
+    y = 58
+    full = W - 4
+    for lab, tot, intr in (("At 0.38%, the national average", 6056, 56), ("At 4%, many online banks", 6618, 618)):
+        b.append(T(0, y + 4, lab, "m"))
+        wd = full * 6000 / 6618
+        wi = full * intr / 6618
+        b.append(R(0, y + 12, wd - 1, 22, "range-fill"))
+        b.append(R(wd, y + 12, max(wi, 2), 22, "teal-fill"))
+        b.append(T(0, y + 52, "$6,000 put in", "xs"))
+        b.append(T(W, y + 52, f"+ ${intr} interest = ${tot:,}", "xs b", "end"))
+        y += 80
+    b.append(R(0, y - 10, 12, 12, "range-fill", rx=2)); b.append(T(18, y, "Your deposits", "xs"))
+    b.append(R(130, y - 10, 12, 12, "teal-fill", rx=2)); b.append(T(148, y, "Interest", "xs"))
+    b.append(T(0, y + 28, "Same deposits, same insurance, eleven times the interest.", "xs i2"))
+    write("rate-gap", y + 36, b, "$100 a month for five years at two savings rates",
+          "$6,000 put in over five years. At 0.38%, the national average savings rate: $56 of interest, $6,056 in all. "
+          "At 4%, paid by many online banks: $618 of interest, $6,618 in all. Same deposits, same insurance, eleven "
+          "times the interest.")
+
+
+def both_ways():
+    """Money Basics 5: $2,000 saved at 4% and owed at 22.36%, over ten years."""
+    save = {t: 2000 * 1.04 ** t for t in range(11)}
+    owe = {t: 2000 * (1 + 0.2236 / 365) ** (365 * t) for t in range(11)}
+    b = []
+    gx0, gx1, gy0, gy1 = 54, W - 70, 56, 236
+    def X(t):
+        return gx0 + (gx1 - gx0) * t / 10
+    def Y(v):
+        return gy1 - (gy1 - gy0) * v / 20000
+    b.append(T(0, 16, "The same $2,000, both ways", "h"))
+    b.append(T(0, 36, "Saved at 4%, or owed on a card at 22.36%", "s i2"))
+    for v in (0, 5000, 10000, 15000, 20000):
+        b.append(L(gx0, Y(v), gx1, Y(v), "rule"))
+        b.append(T(gx0 - 6, Y(v) + 4, f"${v // 1000}K" if v else "$0", "xs mu", "end"))
+    for t in (0, 2, 4, 6, 8, 10):
+        b.append(T(X(t), gy1 + 18, f"{t}", "xs mu", "middle"))
+    b.append(T((gx0 + gx1) / 2, gy1 + 36, "Years", "xs mu", "middle"))
+    def line(s, cls):
+        return P("M" + " L".join(f"{X(t):.1f} {Y(v):.1f}" for t, v in sorted(s.items())), cls)
+    b.append(line(save, "teal-line"))
+    b.append(line(owe, "c3-line dashed"))
+    b.append(T(X(10) + 6, Y(owe[10]) + 4, "$18,699", "s b"))
+    b.append(T(X(10) + 6, Y(owe[10]) + 20, "owed", "xs"))
+    b.append(T(X(10) + 6, Y(save[10]) - 10, "$2,960", "s b"))
+    b.append(T(X(10) + 6, Y(save[10]) + 6, "saved", "xs"))
+    y = gy1 + 62
+    b.append(L(0, y - 4, 18, y - 4, "teal-line")); b.append(T(24, y, "Saved at 4%", "xs"))
+    b.append(L(130, y - 4, 148, y - 4, "c3-line dashed")); b.append(T(154, y, "Owed at 22.36%, never paid", "xs"))
+    b.append(T(0, y + 26, "Real cards require payments; this shows what", "xs i2"))
+    b.append(T(0, y + 42, "compounding does to any part left unpaid.", "xs i2"))
+    write("both-ways", y + 50, b, "$2,000 over ten years, saved at 4% and owed at 22.36%",
+          "Two lines from the same $2,000. Saved at 4% a year, it grows to about $2,080 after one year, $2,433 after "
+          "five and $2,960 after ten. Owed on a credit card at 22.36% and never paid down, it grows to about $2,501 "
+          "after one year, $6,115 after five and $18,699 after ten. Real cards require payments; this shows what "
+          "compounding does to any part left unpaid.")
+
+
 
 # ---------------------------------------------------------------- Spanish pilot (Nov 9): the overdraft page's two drawings
 ES.update({
@@ -1139,7 +1306,7 @@ for fn in (credit_score_factors, overdraft_statement, overdraft_optin, card_mini
            payday_treadmill, cash_advance_timelines, car_balances, car_price_tag, rto_price_tag, rto_three_laptops,
            subs_statement, finfluencer_post, one_percent_curve, two_savers, pay_stub, student_balance, worry_ad,
            four_borrowers, betting_cost, gig_payouts, scam_texts, cosigner_notice, statement_marked, cushion_costs,
-           one_name_reach, creep_bars):
+           one_name_reach, creep_bars, stub_split, two_balances, budget_bar, rate_gap, both_ways):
     fn()
 
 LANG = "es"

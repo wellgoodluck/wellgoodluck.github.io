@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 298" role="img" aria-labelledby="stub-split-t stub-split-d"><title id="stub-split-t">A fictional pay stub: where a $900 paycheck goes</title><desc id="stub-split-d">One paycheck at $15 an hour, 60 hours, paid every two weeks, single, no state income tax. Gross pay $900.00. Social Security, 6.2%: $55.80. Medicare, 1.45%: $13.05. Federal income tax withheld: $28.08. Take-home pay: $803.07. Shown again as one bar: $96.93 taken out, $803.07 to your account.</desc>
+<rect x="0.5" y="0.5" width="359" height="214" rx="6" class="sheet"/>
+<text x="14" y="22" class="cap">FICTIONAL · FOR ILLUSTRATION</text>
+<text x="14" y="44" class="h">Pay stub, one paycheck</text>
+<text x="14" y="64" class="xs i2">$15 an hour, paid every two weeks</text>
+<line x1="14" y1="74" x2="346" y2="74" class="rule"/>
+<text x="14" y="98" class="s">Gross pay (60 hours × $15)</text>
+<text x="346" y="98" text-anchor="end" class="s b">$900.00</text>
+<line x1="14" y1="108" x2="346" y2="108" class="rule"/>
+<rect x="14" y="114" width="10" height="10" rx="2" class="c1-fill"/>
+<text x="30" y="124" class="s">Social Security (6.2%)</text>
+<text x="346" y="124" text-anchor="end" class="s b">−$55.80</text>
+<line x1="14" y1="134" x2="346" y2="134" class="rule"/>
+<rect x="14" y="140" width="10" height="10" rx="2" class="c2-fill"/>
+<text x="30" y="150" class="s">Medicare (1.45%)</text>
+<text x="346" y="150" text-anchor="end" class="s b">−$13.05</text>
+<line x1="14" y1="160" x2="346" y2="160" class="rule"/>
+<rect x="14" y="166" width="10" height="10" rx="2" class="c3-fill"/>
+<text x="30" y="176" class="s">Federal income tax</text>
+<text x="346" y="176" text-anchor="end" class="s b">−$28.08</text>
+<line x1="14" y1="186" x2="346" y2="186" class="rule"/>
+<rect x="14" y="192" width="10" height="10" rx="2" class="teal-fill"/>
+<text x="30" y="203" class="m">Take-home pay</text>
+<text x="346" y="203" text-anchor="end" class="m">$803.07</text>
+<line x1="14" y1="213" x2="346" y2="213" class="ink-line"/>
+<text x="0" y="236" class="s b">The same $900 as one bar</text>
+<rect x="0" y="248" width="21.32" height="24" class="c1-fill"/>
+<rect x="22.32" y="248" width="4.22" height="24" class="c2-fill"/>
+<rect x="27.54" y="248" width="10.232" height="24" class="c3-fill"/>
+<rect x="38.772" y="248" width="321.228" height="24" class="teal-fill"/>
+<text x="0" y="292" class="xs">$96.93 taken out</text>
+<text x="360" y="292" text-anchor="end" class="xs b">$803.07 to your account</text>
+</svg>

@@ -54,6 +54,8 @@ In the first case you owe no income tax, because your income is below the standa
 
 **Check the tips deduction.** Rideshare and app-based delivery drivers can deduct tips, up to $25,000 a year from 2025 through 2028, if the app reports them. That lowers income tax only; you still owe self-employment tax on your tips.
 
+For a regular job, [Where Did the Rest of It Go?](your-first-paycheck.html) explains what does get withheld.
+
 ## The bigger picture
 
 About one in four adults ages 18 to 29 (26%) earned money from gig activities in the month before a late-2024 Federal Reserve survey, counting everything from app-based driving to selling things online and renting out property.

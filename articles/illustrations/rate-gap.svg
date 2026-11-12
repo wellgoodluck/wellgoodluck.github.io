@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 254" role="img" aria-labelledby="rate-gap-t rate-gap-d"><title id="rate-gap-t">$100 a month for five years at two savings rates</title><desc id="rate-gap-d">$6,000 put in over five years. At 0.38%, the national average savings rate: $56 of interest, $6,056 in all. At 4%, paid by many online banks: $618 of interest, $6,618 in all. Same deposits, same insurance, eleven times the interest.</desc>
+<text x="0" y="16" class="h">$100 a month for five years</text>
+<text x="0" y="36" class="s i2">$6,000 put in, at two savings rates</text>
+<text x="0" y="62" class="m">At 0.38%, the national average</text>
+<rect x="0" y="70" width="321.756" height="22" class="range-fill"/>
+<rect x="322.756" y="70" width="3.01239" height="22" class="teal-fill"/>
+<text x="0" y="110" class="xs">$6,000 put in</text>
+<text x="360" y="110" text-anchor="end" class="xs b">+ $56 interest = $6,056</text>
+<text x="0" y="142" class="m">At 4%, many online banks</text>
+<rect x="0" y="150" width="321.756" height="22" class="range-fill"/>
+<rect x="322.756" y="150" width="33.2439" height="22" class="teal-fill"/>
+<text x="0" y="190" class="xs">$6,000 put in</text>
+<text x="360" y="190" text-anchor="end" class="xs b">+ $618 interest = $6,618</text>
+<rect x="0" y="208" width="12" height="12" rx="2" class="range-fill"/>
+<text x="18" y="218" class="xs">Your deposits</text>
+<rect x="130" y="208" width="12" height="12" rx="2" class="teal-fill"/>
+<text x="148" y="218" class="xs">Interest</text>
+<text x="0" y="246" class="xs i2">Same deposits, same insurance, eleven times the interest.</text>
+</svg>

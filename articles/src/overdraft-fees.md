@@ -50,6 +50,8 @@ Banks differ. Some cap how many overdraft fees they charge per day, some don't c
 
 Checking your statement each month catches overdraft fees and other surprises early; [The Charge You Never Noticed](reading-your-statements.html) explains the deadlines.
 
+Keeping your own running balance is the surest way to stay out of this; [The Balance Your App Shows](how-a-checking-account-works.html) explains how.
+
 ## The bigger picture
 
 Overdraft fees have been a long-running fight in Washington.

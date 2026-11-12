@@ -56,6 +56,8 @@ Your own statement already shows this math. [Since 2010, federal law has require
 
 **Ask for a lower rate.** If you've paid on time for a while, call and ask. It doesn't always work, but it costs nothing to try.
 
+[Interest on Interest](compound-interest.html) shows why a balance left alone grows faster every year.
+
 ## The bigger picture
 
 The fight over credit cards has focused on late fees.

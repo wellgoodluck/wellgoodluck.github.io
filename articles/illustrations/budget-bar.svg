@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 280" role="img" aria-labelledby="budget-bar-t budget-bar-d"><title id="budget-bar-t">The same $2,689 of monthly take-home pay, living alone and with a roommate</title><desc id="budget-bar-d">Living alone: fixed bills $1,560, set aside for irregular costs $115, flexible spending $770, savings $244 a month, 9%. With a roommate: fixed bills $1,060, set aside $115, flexible $770, savings $744 a month, 28%. Splitting the rent frees $500 a month, more than the whole eating-out line.</desc>
+<text x="0" y="16" class="h">$2,689 a month take-home, two ways</text>
+<text x="0" y="36" class="s i2">$18 an hour, full time</text>
+<text x="0" y="62" class="m">Living alone</text>
+<rect x="0" y="70" width="207.851" height="22" class="c1-fill"/>
+<rect x="208.851" y="70" width="14.3961" height="22" class="c2-fill"/>
+<rect x="224.247" y="70" width="102.087" height="22" class="c3-fill"/>
+<rect x="327.334" y="70" width="32.6664" height="22" class="teal-fill"/>
+<text x="0" y="110" class="xs">Fixed bills $1,560</text>
+<text x="360" y="110" text-anchor="end" class="xs b">Savings $244 a month, 9%</text>
+<text x="0" y="142" class="m">With a roommate</text>
+<rect x="0" y="150" width="140.911" height="22" class="c1-fill"/>
+<rect x="141.911" y="150" width="14.3961" height="22" class="c2-fill"/>
+<rect x="157.308" y="150" width="102.087" height="22" class="c3-fill"/>
+<rect x="260.394" y="150" width="99.6058" height="22" class="teal-fill"/>
+<text x="0" y="190" class="xs">Fixed bills $1,060</text>
+<text x="360" y="190" text-anchor="end" class="xs b">Savings $744 a month, 28%</text>
+<rect x="0" y="208" width="12" height="12" rx="2" class="c1-fill"/>
+<text x="18" y="218" class="xs">Fixed bills</text>
+<rect x="96" y="208" width="12" height="12" rx="2" class="c2-fill"/>
+<text x="114" y="218" class="xs">Set aside</text>
+<rect x="180" y="208" width="12" height="12" rx="2" class="c3-fill"/>
+<text x="198" y="218" class="xs">Flexible</text>
+<rect x="262" y="208" width="12" height="12" rx="2" class="teal-fill"/>
+<text x="280" y="218" class="xs">Savings</text>
+<line x1="0" y1="232" x2="360" y2="232" class="rule"/>
+<text x="0" y="254" class="s">Splitting the rent frees $500 a month,</text>
+<text x="0" y="272" class="s">more than the whole eating-out line.</text>
+</svg>
