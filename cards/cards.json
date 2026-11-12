@@ -1,0 +1,557 @@
+{
+ "note": "Written by tools/make_cards.py: the label and title each card was drawn with. tools/build_articles.py uses a card only when they match the article.",
+ "cards": {
+  "about": {
+   "file": "about.88c34170.png",
+   "label": "",
+   "title": "About This Site",
+   "v": "1"
+  },
+  "ads-that-sell-the-worry": {
+   "file": "ads-that-sell-the-worry.b0c33e4f.png",
+   "label": "Money Traps · Part 12",
+   "title": "The Ad That Sells You the Worry",
+   "v": "1"
+  },
+  "asked-to-move": {
+   "file": "asked-to-move.75279a67.png",
+   "label": "In plain words",
+   "title": "Asked to Move After Years in Place: What Starting Over Costs a Renter",
+   "v": "1"
+  },
+  "buy-now-pay-later": {
+   "file": "buy-now-pay-later.e6829414.png",
+   "label": "Money Traps · Part 5",
+   "title": "Four Easy Payments, Times Four: The Buy Now, Pay Later Trap",
+   "v": "1"
+  },
+  "co-signing": {
+   "file": "co-signing.8551cee7.png",
+   "label": "Money Traps · Part 17",
+   "title": "Signing for Someone Else's Loan: What Co-Signing Really Means",
+   "v": "1"
+  },
+  "credit-card-cash-advances": {
+   "file": "credit-card-cash-advances.46d65ce5.png",
+   "label": "Money Traps · Part 7",
+   "title": "Cash From Your Credit Card: Why It Costs More Than You Think",
+   "v": "1"
+  },
+  "credit-card-minimum-payments": {
+   "file": "credit-card-minimum-payments.72b368a5.png",
+   "label": "Money Traps · Part 4",
+   "title": "The Minimum Payment Trap: How Credit Card Interest Works",
+   "v": "1"
+  },
+  "electric-vehicle-claims-checked": {
+   "file": "electric-vehicle-claims-checked.9d2b53b1.png",
+   "label": "Electric vehicles: the case, and the claims · Part 2",
+   "title": "Electric Vehicles: Fifteen Claims Checked Against the Evidence",
+   "v": "1"
+  },
+  "electric-vehicles-case-for-and-against": {
+   "file": "electric-vehicles-case-for-and-against.b11e5f90.png",
+   "label": "Electric vehicles: the case, and the claims · Part 1",
+   "title": "Electric Vehicles: The Case For and the Case Against",
+   "v": "1"
+  },
+  "employer-retirement-match": {
+   "file": "employer-retirement-match.aee5611f.png",
+   "label": "Money Traps · Part 15",
+   "title": "The Free Money You Leave on the Table: Your Employer's Retirement Match",
+   "v": "1"
+  },
+  "finfluencers-and-investment-scams": {
+   "file": "finfluencers-and-investment-scams.2b65bb33.png",
+   "label": "Money Traps · Part 11",
+   "title": "Investing Tips From Your Feed: Finfluencers, Hype and Scams",
+   "v": "1"
+  },
+  "four-kinds-of-borrower": {
+   "file": "four-kinds-of-borrower.04eae4f0.png",
+   "label": "Debt: four kinds of borrower, and why Washington isn't a household · Part 1",
+   "title": "Four Kinds of Borrower: How Debt Works for a Household, a City, a State and Washington",
+   "v": "1"
+  },
+  "four-numbers-for-one-house": {
+   "file": "four-numbers-for-one-house.968f49c5.png",
+   "label": "In plain words",
+   "title": "Four Numbers for One House, and Why They Never Match",
+   "v": "1"
+  },
+  "four-prices-inside-inflation": {
+   "file": "four-prices-inside-inflation.fcca90e6.png",
+   "label": "In plain words",
+   "title": "Four Prices Inside Inflation, and Why Each Keeps Its Own Clock",
+   "v": "1"
+  },
+  "gig-work-taxes": {
+   "file": "gig-work-taxes.e0f008ad.png",
+   "label": "Money Traps · Part 14",
+   "title": "The Tax Bill Nobody Withheld: Gig Work and Side Hustles",
+   "v": "1"
+  },
+  "government-is-not-a-household": {
+   "file": "government-is-not-a-household.3244c551.png",
+   "label": "Debt: four kinds of borrower, and why Washington isn't a household · Part 2",
+   "title": "Why the Government Is Not a Household, and What It Is Instead",
+   "v": "1"
+  },
+  "growth-without-hiring": {
+   "file": "growth-without-hiring.1255b895.png",
+   "label": "October 29, 2026",
+   "title": "Growth Without Hiring",
+   "v": "1"
+  },
+  "help-with-a-down-payment": {
+   "file": "help-with-a-down-payment.63516b5f.png",
+   "label": "In plain words",
+   "title": "Help With a Down Payment: Gift, Loan or Co-Signer",
+   "v": "1"
+  },
+  "how-a-property-tax-rate-is-set": {
+   "file": "how-a-property-tax-rate-is-set.1ba71251.png",
+   "label": "Property taxes: how the rate gets set, and how states limit it · Part 1",
+   "title": "How a Property Tax Rate Gets Set",
+   "v": "1"
+  },
+  "how-a-true-number-can-mislead": {
+   "file": "how-a-true-number-can-mislead.635f4ee5.png",
+   "label": "In plain words",
+   "title": "How a True Number Can Mislead, and the Questions That Catch It",
+   "v": "1"
+  },
+  "how-credit-scores-work": {
+   "file": "how-credit-scores-work.195eb698.png",
+   "label": "Money Traps · Part 1",
+   "title": "Start Here: The Score You Didn't Know You Had",
+   "v": "1"
+  },
+  "how-this-site-is-paid-for": {
+   "file": "how-this-site-is-paid-for.977608e7.png",
+   "label": "",
+   "title": "How This Site Is Paid For",
+   "v": "1"
+  },
+  "how-to-read-a-housing-headline": {
+   "file": "how-to-read-a-housing-headline.b41149d2.png",
+   "label": "In plain words",
+   "title": "How to Read a Housing Headline",
+   "v": "1"
+  },
+  "indexed-to-inauguration": {
+   "file": "indexed-to-inauguration.3d588fbf.png",
+   "label": "October 28, 2026",
+   "title": "Indexed to Inauguration: How to Compare Presidents Honestly",
+   "v": "1"
+  },
+  "is-this-1973": {
+   "file": "is-this-1973.327b997c.png",
+   "label": "October 29, 2026",
+   "title": "Is This 1973?",
+   "v": "1"
+  },
+  "long-car-loans": {
+   "file": "long-car-loans.0a8ce373.png",
+   "label": "Money Traps · Part 8",
+   "title": "The Seven-Year Car Loan: Why a Lower Payment Costs More",
+   "v": "1"
+  },
+  "money-traps": {
+   "file": "money-traps.636272f2.png",
+   "label": "A series",
+   "title": "Money Traps",
+   "v": "1"
+  },
+  "overdraft-fees": {
+   "file": "overdraft-fees.0f1c4e60.png",
+   "label": "Money Traps · Part 2",
+   "title": "The $35 Coffee: How Overdraft Fees Work, and How to Avoid Them",
+   "v": "1"
+  },
+  "payday-loans-and-paycheck-apps": {
+   "file": "payday-loans-and-paycheck-apps.b6de1f2f.png",
+   "label": "Money Traps · Part 6",
+   "title": "The Two-Week Loan That Lasts All Year: Payday Loans and Paycheck Apps",
+   "v": "1"
+  },
+  "payment-app-scams": {
+   "file": "payment-app-scams.533845bb.png",
+   "label": "Money Traps · Part 3",
+   "title": "Once You Hit Send: Scams on Zelle, Venmo and Cash App",
+   "v": "1"
+  },
+  "property-tax-limits-by-state": {
+   "file": "property-tax-limits-by-state.e51ded5c.png",
+   "label": "Property taxes: how the rate gets set, and how states limit it · Part 2",
+   "title": "Property Tax Limits, State by State",
+   "v": "1"
+  },
+  "rate-vs-level": {
+   "file": "rate-vs-level.5a091575.png",
+   "label": "In plain words",
+   "title": "Rate vs. Level: Why Inflation Fell and Prices Didn't",
+   "v": "1"
+  },
+  "real-vs-nominal": {
+   "file": "real-vs-nominal.8d2953d8.png",
+   "label": "In plain words",
+   "title": "Real vs. Nominal: The Raise That Didn't Feel Like One",
+   "v": "1"
+  },
+  "rent-to-own": {
+   "file": "rent-to-own.fe528c97.png",
+   "label": "Money Traps · Part 9",
+   "title": "The $38.99-a-Week Laptop: How Rent-to-Own Works",
+   "v": "1"
+  },
+  "revisions-and-vintages": {
+   "file": "revisions-and-vintages.5ccb6d71.png",
+   "label": "In plain words",
+   "title": "Revisions and Vintages: The Number You Remember Is Not the Number in the Record",
+   "v": "1"
+  },
+  "seasonal-adjustment": {
+   "file": "seasonal-adjustment.8dcc4ef4.png",
+   "label": "In plain words",
+   "title": "Seasonal Adjustment: Why December Doesn't Count as a Boom",
+   "v": "1"
+  },
+  "sell-it-or-rent-it-out": {
+   "file": "sell-it-or-rent-it-out.ba887012.png",
+   "label": "In plain words",
+   "title": "Sell It or Rent It Out: What Changes When a Home Becomes a Rental",
+   "v": "1"
+  },
+  "sports-betting-and-prediction-apps": {
+   "file": "sports-betting-and-prediction-apps.31b9560c.png",
+   "label": "Money Traps · Part 13",
+   "title": "The Bet Is Priced to Lose: Sports Betting and Prediction Apps",
+   "v": "1"
+  },
+  "student-loans": {
+   "file": "student-loans.1c45a0b3.png",
+   "label": "Money Traps · Part 16",
+   "title": "Borrowing for School: The Student Loan Choices That Follow You",
+   "v": "1"
+  },
+  "subscription-creep": {
+   "file": "subscription-creep.2b73b435.png",
+   "label": "Money Traps · Part 10",
+   "title": "Ten Dollars Here, Fifteen There: Subscription Creep",
+   "v": "1"
+  },
+  "supply-vs-demand": {
+   "file": "supply-vs-demand.352b23ef.png",
+   "label": "In plain words",
+   "title": "Supply vs. Demand: Why the Same Price Rise Can Call for Opposite Responses",
+   "v": "1"
+  },
+  "tariffs-and-who-pays": {
+   "file": "tariffs-and-who-pays.8d3dc8c0.png",
+   "label": "In plain words",
+   "title": "Tariffs, and Who Pays",
+   "v": "1"
+  },
+  "teaching-with-money-traps": {
+   "file": "teaching-with-money-traps.3cdf7268.png",
+   "label": "",
+   "title": "Teaching With Money Traps",
+   "v": "1"
+  },
+  "the-five-cent-business": {
+   "file": "the-five-cent-business.8429530f.png",
+   "label": "In plain words",
+   "title": "The Five-Cent Business: Where Your Restaurant Dollar Goes",
+   "v": "1"
+  },
+  "the-frozen-job-market": {
+   "file": "the-frozen-job-market.0eb0e8a7.png",
+   "label": "October 28, 2026",
+   "title": "The Frozen Job Market",
+   "v": "1"
+  },
+  "what-a-town-gets-from-a-drive-thru": {
+   "file": "what-a-town-gets-from-a-drive-thru.732effe0.png",
+   "label": "In plain words",
+   "title": "What a Town Gets From a Drive-Thru",
+   "v": "1"
+  },
+  "what-are-housing-starts": {
+   "file": "what-are-housing-starts.9e141983.png",
+   "label": "In plain words",
+   "title": "What Housing Starts Are, and Why Today's Number Is 2028's Rent",
+   "v": "1"
+  },
+  "what-are-jobless-claims": {
+   "file": "what-are-jobless-claims.1da7ff94.png",
+   "label": "In plain words",
+   "title": "What Jobless Claims Are, and Why They Move First",
+   "v": "1"
+  },
+  "what-are-retail-sales": {
+   "file": "what-are-retail-sales.ca360266.png",
+   "label": "In plain words",
+   "title": "What Retail Sales Measure, and What They Leave Out",
+   "v": "1"
+  },
+  "what-are-the-deficit-and-the-debt": {
+   "file": "what-are-the-deficit-and-the-debt.a9289c90.png",
+   "label": "In plain words",
+   "title": "What the Deficit and the Debt Are, and Which One the Argument Is About",
+   "v": "1"
+  },
+  "what-health-insurance-costs": {
+   "file": "what-health-insurance-costs.038f7a95.png",
+   "label": "Health care: what it costs, who gains, who lobbies · Part 1",
+   "title": "What Health Insurance Costs, and Why the CPI Can Say It Fell",
+   "v": "1"
+  },
+  "what-homeowners-insurance-costs": {
+   "file": "what-homeowners-insurance-costs.426cf1d0.png",
+   "label": "In plain words",
+   "title": "What Homeowner's Insurance Costs, and Why It Went Up",
+   "v": "1"
+  },
+  "what-is-a-recession": {
+   "file": "what-is-a-recession.f327c9d9.png",
+   "label": "In plain words",
+   "title": "What a Recession Is, and Why Nobody Can Tell You When One Starts",
+   "v": "1"
+  },
+  "what-is-gdp": {
+   "file": "what-is-gdp.e0a1216a.png",
+   "label": "In plain words",
+   "title": "What GDP Is, and Why 2% Growth Can Feel Like Nothing",
+   "v": "1"
+  },
+  "what-is-hourly-pay": {
+   "file": "what-is-hourly-pay.f5fcd757.png",
+   "label": "In plain words",
+   "title": "What Hourly Pay Measures, and Why the Average Can Mislead",
+   "v": "1"
+  },
+  "what-is-inflation": {
+   "file": "what-is-inflation.d022f417.png",
+   "label": "In plain words",
+   "title": "What Inflation Is, and Why Prices Never Go Back",
+   "v": "1"
+  },
+  "what-is-the-10-year-yield": {
+   "file": "what-is-the-10-year-yield.139d5c0c.png",
+   "label": "In plain words",
+   "title": "What the 10-Year Treasury Yield Is, and Why It Sets Your Mortgage Rate",
+   "v": "1"
+  },
+  "what-is-the-fed-funds-rate": {
+   "file": "what-is-the-fed-funds-rate.8bdef110.png",
+   "label": "In plain words",
+   "title": "What the Fed Funds Rate Is, and How It Reaches Your Kitchen Table",
+   "v": "1"
+  },
+  "what-is-the-jobs-report": {
+   "file": "what-is-the-jobs-report.7380dab6.png",
+   "label": "In plain words",
+   "title": "What the Jobs Report Counts, and Why the Number Changes After It's Announced",
+   "v": "1"
+  },
+  "what-is-the-mortgage-rate": {
+   "file": "what-is-the-mortgage-rate.09b602bd.png",
+   "label": "In plain words",
+   "title": "What the Mortgage Rate Is, and Why the Fed Can't Lower It",
+   "v": "1"
+  },
+  "what-is-the-trade-deficit": {
+   "file": "what-is-the-trade-deficit.9e91b108.png",
+   "label": "In plain words",
+   "title": "What the Trade Deficit Is, and Why It Isn't a Score",
+   "v": "1"
+  },
+  "what-is-the-unemployment-rate": {
+   "file": "what-is-the-unemployment-rate.b3dcc449.png",
+   "label": "In plain words",
+   "title": "What the Unemployment Rate Is, and Who It Doesn't Count",
+   "v": "1"
+  },
+  "what-sets-grocery-prices": {
+   "file": "what-sets-grocery-prices.a889d45c.png",
+   "label": "In plain words",
+   "title": "What Sets the Price of Groceries, and Why Eggs Come Back Down and Beef Doesn't",
+   "v": "1"
+  },
+  "what-sets-the-price-of-gas": {
+   "file": "what-sets-the-price-of-gas.92bfa0c3.png",
+   "label": "In plain words",
+   "title": "What Sets the Price of Gas, and What a President Can Change",
+   "v": "1"
+  },
+  "what-technology-does-to-the-numbers": {
+   "file": "what-technology-does-to-the-numbers.eae46f2d.png",
+   "label": "October 28, 2026",
+   "title": "What Technology Does to the Numbers, and When",
+   "v": "1"
+  },
+  "what-the-first-print-got-wrong": {
+   "file": "what-the-first-print-got-wrong.90c3b0b9.png",
+   "label": "October 28, 2026",
+   "title": "What the First Print Got Wrong",
+   "v": "1"
+  },
+  "what-the-household-numbers-measure": {
+   "file": "what-the-household-numbers-measure.7b5f74a7.png",
+   "label": "In plain words",
+   "title": "Four Numbers on How Households Are Holding Up, and What the Averages Hide",
+   "v": "1"
+  },
+  "where-the-money-goes": {
+   "file": "where-the-money-goes.07bfedf1.png",
+   "label": "Who Owns Main Street · Part 9",
+   "title": "Where the Money Goes: Who Pays In, Who Takes Out, and Whether Roll-Ups Concentrate Wealth",
+   "v": "1"
+  },
+  "who-gains-and-who-pays-in-health-care": {
+   "file": "who-gains-and-who-pays-in-health-care.19cc7d3a.png",
+   "label": "Health care: what it costs, who gains, who lobbies · Part 2",
+   "title": "Who Gains and Who Pays: Health Care as It Is, Single Payer, and the Options Between",
+   "v": "1"
+  },
+  "who-gets-paid-when-a-house-sells": {
+   "file": "who-gets-paid-when-a-house-sells.4a8ff0e5.png",
+   "label": "In plain words",
+   "title": "Who Gets Paid When a House Sells",
+   "v": "1"
+  },
+  "who-lobbies-on-health-care": {
+   "file": "who-lobbies-on-health-care.5fdbb9b0.png",
+   "label": "Health care: what it costs, who gains, who lobbies · Part 3",
+   "title": "Who Lobbies on Health Care, How Much, and on What",
+   "v": "1"
+  },
+  "who-makes-money-on-a-gallon": {
+   "file": "who-makes-money-on-a-gallon.8991fbf2.png",
+   "label": "November 6, 2026",
+   "title": "Who's Making Money on a Gallon of Gas Right Now",
+   "v": "1"
+  },
+  "who-makes-the-equipment": {
+   "file": "who-makes-the-equipment.1e946931.png",
+   "label": "Who Owns Main Street · Part 6",
+   "title": "The Name on the Box: Who Makes the Air Conditioners, Water Heaters and Appliances in American Homes",
+   "v": "1"
+  },
+  "who-owned-the-news": {
+   "file": "who-owned-the-news.4464aebe.png",
+   "label": "Who owns the news: a century, and this year · Part 1",
+   "title": "Who Owned the News: A Century of How American Journalism Was Paid For",
+   "v": "1"
+  },
+  "who-owns-eye-care": {
+   "file": "who-owns-eye-care.9320a2f8.png",
+   "label": "Who Owns Main Street · Part 3",
+   "title": "The Name on the Frames: Who Owns Eye Care, and What Changes When It's Bought",
+   "v": "1"
+  },
+  "who-owns-the-dentist": {
+   "file": "who-owns-the-dentist.582a48d5.png",
+   "label": "Who Owns Main Street · Part 2",
+   "title": "The Name on the Dentist's Door: Who Owns Dental Offices, and What Changes When They're Bought",
+   "v": "1"
+  },
+  "who-owns-the-farm": {
+   "file": "who-owns-the-farm.523d3362.png",
+   "label": "Who Owns Main Street · Part 7",
+   "title": "The Name on the Label: Who Owns the Farm, Who Sells to It and Who Buys From It",
+   "v": "1"
+  },
+  "who-owns-the-house-next-door": {
+   "file": "who-owns-the-house-next-door.6a36a05a.png",
+   "label": "Who Owns Main Street · Part 8",
+   "title": "The Name on the Lease: Who Owns the House Next Door",
+   "v": "1"
+  },
+  "who-owns-the-news-in-2026": {
+   "file": "who-owns-the-news-in-2026.663fecd6.png",
+   "label": "Who owns the news: a century, and this year · Part 2",
+   "title": "Who Owns the News in 2026, and Who Gets To: Mergers, the Ownership Cap and Foreign Money",
+   "v": "1"
+  },
+  "who-owns-the-pharmacy": {
+   "file": "who-owns-the-pharmacy.a6f9ba23.png",
+   "label": "Who Owns Main Street · Part 4",
+   "title": "The Name Over the Counter: Who Owns Your Pharmacy, and Who Decides Which Ones Stay Open",
+   "v": "1"
+  },
+  "who-owns-the-trades": {
+   "file": "who-owns-the-trades.a878631b.png",
+   "label": "Who Owns Main Street · Part 5",
+   "title": "The Name on the Truck: Who Owns the Companies That Fix Your Air Conditioning, Plumbing and Wiring",
+   "v": "1"
+  },
+  "who-owns-the-vet": {
+   "file": "who-owns-the-vet.c3dc9cd6.png",
+   "label": "Who Owns Main Street · Part 1",
+   "title": "The Name on the Clinic: Who Owns Your Veterinarian, and What It Costs",
+   "v": "1"
+  },
+  "why-everything-costs-30-percent-more": {
+   "file": "why-everything-costs-30-percent-more.2af0f641.png",
+   "label": "October 24, 2026",
+   "title": "Why Everything Costs 30% More Than It Did in 2019",
+   "v": "1"
+  },
+  "you-are-buying-a-home": {
+   "file": "you-are-buying-a-home.6723f76c.png",
+   "label": "A household guide",
+   "title": "You're Buying a Home",
+   "v": "1"
+  },
+  "you-are-helping-a-young-person-with-money": {
+   "file": "you-are-helping-a-young-person-with-money.77254486.png",
+   "label": "A household guide",
+   "title": "You're Helping a Young Person With Money",
+   "v": "1"
+  },
+  "you-are-looking-for-work": {
+   "file": "you-are-looking-for-work.1c1fd427.png",
+   "label": "A household guide",
+   "title": "You're Looking for Work",
+   "v": "1"
+  },
+  "you-are-retired-on-a-fixed-income": {
+   "file": "you-are-retired-on-a-fixed-income.22f8bdbe.png",
+   "label": "A household guide",
+   "title": "You're Retired on a Fixed Income",
+   "v": "1"
+  },
+  "you-own-with-a-fixed-mortgage": {
+   "file": "you-own-with-a-fixed-mortgage.03e93ea8.png",
+   "label": "A household guide",
+   "title": "You Own With a Fixed Mortgage",
+   "v": "1"
+  },
+  "you-rent": {
+   "file": "you-rent.bcdf44ce.png",
+   "label": "A household guide",
+   "title": "You Rent",
+   "v": "1"
+  },
+  "you-run-a-farm": {
+   "file": "you-run-a-farm.5d835c6b.png",
+   "label": "A household guide",
+   "title": "You Run a Farm",
+   "v": "1"
+  },
+  "you-run-a-small-business": {
+   "file": "you-run-a-small-business.d907d22f.png",
+   "label": "A household guide",
+   "title": "You Run a Small Business",
+   "v": "1"
+  },
+  "you-work-for-a-wage": {
+   "file": "you-work-for-a-wage.d8fdb2dd.png",
+   "label": "A household guide",
+   "title": "You Work for a Wage",
+   "v": "1"
+  }
+ }
+}
