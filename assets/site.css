@@ -503,3 +503,39 @@ h1, h2, h3, h4, .dek { text-wrap: balance; }
 .article-list .t + .fresh { vertical-align: 0.35em; }
 /* Spanish pages (Nov 9 pilot): the translation note at the foot of a translated page */
 .article .es-note { margin: 28px 0 0; padding-top: 12px; border-top: 1px solid var(--hairline); font-size: 13.5px; color: var(--ink-2); }
+
+/* Sharing (Nov 11): assets/share.js and tools/build_articles.py (share_top, share_end, section_links). The top control is a
+   text button at the end of the dateline (its 44px target set by negative margins, so the line doesn't grow); the end row
+   uses the Action button; section links show on computers only, on hover or keyboard focus. Messages are 13.5px/600 ink and
+   clear after 6 s; a hidden live region (#share-live) speaks them, and the visible ones are aria-hidden. */
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.article .dateline .share-top { white-space: nowrap; }
+.article .dateline .share-top[hidden] { display: none; }
+.article .dateline .tbtn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; margin: -12px 0; padding: 0 2px; border: 0; background: none; font: inherit; font-weight: 600; color: var(--ink); text-decoration: underline; text-decoration-color: var(--muted); text-underline-offset: 3px; cursor: pointer; vertical-align: baseline; }
+.article .dateline .tbtn:hover { text-decoration-color: var(--ink); }
+.article .dateline .tbtn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+.article .dateline .done { margin-left: 6px; font-weight: 600; color: var(--ink); white-space: normal; }
+.share-end .act { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 16px; border: 1px solid var(--frame); border-radius: 4px; background: var(--surface); color: var(--ink); font: inherit; font-size: 15px; line-height: 1.2; text-decoration: none; cursor: pointer; white-space: nowrap; }
+.share-end .act:hover { border-color: var(--ink); text-decoration: none; }
+.share-end .act:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.share-end .act[hidden], .share-end[hidden] { display: none; }
+.article .share-end { margin: 36px 0 0; padding-top: 14px; border-top: 1px solid var(--hairline); }
+.article .share-end .share-label { margin: 0 0 10px; font-size: 12.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-2); }
+.article .share-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.article .share-status { margin: 8px 0 0; min-height: 1.45em; font-size: 13.5px; font-weight: 600; color: var(--ink); }
+.article .by-hand { margin: 10px 0 0; max-width: 100%; }
+.article .by-hand label { display: block; margin: 0 0 4px; font-size: 13.5px; font-weight: 600; }
+.article .by-hand input { width: 100%; min-height: 44px; padding: 0 10px; border: 1px solid var(--muted); border-radius: 4px; background: var(--page); color: var(--ink); font: inherit; font-size: 16px; }
+.article h2 .h-end { white-space: nowrap; }
+.article h2 .h-link { display: none; }
+.article h2 .h-link svg path { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.article h2 .h-done { margin-left: 4px; font-size: 13.5px; font-weight: 600; letter-spacing: 0; color: var(--ink); }
+@media (hover: hover) and (pointer: fine) {
+  .article h2 .h-link { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; margin: -6px 0 -6px 6px; vertical-align: middle; border-radius: 4px; color: var(--muted); text-decoration: none; opacity: 0; }
+  .article h2 .h-link svg { width: 17px; height: 17px; }
+  .article h2:hover .h-link, .article h2 .h-link:focus-visible, .article h2 .h-link.on { opacity: 1; }
+  .article h2 .h-link:hover { color: var(--ink); }
+  .article h2 .h-link:focus-visible { outline: 2px solid var(--focus); outline-offset: 0; }
+}
+@media (max-width: 760px) { .article .share-btns .act { flex: 1 1 calc(50% - 4px); } }
+@media print { .share-top, .share-end, .h-link, .h-done, .by-hand { display: none !important; } }

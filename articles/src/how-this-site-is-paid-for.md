@@ -20,9 +20,9 @@ No ads, and no tracking of who you are: the site sets no cookies and loads nothi
 
 ## How visits are counted
 
-The site counts page views with [GoatCounter](https://www.goatcounter.com), an open-source counter run on donations. When a page loads, your browser sends GoatCounter the page's address, the site that linked you here if any, and your screen width; GoatCounter works out a rough location and the kind of browser from the request. It [never stores your IP address](https://www.goatcounter.com/help/sessions) and recognizes a returning visit for eight hours at most, so it cannot follow anyone from one day to the next or onto other sites. Charts embedded in other pages are not counted. On the home page it also counts clicks on a few links, the same way and with nothing more about you, to see which parts of that page get used.
+The site counts page views with [GoatCounter](https://www.goatcounter.com), an open-source counter run on donations. When a page loads, your browser sends GoatCounter the page's address, the site that linked you here if any, and your screen width; GoatCounter works out a rough location and the kind of browser from the request. It [never stores your IP address](https://www.goatcounter.com/help/sessions) and recognizes a returning visit for eight hours at most, so it cannot follow anyone from one day to the next or onto other sites. Charts embedded in other pages are not counted. On the home page it also counts clicks on a few links, the same way and with nothing more about you, to see which parts of that page get used. On articles it counts uses of the share, copy and print buttons the same way, under the article's name, to see which articles readers pass on.
 
-What the counts show is which pages get read, which parts of the home page get used, and which sites send readers here. To stop your own visits being counted in a browser, open [this link](../#toggle-goatcounter) in it; opening it again turns counting back on. Ad blockers usually stop the count too.
+What the counts show is which pages get read, which parts of the home page get used, which articles get passed on, and which sites send readers here. To stop your own visits being counted in a browser, open [this link](../#toggle-goatcounter) in it; opening it again turns counting back on. Ad blockers usually stop the count too.
 
 ## The weekly email
 

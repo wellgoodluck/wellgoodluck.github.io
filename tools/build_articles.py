@@ -713,7 +713,7 @@ FOOT = """
   <div class="wrap">
     <p>Articles on this site aim to lay out what the figures show, what is settled, what is argued about and by whom. Every number links to its source where one exists, and corrections are noted on the article. The charts are live from the almanac and update as agencies publish.</p>
     <p class="reuse">Free to reuse with credit: Economy in Context (economyincontext.org). The charts and writing here are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Credit the data to its source, named on each chart.</p>
-    <p>This site has no ads and no agenda beyond putting the numbers in context. It explains how things work. It is not tax, legal or financial advice. It sets no cookies and keeps nothing that identifies you; it does count page views, and clicks on a few links on the home page. The optional weekly email is sent through Buttondown, which keeps the addresses for that and nothing else. It is paid for by the person who runs it, out of pocket; <a href="how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+    <p>This site has no ads and no agenda beyond putting the numbers in context. It explains how things work. It is not tax, legal or financial advice. It sets no cookies and keeps nothing that identifies you; it does count page views, clicks on a few links on the home page, and uses of the share, copy and print buttons on articles. The optional weekly email is sent through Buttondown, which keeps the addresses for that and nothing else. It is paid for by the person who runs it, out of pocket; <a href="how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
     <p class="about-link"><a href="/tools/">Tools: put your own figures next to the national numbers →</a></p>
     <p class="about-link"><a href="about.html">About this site, how it works, and every correction →</a></p>
   </div>
@@ -725,9 +725,128 @@ FOOT = """
 """
 
 
+
+# ---------------------------------------------------------------------------
+# Sharing (Nov 11): a text button at the end of every article's dateline, a "Share this article" row at the end, a
+# copy-link control after each h2 on computers, and a preview card per article. assets/share.js does the work and
+# chooses the buttons: computers (hover + fine pointer) get Copy link (top) and Copy link · Email the link · Print or
+# save as PDF (end); phones and tablets get Share (the device's own menu) and Copy link, or Copy link · Email the link
+# where the browser has no share menu. Without JavaScript the two rows stay hidden and the heading links are plain
+# anchors ("Link to this section"). Every control counts its click under one name per article, share/<slug>, so
+# GoatCounter shows which articles readers pass on (the How This Site Is Paid For page and every footer say so).
+# One visually hidden live region (#share-live) announces each result; the visible messages are aria-hidden so
+# nothing is read twice. Mock rounds and reviews: the project doc claude/sharing-mock-nov11.md.
+# ---------------------------------------------------------------------------
+LINK_SVG = ('<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M8.6 11.4a3.2 3.2 0 0 0 4.5 0l3-3a3.2 3.2 0 0 0-4.5-4.5l-1.1 1.1"/>'
+            '<path d="M11.4 8.6a3.2 3.2 0 0 0-4.5 0l-3 3a3.2 3.2 0 0 0 4.5 4.5l1.1-1.1"/></svg>')
+NO_SECTION_LINK = {"see-also"}
+
+
+def plain(s):
+    """Plain text of a title written in the site's Markdown (no tags, entities decoded)."""
+    return html.unescape(re.sub(r"<[^>]+>", "", inline(s)))
+
+
+def share_attrs(a):
+    return (f' data-goatcounter-click="share/{a["slug"]}"'
+            f' data-goatcounter-title="{html.escape(plain(a["title"]), quote=True)}"')
+
+
+def share_top(a):
+    return (f'<span class="share-top" id="share-top" hidden> <span class="sep" aria-hidden="true">·</span> '
+            f'<button type="button" class="tbtn"{share_attrs(a)}>Copy link</button><span class="done" aria-hidden="true"></span></span>')
+
+
+def share_end(a):
+    title, dek = plain(a["title"]), plain(a.get("dek", ""))
+    url = f"{SITE}/articles/{a['slug']}.html"
+    from urllib.parse import quote
+    mail = "mailto:?subject=" + quote(title) + "&body=" + quote((dek + "\n\n" if dek else "") + url)
+    at = share_attrs(a)
+    return ('<section class="share-end" id="share-end" aria-labelledby="share-h" hidden>\n'
+            '<p class="share-label" id="share-h">Share this article</p>\n<div class="share-btns">'
+            f'<button type="button" class="act share-btn"{at}>Share</button>'
+            f'<button type="button" class="act copy-btn"{at}>Copy link</button>'
+            f'<a class="act email-btn" href="{html.escape(mail, quote=True)}"{at}>Email the link</a>'
+            f'<button type="button" class="act print-btn"{at}>Print or save as PDF</button>'
+            '</div>\n<p class="share-status" id="share-status" aria-hidden="true"></p>\n</section>\n')
+
+
+def section_links(body, a):
+    """A copy-link control after each h2's text (computers only, by CSS), the heading named by its own text."""
+    at = share_attrs(a)
+    def rep(m):
+        hid, inner = m.group(1), m.group(2)
+        if hid in NO_SECTION_LINK:
+            return m.group(0)
+        label = html.escape("Link to this section: " + html.unescape(re.sub(r"<[^>]+>", "", inner)), quote=True)
+        k = inner.rfind(" ")
+        if "<" in inner or k == -1:                 # markup in the heading: no last-word wrap
+            text = inner
+        else:
+            text = f'{inner[:k + 1]}<span class="h-end">{inner[k + 1:]}</span>'
+        return (f'<h2 id="{hid}" aria-labelledby="{hid}-t"><span id="{hid}-t">{text}</span>'
+                f'<a class="h-link" href="#{hid}" aria-label="{label}"{at}>{LINK_SVG}</a></h2>')
+    return re.sub(r'<h2 id="([^"]+)">(.*?)</h2>', rep, body)
+
+
+# Preview cards: assets/cards/<slug>.<hash>.png, 1200 x 630, made offline by tools/make_cards.py (headless Chrome, not run
+# by the workflows) and listed in assets/cards/cards.json with the label and title each was drawn with. An article whose
+# card is missing or was drawn from an older title or label keeps the site card, and the build log names it.
+CARDS = None
+CARD_V = "1"                                       # bump to redraw every card (tools/make_cards.py hashes it in)
+
+
+def card_label(a):
+    """The small line above the title on a card: the series and part, else the kind of page in readers' words, else
+    (timely pieces) the date. No "of N": a series grows."""
+    if a["slug"] in SERIES_OF:
+        s, i = SERIES_OF[a["slug"]]
+        return f'{plain(s["title"])} · Part {i + 1}'
+    if a["slug"] in LANDINGS:
+        return "A series"
+    kind = a.get("kind")
+    if kind == "concept":
+        return "In plain words"
+    if kind == "path":
+        return "A household guide"
+    if kind == "page":
+        return ""
+    return fmt_date(a["date"])
+
+
+def card_for(a):
+    """The card's URL for this article, or None (the site card)."""
+    global CARDS
+    if CARDS is None:
+        try:
+            with open(os.path.join("assets", "cards", "cards.json"), encoding="utf-8") as f:
+                CARDS = json.load(f).get("cards", {})
+        except (OSError, ValueError) as e:
+            print(f"cards: none ({e})")
+            CARDS = {}
+    c = CARDS.get(a["slug"])
+    if not c or c.get("title") != plain(a["title"]) or c.get("label") != card_label(a) or c.get("v") != CARD_V \
+            or not os.path.exists(os.path.join("assets", "cards", c.get("file", ""))):
+        CARD_MISSING.append(a["slug"])
+        return None
+    return f"{SITE}/assets/cards/{c['file']}"
+
+
+CARD_MISSING = []
+
 def render_article(a):
     desc = html.escape(a.get("dek", a["title"]), quote=True)
     page = HEAD.format(title=html.escape(a["title"]), desc=desc, canonical=f"{SITE}/articles/{a['slug']}.html", css_v=asset_stamp("assets/site.css"), menu=menu_for(a))
+    card = card_for(a)                             # Nov 11: the article's own preview card, when one is current
+    if card:
+        lab = card_label(a)
+        alt = html.escape((lab + ": " if lab else "") + plain(a["title"]), quote=True)
+        page = page.replace('content="https://economyincontext.org/assets/og-card.png"', f'content="{card}"', 1)
+        page = re.sub(r'<meta property="og:image:alt" content="[^"]*">', lambda m: f'<meta property="og:image:alt" content="{alt}">', page, count=1)
+    if not a.get("kind"):                          # timely pieces: the date in the preview's title, where it stays readable
+        page = page.replace(f'<meta property="og:title" content="{html.escape(a["title"])}">',
+                            f'<meta property="og:title" content="{html.escape(a["title"])} ({fmt_date(a["date"])})">', 1)
     page += '<main class="wrap article">\n<article>\n'
     page += f'<h1>{inline(a["title"])}</h1>\n'
     if a.get("dek"):
@@ -739,7 +858,7 @@ def render_article(a):
     if es:                                         # Nov 9: a Spanish version exists
         dates += f' <span class="sep">·</span> <a href="../es/{es}.html" lang="es" hreflang="es">En español</a>'
         page = page.replace('<link rel="canonical"', hreflang_tags(a["slug"], es) + '<link rel="canonical"', 1)
-    page += f'<p class="dateline">{dates}{fresh_label(a)}</p>\n'
+    page += f'<p class="dateline">{dates}{fresh_label(a)}{share_top(a)}</p>\n'
     page += series_box(a["slug"])
     body = md_to_html(a["body"])
     if a.get("kind") != "page":                   # Nov 8: one line pointing to the digest box, after the opening section
@@ -747,18 +866,20 @@ def render_article(a):
         second = body.find("<h2", first + 1) if first != -1 else -1   # phone readers never reach the box at the bottom.
         if second != -1:                          # Template only: no article's date, updated: line, feed or sitemap entry changes.
             body = body[:second] + DIGEST_NUDGE + body[second:]
-    nxt = series_next(a["slug"])
-    if nxt:
-        for anchor in ('<h2 id="see-also">', '<h2 id="sources">'):
-            if anchor in body:
-                body = body.replace(anchor, nxt + anchor, 1)
-                break
-        else:
-            body += "\n" + nxt
+    nxt = series_next(a["slug"]) + share_end(a)  # Nov 11: the share row follows Next in this series
+    for anchor in ('<h2 id="see-also">', '<h2 id="sources">'):
+        if anchor in body:
+            body = body.replace(anchor, nxt + anchor, 1)
+            break
+    else:
+        body += "\n" + nxt
+    body = section_links(body, a)
+    body += '<p class="sr-only" id="share-live" role="status" aria-live="polite"></p>\n'
     page += body
     page += "\n</article>\n</main>\n"
     if 'class="table-scroll"' in page:            # a table may be wider than a phone: assets/tables.js marks the ones that are
         page += '<script src="../assets/tables.js' + asset_stamp("assets/tables.js") + '"></script>\n'
+    page += '<script src="../assets/share.js' + asset_stamp("assets/share.js") + '"></script>\n'
     page += FOOT
     return clean_chart_links(page, CHART_IDS) if clean_chart_links else page
 
@@ -1346,6 +1467,9 @@ def main():
     with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
         f.write(render_index(articles))
     print(f"built articles/index.html ({len(articles)} articles)")
+    n_cards = len(articles) - len(CARD_MISSING)
+    print(f"cards: {n_cards} articles with their own card" + (f"; site card for {len(CARD_MISSING)} (no card, or drawn from an older title or label: "
+          f"{', '.join(CARD_MISSING)}; run tools/make_cards.py)" if CARD_MISSING else ""))
     if tools:
         tools_dir = os.path.join(out_root, "tools")
         os.makedirs(tools_dir, exist_ok=True)
