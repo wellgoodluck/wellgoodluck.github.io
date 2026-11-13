@@ -55,30 +55,43 @@ for i, (s, n) in enumerate(fed_chairs):
 # gaps between chairs are short (weeks); the lane simply runs each tenure to the next start.
 
 # ---- Wars -------------------------------------------------------------------
+# Rule (Nov 12, 2026): wars Congress declared or authorized, from the authorization to the end of U.S. combat; and
+# (kind "unauthorized", drawn hatched) campaigns against another country's forces that went on more than 60 days
+# without an authorization, the limit the War Powers Resolution has set since 1973. Shorter operations, no-fly-zone
+# patrols and campaigns against armed groups rather than a country's forces are left out (the lane's note names them).
+# end None: still going.
 wars = [
     {"start": "1941-12-08", "end": "1945-09-02", "label": "World War II", "note": "Declaration of war to the Japanese surrender."},
-    {"start": "1950-06-27", "end": "1953-07-27", "label": "Korea", "note": "U.S. forces committed under a UN resolution; never declared or authorized by Congress. Ends at the armistice."},
+    {"start": "1950-06-27", "end": "1953-07-27", "label": "Korea", "kind": "unauthorized", "note": "U.S. forces committed under a UN resolution; Congress never declared war or authorized it. Ends at the armistice."},
     {"start": "1964-08-07", "end": "1973-03-29", "label": "Vietnam", "note": "Gulf of Tonkin Resolution to the withdrawal of the last U.S. combat troops."},
     {"start": "1991-01-12", "end": "1991-02-28", "label": "Gulf War", "note": "Congressional authorization to the ceasefire."},
+    {"start": "1999-03-24", "end": "1999-06-10", "label": "Kosovo", "kind": "unauthorized", "note": "NATO's 78-day air campaign against Yugoslavia. A resolution authorizing it failed in the House, 213 to 213, on April 28, 1999."},
     {"start": "2001-09-18", "end": "2021-08-30", "label": "Afghanistan", "note": "2001 authorization to the completion of the withdrawal."},
     {"start": "2002-10-16", "end": "2011-12-18", "label": "Iraq", "note": "2002 authorization (combat began March 2003) to the departure of the last U.S. troops."},
+    {"start": "2011-03-19", "end": "2011-10-31", "label": "Libya", "kind": "unauthorized", "note": "U.S. and NATO air campaign, from the first U.S. strikes to the end of NATO's mission. The House voted down an authorization, 123 to 295, on June 24, 2011."},
+    {"start": "2026-02-28", "end": None, "label": "Iran", "kind": "unauthorized", "note": "U.S. and Israeli strikes from February 28, 2026; an April ceasefire and a June agreement broke down, and the U.S. blockade of Iranian ports and periodic strikes continue. Congress has not authorized it. Several war powers resolutions to end it have come to a vote; none has taken effect."},
 ]
 
 def flatten(segments):
     """Split overlapping periods into non-overlapping segments; where two overlap, the label joins both.
-    Afghanistan (2001-21) and Iraq (2002-11) otherwise draw on top of each other and the label is clipped."""
-    edges = sorted({d for sg in segments for d in (sg["start"], sg["end"])})
+    Afghanistan (2001-21) and Iraq (2002-11) otherwise draw on top of each other and the label is clipped.
+    An open end (None, still going) sorts last. A joined segment is "unauthorized" only if every war in it is."""
+    OPEN = "9999-12-31"
+    end_of = lambda sg: sg["end"] or OPEN
+    edges = sorted({d for sg in segments for d in (sg["start"], end_of(sg))})
     out = []
     for a, b in zip(edges, edges[1:]):
-        active = [sg for sg in segments if sg["start"] <= a and sg["end"] >= b]
+        active = [sg for sg in segments if sg["start"] <= a and end_of(sg) >= b]
         if not active:
             continue
-        label = " & ".join(sg["label"] for sg in active)
+        names = [sg["label"] for sg in active]
+        label = " & ".join(names) if len(names) < 3 else ", ".join(names[:-1]) + " & " + names[-1]
         note = " ".join(f"{sg['label']}: {sg['note']}" for sg in active if sg.get("note")) if len(active) > 1 else active[0].get("note", "")
+        kind = "unauthorized" if all(sg.get("kind") == "unauthorized" for sg in active) else None
         if out and out[-1]["label"] == label and out[-1]["end"] == a:
-            out[-1]["end"] = b
+            out[-1]["end"] = None if b == OPEN else b
         else:
-            out.append({"start": a, "end": b, "label": label, **({"note": note} if note else {})})
+            out.append({"start": a, "end": None if b == OPEN else b, "label": label, **({"kind": kind} if kind else {}), **({"note": note} if note else {})})
     return out
 
 
@@ -138,7 +151,7 @@ shocks = [
     ("2020-03-13", "COVID national emergency", "Declared March 13; the WHO had called it a pandemic on the 11th."),
     ("2022-02-24", "Russia invades Ukraine", "Oil passes $120 and U.S. gasoline tops $5 by June; wheat and fertilizer prices jump."),
     ("2023-03-10", "Silicon Valley Bank fails", "Second-largest bank failure in U.S. history at the time."),
-    ("2026-02-28", "U.S. and Israel strike Iran", "Iran closes the Strait of Hormuz to most shipping within days; gasoline is up a third over the following months. No congressional authorization, so not shown on the war lane."),
+    ("2026-02-28", "U.S. and Israel strike Iran", "Iran closes the Strait of Hormuz to most shipping within days; gasoline is up a third over the following months. No congressional authorization; on the war lane, hatched."),
 ]
 fiscal = [
     ("1986-10-22", "Tax Reform Act of 1986", "Lowers rates, broadens the base."),
@@ -176,7 +189,8 @@ shutdowns = [
     ("1995-12-16", "Shutdown, 21 days", "Through January 6, 1996."),
     ("2013-10-01", "Shutdown, 16 days", "Through October 17, 2013."),
     ("2018-12-22", "Shutdown, 35 days", "Through January 25, 2019. Partial."),
-    ("2025-10-01", "Shutdown, 43 days", "Through November 12, 2025. The longest on record; October's jobs and CPI reports were delayed or skipped."),
+    ("2025-10-01", "Shutdown, 43 days", "Through November 12, 2025. The longest government-wide shutdown on record; October's jobs and CPI reports were delayed or skipped."),
+    ("2026-02-14", "Shutdown, 76 days", "Through April 30, 2026. Partial: the Department of Homeland Security only. The longest on record."),
 ]
 min_wage = [  # effective date, new federal minimum
     ("1938-10-24", 0.25), ("1939-10-24", 0.30), ("1945-10-24", 0.40), ("1950-01-25", 0.75), ("1956-03-01", 1.00),
@@ -322,7 +336,7 @@ overlays = [
      "source": {"label": "Federal Reserve Board, Open Market Operations", "url": "https://www.federalreserve.gov/monetarypolicy/openmarket.htm"}},
     {"id": "wars", "type": "era", "group": "Eras", "lane": "At war", "label": "U.S. at war",
      "applies_to": "all",
-     "note": "Rule: declared wars and conflicts Congress authorized, from the authorization to the end of U.S. combat, plus Korea, fought under a UN resolution. Conflicts without an authorization (Kosovo, Libya, the 2026 strikes on Iran) are not shown here; those that moved an indicator are under Shocks and crises.",
+     "note": "Rule: wars Congress declared or authorized, from the authorization to the end of U.S. combat (solid), and campaigns against another country's forces that went on more than 60 days without an authorization (hatched): Korea, Kosovo, Libya, and Iran since February 2026. Sixty days is the limit the War Powers Resolution has set since 1973 for hostilities Congress has not approved. Not shown: shorter operations (Panama in 1989, the June 2025 strikes on Iran, the January 2026 raid in Venezuela), the no-fly-zone patrols over Iraq (1991–2003), and campaigns against armed groups rather than a country's forces (ISIS from 2014, the Houthis in 2024–25, the strikes on drug boats from 2025).",
      "segments": wars,
      "source": {"label": "Congressional Research Service, Declarations of War and Authorizations", "url": "https://crsreports.congress.gov/product/pdf/RL/RL31133"}},
     # ---- Events --------------------------------------------------------------
@@ -350,7 +364,7 @@ overlays = [
 overlays = [o for o in overlays if o["type"] != "events" or o.get("items")]
 
 out = {
-    "version": "2026-10-31",
+    "version": "2026-11-12",
     "maintenance": "Party lanes need a two-line edit every other January after a new Congress is seated (next: January 2027). Fed chair, FOMC estimates and events are edited as they happen.",
     "political_note": POLITICAL_NOTE,
     "group_notes": GROUP_NOTES,

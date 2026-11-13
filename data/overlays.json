@@ -1,5 +1,5 @@
 {
- "version": "2026-10-31",
+ "version": "2026-11-12",
  "maintenance": "Party lanes need a two-line edit every other January after a new Congress is seated (next: January 2027). Fed chair, FOMC estimates and events are edited as they happen.",
  "political_note": "Control is shown as of inauguration (January 20) and the seating of each Congress (January 3). Policy acts with a lag, often a year or more, and shocks do not follow the election calendar.",
  "group_notes": {
@@ -686,7 +686,7 @@
    "lane": "At war",
    "label": "U.S. at war",
    "applies_to": "all",
-   "note": "Rule: declared wars and conflicts Congress authorized, from the authorization to the end of U.S. combat, plus Korea, fought under a UN resolution. Conflicts without an authorization (Kosovo, Libya, the 2026 strikes on Iran) are not shown here; those that moved an indicator are under Shocks and crises.",
+   "note": "Rule: wars Congress declared or authorized, from the authorization to the end of U.S. combat (solid), and campaigns against another country's forces that went on more than 60 days without an authorization (hatched): Korea, Kosovo, Libya, and Iran since February 2026. Sixty days is the limit the War Powers Resolution has set since 1973 for hostilities Congress has not approved. Not shown: shorter operations (Panama in 1989, the June 2025 strikes on Iran, the January 2026 raid in Venezuela), the no-fly-zone patrols over Iraq (1991–2003), and campaigns against armed groups rather than a country's forces (ISIS from 2014, the Houthis in 2024–25, the strikes on drug boats from 2025).",
    "segments": [
     {
      "start": "1941-12-08",
@@ -698,7 +698,8 @@
      "start": "1950-06-27",
      "end": "1953-07-27",
      "label": "Korea",
-     "note": "U.S. forces committed under a UN resolution; never declared or authorized by Congress. Ends at the armistice."
+     "kind": "unauthorized",
+     "note": "U.S. forces committed under a UN resolution; Congress never declared war or authorized it. Ends at the armistice."
     },
     {
      "start": "1964-08-07",
@@ -713,6 +714,13 @@
      "note": "Congressional authorization to the ceasefire."
     },
     {
+     "start": "1999-03-24",
+     "end": "1999-06-10",
+     "label": "Kosovo",
+     "kind": "unauthorized",
+     "note": "NATO's 78-day air campaign against Yugoslavia. A resolution authorizing it failed in the House, 213 to 213, on April 28, 1999."
+    },
+    {
      "start": "2001-09-18",
      "end": "2002-10-16",
      "label": "Afghanistan",
@@ -720,6 +728,18 @@
     },
     {
      "start": "2002-10-16",
+     "end": "2011-03-19",
+     "label": "Afghanistan & Iraq",
+     "note": "Afghanistan: 2001 authorization to the completion of the withdrawal. Iraq: 2002 authorization (combat began March 2003) to the departure of the last U.S. troops."
+    },
+    {
+     "start": "2011-03-19",
+     "end": "2011-10-31",
+     "label": "Afghanistan, Iraq & Libya",
+     "note": "Afghanistan: 2001 authorization to the completion of the withdrawal. Iraq: 2002 authorization (combat began March 2003) to the departure of the last U.S. troops. Libya: U.S. and NATO air campaign, from the first U.S. strikes to the end of NATO's mission. The House voted down an authorization, 123 to 295, on June 24, 2011."
+    },
+    {
+     "start": "2011-10-31",
      "end": "2011-12-18",
      "label": "Afghanistan & Iraq",
      "note": "Afghanistan: 2001 authorization to the completion of the withdrawal. Iraq: 2002 authorization (combat began March 2003) to the departure of the last U.S. troops."
@@ -729,6 +749,13 @@
      "end": "2021-08-30",
      "label": "Afghanistan",
      "note": "2001 authorization to the completion of the withdrawal."
+    },
+    {
+     "start": "2026-02-28",
+     "end": null,
+     "label": "Iran",
+     "kind": "unauthorized",
+     "note": "U.S. and Israeli strikes from February 28, 2026; an April ceasefire and a June agreement broke down, and the U.S. blockade of Iranian ports and periodic strikes continue. Congress has not authorized it. Several war powers resolutions to end it have come to a vote; none has taken effect."
     }
    ],
    "source": {
@@ -814,7 +841,7 @@
     {
      "date": "2026-02-28",
      "label": "U.S. and Israel strike Iran",
-     "note": "Iran closes the Strait of Hormuz to most shipping within days; gasoline is up a third over the following months. No congressional authorization, so not shown on the war lane."
+     "note": "Iran closes the Strait of Hormuz to most shipping within days; gasoline is up a third over the following months. No congressional authorization; on the war lane, hatched."
     }
    ]
   },
@@ -1000,7 +1027,12 @@
     {
      "date": "2025-10-01",
      "label": "Shutdown, 43 days",
-     "note": "Through November 12, 2025. The longest on record; October's jobs and CPI reports were delayed or skipped."
+     "note": "Through November 12, 2025. The longest government-wide shutdown on record; October's jobs and CPI reports were delayed or skipped."
+    },
+    {
+     "date": "2026-02-14",
+     "label": "Shutdown, 76 days",
+     "note": "Through April 30, 2026. Partial: the Department of Homeland Security only. The longest on record."
     }
    ]
   },
