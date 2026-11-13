@@ -686,7 +686,7 @@
    "lane": "At war",
    "label": "U.S. at war",
    "applies_to": "all",
-   "note": "Rule: wars Congress declared or authorized, from the authorization to the end of U.S. combat (solid), and campaigns against another country's forces that went on more than 60 days without an authorization (hatched): Korea, Kosovo, Libya, and Iran since February 2026. Sixty days is the limit the War Powers Resolution has set since 1973 for hostilities Congress has not approved. Not shown: shorter operations (Panama in 1989, the June 2025 strikes on Iran, the January 2026 raid in Venezuela), the no-fly-zone patrols over Iraq (1991–2003), and campaigns against armed groups rather than a country's forces (ISIS from 2014, the Houthis in 2024–25, the strikes on drug boats from 2025).",
+   "note": "Rule: wars Congress declared or authorized, from the authorization to the end of U.S. combat (solid), and campaigns against another country's forces that went on more than 60 days without an authorization (hatched): Korea, Kosovo, Libya, and Iran since February 2026. Sixty days is the limit the War Powers Resolution has set since 1973 for hostilities Congress has not approved. Not shown: shorter operations (Panama in 1989, the June 2025 strikes on Iran, the January 2026 raid in Venezuela), patrol and escort operations with periodic clashes (the 1987–88 tanker escorts in the Persian Gulf, the no-fly zones over Iraq from 1991 to 2003), and campaigns against armed groups rather than a country's forces (ISIS from 2014, the Houthis in 2024–25, the strikes on drug boats from 2025).",
    "segments": [
     {
      "start": "1941-12-08",
@@ -755,7 +755,7 @@
      "end": null,
      "label": "Iran",
      "kind": "unauthorized",
-     "note": "U.S. and Israeli strikes from February 28, 2026; an April ceasefire and a June agreement broke down, and the U.S. blockade of Iranian ports and periodic strikes continue. Congress has not authorized it. Several war powers resolutions to end it have come to a vote; none has taken effect."
+     "note": "U.S. and Israeli strikes from February 28, 2026; an April ceasefire and a June agreement broke down, and the U.S. blockade of Iranian ports and periodic strikes continue. Congress has not authorized it. Repeated war powers resolutions to end it have come to a vote; none has taken effect. The administration told Congress on May 1 that hostilities had ended with the April ceasefire, and reported renewed action on July 10; that phase alone has run more than 60 days."
     }
    ],
    "source": {
