@@ -511,7 +511,7 @@
     "cpi",
     "core_cpi"
    ],
-   "note": "Periods when the Fed was expanding its holdings of Treasuries and mortgage bonds (QE) or letting them shrink. Dates are the announced start and end of net purchases or runoff.",
+   "note": "Periods when the Fed was expanding its holdings of Treasuries and mortgage bonds (QE) or letting them shrink. Dates are the announced start and end of net purchases or runoff. Treasury bill purchases made to keep bank reserves ample, from October 2019 and again from December 2025, are not shown: the Fed described them as technical steps with no bearing on the stance of monetary policy.",
    "segments": [
     {
      "start": "2008-11-25",
@@ -665,13 +665,6 @@
      "label": "Cuts",
      "kind": "ease",
      "note": "5.25–5.50% to 3.50–3.75%"
-    },
-    {
-     "start": "2026-09-16",
-     "end": null,
-     "label": "Hikes",
-     "kind": "tighten",
-     "note": "3.50–3.75% to 3.75–4.00%; one move so far"
     }
    ],
    "source": {

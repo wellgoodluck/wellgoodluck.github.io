@@ -127,8 +127,10 @@ fed_cycles = [
     {"start": "2019-07-31", "end": "2020-03-15", "label": "Cuts", "kind": "ease", "note": "2.25–2.50% to 0–0.25%"},
     {"start": "2022-03-16", "end": "2023-07-26", "label": "Hikes", "kind": "tighten", "note": "0–0.25% to 5.25–5.50%, the fastest since the early 1980s"},
     {"start": "2024-09-18", "end": "2025-12-10", "label": "Cuts", "kind": "ease", "note": "5.25–5.50% to 3.50–3.75%"},
-    {"start": "2026-09-16", "end": None, "label": "Hikes", "kind": "tighten", "note": "3.50–3.75% to 3.75–4.00%; one move so far"},
 ]
+# A cycle needs two or more moves (the lane's rule). The Sep 16, 2026 hike (3.50–3.75% to 3.75–4.00%) is one move so
+# far: it shows as the "First hike since 2023" event. If the Fed raises again, add
+# {"start": "2026-09-16", "end": None, "label": "Hikes", "kind": "tighten", "note": "3.50–3.75% to <new range>"}.
 
 # ---- Events -------------------------------------------------------------------
 RULE = ("An event is listed if it visibly moved at least one indicator on this site within three months, "
@@ -326,7 +328,7 @@ overlays = [
      "source": {"label": "Federal Reserve Board", "url": "https://www.federalreserve.gov/aboutthefed/bios/board/boardmembership.htm"}},
     {"id": "fed_balance_sheet", "type": "era", "group": "Eras", "lane": "Fed balance sheet", "label": "Fed bond-buying (QE) and runoff",
      "applies_to": ["fed_funds", "ten_year", "mortgage", "cpi", "core_cpi"],
-     "note": "Periods when the Fed was expanding its holdings of Treasuries and mortgage bonds (QE) or letting them shrink. Dates are the announced start and end of net purchases or runoff.",
+     "note": "Periods when the Fed was expanding its holdings of Treasuries and mortgage bonds (QE) or letting them shrink. Dates are the announced start and end of net purchases or runoff. Treasury bill purchases made to keep bank reserves ample, from October 2019 and again from December 2025, are not shown: the Fed described them as technical steps with no bearing on the stance of monetary policy.",
      "segments": qe,
      "source": {"label": "Federal Reserve Board, Policy Tools", "url": "https://www.federalreserve.gov/monetarypolicy/bst.htm"}},
     {"id": "fed_cycles", "type": "era", "group": "Eras", "lane": "Fed cycle", "label": "Fed rate hikes and cuts",
