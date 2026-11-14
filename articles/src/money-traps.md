@@ -1,6 +1,6 @@
 ---
 title: Money Traps
-dek: Twenty-one short pages on the ways money leaks out of a household, especially a new one: how each trap works, what it costs in dollars, how to avoid it, and the policy fight around it.
+dek: Short pages on the ways money leaks out of a household, especially a new one: how each trap works, what it costs in dollars, how to avoid it, and the policy fight around it.
 date: 2026-11-09
 kind: page
 ---
