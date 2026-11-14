@@ -1092,6 +1092,98 @@ def creep_bars():
           "$20,100, Jordan about $56,400. Jordan's spending still rose about $6,900 over the ten years.")
 
 
+def prime_ledger():
+    """Does Prime Pay for Itself? (Nov 14): what Prime replaces for Sam and Pat against the $139 fee, then Sam with
+    a quarter of $600 in extra spending counted."""
+    b = []
+    b.append(T(0, 16, "A year of Prime, two ways", "h"))
+    b.append(T(0, 36, "Each pays $139. What does it replace?", "s i2"))
+
+    def card(y, name, rows, total_lab, total, after=None):
+        n = len(rows) + 1 + (2 if after else 0)
+        h = 40 + 22 * n + 12
+        b.append(R(0.5, y + 0.5, W - 1, h, "sheet", rx=4))
+        b.append(T(12, y + 24, name, "m"))
+        yy = y + 48
+        for lab, v in rows:
+            b.append(T(12, yy, tx(lab), "s"))
+            b.append(T(W - 12, yy, money(v), "s", "end"))
+            yy += 22
+        b.append(L(12, yy - 14, W - 12, yy - 14, "rule"))
+        b.append(T(12, yy + 2, tx(total_lab), "s b"))
+        b.append(T(W - 12, yy + 2, ("+" if total > 0 else "") + money(total), "s b", "end"))
+        if after:
+            lab, v, end_lab, end_v = after
+            yy += 22
+            b.append(T(12, yy + 2, tx(lab), "s i2"))
+            b.append(T(W - 12, yy + 2, money(v), "s i2", "end"))
+            yy += 22
+            b.append(T(12, yy + 2, tx(end_lab), "s b"))
+            b.append(T(W - 12, yy + 2, money(end_v), "s b", "end"))
+        return y + h
+
+    y = card(52, "Sam", [("Shipping on 10 small orders × $6", 60), ("Streaming Sam would buy ($8.99 × 12)", 107.88),
+                         ("Prime fee", -139)], "On the fee alone", 28.88,
+             ("A quarter of $600 in extra buying", -150, "Counting the extra buying", -121.12))
+    y = card(y + 12, "Pat", [("Shipping on small orders", 0), ("Streaming Pat would buy", 0), ("Prime fee", -139)],
+             "On the fee alone", -139)
+    b.append(fictional(W, y + 22))
+    write("prime-ledger", y + 30, b, "A year of Prime for Sam and Pat, against the $139 fee",
+          "Sam: shipping on 10 small orders at $6, $60.00; streaming Sam would buy anyway, $8.99 a month, $107.88; the "
+          "Prime fee, minus $139.00. On the fee alone, Sam is $28.88 ahead. A quarter of $600 in extra buying, minus "
+          "$150.00; counting the extra buying, Sam is $121.12 behind. Pat: shipping on small orders, $0; streaming Pat "
+          "would buy, $0; the Prime fee, minus $139.00. On the fee alone, Pat is $139.00 behind. Fictional, for "
+          "illustration.")
+
+
+# ---------------------------------------------------------------- 24. when cheap costs you (Nov 14)
+def receipt_shape(x, y, w, h, teeth=9):
+    """A paper receipt with a torn (zigzag) bottom edge."""
+    step = w / teeth
+    d = f"M{x} {y} L{x + w} {y} L{x + w} {y + h}"
+    for i in range(teeth):
+        xr = x + w - i * step
+        d += f" L{xr - step / 2:g} {y + h - 7:g} L{xr - step:g} {y + h:g}"
+    return P(d + " Z", "sheet")
+
+
+def ride_receipt():
+    """The $40 cash ride: what the receipt shows, what it leaves out, and what it can cost."""
+    b = []
+    b.append(T(0, 16, "A $40 ride, both sides of the receipt", "h"))
+    b.append(T(0, 36, "A fictional receipt; prices made up for the example", "s i2"))
+    y = 52
+    fw, bx = 146, 158
+    bw = W - bx
+    rh = 150
+    b.append(receipt_shape(0.5, y, fw, rh))
+    b.append(T(14, y + 24, "FRONT", "cap"))
+    b.append(T(14, y + 52, "Airport ride", "s b"))
+    b.append(T(14, y + 86, "$40", "big"))
+    b.append(T(14, y + 108, "Cash", "s i2"))
+    b.append(T(14, y + 126, "No receipt number", "xs i2"))
+    b.append(receipt_shape(bx, y, bw - 0.5, rh))
+    b.append(T(bx + 14, y + 24, "BACK", "cap"))
+    b.append(T(bx + 14, y + 52, "Not included:", "s b"))
+    yy = y + 78
+    for lab in ("Commercial insurance", "A state permit", "A way to dispute it"):
+        b.append(R(bx + 14, yy - 11, 11, 11, "frame", rx=1))
+        b.append(T(bx + 32, yy, tx(lab), "s"))
+        yy += 24
+    y += rh + 22
+    b.append(L(0, y, W, y, "rule"))
+    b.append(T(0, y + 24, "If the driver causes a crash", "m"))
+    b.append(T(0, y + 56, "Up to $14,600", "big"))
+    b.append(T(0, y + 78, "out of Alex's pocket, to save $20", "s i2"))
+    b.append(T(0, y + 100, "$10,600 in medical bills at the 2026 health plan limit,", "xs i2"))
+    b.append(T(0, y + 116, "plus four weeks of lost pay", "xs i2"))
+    write("ride-receipt", y + 124, b, "A $40 cash ride, both sides of the receipt",
+          "A fictional receipt for a $40 airport ride paid in cash, with no receipt number. On the back, three things "
+          "it doesn't include: commercial insurance, a state permit, and a way to dispute the charge. If the driver "
+          "causes a crash, Alex could pay up to $14,600 out of pocket to save $20: $10,600 in medical bills at the "
+          "2026 health plan limit, plus four weeks of lost pay.")
+
+
 # ---------------------------------------------------------------- Money Basics (Nov 12)
 def stub_split():
     """Money Basics 1: a $900 paycheck and where it goes."""
@@ -1306,7 +1398,8 @@ for fn in (credit_score_factors, overdraft_statement, overdraft_optin, card_mini
            payday_treadmill, cash_advance_timelines, car_balances, car_price_tag, rto_price_tag, rto_three_laptops,
            subs_statement, finfluencer_post, one_percent_curve, two_savers, pay_stub, student_balance, worry_ad,
            four_borrowers, betting_cost, gig_payouts, scam_texts, cosigner_notice, statement_marked, cushion_costs,
-           one_name_reach, creep_bars, stub_split, two_balances, budget_bar, rate_gap, both_ways):
+           one_name_reach, creep_bars, stub_split, two_balances, budget_bar, rate_gap, both_ways, prime_ledger,
+           ride_receipt):
     fn()
 
 LANG = "es"

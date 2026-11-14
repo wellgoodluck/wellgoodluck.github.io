@@ -90,6 +90,9 @@ The national average is also only an average. The bureau prices one narrowly def
 - [Rate vs. level](rate-vs-level.html): why inflation fell and prices didn't.
 - [Why everything costs 30% more](why-everything-costs-30-percent-more.html): the 2021–26 price rise in one story.
 - [The Five-Cent Business](the-five-cent-business.html): how a grocery shock reaches a restaurant check.
+{{after 2026-11-17}}
+- [Same Groceries, Different Price](same-groceries-different-price.html): what a delivery app adds on top of the shelf price.
+{{/after}}
 - [Tariffs, and Who Pays](tariffs-and-who-pays.html): the general argument about who pays a tariff.
 - [What sets the price of gas](what-sets-the-price-of-gas.html): the same stack of receipts, for a gallon.
 - The almanac's charts: [eggs](../chart.html?id=eggs&ov=eggs_real,ev_eggs), [milk](../chart.html?id=milk), [bread](../chart.html?id=bread), [coffee](../chart.html?id=coffee&ov=coffee_real,ev_coffee), [ground beef](../chart.html?id=ground_beef&ov=ground_beef_real,ev_beef) and [whole chicken](../chart.html?id=chicken).

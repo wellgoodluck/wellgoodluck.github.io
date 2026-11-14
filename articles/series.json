@@ -208,6 +208,18 @@
         {
           "slug": "money-in-one-name",
           "label": "Money in one name"
+        },
+        {
+          "slug": "same-groceries-different-price",
+          "label": "Delivery-app markups"
+        },
+        {
+          "slug": "does-prime-pay-for-itself",
+          "label": "Does Prime pay for itself?"
+        },
+        {
+          "slug": "when-cheap-costs-you",
+          "label": "When cheap costs you"
         }
       ],
       "featured": "2026-11-09"

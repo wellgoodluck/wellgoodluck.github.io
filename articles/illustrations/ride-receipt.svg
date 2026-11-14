@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 348" role="img" aria-labelledby="ride-receipt-t ride-receipt-d"><title id="ride-receipt-t">A $40 cash ride, both sides of the receipt</title><desc id="ride-receipt-d">A fictional receipt for a $40 airport ride paid in cash, with no receipt number. On the back, three things it doesn&#x27;t include: commercial insurance, a state permit, and a way to dispute the charge. If the driver causes a crash, Alex could pay up to $14,600 out of pocket to save $20: $10,600 in medical bills at the 2026 health plan limit, plus four weeks of lost pay.</desc>
+<text x="0" y="16" class="h">A $40 ride, both sides of the receipt</text>
+<text x="0" y="36" class="s i2">A fictional receipt; prices made up for the example</text>
+<path d="M0.5 52 L146.5 52 L146.5 202 L138.389 195 L130.278 202 L122.167 195 L114.056 202 L105.944 195 L97.8333 202 L89.7222 195 L81.6111 202 L73.5 195 L65.3889 202 L57.2778 195 L49.1667 202 L41.0556 195 L32.9444 202 L24.8333 195 L16.7222 202 L8.61111 195 L0.5 202 Z" class="sheet"/>
+<text x="14" y="76" class="cap">FRONT</text>
+<text x="14" y="104" class="s b">Airport ride</text>
+<text x="14" y="138" class="big">$40</text>
+<text x="14" y="160" class="s i2">Cash</text>
+<text x="14" y="178" class="xs i2">No receipt number</text>
+<path d="M158 52 L359.5 52 L359.5 202 L348.306 195 L337.111 202 L325.917 195 L314.722 202 L303.528 195 L292.333 202 L281.139 195 L269.944 202 L258.75 195 L247.556 202 L236.361 195 L225.167 202 L213.972 195 L202.778 202 L191.583 195 L180.389 202 L169.194 195 L158 202 Z" class="sheet"/>
+<text x="172" y="76" class="cap">BACK</text>
+<text x="172" y="104" class="s b">Not included:</text>
+<rect x="172" y="119" width="11" height="11" rx="1" class="frame"/>
+<text x="190" y="130" class="s">Commercial insurance</text>
+<rect x="172" y="143" width="11" height="11" rx="1" class="frame"/>
+<text x="190" y="154" class="s">A state permit</text>
+<rect x="172" y="167" width="11" height="11" rx="1" class="frame"/>
+<text x="190" y="178" class="s">A way to dispute it</text>
+<line x1="0" y1="224" x2="360" y2="224" class="rule"/>
+<text x="0" y="248" class="m">If the driver causes a crash</text>
+<text x="0" y="280" class="big">Up to $14,600</text>
+<text x="0" y="302" class="s i2">out of Alex's pocket, to save $20</text>
+<text x="0" y="324" class="xs i2">$10,600 in medical bills at the 2026 health plan limit,</text>
+<text x="0" y="340" class="xs i2">plus four weeks of lost pay</text>
+</svg>

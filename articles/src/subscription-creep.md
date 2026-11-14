@@ -39,7 +39,7 @@ That's $1,061 a year. Cancel just the unused gym and the forgotten news trial an
 
 **Set a reminder the day you start a free trial.** Put the end date on your calendar a couple of days early, or cancel right away; many services let you keep the trial even after canceling.
 
-**Rotate instead of stacking.** Keep one streaming service at a time and switch when you've watched what you wanted.
+**Rotate instead of stacking.** Keep one streaming service at a time and switch when you've watched what you wanted.{{after 2026-11-24}} For a shipping membership, the fee is the smaller part of the math: see [Does Prime Pay for Itself?](does-prime-pay-for-itself.html){{/after}}
 
 **Check app-store subscriptions separately.** Subscriptions bought through your phone's app store are managed in your phone's settings, not inside the app.
 

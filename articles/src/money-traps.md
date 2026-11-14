@@ -31,8 +31,17 @@ Each page also has a picture drawn for the site. The statements, pay stubs and p
 - [The $35 Coffee](overdraft-fees.html): how a small purchase turns into an overdraft fee, and the one setting that stops it.
 - [The Charge You Never Noticed](reading-your-statements.html): billing errors and stolen cards, the 60-day deadlines, and why a credit card protects you better than a debit card.
 - [Once You Hit Send](payment-app-scams.html): scams on Zelle, Venmo and Cash App, and why money you send yourself is hard to get back.
+{{after 2026-12-01}}
+- [When Cheap Costs You](when-cheap-costs-you.html): unlicensed rides and repairs, rogue movers and ghost tax preparers, and four questions to ask before you hire anyone.
+{{/after}}
 - [Ten Dollars Here, Fifteen There](subscription-creep.html): subscriptions that renew on their own, and what they add up to.
+{{after 2026-11-17}}
+- [Same Groceries, Different Price](same-groceries-different-price.html): the markup a delivery app folds into each grocery price, and how to tell what you're paying.
+{{/after}}
 - [Where Did the Raise Go?](lifestyle-creep.html): how spending rises to swallow every raise, and the habit that lets savings grow too.
+{{after 2026-11-24}}
+- [Does Prime Pay for Itself?](does-prime-pay-for-itself.html): the math on a shipping membership, and the spending it leaves out.
+{{/after}}
 
 ## Borrowing
 

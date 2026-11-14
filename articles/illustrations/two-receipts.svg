@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 312" role="img" aria-labelledby="two-receipts-t two-receipts-d"><title id="two-receipts-t">Two fictional receipts for the same cart of groceries</title><desc id="two-receipts-d">Bought in the store, the groceries cost $150.00. Through a delivery app at a store that marks up 15%, the same groceries cost $172.50, plus a $8.63 service fee, a $3.99 delivery fee and a $10.00 tip, for a total of $195.12. The groceries line is shaded: the $22.50 markup is inside it, with no line of its own, while the fees listed under it add up to $12.62.</desc>
+<text x="0" y="16" class="h">Same cart, two receipts</text>
+<text x="0" y="36" class="cap">FICTIONAL · FOR ILLUSTRATION</text>
+<rect x="0.5" y="48.5" width="171" height="188" rx="6" class="sheet"/>
+<text x="12" y="70" class="cap">IN THE STORE</text>
+<line x1="12" y1="78" x2="160" y2="78" class="rule"/>
+<text x="12" y="101" class="xs">Groceries</text>
+<text x="160" y="101" text-anchor="end" class="xs">$150.00</text>
+<line x1="12" y1="186" x2="160" y2="186" class="ink-line"/>
+<text x="12" y="212" class="m">Total</text>
+<text x="160" y="214" text-anchor="end" class="big">$150.00</text>
+<rect x="188.5" y="48.5" width="171" height="188" rx="6" class="sheet"/>
+<text x="200" y="70" class="cap">DELIVERY APP</text>
+<line x1="200" y1="78" x2="348" y2="78" class="rule"/>
+<rect x="196" y="86" width="156" height="21" rx="3" class="wash"/>
+<text x="200" y="101" class="xs b">Groceries</text>
+<text x="348" y="101" text-anchor="end" class="xs b">$172.50</text>
+<text x="200" y="125" class="xs">Service fee</text>
+<text x="348" y="125" text-anchor="end" class="xs">$8.63</text>
+<text x="200" y="149" class="xs">Delivery fee</text>
+<text x="348" y="149" text-anchor="end" class="xs">$3.99</text>
+<text x="200" y="173" class="xs">Tip</text>
+<text x="348" y="173" text-anchor="end" class="xs">$10.00</text>
+<line x1="200" y1="186" x2="348" y2="186" class="ink-line"/>
+<text x="200" y="212" class="m">Total</text>
+<text x="348" y="214" text-anchor="end" class="big">$195.12</text>
+<text x="0" y="264" class="s">Shaded: the same $150 of groceries, marked up 15%.</text>
+<text x="0" y="284" class="s i2">The $22.50 markup gets no line of its own;</text>
+<text x="0" y="302" class="s i2">the fees listed under it add up to $12.62.</text>
+</svg>

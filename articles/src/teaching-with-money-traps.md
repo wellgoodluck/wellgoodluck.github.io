@@ -186,6 +186,36 @@ For lessons built on the almanac's own numbers (inflation, unemployment, recessi
 - Should a spouse have to sign before retirement money leaves a 401(k)? Make the case each side made to the GAO.
 - **Activity:** Make the one-page list the page describes for a made-up household: each account, whose name it's in, the beneficiary, and who can reach it.
 
+{{after 2026-11-17}}
+## Delivery-app markups: Same Groceries, Different Price
+
+[Read the page](same-groceries-different-price.html)
+
+- Casey's app order shows $12.62 in fees. Why does it cost $45 more than going to the store?
+- Should two shoppers ever see different prices for the same item at the same time? When might it help them?
+- **Activity:** Pick five items, find their shelf prices and their prices on a delivery app for the same store, and work out the markup.
+{{/after}}
+
+{{after 2026-11-24}}
+## Prime: Does Prime Pay for Itself?
+
+[Read the page](does-prime-pay-for-itself.html)
+
+- Sam's Prime saves $168 and costs $139. Why might Sam still be behind?
+- Why would a store charge a fee to shop there?
+- **Activity:** List everything you or your family ordered online last month and mark each item "needed it fast," "could have waited," or "wouldn't have bought."
+{{/after}}
+
+{{after 2026-12-01}}
+## When cheap costs you
+
+[Read the page](when-cheap-costs-you.html)
+
+- Alex saved $20 on the ride. What did Alex give up to get it, and who would have paid the bills if the licensed car service's driver had caused the crash?
+- Should paid tax preparers need a license? Make the case for and against, using the page's argument section.
+- **Activity:** Pick a trade (movers, contractors or car services) and find your state's official license lookup. What can you learn about a company there: its license, its insurance, its complaints?
+{{/after}}
+
 ## Your first paycheck: Where Did the Rest of It Go?
 
 [Read the page](your-first-paycheck.html)

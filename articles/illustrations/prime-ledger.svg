@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 418" role="img" aria-labelledby="prime-ledger-t prime-ledger-d"><title id="prime-ledger-t">A year of Prime for Sam and Pat, against the $139 fee</title><desc id="prime-ledger-d">Sam: shipping on 10 small orders at $6, $60.00; streaming Sam would buy anyway, $8.99 a month, $107.88; the Prime fee, minus $139.00. On the fee alone, Sam is $28.88 ahead. A quarter of $600 in extra buying, minus $150.00; counting the extra buying, Sam is $121.12 behind. Pat: shipping on small orders, $0; streaming Pat would buy, $0; the Prime fee, minus $139.00. On the fee alone, Pat is $139.00 behind. Fictional, for illustration.</desc>
+<text x="0" y="16" class="h">A year of Prime, two ways</text>
+<text x="0" y="36" class="s i2">Each pays $139. What does it replace?</text>
+<rect x="0.5" y="52.5" width="359" height="184" rx="4" class="sheet"/>
+<text x="12" y="76" class="m">Sam</text>
+<text x="12" y="100" class="s">Shipping on 10 small orders × $6</text>
+<text x="348" y="100" text-anchor="end" class="s">$60.00</text>
+<text x="12" y="122" class="s">Streaming Sam would buy ($8.99 × 12)</text>
+<text x="348" y="122" text-anchor="end" class="s">$107.88</text>
+<text x="12" y="144" class="s">Prime fee</text>
+<text x="348" y="144" text-anchor="end" class="s">−$139.00</text>
+<line x1="12" y1="152" x2="348" y2="152" class="rule"/>
+<text x="12" y="168" class="s b">On the fee alone</text>
+<text x="348" y="168" text-anchor="end" class="s b">+$28.88</text>
+<text x="12" y="190" class="s i2">A quarter of $600 in extra buying</text>
+<text x="348" y="190" text-anchor="end" class="s i2">−$150.00</text>
+<text x="12" y="212" class="s b">Counting the extra buying</text>
+<text x="348" y="212" text-anchor="end" class="s b">−$121.12</text>
+<rect x="0.5" y="248.5" width="359" height="140" rx="4" class="sheet"/>
+<text x="12" y="272" class="m">Pat</text>
+<text x="12" y="296" class="s">Shipping on small orders</text>
+<text x="348" y="296" text-anchor="end" class="s">$0.00</text>
+<text x="12" y="318" class="s">Streaming Pat would buy</text>
+<text x="348" y="318" text-anchor="end" class="s">$0.00</text>
+<text x="12" y="340" class="s">Prime fee</text>
+<text x="348" y="340" text-anchor="end" class="s">−$139.00</text>
+<line x1="12" y1="348" x2="348" y2="348" class="rule"/>
+<text x="12" y="364" class="s b">On the fee alone</text>
+<text x="348" y="364" text-anchor="end" class="s b">−$139.00</text>
+<text x="360" y="410" text-anchor="end" class="cap">FICTIONAL · FOR ILLUSTRATION</text>
+</svg>
