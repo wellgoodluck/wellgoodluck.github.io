@@ -78,6 +78,8 @@ Each page stands on its own and takes about five minutes to read. The series box
 
 [Teaching With Money Traps](teaching-with-money-traps.html) has discussion questions and a short activity for each page. For families, [You're Helping a Young Person With Money](you-are-helping-a-young-person-with-money.html) walks through the traps in the order they arrive.
 
+For economics classes, [For Teachers](for-teachers.html) has five one-period lessons built on the almanac's own charts: inflation, unemployment, recession warning lights, mortgage rates and gas prices.
+
 ## See also
 
 - [Money Basics](money-basics.html): five short pages on how money works before anything goes wrong.

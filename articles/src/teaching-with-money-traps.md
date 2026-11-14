@@ -16,6 +16,8 @@ Below, each page has two or three questions and one activity. Suggested order: s
 
 For students who are new to all of it, the five [Money Basics](money-basics.html) pages come first; their questions are at the end of this page.
 
+For lessons built on the almanac's own numbers (inflation, unemployment, recession warning lights, mortgage rates and gas prices), see [For Teachers](for-teachers.html).
+
 ## Credit scores: The Score You Didn't Know You Had
 
 [Read the page](how-credit-scores-work.html)
