@@ -27,6 +27,19 @@ Each source file starts with a front-matter block:
                                   the Featured line at the top of the almanac and the articles index.
                                   The newest date that has arrived wins, so featuring another article
                                   needs only a later date on it; a future date schedules it.)
+    release: 2026-12-01          (optional, Nov 14: hold the page until that date (Pacific), then publish it at the
+                                  first build on or after it (the refresh runs weekdays about 6:15 am and 1:15 pm PT).
+                                  Until then it is built nowhere: not on the index, Latest, feed, sitemap, series
+                                  boxes or Featured, and any link to it on another page shows as plain text. Its
+                                  figures and due dates are still checked into the build report. Once released, its
+                                  date: becomes the release date if that is later, so the dateline, Latest and the
+                                  New chip count from the day it went live. A date that isn't YYYY-MM-DD holds the
+                                  page until it is fixed. RELEASE_TODAY=YYYY-MM-DD in the environment tests a build
+                                  as of another day. Works the same for tools and articles/src/es pages.
+                                  Wording on other pages that should appear with it (a landing-page entry, a teaching
+                                  entry, a cross-link sentence) goes between {{after 2026-12-01}} and {{/after}},
+                                  either on lines of their own around whole lines, or inline within one line; it is
+                                  left out of the build until that date.)
     menu: articles               (optional, Nov 9: which menu item a page sits under, articles, about or situation;
                                  a kind: page sits under About otherwise)
     picture: health_jobs range=10y   (optional: the picture on the Featured card while this article is featured:
@@ -328,6 +341,84 @@ def parse(path):
     meta["body"] = m.group(2)
     meta["draft"] = meta.get("draft", "").lower() in ("true", "yes", "1")
     return meta
+
+
+HELD = {}   # slug -> release date of pages held back this build (Nov 14)
+
+
+def release_today():
+    """Today in Pacific time, the day a release: date is compared with (RELEASE_TODAY overrides it, for tests)."""
+    t = os.environ.get("RELEASE_TODAY", "")
+    if re.fullmatch(r"\d{4}-\d{2}-\d{2}", t):
+        return t
+    from datetime import datetime
+    try:
+        from zoneinfo import ZoneInfo
+        return datetime.now(ZoneInfo("America/Los_Angeles")).strftime("%Y-%m-%d")
+    except Exception:                                       # noqa: BLE001  no tz data: UTC minus 8 hours, never early
+        from datetime import timezone, timedelta
+        return (datetime.now(timezone.utc) - timedelta(hours=8)).strftime("%Y-%m-%d")
+
+
+def held(a, name, today, key=None):
+    """True if the page's release: date hasn't arrived (it is then recorded in HELD and left out of the build).
+    On or after the date, a later release date replaces date: so the page counts as new from the day it went live."""
+    rel = a.get("release", "")
+    if not rel:
+        return False
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", rel):
+        print(f"hold {name}: WARNING release {rel!r} is not YYYY-MM-DD; held until it is fixed")
+        HELD[key or a["slug"]] = rel
+        return True
+    if rel > today:
+        print(f"hold {name} until {rel}")
+        HELD[key or a["slug"]] = rel
+        return True
+    if rel > a["date"]:
+        a["date"] = rel
+    return False
+
+
+_AFTER_BLOCK = re.compile(r"^\{\{after (\d{4}-\d{2}-\d{2})\}\}[ \t]*\n(.*?)^\{\{/after\}\}[ \t]*(?:\n|\Z)", re.M | re.S)
+_AFTER_INLINE = re.compile(r"\{\{after (\d{4}-\d{2}-\d{2})\}\}(.*?)\{\{/after\}\}")
+
+
+def apply_after(body, name, today):
+    """{{after YYYY-MM-DD}} … {{/after}}: the wording inside appears from that date (Pacific) on, and not before."""
+    if "{{after" not in body:
+        return body
+    keep = lambda m: m.group(2) if m.group(1) <= today else ""
+    body = _AFTER_INLINE.sub(keep, _AFTER_BLOCK.sub(keep, body))
+    if "{{after" in body or "{{/after}}" in body:
+        print(f"after: WARNING {name} has an {{{{after}}}} marker that isn't closed, isn't YYYY-MM-DD, or spans lines "
+              f"without standing on lines of its own; left as typed")
+    return body
+
+
+def unlink_held(out_root):
+    """Links on built pages to a held page become their plain text, so nothing points at a page that isn't up yet."""
+    slugs = [k for k in HELD if "/" not in k and k != "index"]   # es/ pages: English pages link to them only once paired
+    if not slugs:
+        return
+    pat = re.compile(r'<a\b[^>]*?\bhref="(?:[^"]*/)?(?:' + "|".join(re.escape(s) for s in slugs) +
+                     r')\.html(?:[?#][^"]*)?"[^>]*>(.*?)</a>', re.S)
+    n_links = n_files = 0
+    for root, _, files in os.walk(out_root):
+        for fn in files:
+            if not fn.endswith(".html"):
+                continue
+            path = os.path.join(root, fn)
+            with open(path, encoding="utf-8") as f:
+                text = f.read()
+            new, n = pat.subn(r"\1", text)
+            if n:
+                with open(path, "w", encoding="utf-8") as f:
+                    f.write(new)
+                n_links += n
+                n_files += 1
+                print(f"held links: {n} in {os.path.relpath(path, out_root)}")
+    print(f"held: {len(HELD)} page(s) ({', '.join(f'{k} {v}' for k, v in sorted(HELD.items(), key=lambda x: x[1]))}); "
+          f"{n_links} link(s) to them shown as plain text in {n_files} file(s)")
 
 
 def featured_pick(articles, today=None, series=None):
@@ -1497,6 +1588,7 @@ def main():
     figures, data = load_figures()
     report = figures.new_report() if figures else None
     articles = []
+    today = release_today()
     if os.path.isdir(SRC_DIR):
         for name in sorted(os.listdir(SRC_DIR)):
             if name.endswith(".md"):
@@ -1504,6 +1596,11 @@ def main():
                 a = parse(path)
                 if a["draft"]:
                     print(f"skip draft {name}")
+                    continue
+                a["body"] = apply_after(a["body"], name, today)
+                if held(a, name, today):
+                    if figures and data:                    # checked now, so a banked page's figures are right on its day
+                        figures.render(a["body"], data, a["slug"], report, body_offset(path, a["body"]))
                     continue
                 if figures and data:
                     a["body"] = figures.render(a["body"], data, a["slug"], report, body_offset(path, a["body"]))
@@ -1520,8 +1617,9 @@ def main():
         for name in sorted(os.listdir(es_dir)):
             if name.endswith(".md"):
                 a = parse(os.path.join(es_dir, name))
-                if a["draft"] or a.get("kind") != "es":
+                if a["draft"] or a.get("kind") != "es" or held(a, "es/" + name, today, "es/" + es_name(a)):
                     continue
+                a["body"] = apply_after(a["body"], "es/" + name, today)
                 t = a.get("translation_of", "")
                 if t and t not in en_slugs:
                     print(f"es: {name}: translation_of {t!r} is not an article; not paired")
@@ -1570,6 +1668,7 @@ def main():
     write_explainers(out_root, articles)
     write_feed(out_dir, articles)
     write_sitemap(out_root, articles, tools, spanish)
+    unlink_held(out_root)
     if report is not None:
         print(figures.summarize(report))
         try:                                                # outside the published folder; read by the weekly check
