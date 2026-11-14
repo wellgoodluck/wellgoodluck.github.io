@@ -41,7 +41,7 @@ CDs, bond funds and annuity payouts are priced off Treasury yields of matching l
 
 ## Medicare, every January
 
-The standard Part B premium is deducted from the Social Security check, and it has risen faster than the COLA in most years: for 2026 it rose about 10%, to $202.90 a month, against a 2.8% benefit increase. A "hold harmless" rule prevents the premium increase from exceeding the dollar COLA for most beneficiaries, so the check can't fall, but the premium regularly eats a quarter or more of the raise. Higher-income retirees pay surcharges that step up in brackets, set on income from two years earlier. {{due 2026-11-14 "CMS announces the 2027 Part B premium (a scheduled task runs Nov 13)"}}
+The standard Part B premium is deducted from the Social Security check, and it has risen faster than the COLA in most years: for 2026 it rose about 10%, to $202.90 a month, against a 2.8% benefit increase. A "hold harmless" rule prevents the premium increase from exceeding the dollar COLA for most beneficiaries, so the check can't fall, but the premium regularly eats a quarter or more of the raise. Higher-income retirees pay surcharges that step up in brackets, set on income from two years earlier. {{due 2026-11-20 "CMS announces the 2027 Part B premium (not out as of Nov 14; the Nov 23 sweep re-checks)"}}
 
 ## Mortgage rates and home prices
 
