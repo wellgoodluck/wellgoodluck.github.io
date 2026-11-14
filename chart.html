@@ -1277,12 +1277,12 @@
         };
         const rows = [y - 4, y + 12, y - 16, y + 24, y - 28].filter(r => r - 10 >= mT - 2 && r <= mT + ih + 2);
         const place = (lw, data) => { for (const row of rows) { const r = tryRow(row, lw, data); if (r !== null) return [r, row]; } return null; };
-        let shown = text, lw = textW(text, 11) + 8, at = place(lw, true);
-        if (!at) {                                    // no room for the full label: show just the value, name on hover
+        let shown = text, lw = textW(text, 11) + 8, spot = place(lw, true);
+        if (!spot) {                                    // no room for the full label: show just the value, name on hover
           shown = fmtValue(x.v, d); lw = textW(shown, 11) + 8;
-          at = place(lw, true) || place(lw, false) || [width - mR - 2, y - 4];   // clear of the data if possible, of the other labels at least
+          spot = place(lw, true) || place(lw, false) || [width - mR - 2, y - 4];   // clear of the data if possible, of the other labels at least
         }
-        const [lx, ly] = at;
+        const [lx, ly] = spot;
         placedLabs.push({ x0: lx - lw + 6, x1: lx, row: ly });
         const lab = svgEl('text', { class: 'ref-label', x: lx, y: ly, 'text-anchor': 'end' });
         lab.textContent = shown; lab.appendChild(svgEl('title', {})); lab.querySelector('title').textContent = text; svg.appendChild(lab);
