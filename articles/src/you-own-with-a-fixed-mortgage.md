@@ -62,6 +62,7 @@ Nearly everywhere, which is why the arguments below are mostly about whether tha
 - [Inflation](what-is-inflation.html): where insurance sits in the index and where property tax doesn't.
 - [Real vs. nominal](real-vs-nominal.html): the shrinking-ruler version of your payment.
 - [What homeowner's insurance costs](what-homeowners-insurance-costs.html): one of the two parts of the payment that aren't fixed.
+- [Why HOA dues keep going up](why-hoa-dues-go-up.html): if the house is in an association, the other bill that isn't fixed.
 - [Sell it or rent it out](sell-it-or-rent-it-out.html): what changes if you move and keep the house.
 
 ## Sources
