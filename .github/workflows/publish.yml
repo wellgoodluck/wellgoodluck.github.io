@@ -49,6 +49,14 @@ jobs:
           python3 tools/build_articles.py public
           ls -R public
 
+      - name: Index the site for search
+        # Nov 14: Pagefind reads the built pages and writes public/pagefind/ (never committed). If it fails, the site
+        # still publishes and the search page says search didn't load. The check prints headline searches that miss.
+        continue-on-error: true
+        run: |
+          npx --yes pagefind@1.6.0 --site public
+          node tools/search_check.mjs public
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
