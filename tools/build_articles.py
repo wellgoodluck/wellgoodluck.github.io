@@ -715,6 +715,7 @@ FOOT = """
     <p class="reuse">Free to reuse with credit: Economy in Context (economyincontext.org). The charts and writing here are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Credit the data to its source, named on each chart.</p>
     <p>This site has no ads and no agenda beyond putting the numbers in context. It explains how things work. It is not tax, legal or financial advice. It sets no cookies and keeps nothing that identifies you; it does count page views, clicks on a few links on the home page, and uses of the share, copy and print buttons on articles. The optional weekly email is sent through Buttondown, which keeps the addresses for that and nothing else. It is paid for by the person who runs it, out of pocket; <a href="how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
     <p class="about-link"><a href="/tools/">Tools: put your own figures next to the national numbers →</a></p>
+    <p class="about-link"><a href="for-teachers.html">For teachers: free lessons built on these numbers →</a></p>
     <p class="about-link"><a href="about.html">About this site, how it works, and every correction →</a></p>
   </div>
 </footer>

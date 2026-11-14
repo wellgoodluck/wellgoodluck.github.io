@@ -402,6 +402,9 @@
   .paths li { border-bottom: 1px solid var(--grid); }
   .paths a.wf { display: flex; min-height: 44px; padding: 4px 0; line-height: 1.3; }
   @media (max-width: 760px) { .paths { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  /* Nov 14: "Teaching this?" under the links, its text lined up with theirs */
+  .paths-teach { margin: 6px 0 0; padding: 0 12px 0 calc(var(--ip-border, 1px) + var(--ip-pad-x, 18px) + var(--grp-pad-x, 10px) + var(--row-indent, 14px)); font-size: 14.5px; color: var(--ink-2); }
+  .paths-teach a.wf { font-size: 14.5px; }
 
   /* All 28 numbers: an intro line with the ochre link at the right, then a framed panel of group bands and rows */
   .allintro { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0 20px; margin: 0 0 8px; }
@@ -733,7 +736,7 @@
 
 <footer class="wrap home-foot home-only" id="home-foot">
   <div class="frel" id="frel" hidden></div>
-  <p class="links"><a href="tools/">Tools</a><span class="sep" aria-hidden="true">·</span><a href="articles/how-this-site-is-paid-for.html">How this site is paid for</a><span class="sep" aria-hidden="true">·</span><a href="articles/about.html">About this site</a></p>
+  <p class="links"><a href="tools/">Tools</a><span class="sep" aria-hidden="true">·</span><a href="articles/for-teachers.html">For teachers</a><span class="sep" aria-hidden="true">·</span><a href="articles/how-this-site-is-paid-for.html">How this site is paid for</a><span class="sep" aria-hidden="true">·</span><a href="articles/about.html">About this site</a></p>
   <p class="lic">Charts and writing are free to reuse under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Data is credited to its agency on every chart.</p>
 </footer>
 <footer class="about full-only">
@@ -754,6 +757,7 @@
     <p id="attribution"></p>
     <p class="reuse">Free to reuse with credit: Economy in Context (economyincontext.org). The charts and writing here are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Credit the data to its source, named on each chart.</p>
     <p>This site has no ads and no agenda beyond putting the numbers in context. It explains how things work. It is not tax, legal or financial advice. It sets no cookies and keeps nothing that identifies you; it does count page views, clicks on a few links on the home page, and uses of the share, copy and print buttons on articles. The optional weekly email is sent through Buttondown, which keeps the addresses for that and nothing else. It is paid for by the person who runs it, out of pocket; <a href="articles/how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+    <p><a href="articles/for-teachers.html">For teachers: free lessons built on these numbers →</a></p>
     <p><a href="articles/about.html">About this site, where the numbers come from, and every correction →</a></p>
   </div>
 </footer>
@@ -1619,6 +1623,10 @@
     paths.appendChild(band('paths-h', 'Your situation', 'Pick the one closest to yours for a short guide to the numbers that matter most.'));
     paths.appendChild(el('ul', { class: 'paths' }, HOME_PATHS.map(([label, url]) => el('li', {}, [el('a', { class: 'wf', href: url, text: label })]))));
     track(paths, 'home-situation', 'Home: Your situation');
+    // Nov 14: one line under the links for teachers, counted on its own
+    const teach = el('p', { class: 'paths-teach' }, ['Teaching this? ', el('a', { class: 'wf', href: 'articles/for-teachers.html', text: 'Free lessons built on these numbers →' })]);
+    track(teach, 'home-teachers', 'Home: For teachers');
+    paths.appendChild(teach);
     main.appendChild(paths);
     main.appendChild(topLink());
 
