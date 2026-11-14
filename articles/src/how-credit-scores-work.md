@@ -6,6 +6,7 @@ kind: concept
 label: Credit scores
 hook: what goes in, and what doesn't
 order: 28
+also: credit rating
 ---
 
 ## Short version

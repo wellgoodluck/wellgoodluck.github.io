@@ -6,6 +6,7 @@ kind: concept
 label: HOA dues
 hook: what moves the monthly association fee
 order: 61
+also: homeowners association, condo fees
 ---
 
 

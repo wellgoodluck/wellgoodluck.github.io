@@ -6,6 +6,7 @@ kind: concept
 label: Credit card minimums
 hook: why the minimum keeps you paying
 order: 30
+also: card debt
 ---
 
 ## Short version

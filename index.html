@@ -166,7 +166,6 @@
   .mark path { fill: none; stroke: var(--ink); stroke-width: 6.5; }
   .mark circle { fill: var(--series); }
   .brand .bl { font-weight: 400; color: var(--ink-2); white-space: nowrap; }   /* "in Context" never splits */
-  @media (max-width: 340px) { .masthead h1.brand { font-size: 23px; } }   /* 320px phones (the menu's 320px size is with the Tools rule above) */
   /* The weekly digest signup (Nov 4): a card like Make your own chart between the tiles and the footer; a plain HTML form that
      posts to Buttondown (no script). The field's border is Muted, not a hairline, so it passes 3:1. Same rules in site.css. */
   .signup-wrap { padding-top: 8px; padding-bottom: 28px; }
@@ -686,6 +685,31 @@
     .about { padding-bottom: 0; }
     body::after { content: "economyincontext.org"; display: block; padding: 12px 16px 0; font-size: 12.5px; color: #555; }
   }
+/* Search in the masthead (Nov 14). It comes twice, so the reading and Tab order always match what shows: .m-search,
+   the menu's last item, on desktop; .site-search beside the lockup on phones. One shows at a time. */
+.site-search { display: none; align-items: center; min-height: 44px; color: var(--nav); font-size: 15px; font-weight: 600; line-height: 1.5; text-decoration: underline; text-decoration-color: var(--nav); text-decoration-thickness: 2px; text-underline-offset: 5px; white-space: nowrap; }
+.site-search:hover { color: var(--ink); text-decoration-color: var(--ink); }
+.site-search[aria-current] { color: var(--ink); }
+.site-search:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (max-width: 760px) {
+  .site-menu a.m-search { display: none; }
+  .site-search { display: inline-flex; order: 1; margin-left: auto; font-size: 14px; }
+  .masthead .title-row > .site-menu { order: 2; }
+}
+@media print { .site-search, .site-menu a.m-search { display: none; } }
+/* The home page's large lockup (Nov 14): Search stays beside it wherever the menu sits in its own row (phones, and
+   761-939px, where six items beside the lockup would wrap), and the lockup steps down under 375px so Search fits.
+   These replace the old 23px rule for 340px and under, which the 26px phone rule after it always overrode. */
+@media (min-width: 761px) and (max-width: 939px) {
+  .masthead .title-row { flex-wrap: wrap; row-gap: 2px; }
+  .site-menu { width: 100%; }
+  .site-menu a.m-search { display: none; }
+  .site-search { display: inline-flex; order: 1; margin-left: auto; }
+  .masthead .title-row > .site-menu { order: 2; }
+}
+@media (max-width: 760px) { .masthead h1.brand ~ .site-search { margin-top: -4px; margin-bottom: -4px; } }   /* the masthead keeps its height; the tap area stays 44px */
+@media (min-width: 341px) and (max-width: 374px) { .masthead h1.brand { font-size: 24px; } }
+@media (max-width: 340px) { .masthead h1.brand { font-size: 21px; } }
 </style>
 </head>
 <body>
@@ -695,7 +719,7 @@
 
 <header class="masthead" id="top">
   <div class="wrap">
-    <div class="title-row"><h1 class="brand" id="brand"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M25 14H15V50H25"/><path d="M39 14H49V50H39"/><circle cx="32" cy="32" r="8.5"/></svg><span>Economy <span class="bl">in Context</span><span aria-hidden="true">.</span></span></h1><nav class="site-menu" aria-label="Site"><a href="?view=all" id="menu-numbers">The numbers</a><a href="./#your-situation">Your situation</a><a href="tools/" class="m-wide">Tools</a><a href="articles/">Articles</a><a href="articles/about.html">About</a></nav></div>
+    <div class="title-row"><h1 class="brand" id="brand"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path d="M25 14H15V50H25"/><path d="M39 14H49V50H39"/><circle cx="32" cy="32" r="8.5"/></svg><span>Economy <span class="bl">in Context</span><span aria-hidden="true">.</span></span></h1><a class="site-search" href="search/">Search</a><nav class="site-menu" aria-label="Site"><a href="?view=all" id="menu-numbers">The numbers</a><a href="./#your-situation">Your situation</a><a href="tools/" class="m-wide">Tools</a><a href="articles/">Articles</a><a href="articles/about.html">About</a><a class="m-search" href="search/">Search</a></nav></div>
     <p class="tagline">The main numbers on the U.S. economy, each shown against its own history.</p>
     <p class="updated full-only" id="updated"></p>
     <p class="coming full-only" id="coming" hidden></p>
@@ -736,7 +760,7 @@
 
 <footer class="wrap home-foot home-only" id="home-foot">
   <div class="frel" id="frel" hidden></div>
-  <p class="links"><a href="tools/">Tools</a><span class="sep" aria-hidden="true">·</span><a href="articles/for-teachers.html">For teachers</a><span class="sep" aria-hidden="true">·</span><a href="articles/how-this-site-is-paid-for.html">How this site is paid for</a><span class="sep" aria-hidden="true">·</span><a href="articles/about.html">About this site</a></p>
+  <p class="links"><a href="search/">Search</a><span class="sep" aria-hidden="true">·</span><a href="tools/">Tools</a><span class="sep" aria-hidden="true">·</span><a href="articles/for-teachers.html">For teachers</a><span class="sep" aria-hidden="true">·</span><a href="articles/how-this-site-is-paid-for.html">How this site is paid for</a><span class="sep" aria-hidden="true">·</span><a href="articles/about.html">About this site</a></p>
   <p class="lic">Charts and writing are free to reuse under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Data is credited to its agency on every chart.</p>
 </footer>
 <footer class="about full-only">
@@ -757,6 +781,7 @@
     <p id="attribution"></p>
     <p class="reuse">Free to reuse with credit: Economy in Context (economyincontext.org). The charts and writing here are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Credit the data to its source, named on each chart.</p>
     <p>This site has no ads and no agenda beyond putting the numbers in context. It explains how things work. It is not tax, legal or financial advice. It sets no cookies and keeps nothing that identifies you; it does count page views, clicks on a few links on the home page, and uses of the share, copy and print buttons on articles. The optional weekly email is sent through Buttondown, which keeps the addresses for that and nothing else. It is paid for by the person who runs it, out of pocket; <a href="articles/how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+    <p><a href="search/">Search every article, chart and tool →</a></p>
     <p><a href="articles/for-teachers.html">For teachers: free lessons built on these numbers →</a></p>
     <p><a href="articles/about.html">About this site, where the numbers come from, and every correction →</a></p>
   </div>

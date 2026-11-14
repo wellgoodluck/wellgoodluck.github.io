@@ -6,6 +6,7 @@ kind: concept
 tile: cpi, core_cpi
 label: Inflation
 hook: why prices never go back
+also: cost of living, prices going up
 ---
 
 ## In one sentence

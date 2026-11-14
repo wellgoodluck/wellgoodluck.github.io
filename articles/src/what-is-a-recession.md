@@ -8,6 +8,7 @@ label: Recessions
 hook: who calls one, and the warning lights before the call
 order: 8
 updated: 2026-11-09
+also: economic slowdown
 ---
 
 ## In one sentence

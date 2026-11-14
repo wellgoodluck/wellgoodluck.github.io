@@ -6,6 +6,7 @@ kind: concept
 tile: gas
 label: Gasoline
 hook: who sets the price, and what a president can change
+also: price at the pump, fuel prices
 ---
 
 ## In one sentence

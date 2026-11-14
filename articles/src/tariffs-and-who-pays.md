@@ -8,6 +8,7 @@ explains_hook: what was actually collected, and who ends up paying
 label: Tariffs
 hook: who writes the check, and who ends up paying
 order: 7
+also: import tax
 ---
 
 ## In one sentence

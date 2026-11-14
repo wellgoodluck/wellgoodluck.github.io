@@ -6,6 +6,7 @@ kind: concept
 label: Gig work taxes
 hook: the tax bill nobody withheld
 order: 43
+also: side gig, rideshare, delivery driver
 ---
 
 ## Short version

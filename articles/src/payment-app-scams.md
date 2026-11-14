@@ -6,6 +6,7 @@ kind: concept
 label: Payment app scams
 hook: once you hit send
 order: 44
+also: Zelle scam, Venmo scam, Cash App scam
 ---
 
 ## Short version

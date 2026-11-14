@@ -6,6 +6,7 @@ kind: concept
 label: Who gets paid when a house sells
 hook: the fees on a home sale, who collects them and what has changed
 order: 46
+also: realtor commission, real estate agent fees, closing costs
 ---
 
 ## The short version

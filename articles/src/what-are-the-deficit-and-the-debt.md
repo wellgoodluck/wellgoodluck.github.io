@@ -9,6 +9,7 @@ explains: interest_share
 explains_hook: what interest on the debt costs, and why it lags rates
 label: The deficit and the debt
 hook: this year's borrowing versus all the years added up
+also: national debt, federal debt, budget deficit
 ---
 
 ## In one sentence

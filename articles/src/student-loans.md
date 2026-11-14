@@ -6,6 +6,7 @@ kind: concept
 label: Student loans
 hook: the choices that follow you
 order: 40
+also: college loans
 ---
 
 ## Short version

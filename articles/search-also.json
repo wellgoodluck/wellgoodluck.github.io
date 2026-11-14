@@ -1,0 +1,178 @@
+{
+ "note": "Site search (Nov 14): words readers type for a chart that its page doesn't use, by chart id. Searched as weighted metadata (assets/search.js), never shown. Articles keep theirs in an also: line in the front matter.",
+ "charts": {
+  "cpi": [
+   "CPI",
+   "consumer price index",
+   "cost of living",
+   "inflation rate"
+  ],
+  "payrolls": [
+   "jobs report",
+   "nonfarm payrolls",
+   "jobs numbers",
+   "job growth"
+  ],
+  "unemployment": [
+   "jobless rate"
+  ],
+  "debt": [
+   "national debt"
+  ],
+  "deficit": [
+   "budget deficit"
+  ],
+  "gas": [
+   "gas",
+   "gas prices",
+   "gasoline prices",
+   "price at the pump"
+  ],
+  "fed_funds": [
+   "interest rates",
+   "Fed rate",
+   "federal funds rate"
+  ],
+  "mortgage": [
+   "mortgage rates",
+   "home loan rate"
+  ],
+  "ten_year": [
+   "bond yields",
+   "Treasury rates"
+  ],
+  "gdp": [
+   "GDP",
+   "gross domestic product"
+  ],
+  "pay": [
+   "wages",
+   "hourly earnings"
+  ],
+  "claims": [
+   "jobless benefits"
+  ],
+  "trade": [
+   "trade deficit"
+  ],
+  "effective_tariff": [
+   "tariffs",
+   "import taxes"
+  ],
+  "home_prices": [
+   "house prices",
+   "home values"
+  ],
+  "rent": [
+   "rent prices",
+   "rents"
+  ]
+ },
+ "checks_note": "Headline searches and the title the first result should start with. tools/search_check.mjs runs them after Pagefind at every publish and refresh and prints any that miss; a miss doesn't stop the build.",
+ "checks": [
+  [
+   "inflation",
+   "Inflation"
+  ],
+  [
+   "cpi",
+   "Inflation"
+  ],
+  [
+   "consumer price index",
+   "Inflation"
+  ],
+  [
+   "cost of living",
+   "What Inflation Is"
+  ],
+  [
+   "unemployment",
+   "Unemployment rate"
+  ],
+  [
+   "jobless rate",
+   "Unemployment rate"
+  ],
+  [
+   "jobs report",
+   "What the Jobs Report"
+  ],
+  [
+   "recession",
+   "What a Recession Is"
+  ],
+  [
+   "mortgage rates",
+   "30-year mortgage rate"
+  ],
+  [
+   "gas prices",
+   "Gasoline"
+  ],
+  [
+   "gas",
+   "Gasoline"
+  ],
+  [
+   "national debt",
+   "Federal debt"
+  ],
+  [
+   "deficit",
+   "Federal deficit"
+  ],
+  [
+   "tariffs",
+   "Effective tariff rate"
+  ],
+  [
+   "overdraft",
+   "The $35 Coffee"
+  ],
+  [
+   "401k",
+   "The Free Money"
+  ],
+  [
+   "social security",
+   "You're Retired"
+  ],
+  [
+   "credit score",
+   "Start Here"
+  ],
+  [
+   "payday loan",
+   "The Two-Week Loan"
+  ],
+  [
+   "rent",
+   "Rent"
+  ],
+  [
+   "home prices",
+   "Home prices"
+  ],
+  [
+   "property tax",
+   "How a Property Tax Rate Gets Set"
+  ],
+  [
+   "hoa",
+   "Why HOA Dues"
+  ],
+  [
+   "teachers",
+   "For Teachers"
+  ],
+  [
+   "who owns",
+   "Who Own"
+  ],
+  [
+   "eggs",
+   "Eggs"
+  ]
+ ]
+}

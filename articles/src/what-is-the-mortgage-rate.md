@@ -6,6 +6,7 @@ kind: concept
 tile: mortgage
 label: Mortgage rate
 hook: why the Fed can't lower it
+also: home loan rate
 ---
 
 ## In one sentence

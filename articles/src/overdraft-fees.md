@@ -6,6 +6,7 @@ kind: concept
 label: Overdraft fees
 hook: the $35 coffee, and the setting that stops it
 order: 29
+also: bounced check, insufficient funds
 ---
 
 ## Short version

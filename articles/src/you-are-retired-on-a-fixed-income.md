@@ -5,6 +5,7 @@ date: 2026-10-28
 updated: 2026-10-30
 kind: path
 order: 3
+also: Social Security, seniors
 ---
 
 ## What reaches you, in order

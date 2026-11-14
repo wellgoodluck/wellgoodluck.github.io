@@ -6,6 +6,7 @@ kind: concept
 label: Payday loans and paycheck apps
 hook: the two-week loan that lasts all year
 order: 32
+also: cash advance app, early wage access
 ---
 
 ## Short version

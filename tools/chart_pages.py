@@ -188,6 +188,33 @@ def _set_head(page, url, title, og_title, desc, og_desc, warn):
     return page
 
 
+def _search_also(path=os.path.join("articles", "search-also.json")):
+    """Nov 14: words readers type for a chart that its page doesn't use ({id: [terms]}); none if the file is missing."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            return {k: v for k, v in json.load(f).get("charts", {}).items() if isinstance(v, list)}
+    except (OSError, ValueError) as e:
+        print(f"chart pages: no search synonyms ({e})")
+        return {}
+
+
+def _search_marks(page, tile_id, also, warn):
+    """Nov 14: what the site search (Pagefind) reads on a chart page: the title, the subtitle and the static reading
+    line, with the kind, subtitle and reading as metadata for the result, plus any synonyms (searched, never shown)."""
+    syn = ""
+    if also.get(tile_id):
+        syn = ('<span hidden data-pagefind-meta="also:' + html.escape("; ".join(also[tile_id]), quote=True) + '"></span>')
+    for old, new, name in (
+            ('<h1 id="title">', '<h1 id="title" data-pagefind-body data-pagefind-meta="kind:Chart">', "search h1"),
+            ('<p class="sub" id="subtitle">', '<p class="sub" id="subtitle" data-pagefind-body data-pagefind-meta="sub">', "search subtitle"),
+            ('<main class="wrap" id="main">', '<main class="wrap" id="main" data-pagefind-body>' + syn, "search main")):
+        page = _sub(page, old, new, name, warn)
+    m = re.findall(r'<p class="status" id="status"[^>]*>', page)
+    if len(m) == 1:
+        page = page.replace(m[0], m[0][:-1] + ' data-pagefind-meta="reading">', 1)
+    return page
+
+
 def write_chart_pages(out_root, series_path=os.path.join("data", "series.json")):
     """Write <out>/chart/<id>/index.html per tile and <out>/chart/index.html. Returns the ids written
     (empty when chart.html or the data can't be read; the build goes on either way)."""
@@ -206,6 +233,7 @@ def write_chart_pages(out_root, series_path=os.path.join("data", "series.json"))
     if IDS_PLACEHOLDER not in base:
         warn.append("chart.html has no id-list placeholder; old chart.html links won't move")
     base_ids = _with_ids(base, ids)
+    also = _search_also()
 
     for t in tiles:
         if t["id"] not in ids:
@@ -229,6 +257,7 @@ def write_chart_pages(out_root, series_path=os.path.join("data", "series.json"))
             page = page.replace(m[0], m[0].replace("Loading the figures…", html.escape(txt["status"])))
         else:
             warn.append(f"status: expected one match in chart.html, found {len(m)}")
+        page = _search_marks(page, t["id"], also, warn)
         os.makedirs(os.path.join(out_root, "chart", t["id"]), exist_ok=True)
         with open(os.path.join(out_root, "chart", t["id"], "index.html"), "w", encoding="utf-8") as f:
             f.write(page)

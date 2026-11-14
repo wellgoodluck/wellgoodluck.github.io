@@ -6,6 +6,7 @@ kind: concept
 tile: payrolls, health_jobs
 label: The jobs report
 hook: why the number changes after it's announced
+also: jobs numbers, employment report
 ---
 
 ## In one sentence

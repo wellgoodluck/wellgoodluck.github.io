@@ -6,6 +6,7 @@ kind: concept
 tile: eggs, milk, bread, coffee, ground_beef, chicken
 label: Groceries
 hook: what sets a grocery price, and why some fall back
+also: grocery bill
 ---
 
 ## The short version

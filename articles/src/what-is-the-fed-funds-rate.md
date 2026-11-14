@@ -6,6 +6,7 @@ kind: concept
 tile: fed_funds
 label: Fed funds rate
 hook: how it reaches your kitchen table
+also: interest rates, rate cut, rate hike
 ---
 
 ## In one sentence

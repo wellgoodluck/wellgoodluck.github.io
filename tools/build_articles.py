@@ -669,10 +669,14 @@ MENU = [("numbers", "/?view=all", "The numbers"), ("situation", "/#your-situatio
 
 
 def site_menu(here=None, page=False):
+    """Nov 14: Search comes twice, so the reading and Tab order always match what shows: .site-search beside the
+    lockup (phones, and the home page at 761-939px) and .m-search as the menu's last item (desktop). site.css shows
+    one at a time. here="search" marks both on the search page."""
     cur = ' aria-current="page"' if page else ' aria-current="true"'
-    return ('<nav class="site-menu" aria-label="Site">'
+    s_cur = ' aria-current="page"' if here == "search" else ""
+    return (f'<a class="site-search" href="/search/"{s_cur}>Search</a><nav class="site-menu" aria-label="Site">'
             + "".join(f'<a href="{u}"{' class="m-wide"' if k == "tools" else ""}{cur if k == here else ""}>{t}</a>'
-                      for k, u, t in MENU) + "</nav>")
+                      for k, u, t in MENU) + f'<a class="m-search" href="/search/"{s_cur}>Search</a></nav>')
 
 
 def menu_for(a):
@@ -714,6 +718,7 @@ FOOT = """
     <p>Articles on this site aim to lay out what the figures show, what is settled, what is argued about and by whom. Every number links to its source where one exists, and corrections are noted on the article. The charts are live from the almanac and update as agencies publish.</p>
     <p class="reuse">Free to reuse with credit: Economy in Context (economyincontext.org). The charts and writing here are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Credit the data to its source, named on each chart.</p>
     <p>This site has no ads and no agenda beyond putting the numbers in context. It explains how things work. It is not tax, legal or financial advice. It sets no cookies and keeps nothing that identifies you; it does count page views, clicks on a few links on the home page, and uses of the share, copy and print buttons on articles. The optional weekly email is sent through Buttondown, which keeps the addresses for that and nothing else. It is paid for by the person who runs it, out of pocket; <a href="how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+    <p class="about-link"><a href="/search/">Search every article, chart and tool →</a></p>
     <p class="about-link"><a href="/tools/">Tools: put your own figures next to the national numbers →</a></p>
     <p class="about-link"><a href="for-teachers.html">For teachers: free lessons built on these numbers →</a></p>
     <p class="about-link"><a href="about.html">About this site, how it works, and every correction →</a></p>
@@ -836,6 +841,72 @@ def card_for(a):
 
 CARD_MISSING = []
 
+
+# ---------------------------------------------------------------------------
+# Site search (Nov 14). Pagefind indexes the built site in both workflows (publish.yml, refresh.yml) and writes
+# /pagefind/; nothing it makes is committed. What it reads is marked here: an article's or tool's <article> is the body
+# (data-pagefind-body), the parts that would repeat on every page are left out (data-pagefind-ignore), a short label
+# goes into the kind meta, and the front matter's `also:` line (words readers type that the page doesn't, comma
+# separated) goes into a hidden also meta that is searched, weighted in assets/search.js, and never shown. Handouts,
+# index pages and Spanish pages carry no body and so are not indexed. Chart pages are marked in tools/chart_pages.py.
+# ---------------------------------------------------------------------------
+SEARCH_LOW = {"about", "how-this-site-is-paid-for", "for-teachers", "teaching-with-money-traps"}   # weight 0.5
+_SEARCH_IGNORE = re.compile(r'<(p class="dateline"|nav class="series"|p class="digest-nudge"|nav class="series-next"|'
+                            r'section class="share-end"|ul class="sources"|h2 id="sources"|figure(?=[\s>]))')
+
+
+def search_label(a):
+    """The small line over a search result, in readers' words; empty for a plain article."""
+    if a["slug"] in SERIES_OF:
+        s, i = SERIES_OF[a["slug"]]
+        return f'{plain(s["title"]).split(":")[0].strip()} · Part {i + 1}'
+    if a["slug"] in LANDINGS:
+        return "Series"
+    if a["slug"].startswith("lesson-") or a["slug"] in ("for-teachers", "teaching-with-money-traps"):
+        return "For teachers"
+    if a["slug"] in ("about", "how-this-site-is-paid-for"):
+        return "About this site"
+    kind = a.get("kind")
+    if kind == "tool":
+        return "Tool"
+    if kind == "path":
+        return "Your situation"
+    if kind == "concept" and tile_ids(a):
+        return "In plain words"
+    return ""
+
+
+def search_also_meta(words):
+    """A hidden meta span for the synonyms (semicolons: a comma would start a new meta field)."""
+    terms = [w.strip() for w in str(words).split(",") if w.strip()]
+    if not terms:
+        return ""
+    return '<span hidden data-pagefind-meta="also:' + html.escape("; ".join(terms), quote=True) + '"></span>'
+
+
+def search_open(a):
+    """The <article> tag with its search marks, or a plain one for a page search leaves out."""
+    if a["slug"].endswith("-handout"):
+        return "<article>"
+    lab = search_label(a)
+    low = a["slug"] in SEARCH_LOW or a["slug"].startswith("lesson-")
+    return ("<article data-pagefind-body" + (' data-pagefind-weight="0.5"' if low else "")
+            + (f' data-pagefind-meta="kind:{html.escape(lab, quote=True)}"' if lab else "") + ">"
+            + search_also_meta(a.get("also", "")))
+
+
+def search_ignore(page):
+    return _SEARCH_IGNORE.sub(lambda m: m.group(0) + " data-pagefind-ignore", page)
+
+
+def search_form(fid, cls):
+    """The search box: a plain GET form, so it works as a link even before the script loads."""
+    return (f'<form class="sform {cls}" role="search" action="/search/" method="get" data-search-form>'
+            f'<label for="{fid}">Search articles, charts and tools</label>'
+            f'<div class="srow"><input type="search" id="{fid}" name="q" autocomplete="off" spellcheck="false" '
+            f'enterkeyhint="search"><button type="submit">Search</button></div></form>\n')
+
+
 def render_article(a):
     desc = html.escape(a.get("dek", a["title"]), quote=True)
     page = HEAD.format(title=html.escape(a["title"]), desc=desc, canonical=f"{SITE}/articles/{a['slug']}.html", css_v=asset_stamp("assets/site.css"), menu=menu_for(a))
@@ -848,7 +919,7 @@ def render_article(a):
     if not a.get("kind"):                          # timely pieces: the date in the preview's title, where it stays readable
         page = page.replace(f'<meta property="og:title" content="{html.escape(a["title"])}">',
                             f'<meta property="og:title" content="{html.escape(a["title"])} ({fmt_date(a["date"])})">', 1)
-    page += '<main class="wrap article">\n<article>\n'
+    page += '<main class="wrap article">\n' + search_open(a) + '\n'
     page += f'<h1>{inline(a["title"])}</h1>\n'
     if a.get("dek"):
         page += f'<p class="dek">{inline(a["dek"])}</p>\n'
@@ -881,6 +952,7 @@ def render_article(a):
     if 'class="table-scroll"' in page:            # a table may be wider than a phone: assets/tables.js marks the ones that are
         page += '<script src="../assets/tables.js' + asset_stamp("assets/tables.js") + '"></script>\n'
     page += '<script src="../assets/share.js' + asset_stamp("assets/share.js") + '"></script>\n'
+    page = search_ignore(page)
     page += FOOT
     return clean_chart_links(page, CHART_IDS) if clean_chart_links else page
 
@@ -947,7 +1019,7 @@ def render_tool(a):
     name = tool_name(a)
     canonical = f"{SITE}/tools/" if name == "index" else f"{SITE}/tools/{name}.html"
     page = HEAD.format(title=html.escape(a["title"]), desc=desc, canonical=canonical, css_v=asset_stamp("assets/site.css"), menu=menu_for(a))
-    page += '<main class="wrap article tool-page">\n<article>\n'
+    page += '<main class="wrap article tool-page">\n' + ("<article>" if name == "index" else search_open(a)) + '\n'
     page += f'<h1>{inline(a["title"])}</h1>\n'
     if a.get("dek"):
         page += f'<p class="dek">{inline(a["dek"])}</p>\n'
@@ -958,6 +1030,7 @@ def render_tool(a):
     page += "\n</article>\n</main>\n"
     if 'class="table-scroll"' in page:
         page += '<script src="../assets/tables.js' + asset_stamp("assets/tables.js") + '"></script>\n'
+    page = search_ignore(page)
     page += FOOT
     page = _REL_HREF.sub(lambda m: f'href="../articles/{m.group(1)}"', page)
     return clean_chart_links(page, CHART_IDS) if clean_chart_links else page
@@ -1184,7 +1257,8 @@ def load_tiles():
 def render_index(articles):
     page = HEAD.format(title="Articles", desc="Longer reads on the U.S. economy: what the figures show, what is settled and what is argued about.",
                        canonical=f"{SITE}/articles/", css_v=asset_stamp("assets/site.css"), menu=site_menu("articles", page=True))
-    page += '<div class="wrap article article-head">\n<h1>Articles</h1>\n<p class="dek">Longer reads on what the figures show, what is settled, and what is argued about.</p>\n</div>\n'
+    page += '<div class="wrap article article-head">\n<h1>Articles</h1>\n<p class="dek">Longer reads on what the figures show, what is settled, and what is argued about.</p>\n'
+    page += search_form("ix-q", "sform-ix") + '</div>\n'
     # the section bar sits between the title and the lead items, as the almanac's does, and the rest is main
     page += "{SECNAV}"
     page += '<main class="wrap article" id="main">\n'
@@ -1293,7 +1367,8 @@ def render_index(articles):
                 run.append(a)
         if run:
             page += compact(run)
-    page += '</main>\n<script src="../assets/secnav.js' + asset_stamp("assets/secnav.js") + '"></script>\n' + FOOT
+    page += ('</main>\n<script src="../assets/secnav.js' + asset_stamp("assets/secnav.js") + '"></script>\n'
+             '<script src="/assets/search.js' + asset_stamp("assets/search.js") + '" defer></script>\n' + FOOT)
     return page
 
 
@@ -1485,6 +1560,12 @@ def main():
             with open(os.path.join(es_out, es_name(a) + ".html"), "w", encoding="utf-8") as f:
                 f.write(render_es(a))
             print(f"built es/{es_name(a)}.html")
+    os.makedirs(os.path.join(out_root, "search"), exist_ok=True)       # Nov 14: site search
+    with open(os.path.join(out_root, "search", "index.html"), "w", encoding="utf-8") as f:
+        f.write(render_search_page())
+    with open(os.path.join(out_root, "404.html"), "w", encoding="utf-8") as f:
+        f.write(render_not_found())
+    print("built search/index.html and 404.html")
     write_tool_prices(out_root)
     write_explainers(out_root, articles)
     write_feed(out_dir, articles)
@@ -1496,6 +1577,56 @@ def main():
                 json.dump(report, f, indent=1)
         except OSError as e:
             print(f"figures: could not write the report ({e})")
+
+
+# ---------------------------------------------------------------------------
+# The search page (/search/) and the not-found page (/404.html, which GitHub Pages serves for any missing address).
+# Both are drawn by assets/search.js against the Pagefind index. The query lives after # (#q=…&n=…), never after ?,
+# because the visit counter (assets/count.js) sends the ?part of every address it counts; a line in the search page's
+# head moves an incoming ?q= behind # before the counter loads. The not-found page searches the words in the bad
+# address, isn't counted (an address can hold anything) and isn't indexed. Links on both are root-relative, since the
+# not-found page is served at whatever depth the missing address had.
+# ---------------------------------------------------------------------------
+_HASH_Q = ("<script>(function(){var m=location.search.match(/[?&]q=([^&]*)/);"
+           "if(m){history.replaceState(null,'',location.pathname+'#q='+m[1]);}})();</script>\n")
+
+
+def _rooted(page):
+    page = page.replace('href="../assets/', 'href="/assets/')
+    return re.sub(r'href="(?!(?:/|#|https?:|mailto:))([^"]+)"', r'href="/articles/\1"', page)
+
+
+def render_search_page():
+    page = HEAD.format(title="Search", desc="Search every article, chart and tool on Economy in Context.",
+                       canonical=f"{SITE}/search/", css_v=asset_stamp("assets/site.css"), menu=site_menu("search"))
+    page = page.replace('<meta property="og:type" content="article">', '<meta property="og:type" content="website">', 1)
+    page = page.replace("</head>", _HASH_Q + "</head>", 1)
+    page += ('<main class="wrap article search-page" id="main">\n<h1>Search</h1>\n' + search_form("q", "sform-page")
+             + '<p class="s-privacy">The search runs in your browser: it downloads pieces of the site\'s index, the way it '
+               'loads any page, and looks there. What you type isn\'t sent to anyone or counted.</p>\n'
+               '<div id="s-out" data-search-out>\n<noscript><p class="s-msg">Search needs JavaScript. The '
+               '<a href="/articles/">articles index</a> lists every article, and <a href="/?view=all">all the numbers</a> '
+               'are on one page.</p></noscript>\n</div>\n'
+               '<p class="sr-only" id="s-live" role="status" aria-live="polite"></p>\n</main>\n'
+               '<script src="/assets/search.js' + asset_stamp("assets/search.js") + '" defer></script>\n')
+    return _rooted(page + FOOT)
+
+
+def render_not_found():
+    page = HEAD.format(title="Page not found", desc="That page isn't on Economy in Context.",
+                       canonical=f"{SITE}/404.html", css_v=asset_stamp("assets/site.css"), menu=site_menu())
+    page = page.replace('<meta property="og:type" content="article">', '<meta property="og:type" content="website">', 1)
+    page = page.replace("</head>", '<meta name="robots" content="noindex">\n</head>', 1)
+    page += ('<main class="wrap article search-page notfound" id="main">\n<h1>That page isn\'t here</h1>\n'
+             '<p class="dek" id="nf-dek">The address may be mistyped, or the page may have moved.</p>\n'
+             + search_form("q", "sform-page")
+             + '<div id="s-out" data-search-out data-from-path></div>\n'
+               '<p class="sr-only" id="s-live" role="status" aria-live="polite"></p>\n'
+               '<p class="nf-links">Or start from <a href="/">the home page</a>, <a href="/articles/">the articles index</a> '
+               'or <a href="/?view=all">all the numbers</a>.</p>\n</main>\n'
+               '<script src="/assets/search.js' + asset_stamp("assets/search.js") + '" defer></script>\n')
+    foot = re.sub(r'<script data-goatcounter[^>]*></script>\n', "", FOOT)
+    return _rooted(page + foot)
 
 
 FEED_KINDS = {"concept": "Plain words", "path": "Household paths"}

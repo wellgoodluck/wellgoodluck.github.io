@@ -7,6 +7,7 @@ kind: concept
 tile: unemployment, prime_age_employment
 label: Unemployment rate
 hook: who it doesn't count
+also: jobless rate, out of work
 ---
 
 ## In one sentence
