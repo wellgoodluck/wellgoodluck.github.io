@@ -72,6 +72,9 @@ A commission rate is the same everywhere in a company. A city's share of the sal
 
 - [The Five-Cent Business](the-five-cent-business.html): where the dollar on a restaurant check goes.
 - [How a True Number Can Mislead](how-a-true-number-can-mislead.html): the frames that make an accurate number mislead.
+{{after 2026-12-03}}
+- [How to read a city budget](how-to-read-a-city-budget.html): where the tax money lands once it arrives.
+{{/after}}
 
 ## Sources
 

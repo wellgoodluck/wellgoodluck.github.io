@@ -51,7 +51,7 @@ The ticket costs the same in every row. What changes is whether anyone has to gi
 
 **See it before you pay for it.** For rentals, tour the place in person, or have someone you trust do it, before paying anything. For tickets, buy through the venue or a resale site that guarantees them.
 
-**Act fast if it happens.** Contact your bank and the app right away, file a report at ReportFraud.ftc.gov, and if someone else sent the money, even using a code you were tricked into sharing, say so: that's what triggers your rights under Regulation E. You can also file a complaint with the Consumer Financial Protection Bureau.
+**Act fast if it happens.** Contact your bank and the app right away, file a report at ReportFraud.ftc.gov, and if someone else sent the money, even using a code you were tricked into sharing, say so: that's what triggers your rights under Regulation E. You can also file a complaint with the Consumer Financial Protection Bureau.{{after 2026-12-10}} For the phone and pop-up scripts aimed at older adults, which often end at a wire, a crypto machine or a courier, see [The Call That Says Your Money Isn't Safe](scams-aimed-at-older-adults.html).{{/after}}
 
 For purchases from strangers, a credit card's dispute rights are stronger than a debit card's or an app's; [The Charge You Never Noticed](reading-your-statements.html) explains why.
 

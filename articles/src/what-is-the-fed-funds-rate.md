@@ -63,6 +63,9 @@ A thermostat is precise and the house doesn't talk back. The economy anticipates
 
 - [Inflation](what-is-inflation.html): what the Fed is aiming at, and [rate vs. level](rate-vs-level.html): why the rate came down and prices didn't.
 - [The 30% question](why-everything-costs-30-percent-more.html): what the Fed did and didn't cause in 2021–24.
+{{after 2026-12-08}}
+- [How the Fed decides](how-the-fed-decides.html): who votes, what the dot plot means, and what independence protects.
+{{/after}}
 - The almanac's [Fed funds rate](../chart.html?id=fed_funds) with every overlay.
 
 ## Sources

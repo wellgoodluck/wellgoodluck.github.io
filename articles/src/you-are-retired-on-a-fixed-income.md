@@ -68,6 +68,9 @@ The benefit is indexed, which almost no private income is. Cash and bonds finall
 - [You own with a fixed mortgage](you-own-with-a-fixed-mortgage.html): the house.
 - [Why HOA dues keep going up](why-hoa-dues-go-up.html): the association bill, and how much say owners have over it.
 - [Asked to move after years in place](asked-to-move.html): if you rent, what a move costs on a fixed income.
+{{after 2026-12-10}}
+- [The call that says your money isn't safe](scams-aimed-at-older-adults.html): the scams aimed at older adults, and the rules that stop them.
+{{/after}}
 
 ## Sources
 

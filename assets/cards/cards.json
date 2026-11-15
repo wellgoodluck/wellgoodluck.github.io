@@ -127,10 +127,22 @@
    "title": "Start Here: The Score You Didn't Know You Had",
    "v": "1"
   },
+  "how-the-fed-decides": {
+   "file": "how-the-fed-decides.48b80bde.png",
+   "label": "In plain words",
+   "title": "How the Fed Decides: Who Votes, What the Dots Mean, and What Independence Protects",
+   "v": "1"
+  },
   "how-this-site-is-paid-for": {
    "file": "how-this-site-is-paid-for.977608e7.png",
    "label": "",
    "title": "How This Site Is Paid For",
+   "v": "1"
+  },
+  "how-to-read-a-city-budget": {
+   "file": "how-to-read-a-city-budget.be7b5325.png",
+   "label": "In plain words",
+   "title": "How to Read a City Budget: Seven Questions That Get You Past the Headline",
    "v": "1"
   },
   "how-to-read-a-housing-headline": {
@@ -209,6 +221,12 @@
    "file": "revisions-and-vintages.5ccb6d71.png",
    "label": "In plain words",
    "title": "Revisions and Vintages: The Number You Remember Is Not the Number in the Record",
+   "v": "1"
+  },
+  "scams-aimed-at-older-adults": {
+   "file": "scams-aimed-at-older-adults.d2a68ce3.png",
+   "label": "Money Traps · Part 25",
+   "title": "The Call That Says Your Money Isn't Safe: Scams Aimed at Older Adults",
    "v": "1"
   },
   "seasonal-adjustment": {

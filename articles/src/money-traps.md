@@ -62,6 +62,9 @@ Each page also has a picture drawn for the site. The statements, pay stubs and p
 
 - [The Ad That Sells You the Worry](ads-that-sell-the-worry.html): ads that create the problem and then sell the cure, from supplements to debt relief, and the free version of each.
 - [The Bet Is Priced to Lose](sports-betting-and-prediction-apps.html): sports betting and prediction apps, and what the house edge adds up to.
+{{after 2026-12-10}}
+- [The Call That Says Your Money Isn't Safe](scams-aimed-at-older-adults.html): the scripts aimed at older adults, why the money rarely comes back, and the family rules that stop them.
+{{/after}}
 
 ## Earning
 

@@ -107,6 +107,9 @@ The restaurant table decides its bill once. A local government decides each year
 - [Property tax limits, state by state](property-tax-limits-by-state.html): part two, on rollback states, revenue caps and assessment caps.
 - [What a town gets from a drive-thru](what-a-town-gets-from-a-drive-thru.html): where local governments' tax money comes from, and why some chase sales tax.
 - [You own with a fixed mortgage](you-own-with-a-fixed-mortgage.html): property tax as the part of a house payment that isn't fixed.
+{{after 2026-12-03}}
+- [How to read a city budget](how-to-read-a-city-budget.html): the funds, the reserves, and seven questions that get past the headline.
+{{/after}}
 
 ## Sources
 

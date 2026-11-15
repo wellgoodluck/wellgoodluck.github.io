@@ -216,6 +216,16 @@ For lessons built on the almanac's own numbers (inflation, unemployment, recessi
 - **Activity:** Pick a trade (movers, contractors or car services) and find your state's official license lookup. What can you learn about a company there: its license, its insurance, its complaints?
 {{/after}}
 
+{{after 2026-12-10}}
+## Scams aimed at older adults: The Call That Says Your Money Isn't Safe
+
+[Read the page](scams-aimed-at-older-adults.html)
+
+- Each of Ruth's three callers asks for something the last one didn't. Why does a scam work better in steps?
+- Should a brokerage be allowed to hold an adult customer's money for weeks if it suspects a scam? Make the case each side makes.
+- **Activity:** Write a one-page family plan: the four requests no real caller makes, the numbers to call back, and a code word. Share it with an older relative.
+{{/after}}
+
 ## Your first paycheck: Where Did the Rest of It Go?
 
 [Read the page](your-first-paycheck.html)

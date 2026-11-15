@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 472" role="img" aria-labelledby="three-calls-t three-calls-d"><title id="three-calls-t">Three fictional calls in the “phantom hacker” scam, each handing off to the next</title><desc id="three-calls-d">Call 1: a pop-up says your computer is infected and to call support now; the caller wants remote access to your computer. Call 2: your bank&#x27;s “fraud department” says a hacker is inside your accounts and not to tell anyone at the branch; the caller wants you to log in while they watch. Call 3: a “federal agent” says to move your savings to a safe account they control, or into gold or cash for a courier; the caller wants your money in a form that can&#x27;t come back. None of the callers is real. Hang up and call your bank yourself, at the number on the back of your card. Fictional, for illustration.</desc>
+<text x="0" y="16" class="h">Three calls, one script</text>
+<text x="0" y="36" class="s i2">Each caller hands you to the next. None is real.</text>
+<rect x="0.5" y="52.5" width="359" height="100" rx="4" class="sheet"/>
+<circle cx="24" cy="74" r="11" class="ink-fill"/><text x="24" y="78.5" text-anchor="middle" class="xs rev">1</text>
+<text x="44" y="78" class="m">A pop-up, then a phone number</text>
+<text x="14" y="102" class="s">“Your computer is infected. Call support</text>
+<text x="14" y="120" class="s">now and don&#x27;t turn it off.”</text>
+<text x="14" y="144" class="s b">Wants: remote access to your computer.</text>
+<rect x="0.5" y="162.5" width="359" height="100" rx="4" class="sheet"/>
+<circle cx="24" cy="184" r="11" class="ink-fill"/><text x="24" y="188.5" text-anchor="middle" class="xs rev">2</text>
+<text x="44" y="188" class="m">Your bank&#x27;s “fraud department”</text>
+<text x="14" y="212" class="s">“A hacker is inside your accounts. Don&#x27;t</text>
+<text x="14" y="230" class="s">tell anyone at the branch.”</text>
+<text x="14" y="254" class="s b">Wants: you to log in while they watch.</text>
+<rect x="0.5" y="272.5" width="359" height="118" rx="4" class="sheet"/>
+<circle cx="24" cy="294" r="11" class="ink-fill"/><text x="24" y="298.5" text-anchor="middle" class="xs rev">3</text>
+<text x="44" y="298" class="m">A “federal agent”</text>
+<text x="14" y="322" class="s">“Move your savings to a safe account we</text>
+<text x="14" y="340" class="s">control, or into gold or cash for a</text>
+<text x="14" y="358" class="s">courier.”</text>
+<text x="14" y="382" class="s b">Wants: your money, in a form that can&#x27;t come back.</text>
+<text x="0" y="414" class="s b">Hang up. Call your bank yourself, at the</text>
+<text x="0" y="432" class="s b">number on the back of your card.</text>
+<text x="360" y="464" text-anchor="end" class="cap">FICTIONAL · FOR ILLUSTRATION</text>
+</svg>

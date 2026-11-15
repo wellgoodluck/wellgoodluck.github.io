@@ -1184,6 +1184,44 @@ def ride_receipt():
           "2026 health plan limit, plus four weeks of lost pay.")
 
 
+def three_calls():
+    """Scams aimed at older adults (Dec 10): the three-call script the FBI calls the "phantom hacker" scam."""
+    b = []
+    b.append(T(0, 16, "Three calls, one script", "h"))
+    b.append(T(0, 36, "Each caller hands you to the next. None is real.", "s i2"))
+    calls = [("1", "A pop-up, then a phone number", "\u201cYour computer is infected. Call support now and don't turn it off.\u201d",
+              "Wants: remote access to your computer."),
+             ("2", "Your bank's \u201cfraud department\u201d", "\u201cA hacker is inside your accounts. Don't tell anyone at the branch.\u201d",
+              "Wants: you to log in while they watch."),
+             ("3", "A \u201cfederal agent\u201d", "\u201cMove your savings to a safe account we control, or into gold or cash for a courier.\u201d",
+              "Wants: your money, in a form that can't come back.")]
+    y = 52
+    for n, who, said, wants in calls:
+        lines = textwrap.wrap(said, 40)
+        h = 34 + 18 * len(lines) + 30
+        b.append(R(0.5, y + 0.5, W - 1, h, "sheet", rx=4))
+        b.append(numdot(24, y + 27, n))
+        b.append(T(44, y + 26, tx(who), "m"))
+        yy = y + 50
+        for ln in lines:
+            b.append(T(14, yy, tx(ln), "s"))
+            yy += 18
+        b.append(T(14, yy + 6, tx(wants), "s b"))
+        y += h + 10
+    y += 14
+    for k, ln in enumerate(textwrap.wrap("Hang up. Call your bank yourself, at the number on the back of your card.", 46)):
+        b.append(T(0, y + 18 * k, tx(ln), "s b"))
+    y += 18 * 2 + 14
+    b.append(fictional(W, y))
+    write("three-calls", y + 8, b, "Three fictional calls in the \u201cphantom hacker\u201d scam, each handing off to the next",
+          "Call 1: a pop-up says your computer is infected and to call support now; the caller wants remote access to "
+          "your computer. Call 2: your bank's \u201cfraud department\u201d says a hacker is inside your accounts and not to "
+          "tell anyone at the branch; the caller wants you to log in while they watch. Call 3: a \u201cfederal agent\u201d "
+          "says to move your savings to a safe account they control, or into gold or cash for a courier; the caller "
+          "wants your money in a form that can't come back. None of the callers is real. Hang up and call your bank "
+          "yourself, at the number on the back of your card. Fictional, for illustration.")
+
+
 # ---------------------------------------------------------------- Money Basics (Nov 12)
 def stub_split():
     """Money Basics 1: a $900 paycheck and where it goes."""
@@ -1399,7 +1437,7 @@ for fn in (credit_score_factors, overdraft_statement, overdraft_optin, card_mini
            subs_statement, finfluencer_post, one_percent_curve, two_savers, pay_stub, student_balance, worry_ad,
            four_borrowers, betting_cost, gig_payouts, scam_texts, cosigner_notice, statement_marked, cushion_costs,
            one_name_reach, creep_bars, stub_split, two_balances, budget_bar, rate_gap, both_ways, prime_ledger,
-           ride_receipt):
+           ride_receipt, three_calls):
     fn()
 
 LANG = "es"
