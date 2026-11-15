@@ -68,6 +68,9 @@ Crop prices are up from a year ago, and cattle prices, though down 7.0% this yea
 - [You run a small business](you-run-a-small-business.html): the same numbers for a business that isn't a farm.
 - [What sets the price of groceries](what-sets-grocery-prices.html): how much of a grocery price reaches the farm.
 - [Tariffs, and who pays](tariffs-and-who-pays.html): how tariffs reach prices.
+{{after 2026-12-15}}
+- [Who will farm next?](who-will-farm-next.html): how old American farmers are, and what makes it hard for young farmers to start.
+{{/after}}
 
 ## Sources
 
