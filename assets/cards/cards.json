@@ -1,6 +1,12 @@
 {
  "note": "Written by tools/make_cards.py: the label and title each card was drawn with. tools/build_articles.py uses a card only when they match the article.",
  "cards": {
+  "a-first-budget": {
+   "file": "a-first-budget.7a729c77.png",
+   "label": "Money Basics · Part 3",
+   "title": "A First Budget That Survives the Month",
+   "v": "1"
+  },
   "about": {
    "file": "about.88c34170.png",
    "label": "",
@@ -8,8 +14,8 @@
    "v": "1"
   },
   "ads-that-sell-the-worry": {
-   "file": "ads-that-sell-the-worry.b0c33e4f.png",
-   "label": "Money Traps · Part 12",
+   "file": "ads-that-sell-the-worry.396943b9.png",
+   "label": "Money Traps · Part 15",
    "title": "The Ad That Sells You the Worry",
    "v": "1"
   },
@@ -20,27 +26,39 @@
    "v": "1"
   },
   "buy-now-pay-later": {
-   "file": "buy-now-pay-later.e6829414.png",
-   "label": "Money Traps · Part 5",
+   "file": "buy-now-pay-later.a91ca0ef.png",
+   "label": "Money Traps · Part 7",
    "title": "Four Easy Payments, Times Four: The Buy Now, Pay Later Trap",
    "v": "1"
   },
   "co-signing": {
-   "file": "co-signing.8551cee7.png",
-   "label": "Money Traps · Part 17",
+   "file": "co-signing.d8ae752f.png",
+   "label": "Money Traps · Part 20",
    "title": "Signing for Someone Else's Loan: What Co-Signing Really Means",
    "v": "1"
   },
+  "compound-interest": {
+   "file": "compound-interest.869c26d0.png",
+   "label": "Money Basics · Part 5",
+   "title": "Interest on Interest: How Compounding Works, Both Ways",
+   "v": "1"
+  },
   "credit-card-cash-advances": {
-   "file": "credit-card-cash-advances.46d65ce5.png",
-   "label": "Money Traps · Part 7",
+   "file": "credit-card-cash-advances.970dfdea.png",
+   "label": "Money Traps · Part 9",
    "title": "Cash From Your Credit Card: Why It Costs More Than You Think",
    "v": "1"
   },
   "credit-card-minimum-payments": {
-   "file": "credit-card-minimum-payments.72b368a5.png",
-   "label": "Money Traps · Part 4",
+   "file": "credit-card-minimum-payments.0997b325.png",
+   "label": "Money Traps · Part 6",
    "title": "The Minimum Payment Trap: How Credit Card Interest Works",
+   "v": "1"
+  },
+  "does-prime-pay-for-itself": {
+   "file": "does-prime-pay-for-itself.43ff5fcb.png",
+   "label": "Money Traps · Part 23",
+   "title": "Does Prime Pay for Itself?",
    "v": "1"
   },
   "electric-vehicle-claims-checked": {
@@ -55,16 +73,28 @@
    "title": "Electric Vehicles: The Case For and the Case Against",
    "v": "1"
   },
+  "emergency-cushion": {
+   "file": "emergency-cushion.c900834e.png",
+   "label": "Money Traps · Part 2",
+   "title": "The $400 Surprise: Why a Small Cushion Comes First",
+   "v": "1"
+  },
   "employer-retirement-match": {
-   "file": "employer-retirement-match.aee5611f.png",
-   "label": "Money Traps · Part 15",
+   "file": "employer-retirement-match.e8dc242d.png",
+   "label": "Money Traps · Part 18",
    "title": "The Free Money You Leave on the Table: Your Employer's Retirement Match",
    "v": "1"
   },
   "finfluencers-and-investment-scams": {
-   "file": "finfluencers-and-investment-scams.2b65bb33.png",
-   "label": "Money Traps · Part 11",
+   "file": "finfluencers-and-investment-scams.0809cc75.png",
+   "label": "Money Traps · Part 14",
    "title": "Investing Tips From Your Feed: Finfluencers, Hype and Scams",
+   "v": "1"
+  },
+  "for-teachers": {
+   "file": "for-teachers.71f71e75.png",
+   "label": "",
+   "title": "For Teachers",
    "v": "1"
   },
   "four-kinds-of-borrower": {
@@ -86,8 +116,8 @@
    "v": "1"
   },
   "gig-work-taxes": {
-   "file": "gig-work-taxes.e0f008ad.png",
-   "label": "Money Traps · Part 14",
+   "file": "gig-work-taxes.b1c7785a.png",
+   "label": "Money Traps · Part 17",
    "title": "The Tax Bill Nobody Withheld: Gig Work and Side Hustles",
    "v": "1"
   },
@@ -109,6 +139,12 @@
    "title": "Help With a Down Payment: Gift, Loan or Co-Signer",
    "v": "1"
   },
+  "how-a-checking-account-works": {
+   "file": "how-a-checking-account-works.9be191f8.png",
+   "label": "Money Basics · Part 2",
+   "title": "The Balance Your App Shows: How a Checking Account Really Works",
+   "v": "1"
+  },
   "how-a-property-tax-rate-is-set": {
    "file": "how-a-property-tax-rate-is-set.1ba71251.png",
    "label": "Property taxes: how the rate gets set, and how states limit it · Part 1",
@@ -125,6 +161,12 @@
    "file": "how-credit-scores-work.195eb698.png",
    "label": "Money Traps · Part 1",
    "title": "Start Here: The Score You Didn't Know You Had",
+   "v": "1"
+  },
+  "how-saving-works": {
+   "file": "how-saving-works.f8c7c7fb.png",
+   "label": "Money Basics · Part 4",
+   "title": "The 0.38% Account: How Saving Works, and Why the Rate Matters",
    "v": "1"
   },
   "how-the-fed-decides": {
@@ -169,10 +211,88 @@
    "title": "Is This 1973?",
    "v": "1"
   },
+  "lesson-gas-in-todays-dollars": {
+   "file": "lesson-gas-in-todays-dollars.1d872aba.png",
+   "label": "",
+   "title": "Lesson: A Record in Which Dollars?",
+   "v": "1"
+  },
+  "lesson-gas-in-todays-dollars-handout": {
+   "file": "lesson-gas-in-todays-dollars-handout.73d45310.png",
+   "label": "",
+   "title": "A Record in Which Dollars? Student Page",
+   "v": "1"
+  },
+  "lesson-inflation": {
+   "file": "lesson-inflation.b0e80b53.png",
+   "label": "",
+   "title": "Lesson: Inflation in Context",
+   "v": "1"
+  },
+  "lesson-inflation-handout": {
+   "file": "lesson-inflation-handout.92d318ab.png",
+   "label": "",
+   "title": "Inflation in Context: Student Page",
+   "v": "1"
+  },
+  "lesson-mortgage-rates": {
+   "file": "lesson-mortgage-rates.6a6f3e44.png",
+   "label": "",
+   "title": "Lesson: What a Point Is Worth",
+   "v": "1"
+  },
+  "lesson-mortgage-rates-handout": {
+   "file": "lesson-mortgage-rates-handout.cf5fb3aa.png",
+   "label": "",
+   "title": "What a Point Is Worth: Student Page",
+   "v": "1"
+  },
+  "lesson-recession-warning-lights": {
+   "file": "lesson-recession-warning-lights.b2b12773.png",
+   "label": "",
+   "title": "Lesson: Is a Recession Coming? Reading the Warning Lights",
+   "v": "1"
+  },
+  "lesson-recession-warning-lights-handout": {
+   "file": "lesson-recession-warning-lights-handout.49967d18.png",
+   "label": "",
+   "title": "Reading the Warning Lights: Student Page",
+   "v": "1"
+  },
+  "lesson-unemployment": {
+   "file": "lesson-unemployment.73c3375c.png",
+   "label": "",
+   "title": "Lesson: Who Counts as Unemployed",
+   "v": "1"
+  },
+  "lesson-unemployment-handout": {
+   "file": "lesson-unemployment-handout.6bbfc13c.png",
+   "label": "",
+   "title": "Who Counts as Unemployed: Student Page",
+   "v": "1"
+  },
+  "lifestyle-creep": {
+   "file": "lifestyle-creep.0e5bd30f.png",
+   "label": "Money Traps · Part 13",
+   "title": "Where Did the Raise Go? Lifestyle Creep",
+   "v": "1"
+  },
   "long-car-loans": {
-   "file": "long-car-loans.0a8ce373.png",
-   "label": "Money Traps · Part 8",
+   "file": "long-car-loans.8ce52bf6.png",
+   "label": "Money Traps · Part 10",
    "title": "The Seven-Year Car Loan: Why a Lower Payment Costs More",
+   "v": "1"
+  },
+  "money-basics": {
+   "file": "money-basics.c45283b6.png",
+   "label": "A series",
+   "title": "Money Basics",
+   "v": "1"
+  },
+  "money-in-one-name": {
+   "file": "money-in-one-name.0a1f7cf5.png",
+   "label": "Money Traps · Part 21",
+   "title": "In Someone Else's Name: The Partner Who Doesn't Know the Money",
    "v": "1"
   },
   "money-traps": {
@@ -182,20 +302,20 @@
    "v": "1"
   },
   "overdraft-fees": {
-   "file": "overdraft-fees.0f1c4e60.png",
-   "label": "Money Traps · Part 2",
+   "file": "overdraft-fees.dfaca309.png",
+   "label": "Money Traps · Part 3",
    "title": "The $35 Coffee: How Overdraft Fees Work, and How to Avoid Them",
    "v": "1"
   },
   "payday-loans-and-paycheck-apps": {
-   "file": "payday-loans-and-paycheck-apps.b6de1f2f.png",
-   "label": "Money Traps · Part 6",
+   "file": "payday-loans-and-paycheck-apps.edccea3d.png",
+   "label": "Money Traps · Part 8",
    "title": "The Two-Week Loan That Lasts All Year: Payday Loans and Paycheck Apps",
    "v": "1"
   },
   "payment-app-scams": {
-   "file": "payment-app-scams.533845bb.png",
-   "label": "Money Traps · Part 3",
+   "file": "payment-app-scams.5b1c67f0.png",
+   "label": "Money Traps · Part 5",
    "title": "Once You Hit Send: Scams on Zelle, Venmo and Cash App",
    "v": "1"
   },
@@ -211,6 +331,12 @@
    "title": "Rate vs. Level: Why Inflation Fell and Prices Didn't",
    "v": "1"
   },
+  "reading-your-statements": {
+   "file": "reading-your-statements.69f317d0.png",
+   "label": "Money Traps · Part 4",
+   "title": "The Charge You Never Noticed: Why Reading Your Statements Pays",
+   "v": "1"
+  },
   "real-vs-nominal": {
    "file": "real-vs-nominal.8d2953d8.png",
    "label": "In plain words",
@@ -218,8 +344,8 @@
    "v": "1"
   },
   "rent-to-own": {
-   "file": "rent-to-own.fe528c97.png",
-   "label": "Money Traps · Part 9",
+   "file": "rent-to-own.94e2e387.png",
+   "label": "Money Traps · Part 11",
    "title": "The $38.99-a-Week Laptop: How Rent-to-Own Works",
    "v": "1"
   },
@@ -227,6 +353,12 @@
    "file": "revisions-and-vintages.5ccb6d71.png",
    "label": "In plain words",
    "title": "Revisions and Vintages: The Number You Remember Is Not the Number in the Record",
+   "v": "1"
+  },
+  "same-groceries-different-price": {
+   "file": "same-groceries-different-price.47d6376f.png",
+   "label": "Money Traps · Part 22",
+   "title": "Same Groceries, Different Price: The Markup You Don't See",
    "v": "1"
   },
   "scams-aimed-at-older-adults": {
@@ -248,20 +380,20 @@
    "v": "1"
   },
   "sports-betting-and-prediction-apps": {
-   "file": "sports-betting-and-prediction-apps.31b9560c.png",
-   "label": "Money Traps · Part 13",
+   "file": "sports-betting-and-prediction-apps.0316b57c.png",
+   "label": "Money Traps · Part 16",
    "title": "The Bet Is Priced to Lose: Sports Betting and Prediction Apps",
    "v": "1"
   },
   "student-loans": {
-   "file": "student-loans.1c45a0b3.png",
-   "label": "Money Traps · Part 16",
+   "file": "student-loans.7ebd5851.png",
+   "label": "Money Traps · Part 19",
    "title": "Borrowing for School: The Student Loan Choices That Follow You",
    "v": "1"
   },
   "subscription-creep": {
-   "file": "subscription-creep.2b73b435.png",
-   "label": "Money Traps · Part 10",
+   "file": "subscription-creep.d491cb53.png",
+   "label": "Money Traps · Part 12",
    "title": "Ten Dollars Here, Fifteen There: Subscription Creep",
    "v": "1"
   },
@@ -451,6 +583,12 @@
    "title": "Who Gets Paid When a House Sells",
    "v": "1"
   },
+  "who-gets-the-storefront": {
+   "file": "who-gets-the-storefront.3c509c55.png",
+   "label": "In plain words",
+   "title": "Who Gets the Storefront: How a Shopping Center Picks Its Tenants",
+   "v": "1"
+  },
   "who-lobbies-on-health-care": {
    "file": "who-lobbies-on-health-care.5fdbb9b0.png",
    "label": "Health care: what it costs, who gains, who lobbies · Part 3",
@@ -593,6 +731,12 @@
    "file": "you-work-for-a-wage.d8fdb2dd.png",
    "label": "A household guide",
    "title": "You Work for a Wage",
+   "v": "1"
+  },
+  "your-first-paycheck": {
+   "file": "your-first-paycheck.0de5b596.png",
+   "label": "Money Basics · Part 1",
+   "title": "Where Did the Rest of It Go? Reading Your First Paycheck",
    "v": "1"
   }
  }
