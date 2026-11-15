@@ -99,6 +99,9 @@ A family can't raise its income by vote; a council can, within the limits its st
 - [Four Kinds of Borrower](four-kinds-of-borrower.html): debt for a household, a city, a state and the federal government.
 - [Why the government is not a household](government-is-not-a-household.html): where the household comparison stops working for Washington, and why it works better for a city.
 - [Why HOA dues go up](why-hoa-dues-go-up.html): reserves and deferred repairs at the scale of one neighborhood.
+{{after 2026-12-29}}
+- [How to read an HOA budget](how-to-read-an-hoa-budget.html): the same questions for an association.
+{{/after}}
 
 ## Sources
 

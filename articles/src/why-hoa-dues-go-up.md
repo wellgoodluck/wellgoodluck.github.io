@@ -82,6 +82,9 @@ A town spreads a big repair across thousands of taxpayers. A 40-unit association
 - [How a property tax rate is set](how-a-property-tax-rate-is-set.html): the public version of the same budget arithmetic.
 - [You're buying a home](you-are-buying-a-home.html): where dues sit in a buyer's monthly payment.
 - [Rate vs. level](rate-vs-level.html): why a fee that rises more slowly still doesn't come back down.
+{{after 2026-12-29}}
+- [How to read an HOA budget](how-to-read-an-hoa-budget.html): the documents, the two accounts, and seven questions that show whether a big bill is coming.
+{{/after}}
 
 ## Sources
 

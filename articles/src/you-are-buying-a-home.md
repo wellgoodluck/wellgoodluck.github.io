@@ -65,6 +65,9 @@ More houses are for sale than a year ago: 1.60 million existing homes at the end
 - [What the mortgage rate is](what-is-the-mortgage-rate.html), [Who gets paid when a house sells](who-gets-paid-when-a-house-sells.html), [Four numbers for one house](four-numbers-for-one-house.html) and [What homeowner's insurance costs](what-homeowners-insurance-costs.html).
 - [How to read a housing headline](how-to-read-a-housing-headline.html): the monthly reports behind this page.
 - [Why HOA dues keep going up](why-hoa-dues-go-up.html): the monthly association fee on a condo, or on a house in an HOA.
+{{after 2026-12-29}}
+- [How to read an HOA budget](how-to-read-an-hoa-budget.html): the association documents a buyer receives, and seven questions to ask of them.
+{{/after}}
 - [You rent](you-rent.html): the same numbers for a renter.
 - Charts: [mortgage rate](../chart.html?id=mortgage), [home prices](../chart.html?id=home_prices) and [rent](../chart.html?id=rent).
 
