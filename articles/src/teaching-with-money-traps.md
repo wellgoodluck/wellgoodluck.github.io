@@ -186,7 +186,7 @@ For lessons built on the almanac's own numbers (inflation, unemployment, recessi
 - Should a spouse have to sign before retirement money leaves a 401(k)? Make the case each side made to the GAO.
 - **Activity:** Make the one-page list the page describes for a made-up household: each account, whose name it's in, the beneficiary, and who can reach it.
 
-{{after 2026-11-17}}
+{{after 2026-11-16}}
 ## Delivery-app markups: Same Groceries, Different Price
 
 [Read the page](same-groceries-different-price.html)

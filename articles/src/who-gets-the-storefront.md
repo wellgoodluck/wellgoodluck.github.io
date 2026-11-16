@@ -1,8 +1,8 @@
 ---
 title: Who Gets the Storefront: How a Shopping Center Picks Its Tenants
 dek: When a well-liked local store loses its lease to a national chain, it can look like the landlord just wanted more rent. Usually the rent is only part of it. How a shopping center earns its money, why a tenant's credit and lease length can change what the whole property is worth, and what cities can and can't do about it.
-date: 2026-11-19
-release: 2026-11-19
+date: 2026-11-16
+release: 2026-11-16
 kind: concept
 label: Who gets the storefront
 hook: why shopping center owners often choose national chains over local stores, and what the choice is worth to them

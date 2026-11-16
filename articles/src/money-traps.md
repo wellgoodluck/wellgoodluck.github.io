@@ -35,7 +35,7 @@ Each page also has a picture drawn for the site. The statements, pay stubs and p
 - [When Cheap Costs You](when-cheap-costs-you.html): unlicensed rides and repairs, rogue movers and ghost tax preparers, and four questions to ask before you hire anyone.
 {{/after}}
 - [Ten Dollars Here, Fifteen There](subscription-creep.html): subscriptions that renew on their own, and what they add up to.
-{{after 2026-11-17}}
+{{after 2026-11-16}}
 - [Same Groceries, Different Price](same-groceries-different-price.html): the markup a delivery app folds into each grocery price, and how to tell what you're paying.
 {{/after}}
 - [Where Did the Raise Go?](lifestyle-creep.html): how spending rises to swallow every raise, and the habit that lets savings grow too.
