@@ -147,7 +147,7 @@ Three findings run through all of it: the fuel saving lives at home; the battery
 
 ## Where the analogy breaks
 
-An annual pass is worth nothing at year's end, and everyone knows that at the gate. A car is sold on, and here the EV gives back less than a gas car does: it resells at a steeper discount, so more of the premium paid up front is never recovered. A pass also makes each visit free; an EV's fuel is only cheaper, and by how much depends on where the car sleeps. At {{fig ev_elec_month else="September 2026"}}'s electricity price and the gasoline price for {{v gas period else="the week ending October 26, 2026"}}, home charging costs {{fig ev_ratio_words else="about a third of what gasoline costs"}} per mile; at a fast charger, in mid-2026, it cost about what gasoline did. The pass favors frequent visitors; the EV's arithmetic favors frequent drivers with a driveway.
+An annual pass is worth nothing at year's end, and everyone knows that at the gate. A car is sold on, and here the EV gives back less than a gas car does: it resells at a steeper discount, so more of the premium paid up front is never recovered. A pass also makes each visit free; an EV's fuel is only cheaper, and by how much depends on where the car sleeps. At {{fig ev_elec_month else="September 2026"}}'s electricity price and the gasoline price for {{v gas period else="the week ending October 26, 2026"}}, home charging costs {{fig ev_ratio_words else="about a third of what gasoline costs"}} per mile; at a fast charger, at mid-2026 rates, it {{fig ev_fast_words else="cost about what gasoline did in late October 2026"}}. The pass favors frequent visitors; the EV's arithmetic favors frequent drivers with a driveway.
 
 ## What people argue about
 
