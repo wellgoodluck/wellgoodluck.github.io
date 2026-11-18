@@ -1146,6 +1146,44 @@ def fig_ev_ratio_words(D):
     return "more than gasoline costs", []
 
 
+# Nov 17: DC fast charging against gasoline. The fast-charging price is dated (Paren's 54¢/kWh national average
+# for Q2 2026, stated in the article); gasoline is the live tile. Both phrases share one rule so they never disagree:
+# within $100 a year of each other is "about the same", otherwise the gap in dollars, or as a share of gasoline's cost.
+EV_FAST_PER_KWH = 0.54
+
+
+def _ev_fast_gap(D):
+    """(fast charging $/yr, gasoline $/yr), each rounded to $10 as printed."""
+    (gd, g), (ed, e) = _ev_prices(D)
+    fast = round(EV_MILES / EV_MI_PER_KWH * EV_FAST_PER_KWH / 10) * 10
+    return fast, _ev_costs(g, e)[1]
+
+
+def fig_ev_fast_words(D):
+    """'costs about 10% more per mile than gasoline' / '…less…' / 'costs about the same per mile as gasoline'."""
+    fast, pump = _ev_fast_gap(D)
+    diff = fast - pump
+    if abs(diff) < 100:
+        return "costs about the same per mile as gasoline", []
+    pct = round(abs(diff) / pump * 100)
+    return f"costs about {pct}% {'more' if diff > 0 else 'less'} per mile than gasoline", []
+
+
+def fig_ev_fast_clause(D):
+    """'about $200 more than the gasoline above' / '…less…' / 'about the same as the gasoline above'."""
+    fast, pump = _ev_fast_gap(D)
+    diff = fast - pump
+    if abs(diff) < 100:
+        return "about the same as the gasoline above", []
+    return f"about {_usd50(abs(diff))} {'more' if diff > 0 else 'less'} than the gasoline above", []
+
+
+def val_ev_fast_gap(D):
+    """Fast charging minus gasoline, $/yr as printed (positive when fast charging costs more)."""
+    fast, pump = _ev_fast_gap(D)
+    return float(fast - pump)
+
+
 def fig_ev_year_ago_sentence(D):
     """'A year earlier, with gasoline at $3.04 (the week ending October 27, 2025) and electricity at 18.8¢
     (September 2025), the saving was about $850.' and its other forms."""
@@ -1288,6 +1326,7 @@ FIGS = {
     "ev_home_cost": fig_ev_home_cost, "ev_gas_cost": fig_ev_gas_cost,
     "ev_saving_sentence": fig_ev_saving_sentence, "ev_saving_clause": fig_ev_saving_clause,
     "ev_ratio_words": fig_ev_ratio_words, "ev_year_ago_sentence": fig_ev_year_ago_sentence,
+    "ev_fast_words": fig_ev_fast_words, "ev_fast_clause": fig_ev_fast_clause,
     "eggs_rank": fig_eggs_rank, "milk_rank": fig_milk_rank, "bread_rank": fig_bread_rank, "coffee_rank": fig_coffee_rank,
     "ground_beef_rank": fig_ground_beef_rank, "chicken_rank": fig_chicken_rank,
 }
@@ -1299,7 +1338,7 @@ VALUES = {      # usable on the left of a check as fig:<name>
     "real_raise_sep2019": val_real_raise_sep2019, "openings_vs_2019": val_openings_vs_2019,
     "fafh_gap": val_fafh_gap, "fafh_since_2019_pct": val_fafh_since_2019_pct,
     "rent_since_2019_pct": val_rent_since_2019_pct,
-    "ev_saving": val_ev_saving, "ev_ratio": val_ev_ratio,
+    "ev_saving": val_ev_saving, "ev_ratio": val_ev_ratio, "ev_fast_gap": val_ev_fast_gap,
 }
 
 
