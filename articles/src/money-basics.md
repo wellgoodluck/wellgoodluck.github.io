@@ -38,3 +38,4 @@ Each page takes a few minutes to read. The writing and pictures are free to reus
 
 - [Money Traps](money-traps.html): the ways money leaks out of a household, and the policy fights around them.
 - [How Long Will It Take to Pay Off a Card?](/tools/card-payoff.html): compounding on a card balance, with your own numbers.
+- [What Will My Savings Grow To?](/tools/savings-growth.html): monthly deposits and compounding, with your own numbers.

@@ -30,6 +30,7 @@ out: index
 ## Saving
 
 <ul class="tools-list">
+<li><a href="/tools/savings-growth.html">What Will My Savings Grow To?</a><span class="th">What you start with, what you add each month and the rate: the balance, how much of it is interest, and how long money takes to double.</span></li>
 <li><a href="/tools/employer-match.html">Are You Getting the Full Match?</a><span class="th">Your pay and your plan's formula: the match you get, the match you leave behind, and what it could grow to.</span></li>
 </ul>
 

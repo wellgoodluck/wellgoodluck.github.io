@@ -459,6 +459,10 @@ h1, h2, h3, h4, .dek { text-wrap: balance; }
 .mt .rb-warn { margin: 0 0 10px; }
 .mt .rb-pair { align-items: end; }   /* boxes line up when one label wraps and the other doesn't */
 .mt .rb-err + .rb-dnote { margin-top: 10px; }
+/* Nov 19: the savings tool pairs boxes that carry hints, so each box's label, input and hint share rows with its neighbor's (subgrid); a short label sits on its input */
+.mt .mt-pair2 { grid-template-rows: auto auto auto; row-gap: 0; align-items: start; margin-bottom: 12px; }
+.mt .mt-pair2 > .rb-f { display: grid; grid-row: span 3; grid-template-rows: subgrid; margin: 0; }
+.mt .mt-pair2 > .rb-f > label { align-self: end; }
 @media (max-width: 359px) { .mt .ku-kinds { display: grid; grid-template-columns: 1fr 1fr; } .mt .ku-kinds button + button { border-left: 0; } .mt .ku-kinds button:nth-child(even) { border-left: 1px solid var(--hairline); } .mt .ku-kinds button:nth-child(n+3) { border-top: 1px solid var(--hairline); } }   /* the four plan kinds as two rows on the smallest phones */
 @media (max-width: 360px) { .mt .rb-t th, .mt .rb-t td { padding-left: 6px; } }
 .article .tools-list { margin: 8px 0 0; padding: 0; list-style: none; }

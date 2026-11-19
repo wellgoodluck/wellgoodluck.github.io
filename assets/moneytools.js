@@ -1,5 +1,5 @@
-/* The Money Traps tools (Nov 9, 2026; revised after review) and the payment tool (Nov 11): one script for five
-   calculators, each mounted on <div class="mt-mount" data-tool="card|car|plan|match|rate">. Nothing the reader types is stored or sent; the page makes no
+/* The Money Traps tools (Nov 9, 2026; revised after review), the payment tool (Nov 11) and the savings tool (Nov 19):
+   one script for six calculators, each mounted on <div class="mt-mount" data-tool="card|car|plan|match|rate|save">. Nothing the reader types is stored or sent; the page makes no
    requests. A link with the numbers is built only when the reader asks for one, and it carries them after "#", which
    browsers never send to a server. Styles: the shared calculator box (.rb, .ku layout) in assets/site.css, plus .mt. */
 (function () {
@@ -345,6 +345,92 @@
       return { lead: lead, sum: t + " years at " + rate2(a) + ": " + money(p) + " a month",
         res: '<dl class="rb-res">' + rows + '</dl><p class="rb-dnote">' + same + "</p>" + (total ? '<p class="rb-dnote">' + total + "</p>" : ""),
         warn: w.filter(Boolean).join(" "), spoken: lead + say };
+    }
+  };
+
+  /* 6. What savings grow to (Nov 19, Money Basics). Interest is added monthly at the rate that compounds to the APY over
+     twelve months; deposits at the end of each month, the starting amount at the start. Every shown figure is whole
+     dollars, and interest is shown as balance less deposits, so the three always add up. */
+  function grow(S, D, apy, yrs) {
+    var m = Math.pow(1 + apy / 100, 1 / 12) - 1, b = S, put = S, ys = [], cross = null;
+    for (var y = 1; y <= yrs; y++) {
+      var b0 = b;
+      for (var k = 0; k < 12; k++) b = b * (1 + m) + D;
+      put += 12 * D;
+      var yi = b - b0 - 12 * D;                                  /* interest earned during this year */
+      if (cross == null && D > 0 && apy > 0 && yi > 12 * D) cross = { y: y, i: yi };
+      ys.push({ y: y, put: Math.round(put), bal: Math.round(b) });
+    }
+    return { bal: Math.round(b), put: Math.round(put), ys: ys, cross: cross };
+  }
+  function years(n) { return n + (n === 1 ? " year" : " years"); }
+  function yrs1(x) { return x < 100 ? num(Math.round(x * 10) / 10) : Math.round(x).toLocaleString("en-US"); }   /* 17.7, 183 */
+  T.save = {
+    h: "See what your savings could grow to",
+    fields: [
+      { id: "mt-st", key: "s", label: "Starting amount", pre: "$", ex: null, name: "the starting amount", optional: true, hint: "What's in the account now, if anything." },
+      { id: "mt-dep", key: "d", label: "Added each month", pre: "$", ex: 100, name: "the monthly deposit", hint: "Enter 0 if you won't add any." },
+      { id: "mt-apy", key: "r", label: "Yearly rate (APY)", post: "%", ex: 4, name: "the rate", hint: "On your statement or the bank's site." },
+      { id: "mt-cmp", key: "c", label: "Compare with another rate", post: "%", ex: 0.38, name: "the rate to compare", optional: true, hint: "Such as your current account's. The example uses the national average." },
+      { id: "mt-yrs", key: "y", label: "Number of years", ex: 5, name: "the years" }
+    ],
+    form: function () {
+      var F = this.fields;
+      return '<div class="rb-pair mt-pair2">' + field(F[0]) + field(F[1]) + "</div>" +
+        '<div class="rb-pair mt-pair2">' + field(F[2]) + field(F[3]) + "</div>" + field(F[4]);
+    },
+    notes: '<p class="rb-note">This assumes the rate stays the same and leaves out taxes and fees. Deposits are added at the end of each month.</p>',
+    yrsOpen: null,                                               /* the reader's own choice to open or fold the table, once made */
+    init: function () {
+      var me = this;
+      mount.addEventListener("click", function (ev) {
+        var s = ev.target.closest && ev.target.closest("#mt-yrs-d > summary");
+        if (s) me.yrsOpen = !s.parentNode.open;                   /* the state it is about to take */
+      });
+    },
+    run: function (v) {
+      var S = v["mt-st"], D = v["mt-dep"], a = v["mt-apy"], c = v["mt-cmp"], n = v["mt-yrs"];
+      if (S == null) S = 0;
+      if (D == null) D = 0;
+      if (isNaN(S) || S < 0 || S > MAX) return { err: "Enter the starting amount in dollars, up to $100 million, or leave it blank.", f: "mt-st" };
+      if (isNaN(D) || D < 0 || D > MAX) return { err: "Enter what you'd add each month in dollars, up to $100 million, or 0.", f: "mt-dep" };
+      if (!(S > 0) && !(D > 0)) return { err: "Enter a starting amount, a monthly deposit or both.", f: "mt-dep" };
+      if (a == null || isNaN(a) || a < 0 || a > 25) return { err: "Enter the rate as a yearly percent from 0 to 25, like 4.", f: "mt-apy" };
+      if (isNaN(c) || (c != null && (c < 0 || c > 25))) return { err: "Enter the rate to compare as a yearly percent from 0 to 25, or leave it blank.", f: "mt-cmp" };
+      if (n == null || isNaN(n) || n !== Math.floor(n) || n < 1 || n > 60) return { err: "Enter the number of years as a whole number from 1 to 60, like 5.", f: "mt-yrs" };
+      if (c === a) c = null;                                     /* the same rate twice compares nothing */
+      var G = grow(S, D, a, n), I = G.bal - G.put, Y = years(n), H = c != null ? grow(S, D, c, n) : null;
+      var lead;
+      if (a === 0) lead = "In " + Y + " you'd have " + money(G.put) + ", just what you put in: at 0% there's no interest.";
+      else if (!(D > 0)) lead = "In " + Y + ", " + cash(S) + " left alone would grow to about " + money(G.bal) + ", with " + money(I) + " in interest.";
+      else lead = "In " + Y + " you'd have about " + money(G.bal) + ": the " + money(G.put) + " you put in plus " + money(I) + " in interest.";
+      if (H) {
+        var hi = H.bal - H.put;
+        if (c === 0) lead += D > 0 ? " At 0%, you'd have just the " + money(H.put) + " you put in." : " At 0%, it would stay " + money(H.put) + ".";
+        else lead += D > 0 ? " At " + pc(c) + ", the same deposits would grow to about " + money(H.bal) + ", with " + money(hi) + " in interest." : " At " + pc(c) + ", it would grow to about " + money(H.bal) + ".";
+      }
+      var how = !(D > 0) ? cash(S) + " at the start" : S > 0 ? cash(S) + " to start, then " + cash(D) + " a month for " + Y : cash(D) + " a month for " + Y;
+      var rows = row("Balance after " + Y, money(G.bal), "at " + pc(a) + " a year (APY)") + row("What you put in", money(G.put), how) + row("Interest earned", money(I));
+      if (H) {
+        var d = (G.bal - G.put) - (H.bal - H.put);
+        rows += row("At " + pc(c) + " instead", money(H.bal), money(H.bal - H.put) + " in interest, " + (d === 0 ? "the same" : money(Math.abs(d)) + (d > 0 ? " less" : " more")));
+      }
+      rows += a > 0 ? row("Money left alone doubles in", "about " + yrs1(Math.log(2) / Math.log(1 + a / 100)) + " years", "at " + pc(a) + "; the rule of 72 (72 ÷ " + num(a) + ") gives " + yrs1(72 / a))
+        : row("Money left alone doubles in", "never, at 0%");
+      var res = '<dl class="rb-res">' + rows + "</dl>";
+      if (G.cross && G.cross.y > 1)
+        res += '<p class="rb-dnote">In year ' + G.cross.y + ", interest adds about " + money(G.cross.i) + ", more than the " + cash(12 * D) + " you put in that year. From then on, interest adds more each year than your deposits do.</p>";
+      var open = this.yrsOpen != null ? this.yrsOpen : n <= 10;
+      var head = H ? "<th>Year</th><th>Put in so far</th><th>Balance at " + pc(a) + "</th><th>Balance at " + pc(c) + "</th>" : "<th>Year</th><th>Put in so far</th><th>Interest so far</th><th>Balance</th>";
+      res += '<details id="mt-yrs-d"' + (open ? " open" : "") + "><summary>Year by year (" + Y + ')</summary><div class="table-scroll"><table class="rb-t"><caption class="sr">Year by year</caption><thead><tr>' + head + "</tr></thead><tbody>" +
+        G.ys.map(function (o, i) {
+          return "<tr><td>" + o.y + "</td><td>" + money(o.put) + "</td>" + (H ? "<td>" + money(o.bal) + "</td><td>" + money(H.ys[i].bal) + "</td>" : "<td>" + money(o.bal - o.put) + "</td><td>" + money(o.bal) + "</td>") + "</tr>";
+        }).join("") + "</tbody></table></div></details>";
+      var w = decCheck("mt-apy", a, 25) || (c != null ? decCheck("mt-cmp", c, 25) : "") ||
+        (a > 5 ? "Check: at more than 5%, this is closer to an assumption about investing than a savings rate. Investments that can earn more can also lose money, and nobody can promise any rate." : "");
+      var extra = "The balance is in future dollars: prices will rise too, so it would buy less than that sum does today. " +
+        (a > 0 ? "The balance keeps up with prices only if they rise less than " + pc(a) + " a year." : "At 0%, it loses buying power whenever prices rise.");
+      return { lead: lead, sum: Y + ": " + (a > 0 ? "about " + money(G.bal) + " · " + money(I) + " interest" : money(G.bal) + " · no interest"), res: res, warn: w, spoken: lead, extra: extra };
     }
   };
 
