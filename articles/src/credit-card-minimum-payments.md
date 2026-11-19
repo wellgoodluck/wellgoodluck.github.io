@@ -41,7 +41,7 @@ Your own statement already shows this math. [Since 2010, federal law has require
 
 {{illustration name=card-minimum-box caption="A made-up statement with the minimum payment warning filled in for the example. Yours shows your own balance and rate."}}
 
-[How Long Will It Take to Pay Off a Card?](../tools/card-payoff.html) runs the same math on your own balance, rate and payment.
+{{tool card-payoff text="Runs the same math on your own balance, rate and payment."}}
 
 ## How to avoid it
 

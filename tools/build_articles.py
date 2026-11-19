@@ -72,6 +72,12 @@ picks up the page's font and both color themes from assets/site.css (.illo):
 The SVG carries its own role="img", <title> and <desc> (the full text of the picture), and uses only the
 classes in site.css's illustration block, never colors of its own. A missing file prints a WARNING and draws nothing.
 
+and one for the "Try it with your own numbers" box that hands a reader off to a tool (Nov 19), on its own line where
+the article's worked example ends; the title comes from the tool page, k= opens the tool's named example, and
+example= replaces "It opens with this article's example." when the tool opens with only part of it (text= last):
+
+    {{tool payment-plan-cost k=bnpl example="It opens with the sneakers from this example." text="Shows whether …"}}
+
 kind=bars: one bar per row, one color, the value printed at each bar's tip. kind=stack: one
 whole split into its parts, up to six, each part's value printed on it, a legend of names.
 kind=pairs: two values per row, two colors, with a legend. fmt writes each value ({v} is the
@@ -229,6 +235,41 @@ def figure_directive(line):
 
 
 ILLO_DIR = os.path.join("articles", "illustrations")
+TOOL_TITLES = {}     # tool name -> title, filled in main() before any article is rendered (Nov 19, the tool box)
+
+
+def tool_directive(line):
+    """{{tool <name> [k=<example>] text="…"}} -> the "Try it with your own numbers" box (Nov 19): the tool's title as a
+    link (to its #k= example when given), the text line, and a fixed line under it. On its own line, where the article
+    hands off to the tool (the Money Traps pieces: the end of A worked example). Fail-soft: an unknown tool prints a
+    WARNING and leaves an HTML comment."""
+    m = re.match(r"^\{\{\s*tool\s+(.*?)\s*\}\}$", line.strip())
+    if not m:
+        return None
+    attrs, inner = {}, m.group(1)
+    tm = re.search(r'\btext="(.*)"$', inner)               # the text runs to the last quote, as an illustration's caption
+    if tm:
+        attrs["text"], inner = tm.group(1), inner[:tm.start()]
+    toks = shlex.split(inner)
+    name = toks[0] if toks else ""
+    for tok in toks[1:]:
+        if "=" in tok:
+            k, v = tok.split("=", 1)
+            attrs[k] = v
+    if name not in TOOL_TITLES:
+        print(f"tool box: WARNING no tool named {name!r}; box left out")
+        return f"<!-- tool box {html.escape(name)} skipped -->"
+    href = f"../tools/{name}.html" + (f"#k={attrs['k']}" if re.fullmatch(r"[a-z0-9-]+", attrs.get("k", "")) else "")
+    text = f'<p class="fdek">{inline(attrs["text"])}</p>' if attrs.get("text") else ""
+    how = inline(attrs.get("example") or TOOL_BOX_EXAMPLE) + " " + TOOL_BOX_PRIVATE
+    return (f'<aside class="tool-try" aria-label="Try it with your own numbers"><span class="flabel">Try it with your own numbers</span>'
+            f'<a class="ftitle" href="{href}">{inline(TOOL_TITLES[name])}</a> →{text}'
+            f'<p class="fhow">{how}</p></aside>')
+
+
+# Tom, Nov 19: the box's label and fixed line. The second sentence is the Tools page's dek.
+TOOL_BOX_EXAMPLE = "It opens with this article's example."
+TOOL_BOX_PRIVATE = "Nothing you type is saved or sent anywhere."
 
 
 def illustration_directive(line):
@@ -281,7 +322,7 @@ def md_to_html(text):
         line = raw.rstrip()
         if not line.strip():
             flush_para(); close_list(); continue
-        d = chart_directive(line) or figure_directive(line) or illustration_directive(line)
+        d = chart_directive(line) or figure_directive(line) or illustration_directive(line) or tool_directive(line)
         if d:
             flush_para(); close_list(); out.append(d); continue
         if line.startswith("<") and not line.startswith("<a "):     # raw HTML block line
@@ -1775,6 +1816,7 @@ def main():
                 articles.append(a)
     tools = [a for a in articles if a.get("kind") == "tool"]            # Nov 8: built to /tools/, listed nowhere else
     articles = [a for a in articles if a.get("kind") != "tool"]
+    TOOL_TITLES.update({tool_name(x): x["title"] for x in tools if tool_name(x) != "index"})
     spanish = []                                            # Nov 9: articles/src/es/*.md, built to /es/
     es_dir = os.path.join(SRC_DIR, "es")
     if os.path.isdir(es_dir):

@@ -38,7 +38,7 @@ None of these payments feels big. But if their schedules line up, $142.50 can co
 
 {{illustration name=bnpl-calendar caption="The four plans on a calendar. Started a few days apart, they come due in the same weeks."}}
 
-[What a Payment Plan Really Costs](../tools/payment-plan-cost.html#k=bnpl) shows whether a plan with fees costs more than paying up front, and by how much.
+{{tool payment-plan-cost k=bnpl example="It opens with the sneakers from this example." text="Shows whether a plan with fees costs more than paying up front, and by how much."}}
 
 ## How to avoid it
 
