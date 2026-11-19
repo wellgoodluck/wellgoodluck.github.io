@@ -684,22 +684,25 @@ def fmt_date(s):
 # time with its end date in data-until; a line of script in FOOT removes it on that day, so it never outlives a
 # weekend without a rebuild. Same rule as index.html (freshLabel) and chart.html.
 LABEL_START, LABEL_DAYS = "2026-11-01", 14
+# Tools (Nov 19): each tool's title on its own page and its entry on the Tools page get the same chip, from the tool
+# page's date: / updated:. The Tools page's first week (Nov 8-14) isn't labeled, so its first tools don't all read as new.
+TOOL_LABEL_START = "2026-11-15"
 
 
-def fresh_label(a):
+def fresh_label(a, start=LABEL_START, attrs=""):
     from datetime import timedelta
     today = date.today()
     def until(s):
-        if not s or s < LABEL_START:
+        if not s or s < start:
             return None
         y, mo, d = (int(x) for x in s.split("-"))
         return date(y, mo, d) + timedelta(days=LABEL_DAYS)
     new, rev = until(a.get("date")), until(a.get("updated") if a.get("updated") != a.get("date") else None)
     if new and today < new:
-        return f' <span class="fresh" data-until="{new.isoformat()}">New</span>'
+        return f' <span class="fresh" data-until="{new.isoformat()}"{attrs}>New</span>'
     if rev and today < rev:
         y, mo, d = (int(x) for x in a["updated"].split("-"))
-        return f' <span class="fresh rev" data-until="{rev.isoformat()}">Revised {date(y, mo, d).strftime("%b %-d")}</span>'
+        return f' <span class="fresh rev" data-until="{rev.isoformat()}"{attrs}>Revised {date(y, mo, d).strftime("%b %-d")}</span>'
     return ""
 
 
@@ -1202,16 +1205,25 @@ TOOL_ATTRS = {"rate": rate_tool_attrs, "save": save_tool_attrs, "myrate": myrate
               "hour": hour_tool_attrs}
 
 
-def render_tool(a):
+_TOOLS_LI = re.compile(r'(<li><a href="([^"#]+)(?:#[^"]*)?">)(.*?)(</a>)')
+
+
+def render_tool(a, by_href=None):
     desc = html.escape(a.get("dek", a["title"]), quote=True)
     name = tool_name(a)
     canonical = f"{SITE}/tools/" if name == "index" else f"{SITE}/tools/{name}.html"
     page = HEAD.format(title=html.escape(a["title"]), desc=desc, canonical=canonical, css_v=asset_stamp("assets/site.css"), menu=menu_for(a))
     page += '<main class="wrap article tool-page">\n' + ("<article>" if name == "index" else search_open(a)) + '\n'
-    page += f'<h1>{inline(a["title"])}</h1>\n'
+    # Nov 19: a new tool's chip after its title, as on chart pages; kept out of the search index so results never say "New"
+    chip = "" if name == "index" else fresh_label(a, TOOL_LABEL_START, " data-pagefind-ignore")
+    page += f'<h1>{inline(a["title"])}{chip}</h1>\n'
     if a.get("dek"):
         page += f'<p class="dek">{inline(a["dek"])}</p>\n'
     body = a["body"]
+    if name == "index":                                         # Nov 19: the chip on each Tools page entry, inside its link;
+        by_href = by_href or {}                                 # the title in span.t carries the underline, so it stops at the title
+        body = _TOOLS_LI.sub(lambda m: m.group(1) + '<span class="t">' + m.group(3) + "</span>"
+                             + (fresh_label(by_href[m.group(2)], TOOL_LABEL_START) if m.group(2) in by_href else "") + m.group(4), body)
     for key, attrs in TOOL_ATTRS.items():                       # Nov 11 (rate), Nov 19 (the rest): starting figures on the mount
         tag = f'data-tool="{key}"'
         if tag in body:
@@ -1746,9 +1758,11 @@ def main():
     if tools:
         tools_dir = os.path.join(out_root, "tools")
         os.makedirs(tools_dir, exist_ok=True)
+        by_href = {f"/articles/{x['slug']}.html": x for x in articles}
+        by_href.update({f"/tools/{tool_name(x)}.html": x for x in tools if tool_name(x) != "index"})
         for a in tools:
             with open(os.path.join(tools_dir, tool_name(a) + ".html"), "w", encoding="utf-8") as f:
-                f.write(render_tool(a))
+                f.write(render_tool(a, by_href))
             print(f"built tools/{tool_name(a)}.html")
     if spanish:
         es_out = os.path.join(out_root, "es")
