@@ -3,6 +3,7 @@ title: What Does It Cost to Own a Car?
 dek: One car, or two side by side: what each costs a year to own and drive, line by line, including the cost most people leave out, the value it loses.
 date: 2026-11-19
 kind: tool
+more_tools: take-home-per-hour
 ---
 
 <div class="cc-mount" data-tool="own"><p class="rb-noscript">This tool needs JavaScript. The section How it's worked out, below, explains the arithmetic, and Sources links to the figures.</p></div>

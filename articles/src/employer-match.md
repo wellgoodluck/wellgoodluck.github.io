@@ -3,6 +3,7 @@ title: Are You Getting the Full Match?
 dek: Your pay, your employer's match formula and what you put in: the match you get, the match you leave behind, and what it could grow to.
 date: 2026-11-09
 kind: tool
+more_tools: take-home-per-hour
 ---
 
 <div class="mt-mount" data-tool="match"><p class="rb-noscript">This tool needs JavaScript. The section How it's worked out, below, explains the arithmetic.</p></div>

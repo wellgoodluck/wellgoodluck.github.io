@@ -3,6 +3,7 @@ title: What a Rate Change Does to a Payment
 dek: A home loan's monthly principal and interest at the rate you enter, and at a point lower and a point higher.
 date: 2026-11-11
 kind: tool
+more_tools: savings-growth
 ---
 
 <div class="mt-mount" data-tool="rate"><p class="rb-noscript">This tool needs JavaScript. The section How it's worked out, below, explains the arithmetic.</p></div>

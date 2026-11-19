@@ -946,7 +946,7 @@ CARD_MISSING = []
 # ---------------------------------------------------------------------------
 SEARCH_LOW = {"about", "how-this-site-is-paid-for", "for-teachers", "teaching-with-money-traps"}   # weight 0.5
 _SEARCH_IGNORE = re.compile(r'<(p class="dateline"|nav class="series"|p class="digest-nudge"|nav class="series-next"|'
-                            r'section class="share-end"|ul class="sources"|h2 id="sources"|figure(?=[\s>]))')
+                            r'section class="share-end"|ul class="sources"|h2 id="sources"|nav class="more-tools"|figure(?=[\s>]))')
 
 
 def search_label(a):
@@ -1206,19 +1206,67 @@ TOOL_ATTRS = {"rate": rate_tool_attrs, "save": save_tool_attrs, "myrate": myrate
 
 
 _TOOLS_LI = re.compile(r'(<li><a href="([^"#]+)(?:#[^"]*)?">)(.*?)(</a>)')
+_TOOLS_GROUP = re.compile(r'^## (.+)$', re.M)
+_TOOLS_ENTRY = re.compile(r'<li><a href="([^"]+)">(.*?)</a>')
 
 
-def render_tool(a, by_href=None):
+def tools_groups(index):
+    """The Tools page's groups, in order: [(heading, [(href, title), ...]), ...], read from its source."""
+    if not index:
+        return []
+    parts = _TOOLS_GROUP.split(index["body"])
+    return [(parts[i].strip(), _TOOLS_ENTRY.findall(parts[i + 1])) for i in range(1, len(parts) - 1, 2)]
+
+
+def more_tools(tools, groups):
+    """Nov 19: the More tools row on each tool page: up to three other tools, first those sharing a group with it on
+    the Tools page (in the page's order), then any named in its `more_tools:` front matter (tool names, comma-separated),
+    then All tools. Returns {tool name: html}."""
+    titles = {h.split("#")[0]: (h, t) for _, items in groups for h, t in items}
+    titles.update({f"/tools/{tool_name(x)}.html": (f"/tools/{tool_name(x)}.html", x["title"]) for x in tools if tool_name(x) != "index"})
+    out = {}
+    for x in tools:
+        name = tool_name(x)
+        if name == "index":
+            continue
+        me, picks = f"/tools/{name}.html", []
+        for _, items in groups:
+            if any(h == me for h, _ in items):
+                picks += [h.split("#")[0] for h, _ in items]
+        picks += [f"/tools/{n.strip()}.html" for n in x.get("more_tools", "").split(",") if n.strip()]
+        seen, keep = {me, "/chart/"}, []
+        for h in picks:
+            if h in titles and h not in seen:
+                seen.add(h); keep.append(titles[h])
+        keep = keep[:3]
+        if len(keep) < 2:
+            print(f"tools: {name}: only {len(keep)} other tool(s) in More tools; add more_tools: to its front matter")
+        links = "".join(f'<a href="{h}">{inline(t)}</a> · ' for h, t in keep)
+        out[name] = (f'<nav class="more-tools" aria-label="More tools"><p><span class="series-label">More tools</span> '
+                     f'{links}<a href="/tools/">All tools</a></p></nav>\n')
+    return out
+
+
+def render_tool(a, by_href=None, more=None, groups=None):
     desc = html.escape(a.get("dek", a["title"]), quote=True)
     name = tool_name(a)
     canonical = f"{SITE}/tools/" if name == "index" else f"{SITE}/tools/{name}.html"
     page = HEAD.format(title=html.escape(a["title"]), desc=desc, canonical=canonical, css_v=asset_stamp("assets/site.css"), menu=menu_for(a))
-    page += '<main class="wrap article tool-page">\n' + ("<article>" if name == "index" else search_open(a)) + '\n'
-    # Nov 19: a new tool's chip after its title, as on chart pages; kept out of the search index so results never say "New"
-    chip = "" if name == "index" else fresh_label(a, TOOL_LABEL_START, " data-pagefind-ignore")
-    page += f'<h1>{inline(a["title"])}{chip}</h1>\n'
-    if a.get("dek"):
-        page += f'<p class="dek">{inline(a["dek"])}</p>\n'
+    if name == "index" and groups:                              # Nov 19: the articles index's On this page bar, one link a group
+        page += f'<div class="wrap article article-head">\n<h1>{inline(a["title"])}</h1>\n'
+        if a.get("dek"):
+            page += f'<p class="dek">{inline(a["dek"])}</p>\n'
+        page += ('</div>\n<nav class="secnav" aria-label="On this page"><div class="wrap"><span class="secnav-label" aria-hidden="true">On this page</span>'
+                 '<a class="to-top" href="#top" aria-label="Back to the top of the page">↑ Top</a><ul class="sections-nav" id="nav">'
+                 + "".join(f'<li><a href="#{re.sub(r"[^a-z0-9]+", "-", g.lower()).strip("-")}">{inline(g)}</a></li>' for g, _ in groups) + '</ul></div></nav>\n')
+        page += '<main class="wrap article tool-page" id="main">\n<article>\n'
+    else:
+        page += '<main class="wrap article tool-page">\n' + ("<article>" if name == "index" else search_open(a)) + '\n'
+        # Nov 19: a new tool's chip after its title, as on chart pages; kept out of the search index so results never say "New"
+        chip = "" if name == "index" else fresh_label(a, TOOL_LABEL_START, " data-pagefind-ignore")
+        page += f'<h1>{inline(a["title"])}{chip}</h1>\n'
+        if a.get("dek"):
+            page += f'<p class="dek">{inline(a["dek"])}</p>\n'
     body = a["body"]
     if name == "index":                                         # Nov 19: the chip on each Tools page entry, inside its link;
         by_href = by_href or {}                                 # the title in span.t carries the underline, so it stops at the title
@@ -1228,10 +1276,16 @@ def render_tool(a, by_href=None):
         tag = f'data-tool="{key}"'
         if tag in body:
             body = body.replace(tag, tag + attrs(), 1)
-    page += md_to_html(body)
+    body = md_to_html(body)
+    if more and name in more:                                   # Nov 19: More tools, before Sources (where articles put Next in this series)
+        anchor = '<h2 id="sources">'
+        body = body.replace(anchor, more[name] + anchor, 1) if anchor in body else body + "\n" + more[name]
+    page += body
     page += "\n</article>\n</main>\n"
     if 'class="table-scroll"' in page:
         page += '<script src="../assets/tables.js' + asset_stamp("assets/tables.js") + '"></script>\n'
+    if 'class="secnav"' in page:
+        page += '<script src="../assets/secnav.js' + asset_stamp("assets/secnav.js") + '"></script>\n'
     page = search_ignore(page)
     page += FOOT
     page = _REL_HREF.sub(lambda m: f'href="../articles/{m.group(1)}"', page)
@@ -1760,9 +1814,11 @@ def main():
         os.makedirs(tools_dir, exist_ok=True)
         by_href = {f"/articles/{x['slug']}.html": x for x in articles}
         by_href.update({f"/tools/{tool_name(x)}.html": x for x in tools if tool_name(x) != "index"})
+        groups = tools_groups(next((x for x in tools if tool_name(x) == "index"), None))
+        more = more_tools(tools, groups)
         for a in tools:
             with open(os.path.join(tools_dir, tool_name(a) + ".html"), "w", encoding="utf-8") as f:
-                f.write(render_tool(a, by_href))
+                f.write(render_tool(a, by_href, more, groups))
             print(f"built tools/{tool_name(a)}.html")
     if spanish:
         es_out = os.path.join(out_root, "es")

@@ -3,6 +3,7 @@ title: What Will My Savings Grow To?
 dek: Your starting amount, what you add each month and your account's rate: the balance it could grow to, how much of it is interest, and how long money takes to double.
 date: 2026-11-19
 kind: tool
+more_tools: kept-up
 ---
 
 <div class="mt-mount" data-tool="save"><p class="rb-noscript">This tool needs JavaScript. The section How it's worked out, below, explains the arithmetic.</p></div>
