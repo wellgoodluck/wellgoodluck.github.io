@@ -121,7 +121,7 @@ AAA's study assumed gasoline at $4.15 a gallon and electricity at 18 cents per k
 
 **Fees and home equipment.** Forty-two states have enacted an extra annual registration fee on battery-electric vehicles (New Mexico's begins in 2027), median about $145: Texas $200, Georgia about $239, New Jersey $270 rising to $290 by 2028, California about $118; Nevada, Arizona, Florida, New York and Massachusetts charge none ([The ChargePort](https://thechargeport.com/ev-registration-fees-by-state); [ARTBA](https://transportationinvestment.org/wp-content/uploads/2026/04/State_Electric_Vehicle_Fees_April_2026.pdf)). States describe these as replacing the fuel tax EVs do not pay at the pump; the federal gas tax alone comes to roughly $73–$89 a year for a typical driver. By one installer's 2026 estimate, a Level 2 home charger runs $300–$650 for the hardware and about $1,100–$1,900 installed, or $4,500–$8,500 if the panel needs upgrading; some utilities rebate part of it ([Eviqo](https://eviqo.io/blogs/news/ev-charger-installation-cost-in-2026-complete-breakdown-by-state-setup-and-hidden-fees)).
 
-[What Does It Cost to Own a Car?](../tools/car-ownership-cost.html) runs the same six lines with your own cars, side by side.
+{{tool car-ownership-cost example=none text="Runs the same six lines with your own cars, side by side."}}
 
 ## What the arithmetic turns on
 

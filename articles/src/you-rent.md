@@ -29,7 +29,7 @@ The index has a second housing line, "owners' equivalent rent," an estimate of w
 
 {{chart id=cpi range=10y ov=cpi_rent,cpi_shelter,wages caption="Headline inflation with the rent line and the full shelter line (rent plus owners' equivalent rent) beside it, and wage growth for comparison. Rent peaked a year after asking rents did, and came down a year after them too."}}
 
-[Has It Kept Up With Prices?](../tools/kept-up.html#k=rent) puts your own rent next to the same price figures.
+{{tool kept-up k=rent example=none text="Puts your own rent next to the same price figures."}}
 
 ## Mortgage rates, though you don't have one
 

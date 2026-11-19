@@ -28,7 +28,7 @@ Two other things about the formula. The index is for wage earners, who spend les
 
 {{chart id=cpi range=10y ov=price_level,fed_target height=720 caption="Inflation (top) and the price level (below, 2019 = 100). A pension without a COLA is a horizontal line on the lower chart; Social Security steps up each January to roughly where the line was the previous autumn."}}
 
-[Has It Kept Up With Prices?](../tools/kept-up.html#k=benefit) puts your own pension or other benefit next to the same price figures.
+{{tool kept-up k=benefit example=none text="Puts your own pension or other benefit next to the same price figures."}}
 
 ## The Fed, through your cash
 

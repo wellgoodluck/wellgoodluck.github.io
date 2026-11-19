@@ -38,9 +38,11 @@ The same money in an account paying the national average and in one paying 4%:
 
 <table><thead><tr><th></th><th>At 0.38% APY</th><th>At 4.00% APY</th></tr></thead><tbody><tr><td>$1,000 for one year</td><td>$3.80 of interest</td><td>$40.00 of interest</td></tr><tr><td>$1,000 left for five years</td><td>$1,019</td><td>$1,217</td></tr><tr><td>$100 a month for five years ($6,000 put in)</td><td>$6,056</td><td>$6,618</td></tr><tr><td>Interest earned on the $100 a month</td><td>$56</td><td>$618</td></tr></tbody></table>
 
-Same deposits, same insurance, eleven times the interest. (Computed by the site. Assumes each rate stays the same, which variable rates don't, and ignores taxes on the interest.) [What Will My Savings Grow To?](/tools/savings-growth.html) runs it with your own deposits and rate.
+Same deposits, same insurance, eleven times the interest. (Computed by the site. Assumes each rate stays the same, which variable rates don't, and ignores taxes on the interest.)
 
 {{illustration name=rate-gap caption="$100 a month for five years at two rates. The deposits are the same; the interest isn't."}}
+
+{{tool savings-growth text="Runs this example with your own deposits and rate."}}
 
 ## What to do with it
 

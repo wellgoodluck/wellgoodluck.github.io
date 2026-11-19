@@ -22,11 +22,13 @@ Figures below are as of early November 2026. This page describes how the numbers
 
 The average 30-year fixed rate was {{v mortgage fmt=pct2}} on {{v mortgage period as=day}} ([Freddie Mac, via FRED](https://fred.stlouisfed.org/series/MORTGAGE30US)). {{check mortgage.value >= 6.74 "payment examples on this page use 7.24%, the late-October 2026 rate"}}{{check mortgage.value <= 7.74 "payment examples on this page use 7.24%, the late-October 2026 rate"}} On a $400,000 house with 20% down, the loan is $320,000. At 7.24%, the average in late October 2026, the monthly principal and interest is $2,181. A rate one point lower makes it $1,968; one point higher, $2,402. So each point is worth roughly $215 to $220 a month on that loan. At 3%, where rates stood in 2021, the same loan cost $1,349.
 
-Turn it around and the rate sets the price you can pay. The $2,181 that carries a $320,000 loan at 7.24% would carry about $354,600 at 6.24% and about $290,600 at 8.24%. [What a Rate Change Does to a Payment](../tools/rate-change-payment.html) runs the same arithmetic on your own price, down payment and rate.
+Turn it around and the rate sets the price you can pay. The $2,181 that carries a $320,000 loan at 7.24% would carry about $354,600 at 6.24% and about $290,600 at 8.24%.
 
 {{chart id=mortgage range=25y caption="The average 30-year fixed mortgage rate. Each point is worth roughly $215 to $220 a month on a $320,000 loan."}}
 
 Paying points at closing lowers the rate: a point is interest paid up front. In 2023 more than half of single-family loans carried some ([CFPB](https://www.consumerfinance.gov/about-us/newsroom/cfpb-report-finds-significant-drop-in-annual-mortgage-applications-and-originations-in-2023)).
+
+{{tool rate-change-payment example=none text="Runs the same arithmetic on your own price, down payment and rate."}}
 
 ## The price
 

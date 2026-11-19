@@ -48,9 +48,11 @@ Ten more years of deposits, $12,000 more put in, and nearly twice the result.
 
 In real life a card requires minimum payments, and missed ones bring late fees and damage your credit, so no balance actually sits untouched. But every dollar of the balance you don't pay off behaves like the right-hand column.
 
-(Computed by the site. Savings compound monthly at the stated yearly yield; the card balance compounds daily at its APR. Taxes ignored.) [What Will My Savings Grow To?](/tools/savings-growth.html) runs the same arithmetic on your own figures.
+(Computed by the site. Savings compound monthly at the stated yearly yield; the card balance compounds daily at its APR. Taxes ignored.)
 
 {{illustration name=both-ways caption="$2,000 over ten years, saved at 4% and owed at 22.36%."}}
+
+{{tool savings-growth example=none text="Runs the same arithmetic on your own figures."}}
 
 ## What to do with it
 

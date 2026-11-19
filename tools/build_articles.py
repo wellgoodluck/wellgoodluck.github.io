@@ -74,7 +74,8 @@ classes in site.css's illustration block, never colors of its own. A missing fil
 
 and one for the "Try it with your own numbers" box that hands a reader off to a tool (Nov 19), on its own line where
 the article's worked example ends; the title comes from the tool page, k= opens the tool's named example, and
-example= replaces "It opens with this article's example." when the tool opens with only part of it (text= last):
+example= replaces "It opens with this article's example." when the tool opens with only part of it, and example=none
+drops it when the tool opens with numbers of its own (text= last):
 
     {{tool payment-plan-cost k=bnpl example="It opens with the sneakers from this example." text="Shows whether …"}}
 
@@ -261,7 +262,8 @@ def tool_directive(line):
         return f"<!-- tool box {html.escape(name)} skipped -->"
     href = f"../tools/{name}.html" + (f"#k={attrs['k']}" if re.fullmatch(r"[a-z0-9-]+", attrs.get("k", "")) else "")
     text = f'<p class="fdek">{inline(attrs["text"])}</p>' if attrs.get("text") else ""
-    how = inline(attrs.get("example") or TOOL_BOX_EXAMPLE) + " " + TOOL_BOX_PRIVATE
+    ex = attrs.get("example") or TOOL_BOX_EXAMPLE                # example=none: the tool doesn't open with the article's numbers
+    how = TOOL_BOX_PRIVATE if ex == "none" else inline(ex) + " " + TOOL_BOX_PRIVATE
     return (f'<aside class="tool-try" aria-label="Try it with your own numbers"><span class="flabel">Try it with your own numbers</span>'
             f'<a class="ftitle" href="{href}">{inline(TOOL_TITLES[name])}</a> →{text}'
             f'<p class="fhow">{how}</p></aside>')

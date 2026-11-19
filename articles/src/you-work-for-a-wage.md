@@ -25,7 +25,7 @@ What that average hides is the spread. Through 2023 the lowest-paid quarter of w
 
 {{chart id=cpi range=10y ov=wages,real_wages,cpi_rent caption="Inflation, wage growth, and the difference between them (real wage growth), with the rent line for comparison. Where the real line is below zero, the typical paycheck bought less than a year earlier."}}
 
-[Has It Kept Up With Prices?](../tools/kept-up.html#k=pay) puts your own pay next to the same price figures.
+{{tool kept-up k=pay example=none text="Puts your own pay next to the same price figures."}}
 
 ## The unemployment rate is your leverage
 

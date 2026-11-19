@@ -45,7 +45,7 @@ That's $1,061 a year. Cancel just the unused gym and the forgotten news trial an
 
 **Cancel in writing and keep proof.** Screenshot the confirmation. If charges continue after you've canceled, dispute them with your card company.
 
-[What Do I Take Home per Hour?](../tools/take-home-per-hour.html) shows what a subscription costs in hours of your work.
+{{tool take-home-per-hour example=none text="Shows what a subscription costs in hours of your work."}}
 
 ## The bigger picture
 
