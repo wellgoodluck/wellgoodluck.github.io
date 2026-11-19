@@ -465,6 +465,53 @@ h1, h2, h3, h4, .dek { text-wrap: balance; }
 .mt .mt-pair2 > .rb-f > label { align-self: end; }
 @media (max-width: 359px) { .mt .ku-kinds { display: grid; grid-template-columns: 1fr 1fr; } .mt .ku-kinds button + button { border-left: 0; } .mt .ku-kinds button:nth-child(even) { border-left: 1px solid var(--hairline); } .mt .ku-kinds button:nth-child(n+3) { border-top: 1px solid var(--hairline); } }   /* the four plan kinds as two rows on the smallest phones */
 @media (max-width: 360px) { .mt .rb-t th, .mt .rb-t td { padding-left: 6px; } }
+/* Nov 19: the savings tool's fill-in rates, the take-home tool's row of three and its hours box (assets/moneytools.js) */
+.mt .mt-fill { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: -2px 0 14px; font-size: 13.5px; color: var(--ink-2); }
+.mt .mt-fill .rb-seg { margin: 0; flex-wrap: wrap; }
+.mt .mt-fill .rb-seg button { min-height: 44px; white-space: normal; text-align: left; }
+.mt .mt-trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: auto auto auto; gap: 0 12px; align-items: start; margin-bottom: 12px; }
+.mt .mt-trio > .rb-f { display: grid; grid-row: span 3; grid-template-rows: subgrid; margin: 0; }
+.mt .mt-trio > .rb-f > label { align-self: end; }
+.mt .mt-trio .rb-in { display: flex; }
+.mt .mt-trio input[type="text"] { width: 100%; min-width: 0; }
+@media (max-width: 560px) { .mt .mt-trio { grid-template-columns: 1fr; grid-template-rows: none; } .mt .mt-trio > .rb-f { display: block; grid-row: auto; margin: 0 0 12px; } .mt .mt-trio input[type="text"] { width: 7.5em; } }
+.mt .mt-conv { margin: 18px 0 0; padding: 14px 0 0; border-top: 1px solid var(--hairline); }
+.mt .mt-conv .ku-h { margin-bottom: 10px; }
+.mt .mt-convout { margin: 4px 0 0; font-size: 16px; font-weight: 600; line-height: 1.4; color: var(--ink); }
+.mt .mt-convout:empty { display: none; }
+/* Nov 19: What's My Own Inflation Rate? (.mr, assets/myrate.js): a line per kind of spending, its year-ago box opened on request */
+.mr .mr-kl { margin: 0 0 4px; font-size: 13.5px; color: var(--ink-2); }
+.mr .mr-intro { margin: 6px 0 12px; font-size: 14px; }
+.mr .mr-lines { border-top: 1px solid var(--hairline); }
+.mr details .mr-lines { margin-top: 8px; }
+.mr .mr-line { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--hairline); }
+.mr .mr-line > .rb-hint { grid-column: 1 / -1; }
+.mr .mr-lab label { margin: 0; font-size: 15px; color: var(--ink); }
+.mr .mr-amts { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: flex-end; gap: 6px 12px; }
+.mr .mr-now, .mr .mr-ago, .mr .mr-nmf { display: flex; flex-direction: column; }
+.mr .mr-small { display: block; margin: 0 0 2px; font-size: 12.5px; color: var(--ink-2); }
+.mr .mr-nmf { margin-top: 6px; }
+.mr input.mr-name { width: 12em; max-width: 100%; }
+.mr .mr-use { min-height: 44px; padding: 0; border: 0; background: none; color: var(--nav); font: inherit; font-size: 13.5px; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; cursor: pointer; text-align: right; }
+.mr .mr-use:hover { color: var(--ink); }
+.mr .mr-use:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (max-width: 520px) { .mr .mr-line { grid-template-columns: 1fr; } .mr .mr-amts { justify-content: flex-start; margin-top: 6px; } .mr .mr-use { text-align: left; } }
+.rb .rb-t tr.mr-tot td { font-weight: 700; border-bottom: 0; }
+.rb caption.rb-tcap { text-align: left; font-size: 14px; font-weight: 600; color: var(--ink); }
+.mr #mr-more > summary { align-items: baseline; }
+.mr .mr-t td:first-child { white-space: normal; }
+/* Nov 19: What Does It Cost to Own a Car? (.cc, assets/carcost.js): a column per car, side by side when there's room */
+.cc .cc-cars { display: grid; grid-template-columns: 1fr; gap: 14px; margin: 4px 0 0; }
+@media (min-width: 700px) { .cc .cc-cars { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.cc .cc-car { margin: 0; padding: 10px 12px 12px; border: 1px solid var(--hairline); border-radius: 4px; }
+.cc .cc-car legend { float: left; width: 100%; margin: 0 0 8px; font-size: 15px; font-weight: 600; color: var(--ink); }
+.cc .cc-car legend + * { clear: both; }
+.cc .cc-car .rb-pair { grid-template-columns: repeat(auto-fit, minmax(9.5em, 1fr)); }   /* type and power side by side when they fit, else stacked */
+.cc .cc-car .rb-pair select { width: 100%; }
+.cc .cc-price { margin: 0 0 12px; padding: 10px 0 0; border-top: 1px dashed var(--frame); }
+.cc input.cc-name { width: 12em; max-width: 100%; }
+.cc .rb-rm { margin-top: 4px; }
+.cc .cc-t td:first-child { white-space: normal; }
 .article .tools-list { margin: 8px 0 0; padding: 0; list-style: none; }
 .article .tools-list li { margin: 0; padding: 4px 0 14px; border-bottom: 1px solid var(--hairline); }
 .article .tools-list li:first-child { border-top: 1px solid var(--hairline); }

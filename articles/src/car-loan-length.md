@@ -19,6 +19,7 @@ Nothing you type is saved or sent anywhere. A link carries your numbers only if 
 ## Read more
 
 - [The Seven-Year Car Loan](long-car-loans.html): why a lower payment can cost more, and what happens when you owe more than the car is worth.
+- [What Does It Cost to Own a Car?](/tools/car-ownership-cost.html): the loan is one of six yearly costs.
 
 ## Sources
 

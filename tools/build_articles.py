@@ -1105,6 +1105,103 @@ def rate_tool_attrs():
     return out
 
 
+_TOOL_FIG = []
+
+
+def _tool_figures():
+    """tools/figures.py and the committed data, for the starting figures written onto tool mounts (Nov 19). Loaded once."""
+    if not _TOOL_FIG:
+        try:
+            sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+            import figures as fg
+            _TOOL_FIG.extend([fg, fg.Data("data")])
+        except Exception as e:                                  # noqa: BLE001
+            print(f"tools: WARNING tool starting figures unavailable ({e})")
+            _TOOL_FIG.extend([None, None])
+    return _TOOL_FIG[0], _TOOL_FIG[1]
+
+
+def save_tool_attrs():
+    """Nov 19: the savings tool's buying-power line (the 12-month CPI change, as the page text prints it) and its
+    Treasury bill button (the latest weekly 3-month yield). Fail-soft: without one, assets/moneytools.js leaves out the
+    line or hides the button."""
+    fg, D = _tool_figures()
+    if not D:
+        return ""
+    out, note = "", []
+    try:
+        ym, p = fg.cpi12_nsa(D)
+        out += f' data-cpi12="{fg.half_up(p, 1)}" data-cpim="{fg.month_year(ym + "-01")}"'
+        note.append(f"prices {fg.half_up(p, 1)}% to {ym}")
+    except Exception as e:                                      # noqa: BLE001
+        note.append(f"no 12-month CPI change ({e}); the buying-power line is left out")
+    try:
+        d, v = fg._latest(D, "tbill_3mo")
+        out += f' data-tb="{fg.half_up(v, 2)}"'
+        note.append(f"Treasury bill {fg.half_up(v, 2)}% ({d})")
+    except Exception as e:                                      # noqa: BLE001
+        note.append(f"no Treasury bill rate ({e}); its button stays hidden")
+    print("tools: savings tool: " + "; ".join(note))
+    return out
+
+
+def myrate_tool_attrs():
+    """Nov 19: each line's 12-month change for What's My Own Inflation Rate? (figures.myrate_lines), as JSON. Fail-soft:
+    a line left out asks for the reader's own year-ago amount; with no data at all the tool says the figures didn't load."""
+    fg, D = _tool_figures()
+    if not D:
+        return ""
+    try:
+        ym, ch = fg.myrate_lines(D)
+    except Exception as e:                                      # noqa: BLE001
+        print(f"tools: WARNING inflation tool has no national figures ({e})")
+        return ""
+    missing = [k for k in fg.MYRATE_LINES if k not in ch]
+    core = [k for k in ("all", "rent", "elec", "groc", "eat", "gas", "carins", "med") if k not in ch]
+    if core:                                                    # the shown lines must all have a figure, or the tool says so
+        print(f"tools: WARNING inflation tool left without figures (no {', '.join(core)} to {ym}); it says the figures didn't load")
+        return ""
+    print(f"tools: inflation tool: {len(ch)} lines to {ym}" + (f"; no figure for {', '.join(missing)}" if missing else ""))
+    js = json.dumps({k: round(v, 4) for k, v in ch.items()}, separators=(",", ":"))
+    return f' data-m="{fg.month_year(ym + "-01")}" data-p="{html.escape(js, quote=True)}"'
+
+
+def car_tool_attrs():
+    """Nov 19: the car tool's starting gas and electricity prices and loan rate (figures.car_tool_inputs). Fail-soft:
+    assets/carcost.js falls back to AAA's own prices and the typed August 2026 loan rate."""
+    fg, D = _tool_figures()
+    if not D:
+        return ""
+    try:
+        x = fg.car_tool_inputs(D)
+    except Exception as e:                                      # noqa: BLE001
+        print(f"tools: WARNING car tool has no starting prices ({e})")
+        return ""
+    out = (f' data-gas="{x["gas"]}" data-gasw="{x["gas_week"]}" data-el="{x["elec"]}" data-elm="{x["elec_month"]}"'
+           + (f' data-apr="{x["apr"]}" data-aprm="{x["apr_month"]}"' if "apr" in x else ""))
+    print(f"tools: car tool: gas ${x['gas']} ({x['gas_week']}), electricity {x['elec']}¢ ({x['elec_month']}), "
+          + (f"loan {x['apr']}% ({x['apr_month']})" if "apr" in x else "no loan rate yet"))
+    return out
+
+
+def hour_tool_attrs():
+    """Nov 19: the national hourly pay figure for What Do I Take Home per Hour? Fail-soft: the line is left out."""
+    fg, D = _tool_figures()
+    if not D:
+        return ""
+    try:
+        x = fg.hour_tool_inputs(D)
+    except Exception as e:                                      # noqa: BLE001
+        print(f"tools: WARNING take-home tool has no national pay figure ({e})")
+        return ""
+    print(f"tools: take-home tool: pay ${x['pay']} ({x['pay_month']})")
+    return f' data-pay="{x["pay"]}" data-paym="{x["pay_month"]}"'
+
+
+TOOL_ATTRS = {"rate": rate_tool_attrs, "save": save_tool_attrs, "myrate": myrate_tool_attrs, "own": car_tool_attrs,
+              "hour": hour_tool_attrs}
+
+
 def render_tool(a):
     desc = html.escape(a.get("dek", a["title"]), quote=True)
     name = tool_name(a)
@@ -1115,8 +1212,10 @@ def render_tool(a):
     if a.get("dek"):
         page += f'<p class="dek">{inline(a["dek"])}</p>\n'
     body = a["body"]
-    if 'data-tool="rate"' in body:                                # Nov 11: the payment tool's starting rates
-        body = body.replace('data-tool="rate"', 'data-tool="rate"' + rate_tool_attrs(), 1)
+    for key, attrs in TOOL_ATTRS.items():                       # Nov 11 (rate), Nov 19 (the rest): starting figures on the mount
+        tag = f'data-tool="{key}"'
+        if tag in body:
+            body = body.replace(tag, tag + attrs(), 1)
     page += md_to_html(body)
     page += "\n</article>\n</main>\n"
     if 'class="table-scroll"' in page:

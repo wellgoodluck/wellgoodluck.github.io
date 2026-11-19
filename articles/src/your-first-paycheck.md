@@ -48,6 +48,8 @@ Putting $27 into the 401(k) costs only $24.30 of take-home pay, because less inc
 
 (Computed by the site with the IRS's 2026 percentage method tables in Publication 15-T. State taxes, if any, would come out too.)
 
+[What Do I Take Home per Hour?](../tools/take-home-per-hour.html) turns your own take-home pay into an hourly figure, counting the commute.
+
 ## What to do with it
 
 **Read the first stub line by line.** Check the hours, the pay rate, and that your filing status is right. Mistakes are easiest to fix on the first one.

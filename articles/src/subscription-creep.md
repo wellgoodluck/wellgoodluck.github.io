@@ -45,6 +45,8 @@ That's $1,061 a year. Cancel just the unused gym and the forgotten news trial an
 
 **Cancel in writing and keep proof.** Screenshot the confirmation. If charges continue after you've canceled, dispute them with your card company.
 
+[What Do I Take Home per Hour?](../tools/take-home-per-hour.html) shows what a subscription costs in hours of your work.
+
 ## The bigger picture
 
 [In October 2024, the Federal Trade Commission finalized](https://www.gibsondunn.com/ftc-restarts-negative-option-rulemaking-after-eighth-circuit-vacatur-enforcement-under-rosca-continues/) a "click to cancel" rule requiring that canceling a subscription be as easy as signing up, with clear disclosures and real consent before charging. In July 2025, a federal appeals court threw out the rule entirely, ruling that the FTC skipped a required step in the rulemaking process. The court didn't rule on whether the idea itself was good. [In March 2026, the FTC started the process over](https://www.cooley.com/news/insight/2026/2026-03-19-ftc-issues-new-advance-notice-of-proposed-rulemaking-on-negative-option-marketing); as of November it had not proposed a new rule.

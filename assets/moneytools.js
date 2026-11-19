@@ -1,5 +1,5 @@
-/* The Money Traps tools (Nov 9, 2026; revised after review), the payment tool (Nov 11) and the savings tool (Nov 19):
-   one script for six calculators, each mounted on <div class="mt-mount" data-tool="card|car|plan|match|rate|save">. Nothing the reader types is stored or sent; the page makes no
+/* The Money Traps tools (Nov 9, 2026; revised after review), the payment tool (Nov 11), the savings tool (Nov 19) and the
+   take-home tool (Nov 19): one script for seven calculators, each mounted on <div class="mt-mount" data-tool="card|car|plan|match|rate|save|hour">. Nothing the reader types is stored or sent; the page makes no
    requests. A link with the numbers is built only when the reader asks for one, and it carries them after "#", which
    browsers never send to a server. Styles: the shared calculator box (.rb, .ku layout) in assets/site.css, plus .mt. */
 (function () {
@@ -365,28 +365,47 @@
   }
   function years(n) { return n + (n === 1 ? " year" : " years"); }
   function yrs1(x) { return x < 100 ? num(Math.round(x * 10) / 10) : Math.round(x).toLocaleString("en-US"); }   /* 17.7, 183 */
+  /* Nov 19 follow-up: two fill-in rates for the compare box (the national average, and the Fed's weekly 3-month Treasury
+     yield written onto the mount by tools/build_articles.py as data-tb, hidden without it), and the buying-power line
+     from the 12-month CPI change as the page text prints it (data-cpi12, data-cpim; left out without it). */
+  var NAT = 0.38, TB = parseFloat(mount.getAttribute("data-tb")), CPI12 = mount.getAttribute("data-cpi12"), CPIM = mount.getAttribute("data-cpim");
+  if (!(TB > 0)) TB = null;
+  function buying(r, P, full) {                                  /* "gains about 0.3% in buying power a year", "loses about 3.2%" */
+    var g = ((1 + r / 100) / (1 + P / 100) - 1) * 100, x = (Math.round(Math.abs(g) * 10) / 10).toFixed(1);
+    if (Math.abs(g) < 0.05) return "about keeps even";
+    return (g > 0 ? "gains" : "loses") + " about " + x + "%" + (full ? " in buying power a year" : "");
+  }
   T.save = {
     h: "See what your savings could grow to",
     fields: [
       { id: "mt-st", key: "s", label: "Starting amount", pre: "$", ex: null, name: "the starting amount", optional: true, hint: "What's in the account now, if anything." },
       { id: "mt-dep", key: "d", label: "Added each month", pre: "$", ex: 100, name: "the monthly deposit", hint: "Enter 0 if you won't add any." },
       { id: "mt-apy", key: "r", label: "Yearly rate (APY)", post: "%", ex: 4, name: "the rate", hint: "On your statement or the bank's site." },
-      { id: "mt-cmp", key: "c", label: "Compare with another rate", post: "%", ex: 0.38, name: "the rate to compare", optional: true, hint: "Such as your current account's. The example uses the national average." },
+      { id: "mt-cmp", key: "c", label: "Compare with another rate", post: "%", ex: NAT, name: "the rate to compare", optional: true, hint: "Such as your current account's. The example uses the national average." },
       { id: "mt-yrs", key: "y", label: "Number of years", ex: 5, name: "the years" }
     ],
     form: function () {
       var F = this.fields;
+      var fill = '<div class="mt-fill"><span id="mt-fill-l">Or fill in:</span> <span class="rb-seg" role="group" aria-labelledby="mt-fill-l">' +
+        '<button type="button" data-v="' + NAT + '" aria-pressed="false">National average (' + NAT + '%)</button>' +
+        (TB ? '<button type="button" data-v="' + TB + '" aria-pressed="false">3-month Treasury bill (' + TB.toFixed(2) + '%)</button>' : "") + "</span></div>";
       return '<div class="rb-pair mt-pair2">' + field(F[0]) + field(F[1]) + "</div>" +
-        '<div class="rb-pair mt-pair2">' + field(F[2]) + field(F[3]) + "</div>" + field(F[4]);
+        '<div class="rb-pair mt-pair2">' + field(F[2]) + field(F[3]) + "</div>" + fill + field(F[4]);
     },
     notes: '<p class="rb-note">This assumes the rate stays the same and leaves out taxes and fees. Deposits are added at the end of each month.</p>',
     yrsOpen: null,                                               /* the reader's own choice to open or fold the table, once made */
-    init: function () {
+    init: function (calc) {
       var me = this;
       mount.addEventListener("click", function (ev) {
         var s = ev.target.closest && ev.target.closest("#mt-yrs-d > summary");
         if (s) me.yrsOpen = !s.parentNode.open;                   /* the state it is about to take */
+        var b = ev.target.closest && ev.target.closest(".mt-fill button");
+        if (b) { show("mt-cmp", Number(b.getAttribute("data-v"))); calc(); }
       });
+    },
+    post: function () {                                          /* a fill-in button reads pressed while the box holds its rate */
+      var x = parse($("mt-cmp").value);
+      [].forEach.call(mount.querySelectorAll(".mt-fill button"), function (b) { b.setAttribute("aria-pressed", String(x === Number(b.getAttribute("data-v")))); });
     },
     run: function (v) {
       var S = v["mt-st"], D = v["mt-dep"], a = v["mt-apy"], c = v["mt-cmp"], n = v["mt-yrs"];
@@ -430,15 +449,131 @@
         (a > 5 ? "Check: at more than 5%, this is closer to an assumption about investing than a savings rate. Investments that can earn more can also lose money, and nobody can promise any rate." : "");
       var extra = "The balance is in future dollars: prices will rise too, so it would buy less than that sum does today. " +
         (a > 0 ? "The balance keeps up with prices only if they rise less than " + pc(a) + " a year." : "At 0%, it loses buying power whenever prices rise.");
+      var P = parseFloat(CPI12);
+      if (P > 0 && CPIM) {                                       /* last year's published change at that pace, never a forecast */
+        var more = c != null ? ", and money earning " + pc(c) + " " + buying(c, P, false) : "";
+        extra += a > 0 ? " Prices rose " + CPI12 + "% over the 12 months to " + CPIM + ". At that pace, money earning " + pc(a) + " " + buying(a, P, true) + more + "."
+          : " Prices rose " + CPI12 + "% over the 12 months to " + CPIM + "; at that pace, money earning 0% " + buying(0, P, false) + " a year" + more + ".";
+      }
       return { lead: lead, sum: Y + ": " + (a > 0 ? "about " + money(G.bal) + " · " + money(I) + " interest" : money(G.bal) + " · no interest"), res: res, warn: w, spoken: lead, extra: extra };
     }
+  };
+
+  /* 7. What you take home per hour (Nov 19). Take-home pay comes from the reader's pay stub, so there are no tax tables;
+     the hours are the hours worked, paid or not, plus the commute, for each week worked. The national figure (BLS average
+     hourly earnings, production and nonsupervisory, not seasonally adjusted) is written onto the mount by
+     tools/build_articles.py (data-pay, data-paym) and left out without it. The hours box under the results turns a price
+     into hours of the reader's own work. */
+  var PAY = mount.getAttribute("data-pay"), PAYM = mount.getAttribute("data-paym");
+  var EVERY = { 52: "every week", 26: "every two weeks", 24: "twice a month", 12: "once a month" };
+  var WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
+  function word(n) { return n <= 10 ? WORDS[n] : n.toLocaleString("en-US"); }
+  function hrs1(x) { var r = Math.round(x * 10) / 10; return r === Math.round(r) ? String(Math.round(r)) : r.toFixed(1); }   /* 5, 4.2 */
+  function hoursOf(h) {                                          /* about 50 minutes · about 4.9 hours · about 67 hours */
+    if (h < 1) { var mn = Math.max(5, Math.round(h * 60 / 5) * 5); return mn >= 60 ? "about 1 hour" : "about " + mn + " minutes"; }
+    if (h < 10) { var x = hrs1(h); return "about " + x + (x === "1" ? " hour" : " hours"); }
+    return "about " + Math.round(h).toLocaleString("en-US") + " hours";
+  }
+  function fortyWeeks(h) {                                       /* in 40-hour weeks, to the nearest quarter */
+    var q = Math.round(h / 40 * 4) / 4, w = Math.floor(q), f = q - w;
+    if (q < 1) return "";
+    var s = f === 0 ? "about " + word(w) : f === 0.25 ? "a little over " + word(w) : f === 0.5 ? "about " + word(w) + " and a half" : "almost " + word(w + 1);
+    return s + " 40-hour " + (w === 1 && f < 0.5 ? "week" : "weeks");
+  }
+  T.hour = {
+    h: "Work out what you keep per hour",
+    maxNames: 2,
+    fields: [
+      { id: "mt-th", key: "t", label: "Take-home pay per paycheck", pre: "$", ex: 1850, name: "the take-home pay", cls: "rb-wide", hint: "The net pay line on your stub, after taxes, insurance and retirement." },
+      { id: "mt-hw", key: "h", label: "Hours you work in a typical week", ex: 45, name: "the hours", hint: "Including hours you aren't paid for, like staying late or answering email at home." },
+      { id: "mt-cm", key: "m", label: "Commute, minutes each way", ex: 30, name: "the commute", hint: "Door to door. Enter 0 if you work from home." },
+      { id: "mt-cd", key: "d", label: "Days you commute a week", ex: 5, name: "the commuting days" },
+      { id: "mt-cc", key: "c", label: "Getting to work, a month", pre: "$", ex: 250, name: "the cost of getting to work", hint: "Gas, parking, tolls and fares. Leave out car payments and insurance you'd pay anyway." },
+      { id: "mt-oc", key: "o", label: "Other costs of working, a month", pre: "$", ex: null, name: "the other costs", optional: true, hint: "Anything you pay only because you work." },
+      { id: "mt-wo", key: "w", label: "Weeks off with pay a year", ex: 2, name: "the weeks off", hint: "Vacation and paid holidays. Unpaid time off already shows in your pay." },
+      { id: "mt-gp", key: "g", label: "Pay before taxes per paycheck", pre: "$", ex: 2500, name: "the pay before taxes", optional: true, cls: "rb-wide", hint: "The gross pay line. Adds a comparison with the national figure." },
+      { id: "mt-pr", key: "p", label: "Price", pre: "$", ex: 15, name: "the price", cls: "rb-wide" }
+    ],
+    selects: [{ id: "mt-fq", key: "f", name: "how often you're paid" }, { id: "mt-pf", key: "q", name: "how often you pay it" }],
+    form: function () {
+      var F = this.fields;
+      return '<div class="rb-pair mt-pair2">' + field(F[0]) + select("mt-fq", "Paid", [["52", "Every week"], ["26", "Every two weeks"], ["24", "Twice a month"], ["12", "Once a month"]]) + "</div>" +
+        '<div class="mt-trio">' + field(F[1]) + field(F[2]) + field(F[3]) + "</div>" +
+        '<div class="rb-pair mt-pair2">' + field(F[4]) + field(F[5]) + "</div>" + field(F[6]) +
+        '<details id="mt-more" open><summary>More detail: your pay before taxes</summary>' + field(F[7]) + "</details>";
+    },
+    notes: function (F) {
+      return '<div class="mt-conv"><h3 class="ku-h" id="mt-conv-h">What something costs in hours of work</h3>' +
+        '<div class="rb-pair mt-pair2">' + field(F[8]) + select("mt-pf", "How often", [["o", "Once"], ["m", "Every month"], ["y", "Every year"]]) + "</div>" +
+        '<p class="mt-convout" id="mt-convout"></p></div>';
+    },
+    init: function () { $("mt-fq").value = "26"; $("mt-pf").value = "m"; },
+    run: function (v) {
+      var th = v["mt-th"], per = Number($("mt-fq").value), hw = v["mt-hw"], cm = v["mt-cm"], cd = v["mt-cd"], cc = v["mt-cc"], oc = v["mt-oc"], wo = v["mt-wo"], gp = v["mt-gp"], pr = v["mt-pr"];
+      if (th == null || !(th > 0) || th > 1e6) return { err: "Enter your take-home pay per paycheck in dollars, up to $1 million.", f: "mt-th" };
+      if (hw == null || isNaN(hw) || hw < 1 || hw > 120) return { err: "Enter the hours you work in a typical week, from 1 to 120.", f: "mt-hw" };
+      if (cm == null || isNaN(cm) || cm < 0 || cm > 300) return { err: "Enter the commute in minutes each way, from 0 to 300.", f: "mt-cm" };
+      if (cd == null && cm === 0) cd = 0;
+      if (cd == null || isNaN(cd) || cd < 0 || cd > 7) return { err: "Enter the days you commute a week, from 0 to 7.", f: "mt-cd" };
+      if (cc == null || isNaN(cc) || cc < 0 || cc > MAX) return { err: "Enter what getting to work costs a month in dollars, or 0.", f: "mt-cc" };
+      if (isNaN(oc) || (oc != null && (oc < 0 || oc > MAX))) return { err: "Enter other costs of working a month in dollars, or leave it blank.", f: "mt-oc" };
+      if (wo == null || isNaN(wo) || wo < 0 || wo > 20 || wo !== Math.floor(wo)) return { err: "Enter weeks off with pay as a whole number from 0 to 20.", f: "mt-wo" };
+      if (isNaN(gp) || (gp != null && (gp <= th || gp > 1e6))) return { err: "Enter pay before taxes per paycheck, more than your take-home, or leave it blank.", f: "mt-gp", open: true };
+      var weeks = 52 - wo, year = th * per, cost = 12 * (cc + (oc || 0)), left = year - cost;
+      var workH = hw * weeks, perWk = cm * 2 * cd / 60, commH = perWk * weeks, allH = workH + commH;
+      var atWork = year / workH, per1 = left / allH, fmt = function (x) { return money(x, true); };
+      var lead, second = "", sum;
+      if (left <= 0) { lead = "Counting what it costs to get to work, there's nothing left per hour: the costs come to more than your take-home pay."; sum = "Nothing left per hour"; }
+      else {
+        if (commH > 0 && cost > 0) lead = "Counting your commute and what it costs to get there, you take home about " + fmt(per1) + " for each hour you give to work.";
+        else if (commH > 0) lead = "Counting your commute, you take home about " + fmt(per1) + " for each hour you give to work.";
+        else if (cost > 0) lead = "Counting the costs of working, you take home about " + fmt(per1) + " for each hour you work.";
+        else lead = "You take home about " + fmt(per1) + " for each hour you work.";
+        if (commH > 0) second = " Leaving out the commute and its costs, it's about " + fmt(atWork) + " an hour.";
+        else if (cost > 0) second = " Leaving out those costs, it's about " + fmt(atWork) + " an hour.";
+        sum = "about " + fmt(per1) + " an hour" + (commH > 0 ? ", counting the commute" : "");
+      }
+      var rows = row("Take-home a year", money(year), cash(th) + " " + EVERY[per]);
+      if (cost > 0) rows += row("Costs of working", "−" + money(cost), [cc ? cash(cc) + " a month to get to work" : "", oc ? cash(oc) + " a month other costs" : ""].filter(Boolean).join(" and ")) + row("Left", money(left));
+      rows += row("Hours at work", Math.round(workH).toLocaleString("en-US"), num(hw) + " a week for " + weeks + (weeks === 1 ? " week" : " weeks"));
+      if (commH > 0) rows += row("Hours commuting", Math.round(commH).toLocaleString("en-US"), hrs1(perWk) + " a week") + row("Hours given to work", Math.round(allH).toLocaleString("en-US"));
+      rows += row("Per hour", left > 0 ? fmt(per1) : "–");
+      var ex = [];
+      if (commH > 0) {
+        var yr = commH >= 100 ? Math.round(commH / 10) * 10 : Math.round(commH), fw = fortyWeeks(commH);
+        ex.push("Your commute adds " + hrs1(perWk) + (hrs1(perWk) === "1" ? " hour" : " hours") + " a week, about " + yr.toLocaleString("en-US") + " hours a year" + (fw ? ": " + fw : "") + ".");
+      }
+      if (gp != null) {
+        var gy = gp * per, kept = Math.round(Math.max(left, 0) / gy * 100);
+        ex.push("Before taxes and deductions, your pay comes to about " + fmt(gy / workH) + " for each hour you work. About " + kept + "¢ of each dollar of it is left after taxes, deductions" + (cost > 0 ? " and the costs of working." : "."));
+        if (PAY && PAYM) ex.push("The national average for production and nonsupervisory workers was $" + PAY + " an hour in " + PAYM + ", before taxes, counted per hour paid.");
+      }
+      var w = hw > 80 ? "Check: " + num(hw) + " hours a week is more than most full-time work. Is that the number you meant?"
+        : cm > 120 ? "Check: " + num(cm) + " minutes each way is a " + hrs1(cm * 2 / 60) + "-hour round trip. Is that the number you meant?"
+        : gp != null && gp > 3 * th ? "Check: take-home is less than a third of pay before taxes. If your stub's net pay is after a large one-time deduction, use a typical check." : "";
+      /* the hours box: a price in hours of the reader's own work */
+      var soft = null, conv = "";
+      if (isNaN(pr) || (pr != null && (pr < 0 || pr > 1e7))) soft = { err: "Enter a price in dollars, up to $10 million.", f: "mt-pr" };
+      else if (pr != null && pr > 0) {
+        if (left <= 0) conv = "With nothing left per hour after the costs of working, there's no figure to turn this into hours.";
+        else {
+          var h = pr / per1, q = $("mt-pf").value, wk = hw + perWk, wks = function (x) { return x >= wk ? ", about " + (x / wk < 10 ? (Math.round(x / wk * 10) / 10).toFixed(1) : Math.round(x / wk)) + " of your work weeks" : ""; };
+          if (q === "m") conv = cash(pr) + " a month comes to " + hoursOf(h) + " of your work a month, " + hoursOf(12 * h) + " a year.";
+          else if (q === "y") conv = cash(pr) + " a year comes to " + hoursOf(h) + " of your work" + wks(h) + ".";
+          else conv = cash(pr) + " comes to " + hoursOf(h) + " of your work" + wks(h) + ".";
+        }
+      }
+      this.conv = conv;
+      return { lead: lead + second, sum: sum, res: '<dl class="rb-res">' + rows + "</dl>", warn: w, spoken: lead + second + (conv ? " " + conv : ""), extra: ex.join(" "), soft: soft };
+    },
+    post: function (R) { $("mt-convout").textContent = R.err ? "" : this.conv || ""; }
   };
 
   /* ---------- wiring ---------- */
   var Tool = T[which];
   if (!Tool) return;
   var kind = Tool.kinds ? Object.keys(Tool.kinds)[0] : null, timer = null, lastEx = "", applied = "";
-  mount.innerHTML = shell(Tool.h, Tool.form(), Tool.notes);
+  mount.innerHTML = shell(Tool.h, Tool.form(), typeof Tool.notes === "function" ? Tool.notes(Tool.fields) : Tool.notes);
   var SEL = Tool.selects || [];
   /* each box is described by its own hint, plus any shared hint (the kind hint, the match formula hint) */
   Tool.fields.forEach(function (f) { f.desc0 = [f.hint ? f.id + "-h" : "", f.desc || "", Tool.kinds && f.id === "mt-amt" ? "mt-kh" : ""].join(" ").trim(); });
@@ -463,7 +598,10 @@
     var blanks = ex.filter(function (f) { return exOf(f) == null; }).every(holdsEx);
     var sel = !Tool.kinds || ($("mt-freq").value === Tool.kinds[kind].freq && $("mt-first").value === Tool.kinds[kind].first);
     var all = left.length === ex.filter(function (f) { return exOf(f) != null; }).length && blanks && sel;
-    return { all: all, left: left.map(function (f) { return nameOf(f) + " (" + (f.say ? f.say(exOf(f)) : f.pre ? cash(exOf(f)) : f.post ? pc(exOf(f)) : exOf(f)) + ")"; }) };
+    var names = left.map(function (f) { return nameOf(f) + " (" + (f.say ? f.say(exOf(f)) : f.pre ? cash(exOf(f)) : f.post ? pc(exOf(f)) : exOf(f)) + ")"; });
+    var k = Tool.maxNames;                                         /* Nov 19: a long list names the first few and counts the rest */
+    if (k && names.length > k + 1) names = names.slice(0, k).concat([(names.length - k) + " other figures"]);
+    return { all: all, left: names };
   }
   function mark(R) { var el = $(R.f); el.setAttribute("aria-invalid", "true"); el.setAttribute("aria-describedby", ((el.getAttribute("aria-describedby") || "") + " mt-e").trim()); if (R.open && $("mt-more")) $("mt-more").open = true; }
   function calc() {
@@ -476,7 +614,7 @@
     if (R.err) {
       e.hidden = false; e.textContent = "! " + R.err; mark(R);
       $("mt-lead").hidden = true; $("mt-res").innerHTML = ""; $("mt-extra").hidden = true; $("mt-w").hidden = true; $("mt-share").hidden = true;
-      $("mt-sumt").textContent = "No result yet: " + R.err; announce(R.err); place(); return;
+      $("mt-sumt").textContent = "No result yet: " + R.err; announce(R.err); place(); if (Tool.post) Tool.post(R); return;
     }
     e.hidden = !R.soft; e.textContent = R.soft ? "! " + R.soft.err : ""; if (R.soft) mark(R.soft);   /* a problem in an optional part keeps the main answer */
     $("mt-share").hidden = false; $("mt-copied").textContent = "";
@@ -488,6 +626,7 @@
     var exSay = exKey !== lastEx && exKey && exKey !== "all" ? " Still the example's: " + andList(ex.left) + "." : "";
     lastEx = exKey;
     announce((ex.all ? "Example figures. " : "") + R.spoken + (R.warn ? " " + R.warn : "") + (R.soft ? " " + R.soft.err : "") + exSay);
+    if (Tool.post) Tool.post(R);                                   /* Nov 19: a tool's own after-step (fill-in buttons, the hours box) */
     place();
   }
   function announce(t) { clearTimeout(timer); timer = setTimeout(function () { $("mt-live").textContent = t; }, 700); }

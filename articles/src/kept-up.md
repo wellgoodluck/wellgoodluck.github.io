@@ -24,6 +24,7 @@ Nothing you type is saved or sent anywhere. A link carries your numbers only if 
 - [You're Retired on a Fixed Income](you-are-retired-on-a-fixed-income.html): inflation, and the raise that answers it.
 - [You Rent](you-rent.html): why rent in the price index moves slowly.
 - [Hourly Pay](what-is-hourly-pay.html): the pay figure on the almanac.
+- [What's My Own Inflation Rate?](/tools/my-inflation-rate.html): your own prices, line by line, over the past year.
 
 ## Sources
 

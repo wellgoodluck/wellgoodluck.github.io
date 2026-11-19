@@ -1398,7 +1398,10 @@
     // Nov 8: the tiles a tool answers link to it, opening the tool on the matching kind (#k=…; read by assets/keptup.js)
     const TOOL_LINK = { pay: ['pay', 'Check your own pay against prices'], cpi: ['other', 'What an amount from another year is worth now'], rent: ['rent', 'Check your own rent against prices'],
       mortgage: [null, 'Try your own loan', 'tools/rate-change-payment.html'] };   // Nov 11: a third entry is a tool of its own
+    const TOOL_LINK2 = { cpi: ['Work out your own rate from your spending', 'tools/my-inflation-rate.html'],   // Nov 19: a second tool link on a tile
+      drive_cost: ['Compare two cars\' full cost a year', 'tools/car-ownership-cost.html'] };
     if (TOOL_LINK[t.id]) top.appendChild(el('p', { class: 'explainer' }, [el('a', { href: TOOL_LINK[t.id][2] || 'tools/kept-up.html#k=' + TOOL_LINK[t.id][0], text: TOOL_LINK[t.id][1] + ' →' })]));
+    if (TOOL_LINK2[t.id]) top.appendChild(el('p', { class: 'explainer' }, [el('a', { href: TOOL_LINK2[t.id][1], text: TOOL_LINK2[t.id][0] + ' →' })]));
 
     mid.appendChild(buildChart(t, data.recessions, wide));
 

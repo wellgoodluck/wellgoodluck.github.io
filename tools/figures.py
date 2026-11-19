@@ -1283,6 +1283,156 @@ def fig_real_retail_yoy(D):
     return _yoy_words(D, "real_retail")
 
 
+# ---------------------------------------------------------------------------
+# Nov 19: the tools' starting figures, one rule for the page text here and for the figures tools/build_articles.py writes
+# onto each tool's mount, so the two always agree. A 12-month change needs a reading in the month and in the same month a
+# year earlier, from the not seasonally adjusted levels (BLS's own 12-month figures use them). Most BLS series have no
+# October 2025, so there is no 12-month change for October 2026.
+# ---------------------------------------------------------------------------
+def _by_month(D, sid):
+    try:
+        obs = D.get(sid)["obs"]
+    except KeyError:
+        return {}
+    return {o[0][:7]: o[1] for o in obs if o[1] is not None}
+
+
+def _year_before(ym):
+    return f"{int(ym[:4]) - 1:04d}{ym[4:]}"
+
+
+def _months_apart(a, b):
+    return (int(b[:4]) - int(a[:4])) * 12 + int(b[5:7]) - int(a[5:7])
+
+
+def yoy12(D, sid):
+    """{YYYY-MM: percent change from 12 months earlier} for a series of levels."""
+    lv = _by_month(D, sid)
+    return {ym: (v / lv[_year_before(ym)] - 1) * 100 for ym, v in lv.items() if lv.get(_year_before(ym))}
+
+
+def half_up(v, places):
+    """Rounded the way people round (3.805 -> 3.81), as a string."""
+    q = Decimal(1).scaleb(-places)
+    return str(Decimal(repr(v)).quantize(q, rounding=ROUND_HALF_UP))
+
+
+def cpi12_nsa(D):
+    """(YYYY-MM, percent): the latest 12-month change in the not seasonally adjusted CPI-U (cpi_nsa)."""
+    ch = yoy12(D, "cpi_nsa")
+    if not ch:
+        raise KeyError("no 12-month change in cpi_nsa")
+    ym = max(ch)
+    return ym, ch[ym]
+
+
+def fig_cpi12_month(D):
+    return month_year(cpi12_nsa(D)[0] + "-01"), ["https://fred.stlouisfed.org/series/CPIAUCNS"]
+
+
+def fig_cpi12(D):
+    return half_up(cpi12_nsa(D)[1], 1) + "%", ["https://fred.stlouisfed.org/series/CPIAUCNS"]
+
+
+def val_cpi12(D):
+    return float(half_up(cpi12_nsa(D)[1], 1))
+
+
+# What's My Own Inflation Rate?: each line's national figure. "lvl": a companion of not seasonally adjusted levels;
+# "yoy": a tile already kept as the change from a year earlier (car insurance and child care, from the BLS API).
+MYRATE_LINES = {
+    "all": ("lvl", "cpi_nsa"), "rent": ("lvl", "rent_nsa"), "elec": ("lvl", "elec_nsa"), "groc": ("lvl", "food_home_nsa"),
+    "eat": ("lvl", "food_away_nsa"), "gas": ("lvl", "gasoline_nsa"), "carins": ("yoy", "car_insurance"),
+    "med": ("lvl", "medical_nsa"), "pgas": ("lvl", "pipedgas_nsa"), "water": ("lvl", "water_nsa"),
+    "phone": ("lvl", "phone_nsa"), "repair": ("lvl", "carrepair_nsa"), "transit": ("lvl", "transit_nsa"),
+    "cloth": ("lvl", "apparel_nsa"), "child": ("yoy", "child_care"), "oer": ("lvl", "oer_nsa"),
+}
+
+
+def myrate_lines(D):
+    """(YYYY-MM, {line: percent}): one month for every line, the latest that prices overall ("all") and every line still
+    current (within three months of prices overall) can compare with a year earlier. A line with no figure that month is
+    left out, and the tool asks for the reader's own year-ago amount for it instead."""
+    ch = {}
+    for k, (how, sid) in MYRATE_LINES.items():
+        c = yoy12(D, sid) if how == "lvl" else _by_month(D, sid)
+        if c:
+            ch[k] = c
+    if "all" not in ch:
+        raise KeyError("no 12-month change in cpi_nsa")
+    top = max(ch["all"])
+    current = [max(c) for k, c in ch.items() if _months_apart(max(c), top) <= 3]
+    m = max(ym for ym in ch["all"] if ym <= min(current))
+    return m, {k: c[m] for k, c in ch.items() if m in c}
+
+
+def fig_myrate_month(D):
+    return month_year(myrate_lines(D)[0] + "-01"), []
+
+
+def val_myrate_all(D):
+    return myrate_lines(D)[1]["all"]
+
+
+def _latest(D, sid):
+    obs = [o for o in D.get(sid)["obs"] if o[1] is not None]
+    return obs[-1]
+
+
+def car_tool_inputs(D):
+    """The car tool's starting prices and loan rate, as printed: gasoline (the gas tile, weekly), electricity (the
+    electricity tile, dollars per kWh, shown in cents) and the 60-month new-car loan rate (companion car_loan_rate)."""
+    out = {}
+    d, v = _latest(D, "gas")
+    out.update(gas=half_up(v, 2), gas_week=period(d, "w"))
+    d, v = _latest(D, "electricity")
+    out.update(elec=half_up(v * 100, 1), elec_month=month_year(d))
+    try:
+        d, v = _latest(D, "car_loan_rate")
+        out.update(apr=half_up(v, 2), apr_month=month_year(d))
+    except KeyError:
+        pass
+    return out
+
+
+def fig_car_gas(D):
+    return "$" + car_tool_inputs(D)["gas"], ["https://fred.stlouisfed.org/series/GASREGW"]
+
+
+def fig_car_gas_week(D):
+    return car_tool_inputs(D)["gas_week"], []
+
+
+def fig_car_elec(D):
+    return car_tool_inputs(D)["elec"] + "¢", ["https://fred.stlouisfed.org/series/APU000072610"]
+
+
+def fig_car_elec_month(D):
+    return car_tool_inputs(D)["elec_month"], []
+
+
+def fig_car_apr(D):
+    return car_tool_inputs(D)["apr"] + "%", ["https://fred.stlouisfed.org/series/RIFLPBCIANM60NM"]
+
+
+def fig_car_apr_month(D):
+    return car_tool_inputs(D)["apr_month"], []
+
+
+def hour_tool_inputs(D):
+    """Average hourly earnings, production and nonsupervisory workers, not seasonally adjusted (companion pay_nsa)."""
+    d, v = _latest(D, "pay_nsa")
+    return {"pay": half_up(v, 2), "pay_month": month_year(d)}
+
+
+def fig_hour_pay(D):
+    return "$" + hour_tool_inputs(D)["pay"], ["https://fred.stlouisfed.org/series/CEU0500000008"]
+
+
+def fig_hour_pay_month(D):
+    return hour_tool_inputs(D)["pay_month"], []
+
+
 FIGS = {
     "used_cars_yoy": fig_used_cars_yoy, "car_insurance_yoy": fig_car_insurance_yoy, "medical_care_yoy": fig_medical_care_yoy,
     "child_care_yoy": fig_child_care_yoy, "real_retail_yoy": fig_real_retail_yoy,
@@ -1329,6 +1479,9 @@ FIGS = {
     "ev_fast_words": fig_ev_fast_words, "ev_fast_clause": fig_ev_fast_clause,
     "eggs_rank": fig_eggs_rank, "milk_rank": fig_milk_rank, "bread_rank": fig_bread_rank, "coffee_rank": fig_coffee_rank,
     "ground_beef_rank": fig_ground_beef_rank, "chicken_rank": fig_chicken_rank,
+    "cpi12_month": fig_cpi12_month, "cpi12": fig_cpi12, "myrate_month": fig_myrate_month,
+    "car_gas": fig_car_gas, "car_gas_week": fig_car_gas_week, "car_elec": fig_car_elec, "car_elec_month": fig_car_elec_month,
+    "car_apr": fig_car_apr, "car_apr_month": fig_car_apr_month, "hour_pay": fig_hour_pay, "hour_pay_month": fig_hour_pay_month,
 }
 VALUES = {      # usable on the left of a check as fig:<name>
     "claims_rule_last": val_claims_rule_last,
@@ -1339,6 +1492,7 @@ VALUES = {      # usable on the left of a check as fig:<name>
     "fafh_gap": val_fafh_gap, "fafh_since_2019_pct": val_fafh_since_2019_pct,
     "rent_since_2019_pct": val_rent_since_2019_pct,
     "ev_saving": val_ev_saving, "ev_ratio": val_ev_ratio, "ev_fast_gap": val_ev_fast_gap,
+    "cpi12": val_cpi12, "myrate_all": val_myrate_all,
 }
 
 
