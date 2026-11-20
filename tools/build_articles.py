@@ -1044,10 +1044,32 @@ def search_form(fid, cls):
             f'enterkeyhint="search"><button type="submit">Search</button></div></form>\n')
 
 
+def article_ld(a, card):
+    """Nov 19 (SEO audit): schema.org Article markup for articles, Plain words and household paths (not pages, landing
+    pages, lessons or tools), so search engines read the dates and the preview image the same way every time. No
+    author or publisher: the site has no byline and no organization behind it. isPartOf names the WebSite that
+    index.html describes."""
+    if a.get("kind") not in (None, "", "concept", "path") or a["slug"] in LANDINGS:
+        return ""
+    url = f"{SITE}/articles/{a['slug']}.html"
+    pub = a["date"]
+    mod = max(pub, a.get("updated") or pub)
+    ld = {"@context": "https://schema.org", "@type": "Article", "headline": plain(a["title"]),
+          "description": plain(a.get("dek", a["title"])), "datePublished": pub, "dateModified": mod,
+          "url": url, "mainEntityOfPage": url, "image": card or f"{SITE}/assets/og-card.png", "inLanguage": "en",
+          "isAccessibleForFree": True, "license": "https://creativecommons.org/licenses/by/4.0/",
+          "isPartOf": {"@type": "WebSite", "@id": f"{SITE}/#website", "name": "Economy in Context", "url": f"{SITE}/"}}
+    return ('<script type="application/ld+json">' + json.dumps(ld, ensure_ascii=False).replace("</", "<\\/")
+            + "</script>\n")
+
+
 def render_article(a):
     desc = html.escape(a.get("dek", a["title"]), quote=True)
     page = HEAD.format(title=html.escape(a["title"]), desc=desc, canonical=f"{SITE}/articles/{a['slug']}.html", css_v=asset_stamp("assets/site.css"), menu=menu_for(a))
     card = card_for(a)                             # Nov 11: the article's own preview card, when one is current
+    ld = article_ld(a, card)
+    if ld:
+        page = page.replace("</head>", ld + "</head>", 1)
     if card:
         lab = card_label(a)
         alt = html.escape((lab + ": " if lab else "") + plain(a["title"]), quote=True)
@@ -1743,6 +1765,7 @@ def write_explainers(out_root, articles):
     print(f"built data/explainers.json ({len(ex)} indicators)")
     print("featured: " + (("series " if feat.get("kind") == "series" else "") + f"{feat['slug']} (since {feat['featured']})" if feat else "none")
           + (f"; next {nxt['slug']} on {nxt['featured']}" if nxt else ""))
+    return ex                                      # Nov 19: main() hands it to the chart pages
 
 
 def body_offset(path, body):
@@ -1878,7 +1901,12 @@ def main():
         f.write(render_not_found())
     print("built search/index.html and 404.html")
     write_tool_prices(out_root)
-    write_explainers(out_root, articles)
+    explainers = write_explainers(out_root, articles)
+    if cp and CHART_IDS:                                    # Nov 19: each chart page's "In plain words" link, as plain HTML
+        try:
+            cp.write_chart_explainers(out_root, explainers, CHART_IDS)
+        except Exception as e:                              # noqa: BLE001
+            print(f"chart pages: WARNING explainer links not written ({e})")
     write_feed(out_dir, articles)
     write_sitemap(out_root, articles, tools, spanish)
     unlink_held(out_root)
@@ -1913,6 +1941,7 @@ def render_search_page():
                        canonical=f"{SITE}/search/", css_v=asset_stamp("assets/site.css"), menu=site_menu("search"))
     page = page.replace('<meta property="og:type" content="article">', '<meta property="og:type" content="website">', 1)
     page = page.replace("</head>", _HASH_Q + "</head>", 1)
+    page = page.replace("</head>", '<meta name="robots" content="noindex">\n</head>', 1)   # Nov 19: a shell, not a page to list
     page += ('<main class="wrap article search-page" id="main">\n<h1>Search</h1>\n' + search_form("q", "sform-page")
              + '<p class="s-privacy">The search runs in your browser: it downloads pieces of the site\'s index, the way it '
                'loads any page, and looks there. What you type isn\'t sent to anyone or counted.</p>\n'

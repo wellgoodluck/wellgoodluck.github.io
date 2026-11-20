@@ -142,6 +142,78 @@ def headline(t):
     return fmt_value(c["current"]["value"], d), fmt_period(c["current"]["date"], _pf(t), True)
 
 
+def prev_label(freq):
+    """As prevLabel() in chart.html (it reads the tile's freq, not pf)."""
+    return {"a": "Previous year", "q": "Previous quarter", "w": "Previous week"}.get(freq, "Previous month")
+
+
+RECENT_N = {"m": 24, "q": 12, "w": 26, "d": 24, "a": 10}   # as the almanac's "Show recent readings" (index.html)
+EXPLAINER_SLOT = "<!--static-explainer-->"
+
+
+def static_reading(t):
+    """Nov 19 (SEO audit): the figures a chart page's script draws under the headline, as plain HTML, for crawlers that
+    don't run scripts (ChatGPT's, Claude's and Perplexity's read only the HTML) and readers without them. Every string is
+    one the page already shows: the previous and year-ago readings, the note, the source line and, as on the almanac's
+    tiles, the recent readings. An inline script hides the block at once, and render() clears <main>, so readers with
+    scripts see the page as before. Site search skips it (data-pagefind-ignore). The explainer link goes in at
+    EXPLAINER_SLOT once data/explainers.json is known (write_chart_explainers)."""
+    e = html.escape
+    d, c = t["display"], t["context"]
+    spans = []
+    if t.get("headline"):
+        spans.append(f"Monthly average {fmt_period(c['current']['date'], 'm')}: {fmt_value(c['current']['value'], d)}")
+    else:
+        spans.append(f"{prev_label(t['freq'])}: {fmt_value(c['previous']['value'], d)}")
+    if c.get("year_ago") and t["freq"] != "a":
+        spans.append(f"A year ago: {fmt_value(c['year_ago']['value'], d)}")
+    out = ['<p class="compare">' + "".join(f"<span>{e(s)}</span>" for s in spans) + "</p>", EXPLAINER_SLOT]
+    if t.get("note"):
+        out.append(f'<p class="note">{e(t["note"])}</p>')
+    s = t["source"]
+    src = f'Source: <a href="{e(s["url"], quote=True)}" rel="noopener">{e(s.get("label") or "FRED " + s["series"])}</a>'
+    if t.get("headline"):
+        h = t["headline"]
+        src += f' and <a href="{e(h["url"], quote=True)}" rel="noopener">{e(h["series"])}</a>'
+    src += f', updated {e((s.get("last_updated") or "")[:10])}. Figures are the current vintage and are revised by the agencies.'
+    out.append(f'<p class="source">{src}</p>')
+    obs = (t.get("observations") or [])[-RECENT_N.get(t["freq"], 24):]
+    if obs:
+        unit = d.get("unit", "")
+        rows = "".join(f'<tr><td>{e(fmt_period(o[0], _pf(t)))}</td><td class="num">{e(fmt_value(o[1], d))}</td></tr>'
+                       for o in reversed(obs))
+        out.append('<details class="table"><summary>Show recent readings</summary>'
+                   '<div class="scroll" tabindex="0" role="region" aria-label="Recent readings"><table>'
+                   f'<caption class="sr-only">{e(t["title"])}, recent readings</caption>'
+                   f'<thead><tr><th scope="col">Period</th><th scope="col" class="num">{e(unit[:1].upper() + unit[1:])}</th></tr></thead>'
+                   f'<tbody>{rows}</tbody></table></div></details>')
+    return ('<div class="static-reading" id="static-reading" data-pagefind-ignore>' + "".join(out) + "</div>"
+            "<script>document.getElementById('static-reading').hidden = true;</script>")
+
+
+def write_chart_explainers(out_root, explainers, ids):
+    """Put each chart page's "In plain words" link into its static block, from the explainers build_articles.py wrote
+    to data/explainers.json (the same link the script draws in the masthead). A page without one loses the slot."""
+    n = 0
+    for tid in ids:
+        path = os.path.join(out_root, "chart", tid, "index.html")
+        try:
+            page = open(path, encoding="utf-8").read()
+        except OSError:
+            continue
+        if page.count(EXPLAINER_SLOT) != 1:
+            continue
+        ex = (explainers or {}).get(tid)
+        link = ""
+        if ex and ex.get("url") and ex.get("title"):
+            url = ex["url"] if re.match(r"^(/|https?:)", ex["url"]) else "/" + ex["url"]
+            link = f'<p>In plain words: <a href="{html.escape(url, quote=True)}">{html.escape(ex["title"])} →</a></p>'
+            n += 1
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(page.replace(EXPLAINER_SLOT, link, 1))
+    print(f"chart pages: explainer links on {n} of {len(ids)} pages")
+
+
 def page_text(t):
     """The text a chart's page carries before its script runs."""
     value, when = headline(t)
@@ -257,6 +329,17 @@ def write_chart_pages(out_root, series_path=os.path.join("data", "series.json"))
             page = page.replace(m[0], m[0].replace("Loading the figures…", html.escape(txt["status"])))
         else:
             warn.append(f"status: expected one match in chart.html, found {len(m)}")
+        # Nov 19: the rest of the reading as plain HTML after the status line (see static_reading)
+        try:
+            block = static_reading(t)
+        except Exception as e:                               # a tile missing a field keeps the status line alone
+            warn.append(f"{t['id']}: no static reading ({e})")
+            block = ""
+        sm = re.findall(r'<p class="status" id="status"[^>]*>.*?</p>', page)
+        if block and len(sm) == 1:
+            page = page.replace(sm[0], sm[0] + "\n  " + block, 1)
+        elif block:
+            warn.append(f"static reading: expected one status line, found {len(sm)}")
         page = _search_marks(page, t["id"], also, warn)
         os.makedirs(os.path.join(out_root, "chart", t["id"]), exist_ok=True)
         with open(os.path.join(out_root, "chart", t["id"], "index.html"), "w", encoding="utf-8") as f:
