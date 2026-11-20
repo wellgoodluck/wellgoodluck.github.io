@@ -1,5 +1,6 @@
 ---
 title: A Record in Which Dollars? Student Page
+title_tag: Gas Prices in Today's Dollars Worksheet (Student Page)
 dek: Restate old gas prices in today's dollars and decide which record is real.
 date: 2026-11-12
 kind: page

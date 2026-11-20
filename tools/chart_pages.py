@@ -214,13 +214,47 @@ def write_chart_explainers(out_root, explainers, ids):
     print(f"chart pages: explainer links on {n} of {len(ids)} pages")
 
 
+# Nov 19 (SEO audit): on tiles whose name is a bare noun, the browser-tab and search-result title names the measure the
+# way people search for it. Title tag only: the h1, the status line, og:title (link previews) and site search keep
+# "<Tile>: <value> (<period>)". Prices: (label, unit). Changes from a year ago: label, then up / down / unchanged.
+TITLE_PRICE = {
+    "gas": ("Gas price", "a gallon"), "diesel": ("Diesel price", "a gallon"),
+    "electricity": ("Electricity price", "a kilowatt-hour"), "natural_gas": ("Natural gas price", "a therm"),
+    "eggs": ("Egg price", "a dozen"), "milk": ("Milk price", "a gallon"), "bread": ("Bread price", "a pound"),
+    "coffee": ("Coffee price", "a pound"), "ground_beef": ("Ground beef price", "a pound"),
+    "chicken": ("Whole chicken price", "a pound"), "corn": ("Corn price", "a bushel"),
+    "soybeans": ("Soybean price", "a bushel"), "wheat": ("Wheat price", "a bushel"), "cotton": ("Cotton price", "a pound"),
+}
+TITLE_CHANGE = {
+    "rent": "Rent", "medical_care": "Medical care prices", "car_insurance": "Car insurance prices",
+    "child_care": "Child care prices", "used_cars": "Used car prices", "home_prices": "Home prices",
+    "pay": "Hourly pay", "cattle": "Cattle prices", "fertilizer": "Nitrogen fertilizer prices",
+    "dollar": "Value of the dollar",
+}
+
+
+def search_title_line(t, value, when):
+    """The title-tag line for a tile in TITLE_PRICE or TITLE_CHANGE, or None for the usual "<Tile>: <value> (<period>)"."""
+    tid = t["id"]
+    if tid in TITLE_PRICE:
+        label, unit = TITLE_PRICE[tid]
+        return f"{label}: {value} {unit} ({when})"
+    if tid in TITLE_CHANGE:
+        raw = (t.get("headline") or t["context"]["current"])["value"]
+        size = fmt_value(abs(raw), t["display"]).lstrip("+")
+        if re.fullmatch(r"0(\.0+)?%", size):
+            return f"{TITLE_CHANGE[tid]}: unchanged from a year ago ({when})"
+        return f"{TITLE_CHANGE[tid]}: {'up' if raw > 0 else 'down'} {size} from a year ago ({when})"
+    return None
+
+
 def page_text(t):
     """The text a chart's page carries before its script runs."""
     value, when = headline(t)
     sentence = context_sentence(t)
     line = f"{t['title']}: {value} ({when})"
     return {
-        "title": line + " — Economy in Context",
+        "title": (search_title_line(t, value, when) or line) + " — Economy in Context",
         "og_title": line,
         "description": f"{t['title']}: {t['subtitle']}. {sentence} Full history with optional overlays.".replace("  ", " "),
         "og_description": (f"{t['subtitle']}. {sentence}").strip(),

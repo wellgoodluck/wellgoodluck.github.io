@@ -1,5 +1,6 @@
 ---
 title: What a Point Is Worth: Student Page
+title_tag: Mortgage Rates Worksheet (Student Page)
 dek: Monthly payments at three rates, and what one point does.
 date: 2026-11-12
 kind: page

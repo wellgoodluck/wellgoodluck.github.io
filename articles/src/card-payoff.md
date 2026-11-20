@@ -1,5 +1,6 @@
 ---
 title: How Long Will It Take to Pay Off a Card?
+title_tag: Credit Card Payoff Calculator: How Long Will It Take?
 dek: Your balance, your card's rate and what you can pay each month, against paying only the minimum.
 date: 2026-11-09
 kind: tool

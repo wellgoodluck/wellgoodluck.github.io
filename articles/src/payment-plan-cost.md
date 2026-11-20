@@ -1,5 +1,6 @@
 ---
 title: What a Payment Plan Really Costs
+title_tag: Payment Plan Cost Calculator: The True Yearly Rate
 dek: Rent-to-own, a payday loan, pay in 4 or any plan of equal payments: the total you'd pay, the extra over the price, and the yearly rate it works out to.
 date: 2026-11-09
 kind: tool

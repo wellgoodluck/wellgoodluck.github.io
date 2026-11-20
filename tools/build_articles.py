@@ -1044,6 +1044,19 @@ def search_form(fid, cls):
             f'enterkeyhint="search"><button type="submit">Search</button></div></form>\n')
 
 
+def use_title_tag(page, a):
+    """Nov 19 (SEO audit): front matter `title_tag:` replaces the title in the browser tab and in search results only.
+    The h1, og:title (link previews), the feed, the JSON-LD headline and site search keep `title`."""
+    tt = a.get("title_tag")
+    if not tt:
+        return page
+    old = f"<title>{html.escape(a['title'])} — Economy in Context</title>"
+    if page.count(old) != 1:
+        print(f"WARNING {a['slug']}: title_tag not applied")
+        return page
+    return page.replace(old, f"<title>{html.escape(tt)} — Economy in Context</title>", 1)
+
+
 def article_ld(a, card):
     """Nov 19 (SEO audit): schema.org Article markup for articles, Plain words and household paths (not pages, landing
     pages, lessons or tools), so search engines read the dates and the preview image the same way every time. No
@@ -1066,6 +1079,7 @@ def article_ld(a, card):
 def render_article(a):
     desc = html.escape(a.get("dek", a["title"]), quote=True)
     page = HEAD.format(title=html.escape(a["title"]), desc=desc, canonical=f"{SITE}/articles/{a['slug']}.html", css_v=asset_stamp("assets/site.css"), menu=menu_for(a))
+    page = use_title_tag(page, a)
     card = card_for(a)                             # Nov 11: the article's own preview card, when one is current
     ld = article_ld(a, card)
     if ld:
@@ -1317,6 +1331,7 @@ def render_tool(a, by_href=None, more=None, groups=None):
     name = tool_name(a)
     canonical = f"{SITE}/tools/" if name == "index" else f"{SITE}/tools/{name}.html"
     page = HEAD.format(title=html.escape(a["title"]), desc=desc, canonical=canonical, css_v=asset_stamp("assets/site.css"), menu=menu_for(a))
+    page = use_title_tag(page, a)
     if name == "index" and groups:                              # Nov 19: the articles index's On this page bar, one link a group
         page += f'<div class="wrap article article-head">\n<h1>{inline(a["title"])}</h1>\n'
         if a.get("dek"):

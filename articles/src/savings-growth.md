@@ -1,5 +1,6 @@
 ---
 title: What Will My Savings Grow To?
+title_tag: Savings Growth Calculator: What Will My Savings Grow To?
 dek: Your starting amount, what you add each month and your account's rate: the balance it could grow to, how much of it is interest, and how long money takes to double.
 date: 2026-11-19
 kind: tool

@@ -1,5 +1,6 @@
 ---
 title: Inflation in Context: Student Page
+title_tag: Inflation Worksheet (Student Page)
 dek: This month's inflation number, what it means, and whether a raise kept up.
 date: 2026-11-12
 kind: page

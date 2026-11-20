@@ -1,5 +1,6 @@
 ---
 title: What Does It Cost to Own a Car?
+title_tag: Car Ownership Cost Calculator: What a Car Costs a Year
 dek: One car, or two side by side: what each costs a year to own and drive, line by line, including the cost most people leave out, the value it loses.
 date: 2026-11-19
 kind: tool

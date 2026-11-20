@@ -1,5 +1,6 @@
 ---
 title: What a Rate Change Does to a Payment
+title_tag: Mortgage Rate Change Calculator: What a Point Does to a Payment
 dek: A home loan's monthly principal and interest at the rate you enter, and at a point lower and a point higher.
 date: 2026-11-11
 kind: tool

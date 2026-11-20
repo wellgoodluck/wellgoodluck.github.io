@@ -1,5 +1,6 @@
 ---
 title: What's My Own Inflation Rate?
+title_tag: Personal Inflation Calculator: What's My Own Inflation Rate?
 dek: What you spend each month, line by line: how much your own prices rose over the past year, next to the figure for prices overall, and the raise it would take to keep up.
 date: 2026-11-19
 kind: tool

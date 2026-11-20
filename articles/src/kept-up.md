@@ -1,5 +1,6 @@
 ---
 title: Has It Kept Up With Prices?
+title_tag: Inflation Calculator: Has Your Pay Kept Up With Prices?
 dek: Put your pay, a benefit, your rent or any other amount next to what prices did over the same years.
 date: 2026-11-08
 kind: tool

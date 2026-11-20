@@ -1,5 +1,6 @@
 ---
 title: What Do I Take Home per Hour?
+title_tag: Real Hourly Wage Calculator: What Do I Take Home per Hour?
 dek: Your take-home pay, your hours and your commute: what you keep for each hour you give to work, and what something costs in hours of it.
 date: 2026-11-19
 kind: tool

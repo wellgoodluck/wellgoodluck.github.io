@@ -1,5 +1,6 @@
 ---
 title: Who Counts as Unemployed: Student Page
+title_tag: Unemployment Rate Worksheet (Student Page)
 dek: Three rules, twelve people, one town's unemployment rate.
 date: 2026-11-12
 kind: page

@@ -1,5 +1,6 @@
 ---
 title: Reading the Warning Lights: Student Page
+title_tag: Recession Indicators Worksheet (Student Page)
 dek: Three indicators people watch before a recession is called. Fill in your group's box, then the others as they report.
 date: 2026-11-12
 kind: page

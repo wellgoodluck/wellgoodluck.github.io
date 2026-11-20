@@ -1,5 +1,6 @@
 ---
 title: Are You Getting the Full Match?
+title_tag: 401(k) Match Calculator: Are You Getting the Full Match?
 dek: Your pay, your employer's match formula and what you put in: the match you get, the match you leave behind, and what it could grow to.
 date: 2026-11-09
 kind: tool

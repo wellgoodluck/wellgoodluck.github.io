@@ -1,5 +1,6 @@
 ---
 title: What a Car Loan Costs, by Length
+title_tag: Car Loan Length Calculator: 4, 5, 6 or 7 Years
 dek: The same car on a four-, five-, six- or seven-year loan: the monthly payment, the interest, and what you'd still owe along the way.
 date: 2026-11-09
 kind: tool
