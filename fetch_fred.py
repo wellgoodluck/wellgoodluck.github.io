@@ -1363,6 +1363,23 @@ COMPANIONS = [
     {"id": "health_jobs_level", "label": "All employees, health care, thousands", "for": [], "series": "CES6562000101",
      "params": {"observation_start": "1990-01-01"}, "freq": "m",
      "why": "Used for health care jobs as reported and as an index on its chart page."},
+    # Per-person views (Nov 22): the U.S. population for housing starts per 1,000 people; real GDP and real GDP per
+    # person as a change from a year ago, in one shared panel under the growth chart (the gap is population growth);
+    # median personal income, rebased with median household income below.
+    {"id": "population_monthly", "label": "U.S. population, thousands", "for": [],
+     "series": "POPTHM", "params": {"observation_start": "1959-01-01"}, "freq": "m",
+     "why": "Used for housing starts per 1,000 people. BEA's monthly estimate of the U.S. population: the resident population plus armed forces stationed overseas."},
+    {"id": "gdp_yoy", "label": "Real GDP, change from a year ago", "for": ["gdp"],
+     "series": "GDPC1", "params": {"units": "pc1", "observation_start": "1948-01-01"}, "freq": "q",
+     "why": "The whole economy's output, adjusted for inflation, against the same quarter a year earlier. Set against the per-person line, the gap between them is roughly how fast the population grew. Different scale: percent, year over year.",
+     "panel": "group:gdp_per_person", "panel_title": "Change from a year ago", "display": {"scale": 1, "decimals": 1, "suffix": "%", "clip": [-10, 14]}},
+    {"id": "gdp_per_person_yoy", "label": "Real GDP per person, change from a year ago", "for": ["gdp"],
+     "series": "A939RX0Q048SBEA", "params": {"units": "pc1", "observation_start": "1948-01-01"}, "freq": "q",
+     "why": "Real GDP divided by the population (BEA), against the same quarter a year earlier: whether output is growing faster than the number of people sharing it. Different scale: percent, year over year.",
+     "panel": "group:gdp_per_person", "display": {"scale": 1, "decimals": 1, "suffix": "%"}},
+    {"id": "median_personal_income", "label": "Median personal income, dollars", "for": [],
+     "series": "MEPAINUSA672N", "params": {"observation_start": "1974-01-01"}, "freq": "a",
+     "why": "Used for the per-person line on the median household income chart. Census Bureau, people 15 and older with income, in the same inflation-adjusted dollars as household income."},
     {"id": "gdp_real_level", "label": "Real gross domestic product, billions of chained 2017 dollars, at a yearly rate", "for": [],
      "series": "GDPC1", "params": {"observation_start": "1947-01-01"}, "freq": "q",
      "why": "Used for real GDP as reported, as an index and its change from a year ago on the economic growth chart page."},
@@ -2507,6 +2524,40 @@ DERIVED = [
         "op": "scale", "a": "price_level", "k": 1, "freq": "m",
         "why": "The whole consumer price index on the same footing, for comparison: rent above this line has risen faster than prices in general. Different scale: 2019 average = 100.",
         "panel": "group:rent_vs_ss", "panel_title": "2019 average = 100", "display": {"scale": 1, "decimals": 1, "suffix": ""},
+    },
+    # Housing starts per 1,000 people (Nov 22): starts as a percent of the population, then per 1,000.
+    {
+        "id": "starts_pop_pct",
+        "label": "Housing starts as a percent of the population",
+        "for": [],
+        "op": "ratio", "a": "housing_starts", "b": "population_monthly", "freq": "m",
+        "why": "Used for housing starts per 1,000 people.",
+    },
+    {
+        "id": "starts_per_1000",
+        "label": "Homes started per 1,000 people, at a yearly pace",
+        "for": ["housing_starts"],
+        "op": "scale", "a": "starts_pop_pct", "k": 10, "freq": "m",
+        "why": "Housing starts (HOUST, at a yearly pace) divided by the U.S. population (POPTHM): the same count of homes means less building per person when there are more people to house. The population figure arrives a little after starts, so the latest month or two can be missing. Different scale: homes per 1,000 people a year.",
+        "panel": "own", "display": {"scale": 1, "decimals": 1, "suffix": ""},
+    },
+    # Median household and median personal income, both 1984 = 100, in one shared panel (Nov 22): households have
+    # gotten smaller, so the two grow at different speeds.
+    {
+        "id": "household_income_1984",
+        "label": "Median household income, 1984 = 100",
+        "for": ["median_income"],
+        "op": "rebase", "a": "median_income", "base_start": "1984-01-01", "base_end": "1984-12-31", "freq": "a",
+        "why": "The tile itself (MEHOINUSA672N), as an index, so its growth can be set against income per person. Different scale: 1984 = 100.",
+        "panel": "group:income_1984", "panel_title": "1984 = 100", "display": {"scale": 1, "decimals": 0, "suffix": ""},
+    },
+    {
+        "id": "personal_income_1984",
+        "label": "Median personal income, 1984 = 100",
+        "for": ["median_income"],
+        "op": "rebase", "a": "median_personal_income", "base_start": "1984-01-01", "base_end": "1984-12-31", "freq": "a",
+        "why": "The middle income among people 15 and older who have any income (Census Bureau, MEPAINUSA672N), in the same inflation-adjusted dollars, as an index. Households have gotten smaller, and more women have incomes of their own, so a household's income and a person's can grow at different speeds. Different scale: 1984 = 100.",
+        "panel": "group:income_1984", "display": {"scale": 1, "decimals": 0, "suffix": ""},
     },
 ]
 # Each price tile also gets its inflation-adjusted line on the detail page: the same
