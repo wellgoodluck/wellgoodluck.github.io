@@ -1,5 +1,5 @@
 {
- "version": "2026-11-12",
+ "version": "2026-11-22",
  "maintenance": "Party lanes need a two-line edit every other January after a new Congress is seated (next: January 2027). Fed chair, FOMC estimates and events are edited as they happen.",
  "political_note": "Control is shown as of inauguration (January 20) and the seating of each Congress (January 3). Policy acts with a lag, often a year or more, and shocks do not follow the election calendar.",
  "group_notes": {
@@ -111,6 +111,55 @@
    ],
    "requires": "sahm",
    "note": "Applies to the Sahm indicator, not the unemployment rate itself. Shown only when that companion is on."
+  },
+  {
+   "id": "breakeven_jobs",
+   "type": "band",
+   "group": "Reference lines",
+   "label": "Breakeven job growth, range of three Federal Reserve estimates",
+   "applies_to": [
+    "payrolls"
+   ],
+   "as_of": "November 2026",
+   "alt": "about 155,000 to 250,000 a month in 2023–24, about zero to 85,000 in 2025, and near zero to 87,000 projected for 2026",
+   "segments": [
+    {
+     "start": "2023-01-01",
+     "end": "2024-12-31",
+     "low": 155,
+     "high": 250,
+     "text": "2023–24: about 155,000 to 250,000 a month"
+    },
+    {
+     "start": "2025-01-01",
+     "end": "2025-12-31",
+     "low": 0,
+     "high": 85,
+     "text": "2025: about zero to 85,000 a month"
+    },
+    {
+     "start": "2026-01-01",
+     "end": "2026-12-31",
+     "low": 0,
+     "high": 87,
+     "text": "2026, projected in early 2026: near zero to 87,000 a month"
+    }
+   ],
+   "note": "Breakeven is the number of jobs the economy needs to add each month to keep the unemployment rate steady as the number of people working or looking for work changes. Economists estimate it differently, largely because immigration is hard to measure and because they treat trends in who is working or looking for work differently. The band runs from the lowest to the highest of three Federal Reserve estimates for each period: for 2023–24, about 155,000 (Federal Reserve Board economists, the two-year average) to 250,000 (Dallas Fed, its 2023 peak); for 2025, about zero (Dallas Fed, late 2025) to 85,000 (Federal Reserve Board economists); for 2026, projections made early in the year, near zero (Federal Reserve Board economists, under low immigration) to 87,000 (St. Louis Fed, using CBO's immigration projection). Other published estimates fall outside the band; some put 2026 slightly below zero. Estimates, not targets: monthly job counts swing widely and are revised, so one month above or below the band says little.",
+   "sources": [
+    {
+     "label": "Federal Reserve Board",
+     "url": "https://www.federalreserve.gov/econres/notes/feds-notes/labor-force-growth-breakeven-employment-and-potential-gdp-growth-20260402.html"
+    },
+    {
+     "label": "Dallas Fed",
+     "url": "https://www.dallasfed.org/research/economics/2026/0331"
+    },
+    {
+     "label": "St. Louis Fed",
+     "url": "https://www.stlouisfed.org/on-the-economy/2026/mar/breakeven-employment-growth-estimate-range-widens-2026"
+    }
+   ]
   },
   {
    "id": "baseline",

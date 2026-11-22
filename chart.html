@@ -241,6 +241,8 @@
   .chart .prelim-dot { fill: var(--surface); stroke: var(--series); stroke-width: 2; }
   .chart .ref { stroke: var(--ref); stroke-width: 1; stroke-dasharray: 4 3; }
   .chart .ref.median { stroke-width: 1.5; stroke-dasharray: 1 3; stroke-linecap: round; }
+  .chart .band { fill: var(--ref); fill-opacity: 0.12; }
+  .chart .band-edge { stroke: var(--ref); stroke-width: 1; stroke-dasharray: 2 3; fill: none; }
   .chart .ref-label { font-size: 11px; fill: var(--ref); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
   .chart .xhair { stroke: var(--muted); stroke-width: 1; }
   .chart .hover-dot { stroke: var(--surface); stroke-width: 2; }
@@ -272,6 +274,7 @@
   .legend i.rec { width: 10px; height: 10px; background: var(--recession); border: 1px solid var(--hairline); vertical-align: -1px; }
   .legend i.dash { height: 0; border-top: 2px dashed var(--ref); }
   .legend i.dash.dot { border-top-style: dotted; }
+  .legend i.band { width: 14px; height: 9px; background: color-mix(in srgb, var(--ref) 12%, transparent); border-top: 1px dashed var(--ref); border-bottom: 1px dashed var(--ref); vertical-align: -1px; }
   .legend i.lane { width: 10px; height: 10px; border: 1px solid var(--hairline); vertical-align: -1px; border-radius: 0; }
   .legend i.lane.hatch { background-image: repeating-linear-gradient(-45deg, transparent 0 2.3px, var(--surface) 2.3px 3.5px); }
   .framing { margin: 10px 0 0; padding: 8px 12px; background: var(--banner); color: var(--banner-ink); border-radius: 4px; font-size: 13.5px; }
@@ -1167,6 +1170,8 @@
       const F = ctx.form(), d = F.display, { start, end } = window_(), fobs = F.series({ start, end });
       const act = activeOverlays(), cmpO = ctx.compare();
       const lines = act.filter(o => o.type === 'line' || o.type === 'stat');
+      // bands (Nov 22): a dated range of published estimates, in the tile's own unit, so like fixed lines only in its own form
+      const bands = act.filter(o => o.type === 'band');
       // series on the main scale share its unit; the rest each get a sub-panel (never a second axis). A series moved off
       // the main scale by Show it as keeps the tile's own number format; the compared number keeps its own.
       const series = act.filter(o => o.type === 'series').concat(cmpO ? [cmpO] : []).map(o => ctx.shares(o) ? o : Object.assign({}, o, { display: o.display || t.display }));
@@ -1233,6 +1238,14 @@
       }).filter(x => x.v != null);
       ctx.drawn.lines = lineVals.map(x => x.o);
       lineVals.forEach(x => { if (x.v < lo) lo = x.v; if (x.v > hi) hi = x.v; });
+      const bandSegs = [];
+      bands.forEach(o => (o.segments || []).forEach(sg => {
+        const a = Math.max(parseDate(sg.start).getTime(), x0), b = Math.min(parseDate(sg.end).getTime() + 86400000, x1);
+        if (b <= a) return;
+        bandSegs.push({ o, sg, a, b });
+        const l = clampV(sg.low), h = clampV(sg.high); if (l < lo) lo = l; if (h > hi) hi = h;
+      }));
+      ctx.drawn.bands = bands;
       if (lo === hi) { lo -= 1; hi += 1; }
       const pad = (hi - lo) * 0.08; lo -= pad; hi += pad;
       const ys = v => mT + (hi - v) / (hi - lo) * ih;
@@ -1273,6 +1286,17 @@
         for (let yv = y0; yv <= end.getUTCFullYear(); yv += everyY) { const dt = Date.UTC(yv, 0, 1); if (dt < x0 || dt > x1) continue; const tx = svgEl('text', { x: xs(dt), y: xLabelY, 'text-anchor': 'middle' }); tx.textContent = yv; axis.appendChild(tx); }
       }
       svg.appendChild(axis);
+
+      // bands: each period's range, from its low to its high, dashed at both edges; the hover title gives its figures
+      bandSegs.forEach(({ o, sg, a, b }) => {
+        const xa = xs(a), w = Math.max(1, xs(b) - xa), yt = ys(clampV(sg.high)), yb = ys(clampV(sg.low));
+        const g = svgEl('g', { class: 'band-g' });
+        g.appendChild(svgEl('rect', { class: 'band', x: xa, y: yt, width: w, height: Math.max(1, yb - yt) }));
+        g.appendChild(svgEl('line', { class: 'band-edge', x1: xa, x2: xa + w, y1: yt, y2: yt }));
+        g.appendChild(svgEl('line', { class: 'band-edge', x1: xa, x2: xa + w, y1: yb, y2: yb }));
+        const tt = svgEl('title', {}); tt.textContent = o.label + ', ' + (sg.text || (fmtValue(sg.low, d) + ' to ' + fmtValue(sg.high, d))); g.appendChild(tt);
+        svg.appendChild(g);
+      });
 
       // reference lines. Each label goes where neither the data nor a label already drawn is: scan the plot in
       // label-width windows, right to left, row by row (above the line first, then just below it, then further out)
@@ -1572,6 +1596,7 @@
       compPts.concat(subs.map(o => ({ o }))).forEach(c => legend.appendChild(el('span', {}, [el('i', { style: 'background:' + colorFor(c.o.id), 'data-slot': state.slots.has(c.o.id) ? state.slots.get(c.o.id) : 0 }),
         c.o.isCompare ? 'Compared: ' + c.o.label + ' (' + c.o.unit + ')' : c.o.label])));
       lineVals.forEach(x => legend.appendChild(el('span', {}, [el('i', { class: 'dash' + (x.o.stat === 'median' ? ' dot' : '') }), x.o.label])));
+      bands.forEach(o => legend.appendChild(el('span', {}, [el('i', { class: 'band' }), o.label])));
       legend.appendChild(el('span', {}, [el('i', { class: 'rec' }), 'Recessions (NBER)']));
       // lane colors that carry meaning get a key: party, and the Fed's lighter (easing) and darker (tightening) shades
       const laneKey = (fill, text, hatch) => legend.appendChild(el('span', {}, [el('i', { class: 'lane' + (hatch ? ' hatch' : ''), style: 'background-color:' + fill }), text]));
@@ -2336,6 +2361,7 @@
         lab.appendChild(document.createTextNode(o.label));
         const extras = [], desc = [];
         if (o.source && o.source.url) extras.push(el('a', { href: o.source.url, rel: 'noopener', text: 'Source' }));
+        (o.sources || []).forEach((sr, i) => { if (i) extras.push(document.createTextNode('·')); extras.push(el('a', { href: sr.url, rel: 'noopener', text: sr.label })); });
         if (o.as_of) extras.push(el('span', { text: 'As of ' + o.as_of + '.' }));
         if (o.requires) { const req = overlays.find(x => x.id === o.requires); if (req) { const r = el('span', { id: id + '-req', text: 'Requires "' + req.label + '".' }); extras.push(r); desc.push(r.id); } }
         const note = o.note || o.why;
@@ -2829,6 +2855,7 @@
         + (series.length ? ', with ' + listWords(series) : '') + (c ? ', compared with ' + lowerFirst(c.label) + ' (' + c.unit + ')' + (ctx.shares(c) ? ' on the same scale' : ' in its own panel below') : '')
         + '. Recessions are shaded'
         + (eras.length ? '; bands below the chart mark ' + listWords(eras) : '') + (refs.length ? '; dashed lines mark ' + listWords(refs) : '')
+        + (act.some(o => o.type === 'band') ? '; a shaded band marks ' + listWords(act.filter(o => o.type === 'band').map(o => lowerFirst(o.label) + (o.alt ? ' (' + o.alt + ')' : ''))) : '')
         + (evs.length ? '; markers along the top show ' + listWords(evs) : '') + '.'];
       const lp = fobs.filter(p => p[0] <= v.last).pop();
       // the tile's own sentence describes its own form, so another form leaves it out
@@ -2963,7 +2990,7 @@
     ctx.inForm = o => {
       const F = ctx.form();
       if (F.own) return true;
-      if (o.type === 'line' || o.id === t.id + '_real') return false;
+      if (o.type === 'line' || o.type === 'band' || o.id === t.id + '_real') return false;
       if (o.type === 'stat') { const st = F.stats(); return o.stat === 'median' ? st.median != null : st.baseline != null; }
       return true;
     };
