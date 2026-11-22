@@ -569,6 +569,12 @@ h1, h2, h3, h4, .dek { text-wrap: balance; }
 .sp .sp-key .sw.b-nat { background: var(--c3); }   /* the swatches are HTML spans: fill (above, for the SVG bars) doesn't color them */
 .sp .sp-key .sw.b-intl { background: var(--c2); }
 .sp .sp-key .sw.b-dom { background: var(--c1); }
+.sp .sp-flows > p:not(.sp-ct):not(.sp-note) { margin: 0 0 8px; }
+.sp .sp-ftgrid { margin-top: 6px; }   /* stacked at every width: the tool box is too narrow for two four-column tables side by side */
+.sp .sp-ft .rb-t { margin-bottom: 6px; }
+.sp .sp-ft .rb-t td:first-child { white-space: normal; }   /* "District of Columbia" wraps rather than pushing the numbers off a phone */
+.sp .sp-ft .rb-t td { padding-top: 5px; padding-bottom: 5px; }
+.sp .sp-ft caption.rb-tcap { font-size: 13.5px; font-weight: 600; color: var(--ink-2); }
 .sp .sp-share { margin: 14px 0 0; }
 .sp .sp-copied { margin-left: 10px; font-size: 13.5px; color: var(--ink-2); }
 .sp .sp-copied input { width: 100%; max-width: 24em; height: 36px; padding: 0 8px; border: 1px solid var(--muted); border-radius: 4px; background: var(--page); color: var(--ink); font: inherit; font-size: 13.5px; }

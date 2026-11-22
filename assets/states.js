@@ -2,8 +2,11 @@
    state file that tools/make_states.py writes from the Census Bureau's latest vintage (population via FRED, components
    of change from the vintage's ALLDATA file). Everything shown is computed from that file: the two lead sentences, the
    population line since 1900 and the components bars. The reader's state goes in the link only when they copy one with
-   it ("#k=<state>"), and changing the state rewrites the hash so a copied address carries it. Styles: the shared
-   calculator box (.rb) plus .sp in assets/site.css. */
+   it ("#k=<state>"), and changing the state rewrites the hash so a copied address carries it. The movers section
+   (Nov 22, 2026, second batch) reads the file's "flows" block, the American Community Survey state-to-state table:
+   the top five states each way, each with its net and the survey's 90% margins; a net or a ranking the margins
+   can't separate is said to be too close to call. Styles: the shared calculator box (.rb) plus .sp in
+   assets/site.css. */
 (function () {
   var mount = document.querySelector(".sp-mount");
   if (!mount) return;
@@ -49,7 +52,7 @@
     var now = s.est["y" + y], prev = s.est["y" + (y - 1)];
     var change = now - prev, pct = Math.abs(change) / prev * 100;
     var pctTxt = pct < 0.05 ? "less than 0.1%" : f1(pct) + "%";
-    var p1 = s.name + " had " + fmt(now) + " residents in July " + y + ": " +
+    var p1 = cap(the(s.name)) + " had " + fmt(now) + " residents in July " + y + ": " +
       (change >= 0 ? "up " + fmt(change) : "down " + fmt(-change)) + ", or " + pctTxt + ", over the year.";
     var nat = s.natural[i], intl = s.intl[i];
     var p2 = "Where that came from: " +
@@ -58,9 +61,81 @@
       domClause(s, i, D.states) + ".";
     var first = s.pop[0], last = s.pop[s.pop.length - 1], ratio = last / first;
     var times = ratio >= 10 ? Math.round(ratio) : Math.round(ratio * 10) / 10;
-    var p3 = "The chart runs back to " + s.first + ", when " + s.name + " had about " + millions(first) +
+    var p3 = "The chart runs back to " + s.first + ", when " + the(s.name) + " had about " + millions(first) +
       " people — today's figure is about " + times + " times that.";
     return [p1, p2, p3];
+  }
+
+  /* ---------- movers: which states people came from and went to ---------- */
+  function pname(k) { return D.states[k] ? D.states[k].name : (D.flows.names[k] || k); }
+  function the(n) { return n === "District of Columbia" ? "the " + n : n; }   /* in a sentence; tables and the picker keep the bare name */
+  function cap(t) { return t.charAt(0).toUpperCase() + t.slice(1); }
+  function moe2(a, b) { return Math.sqrt(a * a + b * b); }
+  function apart(e1, m1, e2, m2) { return Math.abs(e1 - e2) > moe2(m1, m2); }   /* differ by more than the margin of the difference */
+  function signed(n) { return (n > 0 ? "+" : "") + fmt(n); }
+  function flowSentences(s, f) {
+    var y = D.flows.year, a = f.in[0], b = f.in[1], c = f.out[0], d = f.out[1], nm = the(s.name);
+    var p4 = "In the " + y + " survey, the most people moving to " + nm + " came from " + the(pname(a[0])) + ": " +
+      fmt(a[1]) + " (±" + fmt(a[2]) + ")" +
+      (b && !apart(a[1], a[2], b[1], b[2]) ? ", though " + the(pname(b[0])) + "’s " + fmt(b[1]) + " is too close to call" : "") +
+      ". The most moving out went to " + the(pname(c[0])) + ": " + fmt(c[3]) + " (±" + fmt(c[4]) + ")" +
+      (d && !apart(c[3], c[4], d[3], d[4]) ? ", though " + the(pname(d[0])) + "’s " + fmt(d[3]) + " is too close to call" : "") + ".";
+    function net(r) { return r[1] - r[3]; }
+    function nmoe(r) { return moe2(r[2], r[4]); }
+    function clause(list, word, prep) {
+      if (!list || !list.length) return null;
+      var r = list[0], r2 = list[1];
+      return "the biggest clear net " + word + " was " + prep + " " + the(pname(r[0])) + " (" + signed(net(r)) + ")" +
+        (r2 && !apart(net(r), nmoe(r), net(r2), nmoe(r2)) ? ", with " + the(pname(r2[0])) + " (" + signed(net(r2)) + ") too close to call" : "");
+    }
+    var gt = clause(f.gain, "gain", "from"), lt = clause(f.loss, "loss", "to"), p5;
+    if (gt && lt) p5 = "Counting both directions, " + gt + "; " + lt + ".";
+    else if (gt) p5 = "Counting both directions, " + gt + "; no state clearly took more people from " + nm + " than it sent.";
+    else if (lt) p5 = "Counting both directions, " + lt + "; no state clearly sent " + nm + " more people than it took.";
+    else p5 = "Counting both directions, no state’s exchange with " + nm + " is clearly a net gain or loss.";
+    return [p4, p5 + " “Clear” means the net is larger than the survey’s margin of error."];
+  }
+  function flowTable(tb, rows) {
+    tb.innerHTML = "";
+    rows.forEach(function (r) {
+      var tr = el("tr", {});
+      tr.appendChild(el("td", {}, pname(r[0])));
+      [[r[1], r[2]], [r[3], r[4]]].forEach(function (v) {
+        var td = el("td", {});
+        if (v[0] == null) td.textContent = "n/a";
+        else { td.appendChild(document.createTextNode(fmt(v[0]))); td.appendChild(el("span", { class: "rb-tsub" }, "±" + fmt(v[1]))); }
+        tr.appendChild(td);
+      });
+      var nt = el("td", {});
+      if (r[1] == null || r[3] == null) nt.textContent = "n/a";
+      else nt.textContent = signed(r[1] - r[3]) + (apart(r[1], r[2], r[3], r[4]) ? "" : "*");
+      tr.appendChild(nt);
+      tb.appendChild(tr);
+    });
+  }
+  function flowBox(id, cap) {
+    var wrap = el("div", { class: "sp-ft" });
+    var t = el("table", { class: "rb-t" });
+    t.appendChild(el("caption", { class: "rb-tcap", id: id + "-c" }, cap));
+    var hr = el("tr", {});
+    ["State", "Moved in", "Moved out", "Net"].forEach(function (h) { hr.appendChild(el("th", { scope: "col" }, h)); });
+    var th = el("thead", {}); th.appendChild(hr); t.appendChild(th);
+    t.appendChild(el("tbody", { id: id }));
+    wrap.appendChild(t);
+    return wrap;
+  }
+  function renderFlows(s) {
+    var f = D.flows && D.flows.states[ab], sec = document.getElementById("sp-flows");
+    if (!sec) return;
+    if (!f || !f.in.length || !f.out.length) { sec.hidden = true; return; }
+    sec.hidden = false;
+    var t = flowSentences(s, f);
+    document.getElementById("sp-p4").textContent = t[0];
+    document.getElementById("sp-p5").textContent = t[1];
+    document.getElementById("sp-tin-c").textContent = "Came from: the five states that sent " + the(s.name) + " the most people";
+    document.getElementById("sp-tout-c").textContent = "Went to: the five states that took the most from " + the(s.name);
+    flowTable(document.getElementById("sp-tin"), f.in);
+    flowTable(document.getElementById("sp-tout"), f.out);
   }
 
   /* ---------- charts ---------- */
@@ -204,6 +279,7 @@
     document.getElementById("sp-lt").textContent = "Population since " + s.first;
     drawLine(document.getElementById("sp-line"), s);
     drawBars(document.getElementById("sp-bars"), s);
+    renderFlows(s);
     document.getElementById("sp-copied").textContent = "";
   }
 
@@ -233,6 +309,24 @@
       key.appendChild(it);
     });
     box.appendChild(key);
+    if (D.flows) {
+      var sec = el("div", { id: "sp-flows", class: "sp-flows" });
+      sec.appendChild(el("p", { class: "sp-ct" }, "Where people came from and where they went, " + D.flows.year));
+      sec.appendChild(el("p", { id: "sp-p4" }));
+      sec.appendChild(el("p", { id: "sp-p5" }));
+      var grid = el("div", { class: "sp-ftgrid" });
+      grid.appendChild(flowBox("sp-tin", "Came from"));
+      grid.appendChild(flowBox("sp-tout", "Went to"));
+      sec.appendChild(grid);
+      var fn = el("p", { class: "sp-note" });
+      fn.appendChild(document.createTextNode("Moved in and moved out count people who said they had lived in the other state a year before answering the Census Bureau’s " +
+        D.flows.year + " American Community Survey, a sample survey; ± is its 90% margin of error, and * marks a net smaller than its margin. It covers a different period than the estimates above, so it won’t match them. "));
+      var src = el("a", { href: D.flows.source }, "Census Bureau, state-to-state migration flows, " + D.flows.year);
+      fn.appendChild(src);
+      fn.appendChild(document.createTextNode("."));
+      sec.appendChild(fn);
+      box.appendChild(sec);
+    }
     var share = el("p", { class: "sp-share" });
     var copy = el("button", { type: "button", class: "rb-act", id: "sp-copy" }, "Copy a link with this state");
     share.appendChild(copy);

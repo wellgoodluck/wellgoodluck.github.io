@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
-"""Generates data/states.json for economyincontext.org: each state's resident
-population (annual, thousands, from the Census Bureau via FRED) and the three
+"""Generates assets/states.json for economyincontext.org: each state's resident
+population (annual, thousands, from the Census Bureau via FRED), the three
 components of change (births minus deaths, net international migration, net
-domestic migration) from the Census Bureau's latest vintage of state estimates.
+domestic migration) from the Census Bureau's latest vintage of state estimates,
+and which states each state's movers came from and went to (the American
+Community Survey state-to-state migration flows).
 Read by /tools/state-population.html (assets/states.js).
 
 Not run by the workflows: the data is annual. Rerun when the Census Bureau
 releases a new vintage (usually winter; Vintage 2025 came January 27, 2026),
-then ship the new data/states.json. Each vintage revises the whole series back
+then ship the new assets/states.json. Each vintage revises the whole series back
 to the 2020 census and supersedes the old one, so replace, never merge.
 
 With network access (run from a machine that can reach census.gov and
@@ -16,7 +18,7 @@ fred.stlouisfed.org):
 
 Without (the usual case in a Claude workspace, where those hosts are blocked):
 fetch the two inputs through the built-in browser and save them, then
-    python3 tools/make_states.py --pop pop_raw.json --comp comp_raw.json
+    python3 tools/make_states.py --pop pop_raw.json --comp comp_raw.json --flows flows_raw.json
 Input formats, as the browser extraction writes them:
   pop_raw.json   {"CA": {"first": 1900, "vals": [1490, ...]}, ...}   thousands,
                  one value a year, from FRED fredgraph.csv?id=CAPOP etc.
@@ -24,7 +26,15 @@ Input formats, as the browser extraction writes them:
   comp_raw.json  {"California": ["06", pop2020..pop2025, births2021..2025,
                  deaths2021..2025, natural2021..2025, intl2021..2025,
                  dom2021..2025], ...} from NST-EST2025-ALLDATA.csv.
-When a new vintage lands, update VINTAGE, CENSUS_CSV and YEARS below."""
+  flows_raw.json {"names": [52 names: the 50 states and DC alphabetically, then
+                 "Puerto Rico"], "E": [[...]], "M": [[...]]} with E[to][from] the
+                 estimate and M[to][from] its 90% margin of error, null for the
+                 diagonal ('X') and for cells the Census Bureau suppresses ('N'),
+                 from the ACS state-to-state migration flows table (FLOWS_XLSX).
+When a new vintage lands, update VINTAGE, CENSUS_CSV and YEARS below. The flows
+are a separate, survey-based product released each fall-to-winter for the year
+before (the 2024 table came January 21, 2026): update FLOWS_YEAR and FLOWS_XLSX
+when the next one appears; they need not move with the vintage."""
 import json
 import os
 import sys
@@ -36,6 +46,11 @@ CENSUS_CSV = ("https://www2.census.gov/programs-surveys/popest/datasets/"
 YEARS = [2021, 2022, 2023, 2024, 2025]      # component years this vintage carries whole
 EST_YEARS = [2020, 2021, 2022, 2023, 2024, 2025]
 FREDGRAPH = "https://fred.stlouisfed.org/graph/fredgraph.csv?id="
+FLOWS_YEAR = 2024
+FLOWS_RELEASED = "January 21, 2026"
+FLOWS_XLSX = ("https://www2.census.gov/programs-surveys/demo/tables/geographic-mobility/"
+              "2024/state-to-state-migration/State_to_State_Migration_Table_2024_T13.xlsx")
+TOP = 5                                     # partners shown each way
 
 NAMES = {
     "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas", "CA": "California",
@@ -103,6 +118,94 @@ def comp_from_census():
     return out
 
 
+def flows_from_census():
+    """The flows table is long-format: column A current residence, B residence a
+    year earlier, C estimate, D margin of error, one row a pair."""
+    import io
+    try:
+        import openpyxl
+    except ImportError:
+        sys.exit("states: the flows table is an .xlsx; pip install openpyxl, or pass --flows")
+    with urllib.request.urlopen(FLOWS_XLSX, timeout=60) as r:
+        wb = openpyxl.load_workbook(io.BytesIO(r.read()), read_only=True, data_only=True)
+    return flows_from_rows(wb.worksheets[0].iter_rows(values_only=True))
+
+
+def flows_from_rows(rows):
+    names = [NAMES[k] for k in sorted(NAMES, key=lambda k: NAMES[k])] + ["Puerto Rico"]
+    at = {n: i for i, n in enumerate(names)}
+    E = [[None] * len(names) for _ in names]
+    M = [[None] * len(names) for _ in names]
+
+    def num(v):
+        if v is None or str(v).strip() in ("X", "N", ""):
+            return None
+        return int(str(v).replace(",", ""))
+    for row in rows:
+        if not row or len(row) < 4:
+            continue
+        to, fr = (str(row[0] or "").strip(), str(row[1] or "").strip())
+        if to in at and fr in at:           # skips "U.S. Island Areas" and "Foreign country"
+            E[at[to]][at[fr]], M[at[to]][at[fr]] = num(row[2]), num(row[3])
+    return {"names": names, "E": E, "M": M}
+
+
+def build_flows(fl):
+    """For each state: the TOP states that sent it the most people, the TOP it sent the
+    most to, and the partners with its largest net gain and net loss that clear the
+    margin of error. Each row is [partner, in, in_moe, out, out_moe]; null = suppressed."""
+    problems = []
+    code = {v: k for k, v in NAMES.items()}
+    code["Puerto Rico"] = "PR"
+    names, E, M = fl["names"], fl["E"], fl["M"]
+    n = len(names)
+    if sorted(names) != sorted(list(NAMES.values()) + ["Puerto Rico"]):
+        problems.append("flows: names are not the 50 states, DC and Puerto Rico")
+        return None, problems
+    if len(E) != n or any(len(r) != n for r in E) or len(M) != n or any(len(r) != n for r in M):
+        problems.append("flows: grid is not %dx%d" % (n, n))
+        return None, problems
+    for i in range(n):
+        if E[i][i] is not None:
+            problems.append("flows: %s to itself is not blank" % names[i])
+        for j in range(n):
+            if (E[i][j] is None) != (M[i][j] is None):
+                problems.append("flows: %s from %s has an estimate or a margin, not both" % (names[i], names[j]))
+            if E[i][j] is not None and (E[i][j] < 0 or M[i][j] < 0):
+                problems.append("flows: negative value, %s from %s" % (names[i], names[j]))
+    if problems:
+        return None, problems
+
+    def sig(r):                             # net clears the margin of the difference (90%)
+        if r[1] is None or r[3] is None:
+            return False
+        return abs(r[1] - r[3]) > (r[2] ** 2 + r[4] ** 2) ** 0.5
+    out = {}
+    for x in range(n):
+        ab = code[names[x]]
+        if ab == "PR":
+            continue                        # a partner, not a pick: the tool covers the states and DC
+        rows = [[code[names[y]], E[x][y], M[x][y], E[y][x], M[y][x]] for y in range(n) if y != x]
+        top_in = sorted([r for r in rows if r[1] is not None], key=lambda r: (-r[1], r[0]))[:TOP]
+        top_out = sorted([r for r in rows if r[3] is not None], key=lambda r: (-r[3], r[0]))[:TOP]
+        sigs = [r for r in rows if sig(r)]
+        gains = sorted([r for r in sigs if r[1] > r[3]], key=lambda r: (r[3] - r[1], r[0]))[:2]
+        losses = sorted([r for r in sigs if r[1] < r[3]], key=lambda r: (r[1] - r[3], r[0]))[:2]
+        out[ab] = {"in": top_in, "out": top_out, "gain": gains, "loss": losses}
+    block = {
+        "year": FLOWS_YEAR, "released": FLOWS_RELEASED, "source": FLOWS_XLSX,
+        "note": ("American Community Survey %d 1-year state-to-state migration flows: people 1 year and over "
+                 "living in a state at the survey who lived in another a year earlier. Rows are [partner, moved "
+                 "in from it, margin, moved out to it, margin]; margins are 90%%; null where the Census Bureau "
+                 "suppresses the cell (too few sample cases). gain and loss: the two largest nets either way "
+                 "whose net clears the margin of the difference, sqrt(m1^2 + m2^2), largest first (so the tool "
+                 "can say when the top two are too close to call)." % FLOWS_YEAR),
+        "names": {"PR": "Puerto Rico"},
+        "states": out,
+    }
+    return block, problems
+
+
 def build(pop, comp):
     ny = len(YEARS)
 
@@ -168,7 +271,15 @@ def main():
             comp = json.load(f)
     else:
         comp = comp_from_census()
+    if "--flows" in args:
+        with open(args["--flows"]) as f:
+            fl = json.load(f)
+    else:
+        fl = flows_from_census()
     data, problems = build(pop, comp)
+    flows, fp = build_flows(fl)
+    problems += fp
+    data["flows"] = flows
     for p in problems:
         print("states: WARNING " + p)
     if problems:
@@ -182,8 +293,8 @@ def main():
         json.dump(data, f, separators=(",", ":"), ensure_ascii=False)
         f.write("\n")
     n = len(data["states"])
-    print("states: wrote %s (%d states + DC, components %d-%d, %s)"
-          % (out, n - 1, YEARS[0], YEARS[-1], VINTAGE.split(",")[0]))
+    print("states: wrote %s (%d states + DC, components %d-%d, %s; flows %d)"
+          % (out, n - 1, YEARS[0], YEARS[-1], VINTAGE.split(",")[0], FLOWS_YEAR))
 
 
 if __name__ == "__main__":
