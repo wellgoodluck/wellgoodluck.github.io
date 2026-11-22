@@ -569,7 +569,7 @@ h1, h2, h3, h4, .dek { text-wrap: balance; }
 .sp .sp-key .sw.b-nat { background: var(--c3); }   /* the swatches are HTML spans: fill (above, for the SVG bars) doesn't color them */
 .sp .sp-key .sw.b-intl { background: var(--c2); }
 .sp .sp-key .sw.b-dom { background: var(--c1); }
-.sp .sp-flows > p:not(.sp-ct):not(.sp-note) { margin: 0 0 8px; }
+.sp .sp-flows > p:not(.sp-ct):not(.sp-note), .sp .sp-col > p:not(.sp-ct):not(.sp-note) { margin: 0 0 8px; }
 .sp .sp-ftgrid { margin-top: 6px; }   /* stacked at every width: the tool box is too narrow for two four-column tables side by side */
 .sp .sp-ft .rb-t { margin-bottom: 6px; }
 .sp .sp-ft .rb-t td:first-child { white-space: normal; }   /* "District of Columbia" wraps rather than pushing the numbers off a phone */

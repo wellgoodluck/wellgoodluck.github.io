@@ -3,8 +3,9 @@
 population (annual, thousands, from the Census Bureau via FRED), the three
 components of change (births minus deaths, net international migration, net
 domestic migration) from the Census Bureau's latest vintage of state estimates,
-and which states each state's movers came from and went to (the American
-Community Survey state-to-state migration flows).
+which states each state's movers came from and went to (the American
+Community Survey state-to-state migration flows), and what a dollar is worth in
+each state (BEA's regional price parities and personal income per person).
 Read by /tools/state-population.html (assets/states.js).
 
 Not run by the workflows: the data is annual. Rerun when the Census Bureau
@@ -18,7 +19,7 @@ fred.stlouisfed.org):
 
 Without (the usual case in a Claude workspace, where those hosts are blocked):
 fetch the two inputs through the built-in browser and save them, then
-    python3 tools/make_states.py --pop pop_raw.json --comp comp_raw.json --flows flows_raw.json
+    python3 tools/make_states.py --pop pop_raw.json --comp comp_raw.json --flows flows_raw.json --col col_raw.json
 Input formats, as the browser extraction writes them:
   pop_raw.json   {"CA": {"first": 1900, "vals": [1490, ...]}, ...}   thousands,
                  one value a year, from FRED fredgraph.csv?id=CAPOP etc.
@@ -31,10 +32,21 @@ Input formats, as the browser extraction writes them:
                  estimate and M[to][from] its 90% margin of error, null for the
                  diagonal ('X') and for cells the Census Bureau suppresses ('N'),
                  from the ACS state-to-state migration flows table (FLOWS_XLSX).
+  col_raw.json   {"year": 2024, "vintage": "YYYY-MM-DD", "pce2024": <PCE price index,
+                 2017 = 100>, "us_pcpi": <U.S. income per person>, "states": {"CA":
+                 [price level, income per person, income at U.S.-average prices,
+                 1 if that last figure is derived]}}: what col_from_fred() writes, from
+                 the BEA regional price parities release as ALFRED kept it on COL_VINTAGE.
 When a new vintage lands, update VINTAGE, CENSUS_CSV and YEARS below. The flows
 are a separate, survey-based product released each fall-to-winter for the year
 before (the 2024 table came January 21, 2026): update FLOWS_YEAR and FLOWS_XLSX
-when the next one appears; they need not move with the vintage."""
+when the next one appears; they need not move with the vintage. The cost-of-living
+figures come from BEA's yearly regional price parities release (2024 figures released
+February 19, 2026; the next, for 2025, is due December 10, 2026): update COL_YEAR,
+COL_RELEASED, COL_VINTAGE (the day after the release) and COL_INCOME_VINTAGE (the
+first FRED update of income per person carrying the state income figures BEA built
+that release on: check that every state's income / price level is within 1.5% of
+its real figure, as it was for 2024) when it appears."""
 import json
 import os
 import sys
@@ -51,6 +63,13 @@ FLOWS_RELEASED = "January 21, 2026"
 FLOWS_XLSX = ("https://www2.census.gov/programs-surveys/demo/tables/geographic-mobility/"
               "2024/state-to-state-migration/State_to_State_Migration_Table_2024_T13.xlsx")
 TOP = 5                                     # partners shown each way
+COL_YEAR = 2024
+COL_RELEASED = "February 19, 2026"
+COL_VINTAGE = "2026-02-21"                  # the day after BEA's price release: prices and real income
+COL_INCOME_VINTAGE = "2026-04-15"           # the income per person that release was built on, as FRED first carried it
+ALFREDGRAPH = "https://alfred.stlouisfed.org/graph/alfredgraph.csv?id="
+COL_RELEASE_URL = ("https://www.bea.gov/news/2026/"
+                   "real-personal-consumption-expenditures-state-and-real-personal-income-state-2024")
 
 NAMES = {
     "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas", "CA": "California",
@@ -148,6 +167,83 @@ def flows_from_rows(rows):
         if to in at and fr in at:           # skips "U.S. Island Areas" and "Foreign country"
             E[at[to]][at[fr]], M[at[to]][at[fr]] = num(row[2]), num(row[3])
     return {"names": names, "E": E, "M": M}
+
+
+def col_from_fred():
+    """BEA's price level (<ST>RPPALL), income per person (<ST>PCPI) and real income per
+    person (<ST>RPIPC, chained 2017 dollars) for COL_YEAR, all as ALFRED kept them on
+    COL_VINTAGE, so the three come from one release. The real figure is restated in
+    COL_YEAR dollars with the national PCE price index (DPCERG3A086NBEA, 2017 = 100).
+    Where FRED lacks a state's real per-person figure (Pennsylvania for 2024), it is
+    BEA's real personal income for the state (<ST>RPI, millions) over its population
+    (<ST>POP, thousands), flagged 1."""
+    y = str(COL_YEAR)
+    series = {}
+
+    def grab(ids, vintage):
+        url = ALFREDGRAPH + ",".join(ids) + "&vintage_date=" + ",".join([vintage] * len(ids))
+        lines = fetch(url).strip().split("\n")
+        hdr = lines[0].split(",")
+        for col in range(1, len(hdr)):
+            sid = hdr[col].strip().rsplit("_", 1)[0]
+            series[sid] = {}
+            for line in lines[1:]:
+                c = line.split(",")
+                if col < len(c) and c[col] not in (".", ""):
+                    series[sid][c[0][:4]] = float(c[col])
+    ids = [ab + k for ab in sorted(NAMES) for k in ("RPPALL", "RPIPC", "RPI", "POP")]
+    ids += ["DPCERG3A086NBEA", "RPIPCUS"]
+    for i in range(0, len(ids), 10):
+        grab(ids[i:i + 10], COL_VINTAGE)
+    ids = [ab + "PCPI" for ab in sorted(NAMES)]
+    for i in range(0, len(ids), 10):
+        grab(ids[i:i + 10], COL_INCOME_VINTAGE)
+    return col_from_series(series, y)
+
+
+def col_from_series(series, y):
+    pce = series["DPCERG3A086NBEA"][y]
+    out = {"year": int(y), "vintage": COL_VINTAGE, "income_vintage": COL_INCOME_VINTAGE, "pce2024": pce,
+           "us_pcpi": round(series["RPIPCUS"][y] * pce / 100), "states": {}}
+    for ab in sorted(NAMES):
+        real, derived = series.get(ab + "RPIPC", {}).get(y), 0
+        if real is None:
+            real, derived = series[ab + "RPI"][y] * 1e6 / (series[ab + "POP"][y] * 1e3), 1
+        out["states"][ab] = [series[ab + "RPPALL"][y], round(series[ab + "PCPI"][y]),
+                             round(real * pce / 100), derived]
+    return out
+
+
+def build_col(col):
+    """Checks and passes through the cost-of-living figures; the tool ranks them."""
+    problems = []
+    st = col.get("states", {})
+    if sorted(st) != sorted(NAMES):
+        return None, ["cost of living: states are not the 50 states and DC"]
+    for ab, (rpp, pcpi, adj, derived) in st.items():
+        if not 70 <= rpp <= 130:
+            problems.append("cost of living: %s price level %s is out of range" % (ab, rpp))
+        if not 20000 <= pcpi <= 200000 or not 20000 <= adj <= 200000:
+            problems.append("cost of living: %s income figures look wrong" % ab)
+        naive = pcpi / (rpp / 100)              # BEA's method differs; it shouldn't differ by much
+        if abs(adj / naive - 1) > 0.03:        # within 1.5% for every state for 2024
+            problems.append("cost of living: %s adjusted income %d is far from income / price level %d"
+                            % (ab, adj, naive))
+    block = {
+        "year": col["year"], "released": COL_RELEASED, "vintage": col["vintage"], "income_vintage": col["income_vintage"],
+        "release": COL_RELEASE_URL, "us_pcpi": col["us_pcpi"],
+        "note": ("BEA regional price parities and personal income by state, %d, as published %s "
+                 "(ALFRED vintage %s). Rows are [price level, U.S. = 100; personal income per person, "
+                 "dollars; BEA real personal income per person restated in %d dollars with the national "
+                 "PCE price index, i.e. income at U.S.-average prices; 1 if that figure is BEA real "
+                 "personal income over population because FRED lacks the per-person series]. Income per person "
+                 "is ALFRED vintage %s, the state income figures the real estimates were built on (the Feb 2026 "
+                 "vintage still held the March 2025 preliminary figures). us_pcpi: BEA real per capita personal "
+                 "income for the U.S. (RPIPCUS) restated the same way; at U.S. prices it is also the U.S. income."
+                 % (col["year"], COL_RELEASED, col["vintage"], col["year"], col["income_vintage"])),
+        "states": st,
+    }
+    return block, problems
 
 
 def build_flows(fl):
@@ -276,10 +372,18 @@ def main():
             fl = json.load(f)
     else:
         fl = flows_from_census()
+    if "--col" in args:
+        with open(args["--col"]) as f:
+            col = json.load(f)
+    else:
+        col = col_from_fred()
     data, problems = build(pop, comp)
     flows, fp = build_flows(fl)
     problems += fp
     data["flows"] = flows
+    colb, cp = build_col(col)
+    problems += cp
+    data["col"] = colb
     for p in problems:
         print("states: WARNING " + p)
     if problems:

@@ -5,7 +5,9 @@
    it ("#k=<state>"), and changing the state rewrites the hash so a copied address carries it. The movers section
    (Nov 22, 2026, second batch) reads the file's "flows" block, the American Community Survey state-to-state table:
    the top five states each way, each with its net and the survey's 90% margins; a net or a ranking the margins
-   can't separate is said to be too close to call. Styles: the shared calculator box (.rb) plus .sp in
+   can't separate is said to be too close to call. The cost-of-living section (Nov 22, batch f or later) reads "col":
+   BEA's price level, income per person and income at U.S.-average prices for one year, ranked here among the 50
+   states and DC. Styles: the shared calculator box (.rb) plus .sp in
    assets/site.css. */
 (function () {
   var mount = document.querySelector(".sp-mount");
@@ -136,6 +138,49 @@
     document.getElementById("sp-tout-c").textContent = "Went to: the five states that took the most from " + the(s.name);
     flowTable(document.getElementById("sp-tin"), f.in, 1);
     flowTable(document.getElementById("sp-tout"), f.out, 2);
+  }
+
+  /* ---------- cost of living: what a dollar is worth here ---------- */
+  function rankOf(k, i) {   /* 1 = highest, among the 50 states and DC */
+    var S = D.col.states, v = S[k][i], r = 1;
+    Object.keys(S).forEach(function (o) { if (S[o][i] > v) r++; });
+    return r;
+  }
+  function rankWords(r) {
+    var n = Object.keys(D.col.states).length;
+    if (r === 1) return "the highest";
+    if (r === n) return "the lowest";
+    if (r > n - 5) return "the " + ord(n - r + 1) + " lowest";
+    return "the " + ord(r) + " highest";
+  }
+  function priceRank(r, gap) {   /* above average counts from the top, below from the bottom; only the top and bottom 15 */
+    var n = Object.keys(D.col.states).length, k = gap > 0 ? r : n - r + 1;
+    if (k > 15) return "";   /* a mid-pack rank says little */
+    return ", " + (k === 1 ? "the " : "the " + ord(k) + " ") + (gap > 0 ? "highest" : "lowest");
+  }
+  function colSentences(s) {
+    var c = D.col.states[ab], y = D.col.year, nm = the(s.name);
+    var rn = rankOf(ab, 1), rp = rankOf(ab, 0), ra = rankOf(ab, 2), gap = c[0] - 100;
+    var p6 = "In " + y + ", income per person in " + nm + " was $" + fmt(c[1]) + ", " + rankWords(rn) +
+      " of the 50 states and DC (for the whole country, $" + fmt(D.col.us_pcpi) + "). ";
+    if (Math.abs(gap) < 0.5) p6 += "Prices there were about at the national average.";
+    else p6 += "Prices there ran " + f1(Math.abs(gap)) + "% " + (gap > 0 ? "above" : "below") +
+      " the national average" + priceRank(rp, gap) + ".";
+    var move = rn - ra;
+    var p7 = "At national-average prices, that income would be worth about $" + fmt(c[2]) + (c[3] ? "*" : "") + ", " +
+      rankWords(ra) + ". " + (move === 0 ? "Counting prices leaves " + nm + " in the same place." :
+        "Counting prices moves " + nm + " " + (move > 0 ? "up " : "down ") + Math.abs(move) + (Math.abs(move) === 1 ? " place." : " places."));
+    return [p6, p7];
+  }
+  function renderCol(s) {
+    var sec = document.getElementById("sp-col");
+    if (!sec) return;
+    if (!D.col.states[ab]) { sec.hidden = true; return; }
+    sec.hidden = false;
+    var t = colSentences(s);
+    document.getElementById("sp-p6").textContent = t[0];
+    document.getElementById("sp-p7").textContent = t[1];
+    document.getElementById("sp-colpa").hidden = !D.col.states[ab][3];
   }
 
   /* ---------- charts ---------- */
@@ -280,6 +325,7 @@
     drawLine(document.getElementById("sp-line"), s);
     drawBars(document.getElementById("sp-bars"), s);
     renderFlows(s);
+    if (D.col) renderCol(s);
     document.getElementById("sp-copied").textContent = "";
   }
 
@@ -326,6 +372,21 @@
       fn.appendChild(document.createTextNode("."));
       sec.appendChild(fn);
       box.appendChild(sec);
+    }
+    if (D.col) {
+      var cs = el("div", { id: "sp-col", class: "sp-col" });
+      cs.appendChild(el("p", { class: "sp-ct" }, "What a dollar is worth here, " + D.col.year));
+      cs.appendChild(el("p", { id: "sp-p6" }));
+      cs.appendChild(el("p", { id: "sp-p7" }));
+      var cn = el("p", { class: "sp-note" });
+      cn.appendChild(document.createTextNode("Income per person is personal income divided by everyone who lives there, children included. Personal income counts pay, business and investment income, and government benefits, including non-cash ones such as employer-paid health insurance and Medicare; it is measured before income taxes but after Social Security and Medicare payroll taxes, and leaves out capital gains. It is an average, pulled up by high earners, not what a typical worker takes home. Prices compare what people in each state typically buy, rent included, with what it would cost at national-average prices. The worth-at-national-prices figure is the Bureau of Economic Analysis’s own estimate, adjusted so the states add up to the national total, so the three figures won’t divide out exactly. "));
+      var pa = el("span", { id: "sp-colpa" }, "* For Pennsylvania, FRED doesn’t carry the bureau’s " + D.col.year + " per-person figure, so this one is the bureau’s total for the state divided by its population. ");
+      cn.appendChild(pa);
+      var csrc = el("a", { href: D.col.release }, "Bureau of Economic Analysis, " + D.col.released);
+      cn.appendChild(csrc);
+      cn.appendChild(document.createTextNode("."));
+      cs.appendChild(cn);
+      box.appendChild(cs);
     }
     var share = el("p", { class: "sp-share" });
     var copy = el("button", { type: "button", class: "rb-act", id: "sp-copy" }, "Copy a link with this state");

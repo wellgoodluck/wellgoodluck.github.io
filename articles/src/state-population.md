@@ -1,14 +1,14 @@
 ---
 title: Your State's Population, and Where It's Changing
 title_tag: State Population Over Time: Every State Since 1900
-dek: Pick a state. Its population back to 1900, where the last five years' change came from — births and deaths, other countries, and other states — and which states its newcomers came from and its leavers went to.
+dek: Pick a state. Its population back to 1900, where the last five years' change came from — births and deaths, other countries, and other states — which states its newcomers came from and its leavers went to, and what a dollar is worth there.
 date: 2026-11-22
 kind: tool
 more_tools: kept-up, my-inflation-rate
 ---
 
 <div class="sp-mount" data-src="/assets/states.json"><p class="rb-noscript">This tool needs JavaScript. The section How it's worked out, below, explains where the figures come from, and Sources links to them.</p></div>
-<script src="../assets/states.js?v=20261122e"></script>
+<script src="../assets/states.js?v=20261122f"></script>
 
 ## How it's worked out
 
@@ -23,6 +23,8 @@ The population line is the Census Bureau's resident-population series as carried
 The last section, which states people came from and went to, comes from a different source: the Census Bureau's American Community Survey, which asks a sample of U.S. residents where they lived a year earlier. The figures are its 2024 state-to-state migration flows, released January 21, 2026, and they count people one year and older. Because they come from a survey, each has a margin of error, shown as ±; the Census Bureau publishes them at 90% confidence, meaning there's about a 90% chance the true figure falls within that range (counting sampling error only). The net with a state is people moved in minus people moved out, and the tool marks a net that is smaller than its own margin, since the survey can't say with 90% confidence which way that one runs. It also says when the top two states in a list are too close to call. A few small flows aren't published at all because too few people in the sample made that move; those show as n/a.
 
 These flows won't match the "other states, net" bar above. They come from 2024 survey answers about the year before, not the year to July 2025; they come from a survey rather than from tax and Medicare records; and the population estimates count moves between the states and Puerto Rico as international migration, while these tables list Puerto Rico separately. Use them for where people went, and the bars for how much each state gained or lost.
+
+The last section, what a dollar is worth, uses the Bureau of Economic Analysis's figures for 2024. Income per person is personal income divided by everyone who lives in the state, children included. Personal income counts pay, business and investment income, and government benefits, including non-cash ones such as employer-paid health insurance and Medicare; it is measured before income taxes but after Social Security and Medicare payroll taxes, and it leaves out capital gains. Because it's an average pulled up by high earners, and includes more than pay, it isn't what a typical worker takes home. The price level is the bureau's regional price parity, released February 19, 2026, which compares what people in each state typically buy, rent included, with what the same things would cost at national-average prices. The bureau adjusts each state's income by its price level, and rebalances the states to add up to the national total, to put every state on national-average prices; the tool shows that figure in 2024 dollars, converted from the bureau's 2017 dollars with the national price index for consumer spending. The income per person shown is the version that estimate was built on; the bureau has revised it slightly since, which FRED's pages show. The ranks count the 50 states and the District of Columbia. The bureau's figures for 2025 are due December 10, 2026.
 
 Nothing you pick is saved or sent anywhere. A link carries your state only if you copy one with it.
 
@@ -39,3 +41,5 @@ Nothing you pick is saved or sent anywhere. A link carries your state only if yo
 - [Census Bureau, 2024 state-to-state migration flows, American Community Survey 1-year estimates (Table 1, Excel)](https://www2.census.gov/programs-surveys/demo/tables/geographic-mobility/2024/state-to-state-migration/State_to_State_Migration_Table_2024_T13.xlsx)
 - [Census Bureau tip sheet, January 21, 2026: "2024 State-to-State Migration Flows Statistics Now Available" (CB26-TPS.03)](https://www.census.gov/newsroom/press-releases/2026/2024-state-to-state-migration.html)
 - [Census Bureau, state-to-state migration flows: tables and notes](https://www.census.gov/data/tables/time-series/demo/geographic-mobility/state-to-state-migration.html)
+- [Bureau of Economic Analysis, "Real Personal Consumption Expenditures by State and Real Personal Income by State, 2024," February 19, 2026](https://www.bea.gov/news/2026/real-personal-consumption-expenditures-state-and-real-personal-income-state-2024)
+- [FRED, regional price parities, real personal income and income per person by state (California's price level shown; each state has its own series)](https://fred.stlouisfed.org/series/CARPPALL)
