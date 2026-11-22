@@ -108,6 +108,7 @@ warning, and writes them to build-report.json (or $FIGURES_REPORT), outside the 
 """
 
 import html
+import math
 import json
 import os
 import re
@@ -1307,6 +1308,81 @@ TOOL_ATTRS = {"rate": rate_tool_attrs, "save": save_tool_attrs, "myrate": myrate
               "hour": hour_tool_attrs}
 
 
+# Nov 22 (SEO follow-up): the state tool's first two lead sentences for every state, as plain HTML inside its mount, for
+# crawlers that don't run scripts and readers without them. Python ports of sentences() and domClause() in
+# assets/states.js: change both together. An inline script hides the list at once and states.js replaces the mount's
+# contents when it draws, so readers with scripts see the tool as before. Site search skips it (data-pagefind-ignore).
+STATES_JSON = "assets/states.json"
+
+
+def _js_round1(x):                                  # Math.round(x * 10) / 10, then toFixed(1)
+    return f"{math.floor(x * 10 + 0.5) / 10:.1f}"
+
+
+def _sp_fmt(n):
+    return ("−" if n < 0 else "") + f"{abs(n):,}"
+
+
+def _sp_ord(n):
+    return f"{n}" + ("th" if 11 <= n % 100 <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th"))
+
+
+def _sp_the(name):
+    return "the " + name if name == "District of Columbia" else name
+
+
+def state_sentences(D, ab):
+    """sentences() in assets/states.js, first two sentences (the third is about the chart)."""
+    s = D["states"][ab]
+    ys = D["comp_years"]
+    i = len(ys) - 1
+    y = ys[i]
+    now, prev = s["est"][f"y{y}"], s["est"][f"y{y - 1}"]
+    change = now - prev
+    pct = abs(change) / prev * 100
+    pct_txt = "less than 0.1%" if pct < 0.05 else _js_round1(pct) + "%"
+    nm = _sp_the(s["name"])
+    p1 = (nm[0].upper() + nm[1:] + " had " + _sp_fmt(now) + f" residents in July {y}: "
+          + ("up " + _sp_fmt(change) if change >= 0 else "down " + _sp_fmt(-change)) + ", or " + pct_txt + ", over the year.")
+    nat, intl, dom = s["natural"][i], s["intl"][i], s["dom"][i]
+    if abs(dom) < 500:
+        dc = "about as many people moved in from other states as moved out"
+    else:
+        r = 1 + sum(1 for t in D["states"].values() if (dom > 0 and t["dom"][i] > dom) or (dom < 0 and t["dom"][i] < dom))
+        rank = "the largest" if r == 1 else "the " + _sp_ord(r) + "-largest"
+        dc = (_sp_fmt(dom) + " more people moved in from other states than moved out — " + rank
+              + " net gain from other states in the country") if dom > 0 else (
+              _sp_fmt(-dom) + " more people moved out to other states than moved in — " + rank
+              + " net loss to other states in the country")
+    p2 = ("Where that came from: "
+          + ("births outnumbered deaths by " + _sp_fmt(nat) if nat >= 0 else "deaths outnumbered births by " + _sp_fmt(-nat)) + "; "
+          + (_sp_fmt(intl) + " more people arrived from other countries than left" if intl >= 0
+             else _sp_fmt(-intl) + " more people left for other countries than arrived") + "; and " + dc + ".")
+    return p1, p2
+
+
+def state_static(body):
+    """Insert the every-state list into the state tool's mount, after its no-script line. Fails soft."""
+    noscript_end = '</p></div>'
+    i = body.find('<div class="sp-mount"')
+    j = body.find(noscript_end, i) if i >= 0 else -1
+    if j < 0:
+        print("tools: WARNING state tool: no mount to fill")
+        return body
+    try:
+        with open(STATES_JSON, encoding="utf-8") as f:
+            D = json.load(f)
+        rows = "".join(f'<dt>{html.escape(D["states"][ab]["name"])}</dt><dd>{html.escape(" ".join(state_sentences(D, ab)))}</dd>'
+                       for ab in sorted(D["states"], key=lambda k: D["states"][k]["name"]))
+    except Exception as e:                                      # noqa: BLE001
+        print(f"tools: WARNING state tool: no static list ({e})")
+        return body
+    block = ('<div class="sp-static" id="sp-static" data-pagefind-ignore><dl>' + rows + '</dl></div>'
+             "<script>document.getElementById('sp-static').hidden = true;</script>")
+    print(f"tools: state tool: static list of {len(D['states'])} states")
+    return body[:j] + "</p>" + block + "</div>" + body[j + len(noscript_end):]
+
+
 _TOOLS_LI = re.compile(r'(<li><a href="([^"#]+)(?:#[^"]*)?">)(.*?)(</a>)')
 _TOOLS_GROUP = re.compile(r'^## (.+)$', re.M)
 _TOOLS_ENTRY = re.compile(r'<li><a href="([^"]+)">(.*?)</a>')
@@ -1380,6 +1456,8 @@ def render_tool(a, by_href=None, more=None, groups=None):
         if tag in body:
             body = body.replace(tag, tag + attrs(), 1)
     body = md_to_html(body)
+    if '<div class="sp-mount"' in body:                         # Nov 22: the state tool's every-state list (state_static)
+        body = state_static(body)
     if more and name in more:                                   # Nov 19: More tools, before Sources (where articles put Next in this series)
         anchor = '<h2 id="sources">'
         body = body.replace(anchor, more[name] + anchor, 1) if anchor in body else body + "\n" + more[name]
