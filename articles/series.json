@@ -1,5 +1,5 @@
 {
-  "note": "Series of articles, read by tools/build_articles.py. Each series lists its parts in reading order (slug = the file name in articles/src without .md, label = the short name shown in the series box). Optional featured: YYYY-MM-DD makes the whole series the Featured line from that date, by the same rule as an article's featured: line (the newest date that has arrived wins; a series wins a tie). Optional picture: a tile id with an optional range and ov (\"health_jobs range=10y\"), the picture on the Featured card while the series is featured. Optional teaser (Nov 9): the few words after the title on the home page's one-line Featured strip, lower case, no closing period.",
+  "note": "Series of articles, read by tools/build_articles.py. Each series lists its parts in reading order (slug = the file name in articles/src without .md, label = the short name shown in the series box). Optional featured: YYYY-MM-DD makes the whole series the Featured line from that date, by the same rule as an article's featured: line (the newest date that has arrived wins; a series wins a tie). Optional picture: a tile id with an optional range and ov (\"health_jobs range=10y\"), the picture on the Featured card while the series is featured. Optional teaser (Nov 9): the few words after the title on the home page's one-line Featured strip, lower case, no closing period. Optional related (Nov 22): up to two {slug, label, tag} entries for pages outside the series that its readers need before acting (first use: the Money Traps solar loan page on the solar series); each part's series box shows them on an \"Also read\" line under the parts, unnumbered, with the tag (e.g. \"Money Trap\") as a small ink label. Ordinary cross-links stay in See also. A held or missing page is left out with a series: log line.",
   "series": {
     "health-care": {
       "title": "Health care: what it costs, who gains, who lobbies",
@@ -32,6 +32,13 @@
         {
           "slug": "electric-vehicle-claims-checked",
           "label": "Fifteen claims checked"
+        }
+      ],
+      "related": [
+        {
+          "slug": "long-car-loans",
+          "label": "Car loans: the seven-year loan",
+          "tag": "Money Trap"
         }
       ]
     },
@@ -275,6 +282,13 @@
         {
           "slug": "solar-property-tax-by-state",
           "label": "Solar and property tax"
+        }
+      ],
+      "related": [
+        {
+          "slug": "solar-loan-dealer-fees",
+          "label": "Solar loans: the fee built in",
+          "tag": "Money Trap"
         }
       ]
     }

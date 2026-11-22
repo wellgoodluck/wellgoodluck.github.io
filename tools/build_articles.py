@@ -483,6 +483,7 @@ SERIES = []        # [{kind, slug, title, dek, featured, date, parts: [{slug, la
 SERIES_OF = {}     # article slug -> (series, index of the part)
 LANDINGS = {}      # landing-page slug -> its series (Nov 9)
 SERIES_FOLD = 8    # a series box with more parts than this folds them behind "Show all N parts" (Nov 9)
+SERIES_RELATED_MAX = 2   # "Also read" pages a series may show in its box (Nov 22)
 FEATURED_PARTS = 4  # a featured series with a landing page and more than SERIES_FOLD parts shows its first few parts and
                     # then "All N parts", linking to the landing page, so the Featured card stays short (Nov 9)
 
@@ -519,9 +520,23 @@ def load_series(articles, path=os.path.join("articles", "series.json")):
         if landing and landing not in by_slug:
             print(f"series: {sid}: landing page {landing!r} is not an article; linking to the index instead")
             landing = ""
+        related = []                                       # Nov 22: "Also read" pages from outside the series, shown in each part's box
+        own = {p["slug"] for p in parts}
+        for r in d.get("related", []) or []:
+            r = r if isinstance(r, dict) else {}
+            a = by_slug.get(r.get("slug", ""))
+            if not a or a.get("kind") == "page" or a["slug"] in own:
+                print(f"series: {sid}: related page {r.get('slug')!r} is not a listed article outside the series; left out")
+                continue
+            related.append({"slug": a["slug"], "label": r.get("label") or a.get("label") or a["title"],
+                            "title": a["title"], "tag": r.get("tag", "")})
+        if len(related) > SERIES_RELATED_MAX:
+            print(f"series: {sid}: {len(related)} related pages; showing the first {SERIES_RELATED_MAX}")
+            related = related[:SERIES_RELATED_MAX]
         s = {"kind": "series", "slug": sid, "title": d["title"], "dek": d.get("dek", ""), "featured": d.get("featured", ""),
              "picture": d.get("picture", ""), "teaser": d.get("teaser", ""),
-             "date": max(by_slug[p["slug"]]["date"] for p in parts), "parts": parts, "landing": landing}
+             "date": max(by_slug[p["slug"]]["date"] for p in parts), "parts": parts, "landing": landing,
+             "related": related}
         if landing:
             LANDINGS[landing] = s
         SERIES.append(s)
@@ -543,10 +558,18 @@ def series_box(slug):
     if len(s["parts"]) > SERIES_FOLD:              # a long series folds its parts, so the article starts on the first screen (Nov 9)
         parts = (f'<details class="series-all"><summary><span class="more">Show all {len(s["parts"])} parts</span>'
                  f'<span class="less">Hide the parts</span></summary>{parts}</details>')
+    rel = ""
+    if s.get("related"):                            # Nov 22: unnumbered, on its own line, so "part k of n" stays true
+        pills = " ".join(
+            f'<a class="rel" href="{r["slug"]}.html" title="{html.escape(r["title"], quote=True)}">'
+            + (f'<span class="tag">{html.escape(r["tag"])}</span> ' if r.get("tag") else "")
+            + f'<span class="rl">{inline(r["label"].replace("-", chr(0x2011)))}</span></a>'   # no break at a hyphen ("seven-year")
+            for r in s["related"])
+        rel = f'<p class="series-related"><span class="series-label">Also read</span> {pills}</p>'
     return (f'<nav class="series" aria-label="Series: {html.escape(s["title"], quote=True)}">'
             f'<p class="series-name"><span class="series-label">Series, part {i + 1} of {len(s["parts"])}</span> '
             f'<a href="{s["landing"] + ".html" if s.get("landing") else "./#series-" + s["slug"]}">{inline(s["title"])}</a></p>'
-            f'{parts}</nav>\n')
+            f'{parts}{rel}</nav>\n')
 
 
 def series_next(slug):
