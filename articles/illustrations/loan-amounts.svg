@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 302" role="img" aria-labelledby="loan-amounts-t loan-amounts-d"><title id="loan-amounts-t">The same solar system, two prices: the cash price, the amount borrowed with a dealer fee, and what is still owed after five years</title><desc id="loan-amounts-d">Three bars for a made-up 7.7-kilowatt solar system priced at $3.00 a watt. Cash price: $23,100. Borrowed on the installer&#x27;s 1.99% loan: $30,030, the $23,100 system plus a $6,930 dealer fee, 30% of the cash price. Still owed after five years of payments of $127 a month: $25,155, which is $2,055 more than the cash price. A dashed line marks the cash price across all three bars. Fictional, for illustration.</desc>
+<text x="0" y="16" class="h">The same system, two prices</text>
+<text x="0" y="36" class="s i2">A made-up 7.7 kW system at $3.00 a watt</text>
+<text x="0" y="64" class="m">Cash price</text>
+<text x="360" y="64" text-anchor="end" class="s b">$23,100</text>
+<rect x="0" y="74" width="276.923" height="22" class="teal-fill"/>
+<text x="0" y="130" class="m">Borrowed on the 1.99% loan</text>
+<text x="360" y="130" text-anchor="end" class="s b">$30,030</text>
+<rect x="0" y="140" width="276.923" height="22" class="teal-fill"/>
+<rect x="276.923" y="140" width="83.0769" height="22" class="range-fill"/>
+<text x="0" y="180" class="s">The system, $23,100</text>
+<text x="360" y="180" text-anchor="end" class="s">Dealer fee, $6,930</text>
+<text x="0" y="216" class="m">Still owed after five years</text>
+<text x="360" y="216" text-anchor="end" class="s b">$25,155</text>
+<rect x="1" y="227" width="299.558" height="20" class="teal-edge"/>
+<text x="0" y="266" class="s i2">$2,055 more than the cash price</text>
+<line x1="276.923" y1="70" x2="276.923" y2="100" class="ink-line dashed"/>
+<line x1="276.923" y1="136" x2="276.923" y2="166" class="ink-line dashed"/>
+<line x1="276.923" y1="223" x2="276.923" y2="253" class="ink-line dashed"/>
+<text x="360" y="294" text-anchor="end" class="cap">FICTIONAL · FOR ILLUSTRATION</text>
+</svg>

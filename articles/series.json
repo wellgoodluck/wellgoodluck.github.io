@@ -224,6 +224,10 @@
         {
           "slug": "scams-aimed-at-older-adults",
           "label": "Scams aimed at older adults"
+        },
+        {
+          "slug": "solar-loan-dealer-fees",
+          "label": "Solar loans"
         }
       ],
       "featured": "2026-11-09"
@@ -253,6 +257,24 @@
         {
           "slug": "compound-interest",
           "label": "Compound interest"
+        }
+      ]
+    },
+    "solar": {
+      "title": "Who Gets Paid for the Sun, State by State?",
+      "dek": "How rooftop panels are credited for the power they send to the grid, what plug-in balcony kits can and can't do, whether panels raise your property tax, and the dealer fee built into many solar loans.",
+      "parts": [
+        {
+          "slug": "solar-net-metering",
+          "label": "Net metering"
+        },
+        {
+          "slug": "plug-in-solar",
+          "label": "Plug-in solar"
+        },
+        {
+          "slug": "solar-property-tax-by-state",
+          "label": "Solar and property tax"
         }
       ]
     }

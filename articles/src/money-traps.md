@@ -50,6 +50,7 @@ Each page also has a picture drawn for the site. The statements, pay stubs and p
 - [The Two-Week Loan That Lasts All Year](payday-loans-and-paycheck-apps.html): payday loans and paycheck-advance apps.
 - [Cash From Your Credit Card](credit-card-cash-advances.html): why a cash advance costs more than a purchase.
 - [The Seven-Year Car Loan](long-car-loans.html): why a lower monthly payment can cost more.
+- [The Solar Loan With the Fee Built In](solar-loan-dealer-fees.html): the dealer fee folded into many solar loans, and how to see the real price before signing.
 - [The $38.99-a-Week Laptop](rent-to-own.html): what rent-to-own costs by the time you own the thing.
 - [Borrowing for School](student-loans.html): the student loan choices that follow you, and the rules that changed in July 2026.
 

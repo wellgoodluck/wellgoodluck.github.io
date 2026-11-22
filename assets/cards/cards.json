@@ -319,6 +319,12 @@
    "title": "Once You Hit Send: Scams on Zelle, Venmo and Cash App",
    "v": "1"
   },
+  "plug-in-solar": {
+   "file": "plug-in-solar.2a5d1535.png",
+   "label": "Who Gets Paid for the Sun, State by State? · Part 2",
+   "title": "Solar You Plug Into the Wall: What Balcony Solar Can and Can't Do",
+   "v": "1"
+  },
   "property-tax-limits-by-state": {
    "file": "property-tax-limits-by-state.e51ded5c.png",
    "label": "Property taxes: how the rate gets set, and how states limit it · Part 2",
@@ -377,6 +383,24 @@
    "file": "sell-it-or-rent-it-out.ba887012.png",
    "label": "In plain words",
    "title": "Sell It or Rent It Out: What Changes When a Home Becomes a Rental",
+   "v": "1"
+  },
+  "solar-loan-dealer-fees": {
+   "file": "solar-loan-dealer-fees.cacc9166.png",
+   "label": "Money Traps · Part 26",
+   "title": "The Solar Loan With the Fee Built In",
+   "v": "1"
+  },
+  "solar-net-metering": {
+   "file": "solar-net-metering.21bf4b4e.png",
+   "label": "Who Gets Paid for the Sun, State by State? · Part 1",
+   "title": "Who Pays When Your Neighbor Goes Solar? Net Metering and the Fight Over the Cost Shift",
+   "v": "1"
+  },
+  "solar-property-tax-by-state": {
+   "file": "solar-property-tax-by-state.e3ea4b79.png",
+   "label": "Who Gets Paid for the Sun, State by State? · Part 3",
+   "title": "Does Solar Raise Your Property Tax? It Depends on Your State",
    "v": "1"
   },
   "sports-betting-and-prediction-apps": {

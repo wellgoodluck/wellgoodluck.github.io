@@ -1390,6 +1390,45 @@ def both_ways():
 
 
 
+def loan_amounts():
+    """The Solar Loan With the Fee Built In (Nov 22): cash price, amount borrowed with a 30% dealer fee, and what is
+    still owed after five years of $127 payments (25-year loan at 1.99%)."""
+    b = []
+    cash, fee, owed = 23100, 6930, 25155
+    full = cash + fee
+    def X(v):
+        return W * v / full
+    b.append(T(0, 16, "The same system, two prices", "h"))
+    b.append(T(0, 36, "A made-up 7.7 kW system at $3.00 a watt", "s i2"))
+    y = 64
+    b.append(T(0, y, "Cash price", "m"))
+    b.append(T(W, y, f"${cash:,}", "s b", "end"))
+    b.append(R(0, y + 10, X(cash), 22, "teal-fill"))
+    y += 66
+    b.append(T(0, y, "Borrowed on the 1.99% loan", "m"))
+    b.append(T(W, y, f"${full:,}", "s b", "end"))
+    b.append(R(0, y + 10, X(cash), 22, "teal-fill"))
+    b.append(R(X(cash), y + 10, W - X(cash), 22, "range-fill"))
+    b.append(T(0, y + 50, f"The system, ${cash:,}", "s"))
+    b.append(T(W, y + 50, f"Dealer fee, ${fee:,}", "s", "end"))
+    y += 86
+    b.append(T(0, y, "Still owed after five years", "m"))
+    b.append(T(W, y, f"${owed:,}", "s b", "end"))
+    b.append(R(1, y + 11, X(owed) - 2, 20, "teal-edge"))
+    b.append(T(0, y + 50, f"${owed - cash:,} more than the cash price", "s i2"))
+    # the cash price, carried down through the three bars (not through the text between them)
+    for by in (74, 140, 227):
+        b.append(L(X(cash), by - 4, X(cash), by + 26, "ink-line dashed"))
+    b.append(fictional(W, y + 78))
+    write("loan-amounts", y + 86, b,
+          "The same solar system, two prices: the cash price, the amount borrowed with a dealer fee, and what is still "
+          "owed after five years",
+          "Three bars for a made-up 7.7-kilowatt solar system priced at $3.00 a watt. Cash price: $23,100. Borrowed on "
+          "the installer's 1.99% loan: $30,030, the $23,100 system plus a $6,930 dealer fee, 30% of the cash price. "
+          "Still owed after five years of payments of $127 a month: $25,155, which is $2,055 more than the cash price. "
+          "A dashed line marks the cash price across all three bars. Fictional, for illustration.")
+
+
 # ---------------------------------------------------------------- Spanish pilot (Nov 9): the overdraft page's two drawings
 ES.update({
     "FICTIONAL · FOR ILLUSTRATION": "FICTICIO · SOLO DE EJEMPLO",
@@ -1437,7 +1476,7 @@ for fn in (credit_score_factors, overdraft_statement, overdraft_optin, card_mini
            subs_statement, finfluencer_post, one_percent_curve, two_savers, pay_stub, student_balance, worry_ad,
            four_borrowers, betting_cost, gig_payouts, scam_texts, cosigner_notice, statement_marked, cushion_costs,
            one_name_reach, creep_bars, stub_split, two_balances, budget_bar, rate_gap, both_ways, prime_ledger,
-           ride_receipt, three_calls):
+           ride_receipt, three_calls, loan_amounts):
     fn()
 
 LANG = "es"

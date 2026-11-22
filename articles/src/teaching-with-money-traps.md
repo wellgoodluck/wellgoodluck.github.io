@@ -226,6 +226,14 @@ For lessons built on the almanac's own numbers (inflation, unemployment, recessi
 - **Activity:** Write a one-page family plan: the four requests no real caller makes, the numbers to call back, and a code word. Share it with an older relative.
 {{/after}}
 
+## Solar loans: The Solar Loan With the Fee Built In
+
+[Read the page](solar-loan-dealer-fees.html)
+
+- The installer's loan is at 1.99% and the credit union's at 6.99%. Why does the 1.99% loan cost more if the family sells after five years, but less if they keep it for ten?
+- Should a fee the lender charges the installer count in a loan's annual percentage rate? Make the case lenders make, and the case Michigan's attorney general makes.
+- **Activity:** Look up how many days you would have to cancel a solar contract signed at home: the federal Cooling-Off Rule first, then your own state's rule. Which one gives more time, and who does it cover?
+
 ## Your first paycheck: Where Did the Rest of It Go?
 
 [Read the page](your-first-paycheck.html)
