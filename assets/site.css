@@ -574,6 +574,8 @@ h1, h2, h3, h4, .dek { text-wrap: balance; }
 .sp .sp-ft .rb-t { margin-bottom: 6px; }
 .sp .sp-ft .rb-t td:first-child { white-space: normal; }   /* "District of Columbia" wraps rather than pushing the numbers off a phone */
 .sp .sp-ft .rb-t td { padding-top: 5px; padding-bottom: 5px; }
+.sp .sp-ft .rb-t .sp-rank { font-weight: 700; color: var(--ink); }   /* the column each table is ranked by: Moved in for Came from, Moved out for Went to */
+.sp .sp-ft .rb-t .sp-rank .rb-tsub { font-weight: 400; color: var(--ink-2); }
 .sp .sp-ft caption.rb-tcap { font-size: 13.5px; font-weight: 600; color: var(--ink-2); }
 .sp .sp-share { margin: 14px 0 0; }
 .sp .sp-copied { margin-left: 10px; font-size: 13.5px; color: var(--ink-2); }

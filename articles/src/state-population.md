@@ -8,7 +8,7 @@ more_tools: kept-up, my-inflation-rate
 ---
 
 <div class="sp-mount" data-src="/assets/states.json"><p class="rb-noscript">This tool needs JavaScript. The section How it's worked out, below, explains where the figures come from, and Sources links to them.</p></div>
-<script src="../assets/states.js?v=20261122d"></script>
+<script src="../assets/states.js?v=20261122e"></script>
 
 ## How it's worked out
 

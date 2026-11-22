@@ -95,13 +95,13 @@
     else p5 = "Counting both directions, no state’s exchange with " + nm + " is clearly a net gain or loss.";
     return [p4, p5 + " “Clear” means the net is larger than the survey’s margin of error."];
   }
-  function flowTable(tb, rows) {
+  function flowTable(tb, rows, rank) {   /* rank: 1 = Moved in, 2 = Moved out, the column the table is sorted by, set in bold */
     tb.innerHTML = "";
     rows.forEach(function (r) {
       var tr = el("tr", {});
       tr.appendChild(el("td", {}, pname(r[0])));
-      [[r[1], r[2]], [r[3], r[4]]].forEach(function (v) {
-        var td = el("td", {});
+      [[r[1], r[2]], [r[3], r[4]]].forEach(function (v, i) {
+        var td = el("td", i + 1 === rank ? { class: "sp-rank" } : {});
         if (v[0] == null) td.textContent = "n/a";
         else { td.appendChild(document.createTextNode(fmt(v[0]))); td.appendChild(el("span", { class: "rb-tsub" }, "±" + fmt(v[1]))); }
         tr.appendChild(td);
@@ -113,12 +113,12 @@
       tb.appendChild(tr);
     });
   }
-  function flowBox(id, cap) {
+  function flowBox(id, cap, rank) {
     var wrap = el("div", { class: "sp-ft" });
     var t = el("table", { class: "rb-t" });
     t.appendChild(el("caption", { class: "rb-tcap", id: id + "-c" }, cap));
     var hr = el("tr", {});
-    ["State", "Moved in", "Moved out", "Net"].forEach(function (h) { hr.appendChild(el("th", { scope: "col" }, h)); });
+    ["State", "Moved in", "Moved out", "Net"].forEach(function (h, i) { hr.appendChild(el("th", i === rank ? { scope: "col", class: "sp-rank" } : { scope: "col" }, h)); });
     var th = el("thead", {}); th.appendChild(hr); t.appendChild(th);
     t.appendChild(el("tbody", { id: id }));
     wrap.appendChild(t);
@@ -134,8 +134,8 @@
     document.getElementById("sp-p5").textContent = t[1];
     document.getElementById("sp-tin-c").textContent = "Came from: the five states that sent " + the(s.name) + " the most people";
     document.getElementById("sp-tout-c").textContent = "Went to: the five states that took the most from " + the(s.name);
-    flowTable(document.getElementById("sp-tin"), f.in);
-    flowTable(document.getElementById("sp-tout"), f.out);
+    flowTable(document.getElementById("sp-tin"), f.in, 1);
+    flowTable(document.getElementById("sp-tout"), f.out, 2);
   }
 
   /* ---------- charts ---------- */
@@ -315,8 +315,8 @@
       sec.appendChild(el("p", { id: "sp-p4" }));
       sec.appendChild(el("p", { id: "sp-p5" }));
       var grid = el("div", { class: "sp-ftgrid" });
-      grid.appendChild(flowBox("sp-tin", "Came from"));
-      grid.appendChild(flowBox("sp-tout", "Went to"));
+      grid.appendChild(flowBox("sp-tin", "Came from", 1));
+      grid.appendChild(flowBox("sp-tout", "Went to", 2));
       sec.appendChild(grid);
       var fn = el("p", { class: "sp-note" });
       fn.appendChild(document.createTextNode("Moved in and moved out count people who said they had lived in the other state a year before answering the Census Bureau’s " +
