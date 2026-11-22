@@ -6,7 +6,7 @@ kind: concept
 label: How the rate gets set
 hook: the digest, the rollback rate, and why a flat rate can still be a tax increase
 order: 26
-also: mill rate
+also: mill rate, property tax, property taxes
 ---
 
 ## The short version

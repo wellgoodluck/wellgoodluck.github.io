@@ -221,10 +221,6 @@
           "label": "Delivery-app markups"
         },
         {
-          "slug": "solar-loan-dealer-fees",
-          "label": "Solar loans"
-        },
-        {
           "slug": "does-prime-pay-for-itself",
           "label": "Does Prime pay for itself?"
         },
@@ -235,6 +231,10 @@
         {
           "slug": "scams-aimed-at-older-adults",
           "label": "Scams aimed at older adults"
+        },
+        {
+          "slug": "solar-loan-dealer-fees",
+          "label": "Solar loans"
         }
       ],
       "featured": "2026-11-09"
