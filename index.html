@@ -182,7 +182,18 @@
   .signup button:hover { background: var(--ink); border-color: var(--ink); }
   .signup .smeta { margin: 10px 0 0; font-size: 13.5px; color: var(--ink-2); }
   .signup .smeta .sep { margin: 0 4px; color: var(--muted); }
-  @media print { .signup-wrap { display: none !important; } }
+  /* The compact digest form (Nov 22, batch o): high on every article, tool and the home page, so readers who never reach
+     the box at the bottom still see it; same field and button as the box. Its Subscribe press counts as signup-top. */
+  .dsub { max-width: 39em; margin: 22px 0 26px; padding: 12px 14px 14px; border: 1px solid var(--frame); border-top: 2px solid var(--ink); border-radius: 6px; background: var(--surface); font-size: 15px; line-height: 1.4; }
+  .dsub .dsub-t { margin: 0 0 10px; color: var(--ink-2); }
+  .dsub .dsub-t b { color: var(--ink); font-weight: 600; }
+  .dsub .dsub-row { display: flex; gap: 8px; }
+  .dsub input[type="email"] { flex: 1 1 auto; min-width: 0; height: 44px; padding: 0 12px; border: 1px solid var(--muted); border-radius: 4px; background: var(--page); color: var(--ink); font: inherit; font-size: 16px; }
+  .dsub input[type="email"]::placeholder { color: var(--muted); opacity: 1; }
+  .dsub button { flex: none; height: 44px; padding: 0 16px; border: 1px solid var(--full-ink); border-radius: 4px; background: var(--full-ink); color: var(--surface); font: inherit; font-weight: 600; cursor: pointer; }
+  .dsub button:hover { background: var(--ink); border-color: var(--ink); }
+  .dsub input:focus-visible, .dsub button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  @media print { .signup-wrap, .dsub { display: none !important; } }
   /* Section nav: a bar below the masthead (sheet surface between two hairlines, with an "On this page" label), so it
      reads as a menu and not as a line of links; it stays at the top while you scroll. The section in view carries a
      2px ink rule along the bar's bottom edge. On phones: one sideways-scrolling row, no label. Same rules in site.css. */
@@ -740,7 +751,7 @@
     <p class="stext">One email on Monday mornings: the week's new articles and charts, the numbers that moved most, and what comes out in the week ahead. No ads, and no tracking of opens or clicks.</p>
     <form action="https://buttondown.com/api/emails/embed-subscribe/EconomyInContext" method="post">
       <label for="weekly-email">Email address</label>
-      <div class="srow"><input type="email" id="weekly-email" name="email" autocomplete="email" required><button type="submit">Subscribe</button></div>
+      <div class="srow"><input type="email" id="weekly-email" name="email" autocomplete="email" required><button type="submit" data-goatcounter-click="signup-bottom" data-goatcounter-title="Weekly digest: Subscribe (bottom of page)">Subscribe</button></div>
       <input type="hidden" name="embed" value="1">
     </form>
     <p class="smeta"><a href="https://buttondown.com/EconomyInContext/archive/">Past issues</a><span class="sep" aria-hidden="true">·</span><a href="articles/how-this-site-is-paid-for.html#the-weekly-email">How addresses are kept</a></p>
@@ -783,7 +794,7 @@
     <p><strong>Articles</strong> explain each number in plain words, follow the numbers to nine kinds of household, and take up what is argued about. Each number links to its own explainer, and all of them are linked from the top of the page.</p>
     <p id="attribution"></p>
     <p class="reuse">Free to reuse with credit: Economy in Context (economyincontext.org). The charts and writing here are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Credit the data to its source, named on each chart.</p>
-    <p>This site has no ads and no agenda beyond putting the numbers in context. It explains how things work. It is not tax, legal or financial advice. It sets no cookies and keeps nothing that identifies you; it does count page views, clicks on a few links on the home page, and uses of the share, copy and print buttons on articles. The optional weekly email is sent through Buttondown, which keeps the addresses for that and nothing else. It is paid for by the person who runs it, out of pocket; <a href="articles/how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+    <p>This site has no ads and no agenda beyond putting the numbers in context. It explains how things work. It is not tax, legal or financial advice. It sets no cookies and keeps nothing that identifies you; it does count page views, clicks on a few links on the home page, presses of the Subscribe buttons (never the address typed), and uses of the share, copy and print buttons on articles. The optional weekly email is sent through Buttondown, which keeps the addresses for that and nothing else. It is paid for by the person who runs it, out of pocket; <a href="articles/how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
     <p><a href="search/">Search every article, chart and tool →</a></p>
     <p><a href="articles/for-teachers.html">For teachers: free lessons built on these numbers →</a></p>
     <p><a href="articles/about.html">About this site, where the numbers come from, and every correction →</a></p>
@@ -1615,6 +1626,7 @@
     if (releases.length) { upd.appendChild(el('p', { class: 'rh', text: 'Next releases' })); upd.appendChild(releaseList(releases)); }
     if (para && para.length) sec.appendChild(upd);
     main.appendChild(sec);
+    main.appendChild(digestForm());   // Nov 22: the digest high on the page; the Featured strip goes between them on desktop
 
     // the Featured strip (Nov 9): the feature in the first screen; the card itself sits after Your situation. Under In
     // short on desktop; above it on phones, where the four rows fill the first screen and a strip under them falls at
@@ -1718,6 +1730,18 @@
   // ---- the lead -------------------------------------------------------------
   // The click counts (Nov 9): every link inside `root` is counted by GoatCounter under one name, home page only, so the
   // counts say which part of the page was used, not which link. Nothing about the reader is added to what a page view sends.
+  // The compact digest form (Nov 22, batch o), the same markup the article builder writes (DIGEST_FORM in
+  // tools/build_articles.py): change both together. Its Subscribe press counts as signup-top once bind_events runs.
+  function digestForm() {
+    const t = document.createElement('template');
+    t.innerHTML = '<form class="dsub" action="https://buttondown.com/api/emails/embed-subscribe/EconomyInContext" method="post" aria-label="Weekly digest">' +
+      '<p class="dsub-t"><b>Get the weekly digest.</b> One short email on Monday mornings: the week&#39;s new articles and charts, and what comes out next. No ads.</p>' +
+      '<div class="dsub-row"><label class="sr-only" for="dsub-email">Email address</label>' +
+      '<input type="email" id="dsub-email" name="email" autocomplete="email" placeholder="Email address" required>' +
+      '<button type="submit" data-goatcounter-click="signup-top" data-goatcounter-title="Weekly digest: Subscribe (top of page)">Subscribe</button></div>' +
+      '<input type="hidden" name="embed" value="1"></form>';
+    return t.content.firstElementChild;
+  }
   function track(root, name, title) {
     root.querySelectorAll('a').forEach(a => { a.dataset.goatcounterClick = name; a.dataset.goatcounterTitle = title; });
   }

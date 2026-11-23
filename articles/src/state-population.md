@@ -1,7 +1,7 @@
 ---
 title: Your State's Population, and Where It's Changing
 title_tag: State Population Over Time: Every State Since 1900
-dek: A map of where each state gained and lost people last year. Pick a state, or the whole country, for its population back to 1900, where the last five years' change came from — births and deaths, other countries, and other states — which states its newcomers came from and its leavers went to, and what a dollar is worth there.
+dek: A map of where each state gained and lost people in the latest year. Pick a state, or the whole country, for its population back to 1900, where the last five years' change came from — births and deaths, other countries, and other states — which states its newcomers came from and its leavers went to, and what a dollar is worth there.
 date: 2026-11-22
 kind: tool
 more_tools: kept-up, my-inflation-rate

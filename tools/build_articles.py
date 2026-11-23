@@ -858,8 +858,17 @@ def menu_for(a):
     return site_menu("articles")
 
 
-DIGEST_NUDGE = ('<p class="digest-nudge">New articles and charts arrive in one short email on Monday mornings. '
-                '<a href="#weekly">Get the weekly digest</a></p>\n')
+# Nov 22 (batch o): a compact signup form high on every article and tool page, replacing the one-line link that jumped
+# to the box at the bottom (most readers never got that far: 7 subscribers in four weeks). The bottom box stays. Presses
+# of either Subscribe button are counted (signup-top, signup-bottom); the footer and How This Site Is Paid For say so.
+DIGEST_FORM = ('<form class="dsub" action="https://buttondown.com/api/emails/embed-subscribe/EconomyInContext" method="post" '
+               'aria-label="Weekly digest" data-pagefind-ignore>'
+               '<p class="dsub-t"><b>Get the weekly digest.</b> One short email on Monday mornings: the week\'s new articles and charts, '
+               'and what comes out next. No ads.</p>'
+               '<div class="dsub-row"><label class="sr-only" for="dsub-email">Email address</label>'
+               '<input type="email" id="dsub-email" name="email" autocomplete="email" placeholder="Email address" required>'
+               '<button type="submit" data-goatcounter-click="signup-top" data-goatcounter-title="Weekly digest: Subscribe (top of page)">Subscribe</button></div>'
+               '<input type="hidden" name="embed" value="1"></form>\n')
 
 FOOT = """
 <div class="wrap signup-wrap">
@@ -868,7 +877,7 @@ FOOT = """
     <p class="stext">One email on Monday mornings: the week's new articles and charts, the numbers that moved most, and what comes out in the week ahead. No ads, and no tracking of opens or clicks.</p>
     <form action="https://buttondown.com/api/emails/embed-subscribe/EconomyInContext" method="post">
       <label for="weekly-email">Email address</label>
-      <div class="srow"><input type="email" id="weekly-email" name="email" autocomplete="email" required><button type="submit">Subscribe</button></div>
+      <div class="srow"><input type="email" id="weekly-email" name="email" autocomplete="email" required><button type="submit" data-goatcounter-click="signup-bottom" data-goatcounter-title="Weekly digest: Subscribe (bottom of page)">Subscribe</button></div>
       <input type="hidden" name="embed" value="1">
     </form>
     <p class="smeta"><a href="https://buttondown.com/EconomyInContext/archive/">Past issues</a><span class="sep" aria-hidden="true">·</span><a href="how-this-site-is-paid-for.html#the-weekly-email">How addresses are kept</a></p>
@@ -878,7 +887,7 @@ FOOT = """
   <div class="wrap">
     <p>Articles on this site aim to lay out what the figures show, what is settled, what is argued about and by whom. Every number links to its source where one exists, and corrections are noted on the article. The charts are live from the almanac and update as agencies publish.</p>
     <p class="reuse">Free to reuse with credit: Economy in Context (economyincontext.org). The charts and writing here are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener">CC BY 4.0</a>. Credit the data to its source, named on each chart.</p>
-    <p>This site has no ads and no agenda beyond putting the numbers in context. It explains how things work. It is not tax, legal or financial advice. It sets no cookies and keeps nothing that identifies you; it does count page views, clicks on a few links on the home page, and uses of the share, copy and print buttons on articles. The optional weekly email is sent through Buttondown, which keeps the addresses for that and nothing else. It is paid for by the person who runs it, out of pocket; <a href="how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
+    <p>This site has no ads and no agenda beyond putting the numbers in context. It explains how things work. It is not tax, legal or financial advice. It sets no cookies and keeps nothing that identifies you; it does count page views, clicks on a few links on the home page, presses of the Subscribe buttons (never the address typed), and uses of the share, copy and print buttons on articles. The optional weekly email is sent through Buttondown, which keeps the addresses for that and nothing else. It is paid for by the person who runs it, out of pocket; <a href="how-this-site-is-paid-for.html">here is how</a>, how visits are counted, and how to chip in if you want to. Questions and corrections: <a href="mailto:hello@economyincontext.org">hello@economyincontext.org</a>.</p>
     <p class="about-link"><a href="/search/">Search every article, chart and tool →</a></p>
     <p class="about-link"><a href="/tools/">Tools: put your own figures next to the national numbers →</a></p>
     <p class="about-link"><a href="for-teachers.html">For teachers: free lessons built on these numbers →</a></p>
@@ -1130,11 +1139,11 @@ def render_article(a):
     page += f'<p class="dateline">{dates}{fresh_label(a)}{share_top(a)}</p>\n'
     page += series_box(a["slug"])
     body = md_to_html(a["body"])
-    if a.get("kind") != "page":                   # Nov 8: one line pointing to the digest box, after the opening section
+    if a.get("kind") != "page":                   # Nov 8: the digest, after the opening section (a compact form since Nov 22)
         first = body.find("<h2")                  # (In one sentence / The short version / The question ...), since most
         second = body.find("<h2", first + 1) if first != -1 else -1   # phone readers never reach the box at the bottom.
         if second != -1:                          # Template only: no article's date, updated: line, feed or sitemap entry changes.
-            body = body[:second] + DIGEST_NUDGE + body[second:]
+            body = body[:second] + DIGEST_FORM + body[second:]
     nxt = series_next(a["slug"]) + share_end(a)  # Nov 11: the share row follows Next in this series
     for anchor in ('<h2 id="see-also">', '<h2 id="sources">'):
         if anchor in body:
@@ -1435,6 +1444,7 @@ def render_tool(a, by_href=None, more=None, groups=None):
         page += f'<div class="wrap article article-head">\n<h1>{inline(a["title"])}</h1>\n'
         if a.get("dek"):
             page += f'<p class="dek">{inline(a["dek"])}</p>\n'
+        page += DIGEST_FORM                                      # Nov 22: the digest in the first screen
         page += ('</div>\n<nav class="secnav" aria-label="On this page"><div class="wrap"><span class="secnav-label" aria-hidden="true">On this page</span>'
                  '<a class="to-top" href="#top" aria-label="Back to the top of the page">↑ Top</a><ul class="sections-nav" id="nav">'
                  + "".join(f'<li><a href="#{re.sub(r"[^a-z0-9]+", "-", g.lower()).strip("-")}">{inline(g)}</a></li>' for g, _ in groups) + '</ul></div></nav>\n')
@@ -1446,6 +1456,7 @@ def render_tool(a, by_href=None, more=None, groups=None):
         page += f'<h1>{inline(a["title"])}{chip}</h1>\n'
         if a.get("dek"):
             page += f'<p class="dek">{inline(a["dek"])}</p>\n'
+        page += DIGEST_FORM                                      # Nov 22: the digest above the tool (Tom's call)
     body = a["body"]
     if name == "index":                                         # Nov 19: the chip on each Tools page entry, inside its link;
         by_href = by_href or {}                                 # the title in span.t carries the underline, so it stops at the title

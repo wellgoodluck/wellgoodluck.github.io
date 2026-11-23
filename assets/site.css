@@ -345,6 +345,17 @@ footer.about p { max-width: 48em; margin: 0 0 8px; }
 .signup button:hover { background: var(--ink); border-color: var(--ink); }
 .signup .smeta { margin: 10px 0 0; font-size: 13.5px; color: var(--ink-2); }
 .signup .smeta .sep { margin: 0 4px; color: var(--muted); }
+/* The compact digest form (Nov 22, batch o): high on every article, tool and the home page, so readers who never reach
+   the box at the bottom still see it; same field and button as the box. Its Subscribe press counts as signup-top. */
+.dsub { max-width: var(--measure, 39em); margin: 22px 0 26px; padding: 12px 14px 14px; border: 1px solid var(--frame); border-top: 2px solid var(--ink); border-radius: 6px; background: var(--surface); font-size: 15px; line-height: 1.4; }
+.dsub .dsub-t { margin: 0 0 10px; color: var(--ink-2); }
+.dsub .dsub-t b { color: var(--ink); font-weight: 600; }
+.dsub .dsub-row { display: flex; gap: 8px; }
+.dsub input[type="email"] { flex: 1 1 auto; min-width: 0; height: 44px; padding: 0 12px; border: 1px solid var(--muted); border-radius: 4px; background: var(--page); color: var(--ink); font: inherit; font-size: 16px; }
+.dsub input[type="email"]::placeholder { color: var(--muted); opacity: 1; }
+.dsub button { flex: none; height: 44px; padding: 0 16px; border: 1px solid var(--full-ink); border-radius: 4px; background: var(--full-ink); color: var(--surface); font: inherit; font-weight: 600; cursor: pointer; }
+.dsub button:hover { background: var(--ink); border-color: var(--ink); }
+.dsub input:focus-visible, .dsub button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
 /* The map on the Plain words index (built by tools/build_articles.py) */
 .article > figure.map { max-width: 480px; margin: 22px 0 8px; }
@@ -636,7 +647,7 @@ h1, h2, h3, h4, .dek { text-wrap: balance; }
 @media print {
   :root { --page: #fff; --surface: #fff; }
   body { background: #fff; }
-  .site-menu, .secnav, .lead, .feed-link, .series-parts, .series-all, .series-related, .series-next, .more-tools, .digest-nudge, .signup-wrap, .rb-mount, .rb-sumwrap, .ku-share, .sp-mount { display: none !important; }
+  .site-menu, .secnav, .lead, .feed-link, .series-parts, .series-all, .series-related, .series-next, .more-tools, .digest-nudge, .dsub, .signup-wrap, .rb-mount, .rb-sumwrap, .ku-share, .sp-mount { display: none !important; }
   .article .series { margin-top: 0; }
   .article figure.chart-embed, .article .figure, .article figure.illo, .article .table-scroll, .map { break-inside: avoid; }
   .article figure.chart-embed { width: 100%; }
