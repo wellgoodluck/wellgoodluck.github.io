@@ -120,7 +120,11 @@
     var t = el("table", { class: "rb-t" });
     t.appendChild(el("caption", { class: "rb-tcap", id: id + "-c" }, cap));
     var hr = el("tr", {});
-    ["State", "Moved in", "Moved out", "Net"].forEach(function (h, i) { hr.appendChild(el("th", i === rank ? { scope: "col", class: "sp-rank" } : { scope: "col" }, h)); });
+    ["State", "Moved in", "Moved out", "Net"].forEach(function (h, i) {
+      var at = i === rank ? { scope: "col", class: "sp-rank" } : { scope: "col" };
+      if (i === 3) at.id = id + "-n";   /* "Net to <state>", filled in by renderFlows */
+      hr.appendChild(el("th", at, h));
+    });
     var th = el("thead", {}); th.appendChild(hr); t.appendChild(th);
     t.appendChild(el("tbody", { id: id }));
     wrap.appendChild(t);
@@ -136,6 +140,8 @@
     document.getElementById("sp-p5").textContent = t[1];
     document.getElementById("sp-tin-c").textContent = "Came from: the five states that sent " + the(s.name) + " the most people";
     document.getElementById("sp-tout-c").textContent = "Went to: the five states that took the most from " + the(s.name);
+    document.getElementById("sp-tin-n").textContent = "Net to " + ab;
+    document.getElementById("sp-tout-n").textContent = "Net to " + ab;
     flowTable(document.getElementById("sp-tin"), f.in, 1);
     flowTable(document.getElementById("sp-tout"), f.out, 2);
   }
