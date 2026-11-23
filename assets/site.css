@@ -590,6 +590,48 @@ h1, h2, h3, h4, .dek { text-wrap: balance; }
 .sp .sp-share { margin: 14px 0 0; }
 .sp .sp-copied { margin-left: 10px; font-size: 13.5px; color: var(--ink-2); }
 .sp .sp-copied input { width: 100%; max-width: 24em; height: 36px; padding: 0 8px; border: 1px solid var(--muted); border-radius: 4px; background: var(--page); color: var(--ink); font: inherit; font-size: 13.5px; }
+/* The map (Nov 22, batch n): which way each state's figure went, in two hues with gray for about even. The one place
+   on the site a reading is colored by direction (Tom's call, Nov 22): never red/green, never the party blue/red, always
+   with the figure in words below. Steps at 1, 3, 6 and 10 per 1,000; every same-step teal/brown pair clears CVD and
+   normal-vision separation (OKLab ΔE ×100 ≥ 10 and ≥ 15) in both schemes, and --t is the chip label at 4.5:1 or better. */
+.sp .sp-map { margin: 0 0 4px; }
+.sp .sp-mt { margin-top: 0; }
+.sp .sp-msub { margin: 0 0 8px; }
+.sp .sp-mseg { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--hairline); }
+.sp .sp-mseg button { background: var(--surface); white-space: normal; line-height: 1.25; min-height: 40px; }
+.sp .sp-mseg button + button { border-left: 0; }
+@media (min-width: 620px) { .sp .sp-mseg { display: inline-grid; grid-template-columns: repeat(4, auto); } }
+.sp .sp-msvg { display: block; width: 100%; max-width: 640px; height: auto; margin: 6px 0 2px; }
+.sp .sp-msvg [data-ab] { fill: var(--f); stroke: var(--surface); stroke-width: 0.9; stroke-linejoin: round; cursor: pointer; }
+.sp .sp-msvg [data-ab]:hover { stroke: var(--ink); stroke-width: 1.6; }
+.sp .sp-msel { fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linejoin: round; pointer-events: none; }
+.sp .sp-msmall { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin: 2px 0 6px; font-size: 12.5px; color: var(--ink-2); }
+.sp .sp-msmall > span { margin-right: 4px; }
+.sp .sp-mchip { min-width: 40px; min-height: 32px; padding: 0 6px; border: 0; border-radius: 3px; background: var(--f); color: var(--t); font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.sp .sp-mchip[aria-pressed="true"] { outline: 2.5px solid var(--ink); outline-offset: 1px; }
+.sp .sp-mchip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.sp .sp-mkey { max-width: 420px; margin: 4px 0 0; font-size: 12px; color: var(--ink-2); }
+.sp .sp-mbar { display: grid; grid-template-columns: repeat(9, 1fr); gap: 2px; height: 12px; }
+.sp .sp-mbar span { background: var(--f); border-radius: 2px; }
+.sp .sp-mticks { position: relative; height: 16px; font-variant-numeric: tabular-nums; }
+.sp .sp-mticks span { position: absolute; top: 1px; transform: translateX(-50%); }
+.sp .sp-mends { display: flex; justify-content: space-between; gap: 8px; }
+.sp .sp-mout { min-height: 2.9em; margin: 8px 0 2px; }
+.sp .sp-mlist { margin: 0 0 10px; }
+.sp .sp-mlist summary { cursor: pointer; font-size: 13.5px; color: var(--ink-2); padding: 6px 0; }
+.sp .sp-mlist .rb-t { margin-top: 4px; }
+.sp .sp-mlist .rb-t td:first-child { white-space: normal; }
+.sp .sp-mlist .rb-t td { padding-top: 4px; padding-bottom: 4px; }
+.sp .sp-mlist .sp-rank td { font-weight: 700; color: var(--ink); }
+.sp .sp-mlist tfoot td { border-top: 1px solid var(--frame); }
+.sp .sp-b0 { --f: #dcdad2; --t: #1b1b1a; }
+.sp .sp-u1 { --f: #6cbdb1; --t: #1b1b1a; } .sp .sp-u2 { --f: #3d9c92; --t: #1b1b1a; } .sp .sp-u3 { --f: #1a746d; --t: #ffffff; } .sp .sp-u4 { --f: #0a4f4b; --t: #ffffff; }
+.sp .sp-d1 { --f: #d9a55c; --t: #1b1b1a; } .sp .sp-d2 { --f: #b27a33; --t: #1b1b1a; } .sp .sp-d3 { --f: #93601f; --t: #ffffff; } .sp .sp-d4 { --f: #7d4704; --t: #ffffff; }
+@media screen and (prefers-color-scheme: dark) {
+  .sp .sp-b0 { --f: #4d4c48; --t: #f0efec; }
+  .sp .sp-u1 { --f: #33968d; --t: #1a1a19; } .sp .sp-u2 { --f: #52b0a6; --t: #1a1a19; } .sp .sp-u3 { --f: #7fcbc1; --t: #1a1a19; } .sp .sp-u4 { --f: #a0dfd6; --t: #1a1a19; }
+  .sp .sp-d1 { --f: #b3822f; --t: #1a1a19; } .sp .sp-d2 { --f: #c99a48; --t: #1a1a19; } .sp .sp-d3 { --f: #e2ad5a; --t: #1a1a19; } .sp .sp-d4 { --f: #f7c25f; --t: #1a1a19; }
+}
 
 @media print {
   :root { --page: #fff; --surface: #fff; }

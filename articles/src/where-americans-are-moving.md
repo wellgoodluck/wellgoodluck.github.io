@@ -44,7 +44,7 @@ The big losers are familiar, with losses far below their 2021 peaks. California'
 
 **What a loss means.** The idea that people "vote with their feet" — pick the state whose services, costs and rules suit them — goes back to a 1956 paper by the economist Charles Tiebout, and it is why domestic migration gets read as a verdict. The analogy breaks in two places. Moving is expensive, so the vote is cast mostly by people with the means and the job flexibility to move. And a state can lose movers because it is expensive, which is partly a sign that many people want to live there and it hasn't built enough homes for them — a shortage, not only a failure. By the same token, a state can gain movers while its wages trail. The moving trucks are real information; they are just not the whole report card.
 
-{{tool state-population k=nc example="It opens with North Carolina, the year's biggest gainer from other states." text="Pick a state: its population back to 1900, and the three parts of every year's change since 2021."}}
+{{tool state-population k=nc example="It opens with North Carolina, the year's biggest gainer from other states." text="A map of where every state gained and lost people, then pick one: its population back to 1900, and the three parts of every year's change since 2021."}}
 
 ## See also
 

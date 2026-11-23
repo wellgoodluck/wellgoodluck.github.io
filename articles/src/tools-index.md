@@ -47,5 +47,5 @@ out: index
 
 <ul class="tools-list">
 <li><a href="/chart/">Make Your Own Chart</a><span class="th">Any number on the site over any years, with presidents, the Fed and events alongside. Copy it or download it.</span></li>
-<li><a href="/tools/state-population.html">Your State's Population, and Where It's Changing</a><span class="th">Pick a state: its population back to 1900, and whether its recent change came from births, other countries or other states.</span></li>
+<li><a href="/tools/state-population.html">Your State's Population, and Where It's Changing</a><span class="th">A map of where each state gained and lost people. Pick one for its population back to 1900 and whether its recent change came from births, other countries or other states.</span></li>
 </ul>
