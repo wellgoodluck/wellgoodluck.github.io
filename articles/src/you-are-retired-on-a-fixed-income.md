@@ -2,7 +2,7 @@
 title: You're Retired on a Fixed Income
 dek: Inflation is the number that reaches you first and hardest, and the raise that answers it arrives a year late. The Fed reaches your savings in days.
 date: 2026-10-28
-updated: 2026-10-30
+updated: 2026-11-23
 kind: path
 order: 3
 also: Social Security, seniors
@@ -42,7 +42,7 @@ CDs, bond funds and annuity payouts are priced off Treasury yields of matching l
 
 ## Medicare, every January
 
-The standard Part B premium is deducted from the Social Security check, and it has risen faster than the COLA in most years: for 2026 it rose about 10%, to $202.90 a month, against a 2.8% benefit increase. A "hold harmless" rule prevents the premium increase from exceeding the dollar COLA for most beneficiaries, so the check can't fall, but the premium regularly eats a quarter or more of the raise. Higher-income retirees pay surcharges that step up in brackets, set on income from two years earlier. {{due 2026-11-20 "CMS announces the 2027 Part B premium (not out as of Nov 14; the Nov 23 sweep re-checks)"}}
+The standard Part B premium is deducted from the Social Security check, and it has risen faster than the COLA in most years: for 2026 it rose about 10%, to $202.90 a month, against a 2.8% benefit increase. For 2027 it rises 3.2%, to [$209.40](https://www.cms.gov/newsroom/fact-sheets/2027-medicare-parts-b-premiums-deductibles), against the 3.6% COLA. A "hold harmless" rule prevents the premium increase from exceeding the dollar COLA for most beneficiaries, so the check can't fall, but the premium can take a large share of the raise: on a $2,000 benefit, the 2026 increase took $17.90 of a $56 raise, about a third, and the 2027 increase takes $6.50 of $72. Higher-income retirees pay surcharges that step up in brackets, set on income from two years earlier. {{due 2027-11-20 "CMS announces the 2028 Part B premium (usually mid-November): add it, with the share of the 2028 COLA it takes"}}
 
 ## Mortgage rates and home prices
 
@@ -77,6 +77,7 @@ The benefit is indexed, which almost no private income is. Cash and bonds finall
 - [Social Security Administration, cost-of-living adjustment](https://www.ssa.gov/oact/cola/latestCOLA.html), the formula and every year's figure, and the [2027 announcement](https://www.ssa.gov/news/en/mip/2026-10-01-f.html).
 - [BLS, CPI for urban wage earners (CPI-W)](https://www.bls.gov/cpi/), and [Research price index for the elderly (CPI-E)](https://www.bls.gov/cpi/research-series/r-cpi-e-home.htm).
 - [Medicare.gov, Medicare costs](https://www.medicare.gov/basics/costs/medicare-costs), the current Part B premium and the income brackets.
+- [CMS, "2027 Medicare Parts A & B Premiums and Deductibles," November 17, 2026](https://www.cms.gov/newsroom/fact-sheets/2027-medicare-parts-b-premiums-deductibles): the 2027 premium, $209.40, up $6.50 from $202.90.
 - [Social Security and Medicare Boards of Trustees, annual report](https://www.ssa.gov/oact/tr/), the trust fund projections.
 - [Census Bureau, Housing Vacancies and Homeownership, third quarter 2026](https://www.census.gov/housing/hvs/files/qtr326/Q326press.pdf) (October 28, 2026), Table 6: homeownership by age of householder.
 - [FRED: Fed funds rate (FEDFUNDS)](https://fred.stlouisfed.org/series/FEDFUNDS), [10-year yield (GS10)](https://fred.stlouisfed.org/series/GS10), [CPI (CPIAUCSL)](https://fred.stlouisfed.org/series/CPIAUCSL).
