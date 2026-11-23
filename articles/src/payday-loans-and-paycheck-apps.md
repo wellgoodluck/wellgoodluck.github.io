@@ -63,6 +63,8 @@ At the federal level, the Consumer Financial Protection Bureau's 2017 payday rul
 
 These rules may change again. This page reflects federal law as of November 8, 2026.
 
+{{due 2027-03-01 "Payday: has the CFPB proposed its reconsideration NPRM? And the earned-wage-access bill's progress"}}
+
 ## Sources
 
 - [CFPB, "CFPB Finds Four Out of Five Payday Loans Are Rolled Over or Renewed," March 25, 2014](https://www.consumerfinance.gov/about-us/newsroom/cfpb-finds-four-out-of-five-payday-loans-are-rolled-over-or-renewed/)

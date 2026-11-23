@@ -72,6 +72,8 @@ Federal student lending has swung back and forth in recent years. The 2025 budge
 
 These rules are still being phased in and may change again. Check StudentAid.gov for the current details before you borrow or choose a plan. This page reflects federal law as of November 9, 2026.
 
+{{due 2027-01-15 "Student loans: involuntary collections (Treasury's private collectors, garnishment expected 2027), RAP/Tiered Standard phase-ins, the default count; update Know the cost of default and The bigger picture"}}
+
 ## Sources
 
 - [Federal Student Aid, 2026–27 interest rates (set at the May 12, 2026 10-year Treasury auction)](https://fsapartners.ed.gov/fsa-print/publication/1007224)
