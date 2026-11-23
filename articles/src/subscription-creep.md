@@ -57,7 +57,7 @@ Meanwhile, [an older federal law still requires online sellers](https://www.law.
 
 **Opponents** argue that a broad rule would impose costs on every subscription business to stop a minority of bad actors, that existing law already covers deceptive practices, and that retention offers can be legitimately useful to customers.
 
-These rules may change. This page reflects federal law as of November 8, 2026.
+These rules may change. This page reflects federal law as of November 8, 2026. Who enforces subscription rules now — federal and state — is covered in [Who Referees the Marketplace?](who-referees-the-marketplace.html).
 
 ## Sources
 

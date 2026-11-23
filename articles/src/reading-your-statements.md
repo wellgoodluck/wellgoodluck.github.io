@@ -84,7 +84,7 @@ The deadlines themselves aren't in dispute: they've been in the law since the 19
 
 Either way, your rights under the Fair Credit Billing Act and Regulation E remain law, and you can still use them directly with your bank or card company.
 
-These rules may change. This page reflects them as of November 11, 2026.
+These rules may change. This page reflects them as of November 11, 2026. Who enforces these rights, and how that has changed, is covered in [Who Referees the Marketplace?](who-referees-the-marketplace.html).
 
 ## Sources
 
